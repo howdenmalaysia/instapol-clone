@@ -6,11 +6,17 @@ window._ = require('lodash');
  * code may be modified to fit the specific needs of your application.
  */
 
-import '@popperjs/core'
+import '@popperjs/core';
+import $ from 'jquery';
+import * as moment from 'moment';
+import Swal from 'sweetalert2';
 
-const bootstrap = require('bootstrap')
+const bootstrap = require('bootstrap');
 
-window.bootstrap = bootstrap
+window.bootstrap = bootstrap;
+window.$ = window.jQuery = $;
+window.moment = moment;
+window.Swal = Swal;
 
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests
@@ -21,6 +27,15 @@ window.bootstrap = bootstrap
 window.axios = require('axios');
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+
+window.instapol = window.axios.create({
+    baseURL: process.env.MIX_HOWDEN_API_DOMAIN,
+    timeout: 60000,
+    headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ' + document.querySelector('meta[name=access-token]').content,
+    }
+});
 
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
