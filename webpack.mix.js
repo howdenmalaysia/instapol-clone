@@ -1,5 +1,6 @@
 const mix = require('laravel-mix');
-require('laravel-mix-imagemin');
+const Minimizer = require('image-minimizer-webpack-plugin')
+require('@chiiya/laravel-mix-image-minimizer');
 
 /*
  |--------------------------------------------------------------------------
@@ -15,7 +16,7 @@ require('laravel-mix-imagemin');
 mix.setPublicPath('public')
     .setResourceRoot('../')
     .sass('resources/sass/app.scss', 'css/frontend.css')
-    .sass('resources/sass/dashboard/app.scss', 'css/bo.css')
+    // .sass('resources/sass/dashboard/app.scss', 'css/bo.css')
     .options({
         processCssUrl: false,
     })
@@ -28,26 +29,22 @@ mix.setPublicPath('public')
         'sweetalert2',
         'loadash'
     ])
-    .imagemin(
-        'images',
-        {
-            patterns: [
-                { from: 'node_modules/@fortawesome/fontawesome-free/webfonts', to: 'fonts' },
-            ],
-        },
-        {
-            optiong: {
-                optimizationLevel: 5,
-            },
-            jpegtran: null,
+    .images({
+        implementation: Minimizer.imageminMinify,
+        patterns: [{
+            from: '**/*',
+            to: 'images',
+            context: 'resources/images'
+        }],
+        options: {
             plugins: [
-                require('imagemin-mozjpeg')({
+                ['imagemin-mozjpeg', {
                     quality: 100,
-                    progressive: true
-                }),
-            ],
+                    progressive: true,
+                }]
+            ]
         }
-    )
+    })
     .sourceMaps();
 
 if(mix.inProduction()) {
