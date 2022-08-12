@@ -20,7 +20,7 @@ mix.setPublicPath('public')
     .options({
         processCssUrl: false,
     })
-    .js('resources/js/app.js', 'app.js')
+    .js('resources/js/app.js', 'js/app.js')
     .extract([
         'jquery',
         'popper.js',
