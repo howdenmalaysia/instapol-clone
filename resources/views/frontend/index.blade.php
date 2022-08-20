@@ -27,7 +27,7 @@
                     <div class="container product-wrapper mt-n5">
                         <div class="row justify-content-center">
                             <div class="col-xl-11 col-12">
-                                <div class="card px-3 text-center rounded">
+                                <div class="card px-3 text-center shadow rounded">
                                     <div class="row">
                                         <div class="col d-flex align-items-center">
                                             <x-product url="" :image-path="asset('images/icons/motor.png')" :alt="__('frontend.products.motor')" :name="__('frontend.products.motor')" />
