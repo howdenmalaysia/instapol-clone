@@ -1,0 +1,1 @@
+<img src="{{ asset('images/howden.png') }}" alt="Howden Insurance Brokers Sdn Bhd" width={{ $width }} {!! $attributes !!}>

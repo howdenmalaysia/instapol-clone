@@ -6,12 +6,12 @@ window._ = require('lodash');
  * code may be modified to fit the specific needs of your application.
  */
 
+const bootstrap = require('bootstrap');
 import '@popperjs/core';
 import $ from 'jquery';
 import * as moment from 'moment';
 import Swal from 'sweetalert2';
 
-const bootstrap = require('bootstrap');
 
 window.bootstrap = bootstrap;
 window.$ = window.jQuery = $;
