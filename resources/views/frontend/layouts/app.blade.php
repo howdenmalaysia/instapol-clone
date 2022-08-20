@@ -16,6 +16,7 @@
         
         <title>@yield('title', config('app.name'))</title>
 
+        <link rel="shortcut icon" href="{{ asset('images/favicon.png') }}" type="image/png">
         <link rel="stylesheet" href="{{ mix('css/frontend.css') }}">
     </head>
     <body class="d-flex flex-column min-vh-100">
