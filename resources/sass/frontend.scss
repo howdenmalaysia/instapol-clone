@@ -1,0 +1,118 @@
+
+body {
+    section {
+        padding: 1rem 0;
+    }
+
+    .nav-item, .nav-link {
+        color: $white;
+        font-weight: bold;
+        font-size: 15px;
+        text-decoration: none;
+
+        &:hover, &:focus {
+            color: rgba($color: $white, $alpha: .75);
+        }
+
+        .dropdown-item {
+            &:hover {
+                background-color: $primary;
+                color: $white;
+            }
+        }
+    }
+
+    // About Us Page
+    #about-us {
+        .header {
+            background-image: url(../images/about-us-header.png);
+        }
+    }
+
+    // Policy Pages
+    #privacy-policy, #cookie-policy, #refund-policy, #terms-and-conditions {
+        .header {
+            background-image: url(../images/policy-header.png);
+        }
+    }
+
+    #claims {
+        .header {
+            background-image: url(../images/claims-header.png);
+        }
+    }
+
+    .header {
+        background-position: center;
+        background-size: cover;
+        content: ' ';
+        min-height: 75vh;
+    }
+    
+    // Home Page
+    #promo-carousel {
+        .carousel-image {
+            width: 100%;
+            height: 82vh;
+            max-height: 866px;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
+        }
+    }
+
+    .products {
+        margin-top: -100px;
+        margin-bottom: 50px;
+        padding: 20px 0px;
+    }
+
+    #coming-soon {
+        .container-fluid {
+            background-color: #f6f5f5;
+        }
+    }
+
+    #made-easy {
+        .numbering {
+            height: 2rem;
+            width: 2rem;
+            font-size: 1.3rem;
+        }
+    }
+
+    #info {
+        background-image: url(../images/bg-info.png);
+        background-position: center;
+        background-size: cover;
+    }
+
+    // General
+    #content-wrapper {
+        .title {
+            background-image: url(../images/bg-title.png);
+            background-position: center;
+
+            .about-title {
+                font-size: 45px;
+            }
+        }
+    }
+
+    .panel-tab {
+        width: 95%;
+    }
+
+    .title {
+        color: $blue;
+        font-weight: bold;
+    }
+
+    .rounded {
+        border-radius: 1rem !important;
+    }
+
+    .negative-margin-5 {
+        margin-top: -5rem;
+    }
+}
