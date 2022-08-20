@@ -23,6 +23,6 @@ class StaticPage extends Component
      */
     public function render()
     {
-        return view('components.static-page');
+        return view('components.frontend.static-page');
     }
 }

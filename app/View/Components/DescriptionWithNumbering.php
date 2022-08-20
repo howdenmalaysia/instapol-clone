@@ -29,6 +29,6 @@ class DescriptionWithNumbering extends Component
      */
     public function render()
     {
-        return view('components.description-with-numbering');
+        return view('components.frontend.description-with-numbering');
     }
 }

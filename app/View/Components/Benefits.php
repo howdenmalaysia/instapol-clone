@@ -4,7 +4,7 @@ namespace App\View\Components;
 
 use Illuminate\View\Component;
 
-class Info extends Component
+class Benefits extends Component
 {
     public $imagePath;
     public $title;
@@ -29,6 +29,6 @@ class Info extends Component
      */
     public function render()
     {
-        return view('components.benefits');
+        return view('components.frontend.benefits');
     }
 }

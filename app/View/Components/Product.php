@@ -33,6 +33,6 @@ class Product extends Component
      */
     public function render()
     {
-        return view('components.product');
+        return view('components.frontend.product');
     }
 }
