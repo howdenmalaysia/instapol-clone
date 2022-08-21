@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg bg-primary">
+<nav class="navbar navbar-expand-lg navbar-fixed-top bg-primary">
     <div class="container">
         <a href="{{ route('frontend.index') }}" class="navbar-brand">
             <x-instapol-logo width="90" />

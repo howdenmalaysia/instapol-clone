@@ -1,10 +1,12 @@
 require('./bootstrap');
 
 import Alpine from 'alpinejs';
+import AOS from 'aos';
 
 window.Alpine = Alpine;
-
 Alpine.start();
+
+AOS.init();
 
 var moneyFormatter = new Intl.NumberFormat('en-US', {
     minimumFractionDigits: 2,
@@ -20,5 +22,8 @@ window.formatMoney = function (number) {
 }
 
 $(function() {
-    
+    $(document).on('scroll', function () {
+        var nav = $('.navbar-fixed-top');
+        nav.addClass('fixed-top', $(this).scrollTop() > nav.height());
+    });
 });

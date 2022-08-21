@@ -12,7 +12,7 @@
                     <div class="container product-wrapper mt-n5">
                         <div class="row justify-content-center">
                             <div class="col-xl-11 col-12">
-                                <div class="card px-3 text-center shadow rounded">
+                                <div class="card ps-3 text-center shadow rounded">
                                     <div class="row">
                                         <div class="col d-flex align-items-center">
                                             <x-product url="" :image-path="asset('images/icons/motor.png')" :alt="__('frontend.products.motor')" :name="__('frontend.products.motor')" />
@@ -29,8 +29,8 @@
                                         <div class="col d-flex align-items-center">
                                             <x-product url="{{ config('setting.redirects.doc_pro') }}" :image-path="asset('images/icons/doc-pro.png')" :alt="__('frontend.products.doc_pro')" :name="__('frontend.products.doc_pro')" />
                                         </div>
-                                        <div class="col-4 tenang">
-                                            <img src="{{ asset('images/MyTenang.jpg') }}" alt="MyTenang" height="190">
+                                        <div class="col-4 tenang p-0">
+                                            <img src="{{ asset('images/MyTenang.jpg') }}" alt="MyTenang" class="img-fluid rounded-end" height="190">
                                         </div>
                                     </div>
                                 </div>
@@ -40,13 +40,13 @@
                 </div>
                 <section id="coming-soon">
                     <div class="container-fluid py-4 text-center">
-                        <h3 class="fw-bold text-uppercase text-primary">{{ __('frontend.general.coming_soon') }}</h3>
-                        <div class="row justify-content-center">
-                            <div class="col-2">
+                        <h3 class="fw-bold text-uppercase text-primary aos-init" data-aos="fade-up" data-aos-duration="1000">{{ __('frontend.general.coming_soon') }}</h3>
+                        <div class="row justify-content-center mb-5">
+                            <div class="col-2 aos-init" data-aos="flip-left" data-aos-duration="2000">
                                 <img src="{{ asset('images/icons/coming-soon/medical-cover.png') }}" alt="{{ __('frontend.products.medical_cover') }}" class="mb-3">
                                 <h5 class="title">{{ __('frontend.products.medical_cover') }}</h5>
                             </div>
-                            <div class="col-2">
+                            <div class="col-2 aos-init" data-aos="flip-left" data-aos-duration="2000">
                                 <img src="{{ asset('images/icons/coming-soon/houseowner.png') }}" alt="{{ __('frontend.products.houseowner') }}" class="mb-3">
                                 <h5 class="title">{{ __('frontend.products.houseowner') }}</h5>
                             </div>
