@@ -4,13 +4,10 @@
             <div class="col-md-7">
                 <x-instapol-logo navy width="218" />
                     <p class="mt-3 footer-link">
-                        <a class="text-decoration-none text-dark" href="">{{ __('frontend.navbar.about.privacy_policy') }}</a>
-                        <span class="vr"></span>
-                        <a class="text-decoration-none text-dark" href="">{{ __('frontend.navbar.about.cookie_policy') }}</a>
-                        <span class="vr"></span>
-                        <a class="text-decoration-none text-dark" href="">{{ __('frontend.navbar.about.refund_policy') }}</a>
-                        <span class="vr"></span>
-                        <a class="text-decoration-none text-dark" href="">{{ __('frontend.navbar.about.terms_and_conditions') }}</a>
+                        <a class="text-decoration-none text-dark border-end border-dark pe-2" href="{{ route('frontend.privacy') }}">{{ __('frontend.navbar.about.privacy_policy') }}</a>
+                        <a class="text-decoration-none text-dark border-end border-dark px-2" href="{{ route('frontend.cookie') }}">{{ __('frontend.navbar.about.cookie_policy') }}</a>
+                        <a class="text-decoration-none text-dark border-end border-dark px-2" href="{{ route('frontend.refund') }}">{{ __('frontend.navbar.about.refund_policy') }}</a>
+                        <a class="text-decoration-none text-dark ps-2" href="{{ route('frontend.term-of-use') }}">{{ __('frontend.navbar.about.terms_and_conditions') }}</a>
                     </p>
                     <p class="copyright d-none d-lg-block">
                         {{ __('frontend.footer.copyright'). ' ' . config('app.name') . '. ' . __('frontend.footer.all_rights_reserved') }}
