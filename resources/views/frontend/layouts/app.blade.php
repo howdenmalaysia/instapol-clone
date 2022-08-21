@@ -8,6 +8,7 @@
         <meta name="access-token" content="{{ session('access_token') }}">
         <meta name="theme-color" content="#9A5CD0">
 
+        {{-- Link Sharing Metadata --}}
         <meta property="og:title" content="@yield('title', config('app.name') . ' : Insurance in an instant')">
         <meta property="og:type" content="article">
         <meta property="og:description" content="@yield('meta_description', 'Your policy, in an instant. instaPol is the quick, hassle-free way to buy insurance.')">
@@ -16,7 +17,12 @@
         
         <title>@yield('title', config('app.name'))</title>
 
+        {{-- Fonts --}}
+        <link href="//fonts.googleapis.com/css?family=Gudea&amp;subset=latin" rel="stylesheet" type="text/css">
+
+        {{-- favicon --}}
         <link rel="shortcut icon" href="{{ asset('images/favicon.png') }}" type="image/png">
+
         <link rel="stylesheet" href="{{ mix('css/frontend.css') }}">
     </head>
     <body class="d-flex flex-column min-vh-100">
