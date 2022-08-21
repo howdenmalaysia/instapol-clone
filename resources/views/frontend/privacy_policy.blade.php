@@ -12,7 +12,7 @@
             </x-slot>
     
             <x-slot name="content">
-                <div class="px-3 pt-4 pb-4">
+                <div class="px-3 py-4">
                     <p class="text-center">{{ __('frontend.privacy_policy_page.line_1') }}</p>
                     <p class="text-center">{{ __('frontend.privacy_policy_page.line_2') }}</p>
 

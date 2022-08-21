@@ -12,7 +12,7 @@
             </x-slot>
     
             <x-slot name="content">
-                <div class="px-3 pt-4 pb-4">
+                <div class="px-3 py-4">
                     @foreach (__('frontend.cookie_policy_page') as $category => $item)
                         <h6 class="text-primary fw-bold">{{ $item['title'] }}</h6>
                         @foreach ($item['description'] as $description)
