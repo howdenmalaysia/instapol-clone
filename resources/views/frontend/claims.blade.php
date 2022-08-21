@@ -12,7 +12,7 @@
             </x-slot>
     
             <x-slot name="content">
-                <div class="p-4">
+                <div class="p-4 fw-bold">
                     <p>{{ __('frontend.claims_page.description') }}</p>
                     
                     <table class="table table-borderless">

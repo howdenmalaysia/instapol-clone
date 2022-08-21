@@ -13,7 +13,7 @@
             </x-slot>
     
             <x-slot name="content">
-                <div class="text-center px-3 pt-4 pb-4">
+                <div class="text-center px-3 pt-4 pb-4 fw-bold">
                     <p>{{ __('frontend.about_page.instant_policy') . ' ' . __('frontend.about_page.instapol_is_quick') }}</p>
                     <p>{{ __('frontend.about_page.line_2') }}</p>
                     <p>{{ __('frontend.about_page.line_3') }}</p>
