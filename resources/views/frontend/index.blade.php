@@ -6,23 +6,7 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-12 px-0">
-                <div id="promo-carousel" class="carousel slide"  data-bs-ride="carousel" data-bs-interval="7000">
-                    <div class="carousel-inner">
-                        @foreach (File::glob(public_path('images\banner\*')) as $index => $item)
-                            <div class="carousel-item{{ $index === 0 ? ' active' : '' }}">
-                                <div class="carousel-image" style="background-image: url('{{ 'images' . str_replace([public_path('images'), '\\'], ['', '/'], $item) }}')"></div>
-                            </div>
-                        @endforeach
-                    </div>
-                    <button class="carousel-control-prev" type="button" data-bs-target="#promo-carousel" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Previous</span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#promo-carousel" data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Next</span>
-                    </button>
-                </div>
+                <x-image-carousel id="promo-carousel" interval="7000" :images="File::glob(public_path('images\banner\*'))" />
                 <div class="products">
                     <div class="container product-wrapper mt-n5">
                         <div class="row justify-content-center">
