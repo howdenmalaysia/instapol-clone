@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-lg navbar-fixed-top bg-primary">
     <div class="container">
         <a href="{{ route('frontend.index') }}" class="navbar-brand">
-            <x-instapol-logo width="90" />
+            <x-instapol-logo width="115" />
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapse" aria-controls="#navbar-collapse" aria-expanded="false" aria-label="Toggle Navigation Bar">
             <i class="fas fa-bars"></i>
