@@ -11,7 +11,7 @@ class ProductType extends Model
 
     protected $fillable = [
         'description',
-        'commission'
+        'commission',
     ];
 
     public function product()
