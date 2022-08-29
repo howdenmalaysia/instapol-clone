@@ -53,41 +53,8 @@
                         </div>
                     </div>
                 </section>
-                <section id="made-easy">
-                    <div class="container">
-                        <div class="row justify-content-center">
-                            <div class="col-12">
-                                <div class="row justify-content-center">
-                                    <div class="col-6">
-                                        <div class="text-center align-items-end">
-                                            <h2 class="text-uppercase fw-bold">
-                                                {{ __('frontend.general.how') }}
-                                                <span>
-                                                    <img src="{{ asset('images/instapol-navy.png') }}" alt="instaPol" class="img-fluid mx-1 align-baseline">
-                                                </span>
-                                                {{ __('frontend.home_page.makes_easy') }}
-                                            </h2>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row text-center justify-content-center mt-5">
-                            @foreach (__('frontend.home_page.points_easy') as $index => $point)
-                                <div class="col-4">
-                                    <x-description-with-numbering :number="$index" :title="$point['title']" :description="$point['description']" />
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
-                </section>
-                <section id="info">
-                    <div class="body-container p-5">
-                        @foreach (__('frontend.home_page.info') as $index => $info)
-                            <x-benefits :image-path='asset("images/info_{$index}.png")' :title="$info['title']" :description="$info['description']" />
-                        @endforeach
-                    </div>
-                </section>
+                <x-make-easy-section />
+                <x-instapol-features />
             </div>
         </div>
     </div>
