@@ -11,6 +11,7 @@ import '@popperjs/core';
 import $ from 'jquery';
 import * as moment from 'moment';
 import Swal from 'sweetalert2';
+import parsley from 'parsleyjs';
 
 
 window.bootstrap = bootstrap;

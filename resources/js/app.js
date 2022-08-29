@@ -2,6 +2,7 @@ require('./bootstrap');
 
 import Alpine from 'alpinejs';
 import AOS from 'aos';
+var Inputmask = require('inputmask');
 
 window.Alpine = Alpine;
 Alpine.start();
@@ -25,5 +26,9 @@ $(function() {
     $(document).on('scroll', function () {
         var nav = $('.navbar-fixed-top');
         nav.addClass('fixed-top', $(this).scrollTop() > nav.height());
+    });
+
+    $('input.uppercase').on('keyup change', function() {
+        $(this).val($(this).val().toUpperCase());
     });
 });

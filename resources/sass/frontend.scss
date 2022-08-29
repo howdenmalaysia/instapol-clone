@@ -106,6 +106,64 @@ body {
         background-size: cover;
     }
 
+    // Motor Pages
+    #motor {
+        padding: 0;
+
+        .header {
+            background-image: url(../images/motor-header.png);
+            min-height: 55vh;
+        }
+
+        .form-control {
+            background-color: #f6f5f5;
+            text-indent: 0.625rem;
+            border: 0;
+        }
+
+        #motor-details {
+            .icon-motor {
+                z-index: 3;
+                margin-top: -28px;
+            }
+
+            .vehicle-details {
+                z-index: 2;
+                background-position: center;
+                margin-top: -12px;
+                padding-bottom: 68px;
+
+                #vehicle-no {
+                    border-radius: 2rem;
+                    height: 3.4rem;
+                }
+            }
+        }
+
+        #extend-info-form {
+            margin-top: -85px;
+            margin-left: 20px;
+
+            #btn-clear {
+                font-size: 20px;
+                padding: 10px 20px;
+            }
+
+            #btn-continue {
+                border-radius: 2rem;
+                font-size: 20px;
+                padding: 10px 30px;
+            }
+        }
+
+        #partners {
+            .container-fluid {
+                padding: 20px 200px;
+                background-image: url(../images/bg-partner.png);
+            }
+        }
+    }
+
     // General
     #content-wrapper {
         .title {
@@ -143,7 +201,55 @@ body {
         border-top-right-radius: 1rem !important;
     }
 
+    .rounded-start {
+        border-top-left-radius: 1rem !important;
+        border-bottom-left-radius: 1rem !important;
+    }
+
     .negative-margin-5 {
         margin-top: -5rem;
+    }
+
+    .nm-10 {
+        margin-top: -10rem;
+    }
+
+    .white-glow {
+        -webkit-box-shadow: 0 0 20px #ccc;
+        box-shadow: 0 0 20px #ccc;
+    }
+
+    .parsley-errors-list {
+        color: $red;
+        list-style-type: none;
+        padding-left: 20px;
+    }
+
+    .loadingButton {
+        position: relative;
+        pointer-events: none;
+        
+        &:before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: inherit;
+            border-radius: 2rem !important;
+        }
+        
+        &:after {
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            content: "\F1CE";
+            font-size: 1.125rem;
+            position: absolute;
+            left: calc(50% - 0.5625rem);
+            -webkit-animation: fa-spin 2s linear infinite;
+            animation: fa-spin 2s linear infinite;
+            border-radius: 2rem !important;
+        }
     }
 }

@@ -15,7 +15,7 @@
                                 <div class="card ps-3 text-center shadow rounded">
                                     <div class="row">
                                         <div class="col d-flex align-items-center">
-                                            <x-product url="" :image-path="asset('images/icons/motor.png')" :alt="__('frontend.products.motor')" :name="__('frontend.products.motor')" />
+                                            <x-product url="{{ route('motor.index') }}" :image-path="asset('images/icons/motor.png')" :alt="__('frontend.products.motor')" :name="__('frontend.products.motor')" />
                                         </div>
                                         <div class="col d-flex align-items-center">
                                             <x-product url="{{ config('setting.redirects.motor_extended') }}" :image-path="asset('images/icons/extended-motor.png')" :alt="__('frontend.products.motor_extended')" :name="__('frontend.products.motor_extended')" />

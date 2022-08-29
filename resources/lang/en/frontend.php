@@ -497,6 +497,23 @@ return [
         'coming_soon' => 'Coming Soon',
         'how' => 'How',
     ],
+    'motor' => [
+        'get_quote' => 'Get Motor Insurance Quote',
+        'insure_motor' => 'Insure the Motor',
+        'car_insurance' => 'Car Insurance',
+        'meta_description' => 'Car Insurance Quotes in Seconds From Our Pre-selected Insurer / Takaful Operator',
+        'private_registered' => 'Private Car',
+        'company_registered' => 'Company Car',
+        'car_plate' => 'Plate Number',
+        'postcode' => 'Postcode',
+        'nric' => 'NRIC Number',
+        'phone' => 'Phone Number',
+        'email' => 'Email',
+        'company_resgistration' => 'Company Registration Number',
+        'partner' => 'Our Partner Insurers & Takaful Operators',
+        'coming_soon' => 'Coming Soon',
+        'confirm_your_car' => 'Confirm Your Car'
+    ],
     'products' => [
         'motor' => 'Motor Insurance',
         'motor_extended' => 'Car Extended Warranty',
@@ -505,5 +522,12 @@ return [
         'doc_pro' => 'Doctor\'s Professional Indemnity',
         'medical_cover' => 'Medical Cover',
         'houseowner' => 'Houseowner & Householder'
+    ],
+    'button' => [
+        'clear' => 'Clear',
+        'continue' => 'Continue',
+        'next' => 'Next',
+        'submit' => 'Submit',
+        'pay' => 'Pay Now'
     ]
 ];
