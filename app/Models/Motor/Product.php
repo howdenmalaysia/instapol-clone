@@ -11,7 +11,7 @@ class Product extends Model
 
     protected $fillable = [
         'product_type_id',
-        'companny_id',
+        'company_id',
         'name',
         'active',
     ];
@@ -21,7 +21,7 @@ class Product extends Model
         return $this->belongsTo(ProductType::class);
     }
 
-    public function company()
+    public function insurance_company()
     {
         return $this->belongsTo(Company::class);
     }
