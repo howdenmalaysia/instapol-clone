@@ -16,23 +16,23 @@ class ProductTypeSeeder extends Seeder
     {
         $product_types = [
             [
-                'name' => 'Travel',
+                'description' => 'Travel',
                 'commission' => 25.00
             ],
             [
-                'name' => 'Motor',
+                'description' => 'Motor',
                 'commission' => 10.00
             ],
             [
-                'name' => 'Enhanced Road Warrior',
+                'description' => 'Enhanced Road Warrior',
                 'commission' => 25.00
             ],
             [
-                'name' => 'Bike',
+                'description' => 'Bike',
                 'commission' => 0.00
             ],
             [
-                'name' => 'Covid-19',
+                'description' => 'Covid-19',
                 'commission' => 0.00
             ],
         ];

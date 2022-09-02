@@ -64,7 +64,7 @@ class InsuranceCompanySeeder extends Seeder
                 'active' => 1,
             ],
             [
-                'name' => 'P&O Insurance',
+                'name' => 'Pacific & Orient Insurance',
                 'logo' => 'pacificorient.png',
                 'sequence' => 9,
                 'active' => 1,
