@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateQuotationTable extends Migration
+class CreateQuotationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,9 @@ class CreateQuotationTable extends Migration
      */
     public function up()
     {
-        Schema::create('quotation', function (Blueprint $table) {
+        Schema::create('quotations', function (Blueprint $table) {
             $table->id();
+            
             $table->unsignedInteger('product_type')->references('id')->on('product_type');
             $table->string('email_address');
             $table->json('request_param');
