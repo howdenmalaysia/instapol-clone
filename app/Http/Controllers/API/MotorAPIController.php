@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\API;
 
-use MotorAPIInterface;
 use App\DataTransferObjects\Motor\APIData;
 use App\DataTransferObjects\Motor\FullQuoteResponse;
 use App\DataTransferObjects\Motor\QuoteResponse;
@@ -11,6 +10,7 @@ use App\DataTransferObjects\Motor\Response\SubmitCoverNoteResponse;
 use App\DataTransferObjects\Motor\VehicleVariantData;
 use App\Helpers\Insurer\PacificOrient;
 use App\Http\Controllers\Controller;
+use App\Interfaces\MotorAPIInterface;
 use App\Models\InsuranceAddress;
 use App\Models\InsurancePremium;
 use App\Models\InsuranceRemark;

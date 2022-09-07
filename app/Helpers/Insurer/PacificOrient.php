@@ -6,10 +6,10 @@ use App\DataTransferObjects\Motor\Response\PremiumResponse;
 use App\DataTransferObjects\Motor\Response\ResponseData;
 use App\DataTransferObjects\Motor\Response\VIXNCDResponse;
 use App\Helpers\HttpClient;
+use App\Interfaces\InsurerLibraryInterface;
 use App\Models\APILogs;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
-use InsurerLibraryInterface;
 use Illuminate\Support\Str;
 
 class PacificOrient implements InsurerLibraryInterface
