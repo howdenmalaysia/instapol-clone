@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Motor\Insurance;
 use Carbon\Carbon;
 
 if(!function_exists('formatDateFromIC')) {
@@ -54,5 +55,79 @@ if(!function_exists('formatIC')) {
         }
 
         return $ic_number;
+    }
+}
+
+if(!function_exists('toObject')) {
+    function toObject($data) {
+        return json_decode(json_encode($data));
+    }
+}
+
+if (!function_exists('formatNumber')) {
+    function formatNumber($number, $decimals = 2)
+    {
+        // convert to string
+        $number = str_replace(',', '', strval($number));
+
+        return round(floatval($number), $decimals);
+    }
+}
+
+if (!function_exists('generateExtraCoverSumInsured')) {
+    function generateExtraCoverSumInsured(int $min, int $max, int $incremment = 1000)
+    {
+        $values = [];
+
+        while ($min <= $max) {
+            array_push($values, $min);
+
+            $min = round($min + $incremment, ($incremment >= 1000 ? -3 : -2), PHP_ROUND_HALF_DOWN);
+        }
+
+        return $values;
+    }
+}
+
+if (!function_exists('generateInsuranceCode')) {
+    function generateInsuranceCode(string $abbreviation, string $company, string $insurance_id)
+    {
+        return $abbreviation . '/' . $company . '/' . $insurance_id;
+    }
+}
+
+if(!function_exists('getInsuranceStatus')) {
+    function getInsuranceStatus(int $status_id)
+    {
+        $status = '';
+
+        switch($status_id) {
+            case Insurance::STATUS_NEW_QUOTATION : {
+                $status = 'Pending';
+                break;
+            }
+            case Insurance::STATUS_POLICY_ISSUED: {
+                $status = 'Policy Issued';
+                break;
+            }
+            case Insurance::STATUS_POLICY_FAILURE: {
+                $status = 'Policy Failed';
+                break;
+            }
+            case Insurance::STATUS_CANCELLED: {
+                $status = 'Cancelled';
+                break;
+            }
+            case Insurance::STATUS_PAYMENT_ACCEPTED: {
+                $status = 'Payment Accepted';
+                break;
+            }
+            case Insurance::STATUS_PAYMENT_FAILURE: {
+                $status = 'Payment Failed';
+                break;
+            }
+        }
+
+        return $status;
     }
 }
