@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Interfaces;
+
 use App\DataTransferObjects\Motor\Response\PremiumResponse;
 use App\DataTransferObjects\Motor\Response\ResponseData;
 use App\DataTransferObjects\Motor\Response\VIXNCDResponse;
