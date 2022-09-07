@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateVehicleBodyTypesTable extends Migration
+class CreateInsuranceMotorDriversTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,16 @@ class CreateVehicleBodyTypesTable extends Migration
      */
     public function up()
     {
-        Schema::create('vehicle_body_types', function (Blueprint $table) {
+        Schema::create('insurance_motor_drivers', function (Blueprint $table) {
             $table->id();
 
+            $table->unsignedInteger('insurance_motor_id')->references('id')->on('insurance_motor');
             $table->string('name');
-            
+            $table->string('id_number');
+            $table->tinyInteger('relationship_id');
+
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -29,6 +33,6 @@ class CreateVehicleBodyTypesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('vehicle_body_type');
+        Schema::dropIfExists('insurance_motor_driver');
     }
 }

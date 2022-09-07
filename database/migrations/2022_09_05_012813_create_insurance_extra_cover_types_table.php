@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateVehicleBodyTypesTable extends Migration
+class CreateInsuranceExtraCoverTypesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,13 @@ class CreateVehicleBodyTypesTable extends Migration
      */
     public function up()
     {
-        Schema::create('vehicle_body_types', function (Blueprint $table) {
+        Schema::create('insurance_extra_cover_types', function (Blueprint $table) {
             $table->id();
 
+            $table->string('code');
             $table->string('name');
-            
+            $table->string('tooltip');
+
             $table->timestamps();
         });
     }
@@ -29,6 +31,6 @@ class CreateVehicleBodyTypesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('vehicle_body_type');
+        Schema::dropIfExists('insurance_extra_cover_type');
     }
 }

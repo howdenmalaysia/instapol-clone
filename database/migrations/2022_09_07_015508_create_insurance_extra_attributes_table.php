@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateVehicleBodyTypesTable extends Migration
+class CreateInsuranceExtraAttributesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,12 @@ class CreateVehicleBodyTypesTable extends Migration
      */
     public function up()
     {
-        Schema::create('vehicle_body_types', function (Blueprint $table) {
+        Schema::create('insurance_extra_attributes', function (Blueprint $table) {
             $table->id();
 
-            $table->string('name');
-            
+            $table->unsignedInteger('insurance_id')->references('id')->on('insurances');
+            $table->json('value');
+
             $table->timestamps();
         });
     }
@@ -29,6 +30,6 @@ class CreateVehicleBodyTypesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('vehicle_body_type');
+        Schema::dropIfExists('insurance_extra_attributes');
     }
 }
