@@ -497,7 +497,7 @@ class PacificOrient implements InsurerLibraryInterface
 
     public function getPremium(object $input) : ResponseData
     {
-        $path = 'IInsurance/PremiumRequest';
+        $path = 'poiapiv2/Insurance.svc';
         $token = $this->getToken();
 
         $data = [
@@ -538,7 +538,7 @@ class PacificOrient implements InsurerLibraryInterface
 
     public function issueCoverNote(object $input) : ResponseData
     {
-        $path = 'IInsurance/PolicySubmission';
+        $path = 'poiapiv2/Insurance.svc';
         $token = $this->getToken();
 
         $data = (object) [
