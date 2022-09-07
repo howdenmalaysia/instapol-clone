@@ -73,6 +73,14 @@ class MotorController extends Controller
 
         return redirect()->route('motor.vehicle-details');
     }
+
+    public function vehicleDetails(Request $request)
+    {
+        $this->checkMotorSessionObject($request);
+
+        $session = $request->session()->get('motor');
+    }
+
     private function quotation(object $motor)
     {
         $inception_date = null;

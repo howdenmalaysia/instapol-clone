@@ -6,19 +6,49 @@ use Spatie\DataTransferObject\DataTransferObject;
 
 class QuotationData extends DataTransferObject
 {
-    public string $product_type = '2';
-    public string $vehicle_postcode;
-    public string $vehicle_no;
-    public string $id_type;
-    public string $id_no;
-    public string $email_address;
-    public string $name;
-    public string $phone_number;
-    public string $postcode;
-    public string $checkbox_confirm = 'on';
-    public string $terms_of_service_approved = 'on';
-    public ?string $h_company_id;
-    public ?string $h_product_id;
-    public VehicleData $h_vehicle;
-    public VehicleData $h_vehicle_list;
+    
+    /** @var string */
+    public $product_type = '2';
+    
+    /** @var string */
+    public $vehicle_postcode;
+    
+    /** @var string */
+    public $vehicle_no;
+    
+    /** @var string */
+    public $id_type;
+    
+    /** @var string */
+    public $id_no;
+    
+    /** @var string */
+    public $email_address;
+    
+    /** @var string */
+    public $name;
+    
+    /** @var string */
+    public $phone_number;
+    
+    /** @var string */
+    public $postcode;
+    
+    /** @var string */
+    public $checkbox_confirm = 'on';
+    
+    /** @var string */
+    public $terms_of_service_approved = 'on';
+    
+    /** @var string|null */
+    public $h_company_id;
+    
+    /** @var string|null */
+    public $h_product_id;
+    
+    /** @var VehicleData */
+    public $h_vehicle;
+    
+    /** @var VehicleData */
+    public $h_vehicle_list;
 }
