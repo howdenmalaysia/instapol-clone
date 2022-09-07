@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -17,5 +18,10 @@ class Controller extends BaseController
         if(empty($request->session()->get('motor')) && $request->url() !== route('motor.index')) {
             return redirect()->route('motor.index');
         }
+    }
+
+    public function abort($message = 'An error encountered.', int $code = 500, array $headers = [])
+    {
+        return response($message, $code, $headers);
     }
 }
