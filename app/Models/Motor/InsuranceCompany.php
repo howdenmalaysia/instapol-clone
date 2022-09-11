@@ -2,6 +2,7 @@
 
 namespace App\Models\Motor;
 
+use App\Scopes\Motor\ActiveScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -15,6 +16,11 @@ class InsuranceCompany extends Model
         'sequence',
         'active',
     ];
+
+    public function __construct()
+    {
+        static::addGlobalScope(new ActiveScope);
+    }
 
     public function product()
     {
