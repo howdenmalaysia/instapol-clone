@@ -66,7 +66,7 @@ class InsuranceCompanySeeder extends Seeder
             ],
             [
                 'name' => 'Tune Protect',
-                'logo' => 'tune.png',
+                'logo' => 'tuneprotect.png',
                 'sequence' => 8,
                 'active' => 1,
                 'coming_soon' => 0,
@@ -111,14 +111,14 @@ class InsuranceCompanySeeder extends Seeder
                 'logo' => 'tokiomania.png',
                 'sequence' => 14,
                 'active' => 1,
-                'coming_soon' => 0,
+                'coming_soon' => 1,
             ],
             [
                 'name' => 'MPIG',
                 'logo' => 'mpig.png',
                 'sequence' => 15,
                 'active' => 1,
-                'coming_soon' => 0,
+                'coming_soon' => 1,
             ]
         ];
 
