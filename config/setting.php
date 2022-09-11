@@ -18,7 +18,7 @@ return [
     ],
     'id_type' => [
         'nric_no' => 1,
-        'company_registration_no' => 2
+        'company_registration_no' => 4
     ],
     'response_codes' => [
         'unsupported_id_types' => 480,
