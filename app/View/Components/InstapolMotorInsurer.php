@@ -6,14 +6,15 @@ use Illuminate\View\Component;
 
 class InstapolMotorInsurer extends Component
 {
+    public $insurers;
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($insurers)
     {
-        //
+        $this->insurers = $insurers;
     }
 
     /**

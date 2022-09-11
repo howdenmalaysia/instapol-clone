@@ -205,7 +205,7 @@
                                     <h3 class="text-uppercase text-white fw-bold py-3">{{ __('frontend.motor.partner') }}</h3>
                                 </div>
                             </div>
-                            <x-instapol-motor-insurer />
+                            <x-instapol-motor-insurer :insurers="$insurers" />
                         </div>
                     </section>
                     <x-instapol-features />
