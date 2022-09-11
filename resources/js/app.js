@@ -25,7 +25,14 @@ window.formatMoney = function (number) {
 $(function() {
     $(document).on('scroll', function () {
         var nav = $('.navbar-fixed-top');
-        nav.addClass('fixed-top', $(this).scrollTop() > nav.height());
+
+        if($(this).scrollTop() > nav.height()) {
+            nav.addClass('fixed-top');
+        } else {
+            if(nav.hasClass('fixed-top')) {
+                nav.removeClass('fixed-top');
+            }
+        }
     });
 
     $('input.uppercase').on('keyup change', function() {
