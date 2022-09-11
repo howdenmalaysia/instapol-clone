@@ -6,10 +6,19 @@
 
 @section('content')
     <section id="motor">
-        <div class="container-fluid p-0">
+        <div class="container-fluid">
             <div class="row">
-                <div class="col-12">
-                    <div class="header"></div>
+                <div class="col-12 p-0">
+                    <div class="header">
+                        <div class="container">
+                            <div class="row text-center">
+                                <div class="col-12 col-lg-7 tag-line">
+                                    <h1 class="title text-uppercase text-white aos-init" data-aos="fade-right" data-aos-duration="1000">{{ __('frontend.motor.compare_and_buy') }}</h1>
+                                    <p class="text-white aos-init" data-aos="fade-right" data-aos-duration="2000">{{ __('frontend.motor.compare_desc') }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="row">
@@ -75,7 +84,7 @@
                                 </div>
                             </div>
                         </section>
-                        <section id="owner-loacation-details" class="mb-3">
+                        <section id="owner-loacation-details" class="mb-3 programmatically-hidden">
                             <div class="container d-flex justify-content-center rounded">
                                 <div id="extend-info-form" class="col-10 col-lg-9 rounded white-glow pl-4">
                                     <div class="card-body b-form">
@@ -192,7 +201,7 @@
                     <section id="partners">
                         <div class="container-fluid text-center">
                             <div class="row">
-                                <div class="col-12">
+                                <div class="col-12 p-0">
                                     <h3 class="text-uppercase text-white fw-bold py-3">{{ __('frontend.motor.partner') }}</h3>
                                 </div>
                             </div>
