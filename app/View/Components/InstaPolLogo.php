@@ -15,7 +15,7 @@ class instaPolLogo extends Component
      *
      * @return void
      */
-    public function __construct(int $width = null, bool $navy = false)
+    public function __construct($width = null, bool $navy = false)
     {
         $this->width = $width;
         $this->navy = $navy;

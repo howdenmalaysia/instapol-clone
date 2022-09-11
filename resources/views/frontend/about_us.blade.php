@@ -8,7 +8,7 @@
             <x-slot name="title">
                 <div class="text-center text-uppercase text-white fw-bold about-title">
                     {{ __('frontend.about_page.about') }}
-                    <x-instapol-logo />
+                    <x-instapol-logo width="auto" />
                 </div>
             </x-slot>
     
