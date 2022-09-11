@@ -42,6 +42,6 @@ class CreateInsuranceHoldersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('insurance_policy_holder');
+        Schema::dropIfExists('insurance_policy_holders');
     }
 }

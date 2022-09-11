@@ -32,6 +32,6 @@ class CreatePostcodesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('postcode');
+        Schema::dropIfExists('postcodes');
     }
 }

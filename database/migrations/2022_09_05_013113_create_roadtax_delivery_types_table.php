@@ -31,6 +31,6 @@ class CreateRoadtaxDeliveryTypesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('roadtax_delivery_type');
+        Schema::dropIfExists('roadtax_delivery_types');
     }
 }

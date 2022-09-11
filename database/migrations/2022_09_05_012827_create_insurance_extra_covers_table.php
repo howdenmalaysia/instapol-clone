@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateInsuranceMotorExtraCoverTable extends Migration
+class CreateInsuranceMotorExtraCoversTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateInsuranceMotorExtraCoverTable extends Migration
      */
     public function up()
     {
-        Schema::create('insurance_extra_cover', function (Blueprint $table) {
+        Schema::create('insurance_extra_covers', function (Blueprint $table) {
             $table->id();
 
             $table->unsignedInteger('insurance_id')->references('id')->on('insurance');
@@ -35,6 +35,6 @@ class CreateInsuranceMotorExtraCoverTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('insurance_motor_extra_cover');
+        Schema::dropIfExists('insurance_motor_extra_covers');
     }
 }

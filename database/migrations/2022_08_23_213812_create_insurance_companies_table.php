@@ -32,6 +32,6 @@ class CreateInsuranceCompaniesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('company');
+        Schema::dropIfExists('insurance_companies');
     }
 }

@@ -31,6 +31,6 @@ class CreateInsuranceExtraCoverTypesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('insurance_extra_cover_type');
+        Schema::dropIfExists('insurance_extra_cover_types');
     }
 }

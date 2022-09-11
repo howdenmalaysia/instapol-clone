@@ -33,6 +33,6 @@ class CreateInsuranceMotorDriversTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('insurance_motor_driver');
+        Schema::dropIfExists('insurance_motor_drivers');
     }
 }

@@ -35,6 +35,6 @@ class CreateQuotationsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('quotation');
+        Schema::dropIfExists('quotations');
     }
 }

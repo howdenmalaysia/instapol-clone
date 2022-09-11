@@ -40,6 +40,6 @@ class CreateInsurancesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('insurance');
+        Schema::dropIfExists('insurances');
     }
 }
