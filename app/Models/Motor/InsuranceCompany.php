@@ -12,6 +12,7 @@ class InsuranceCompany extends Model
     protected $fillable = [
         'name',
         'logo',
+        'sequence',
         'active',
     ];
 
