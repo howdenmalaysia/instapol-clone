@@ -25,7 +25,9 @@ class CustomerTypeSeeder extends Seeder
         ];
 
         foreach($types as $type) {
-            CustomerType::updateOrCreate($type);
+            CustomerType::updateOrCreate([
+                'description' => $type
+            ]);
         }
     }
 }

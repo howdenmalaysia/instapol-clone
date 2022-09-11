@@ -114,7 +114,10 @@ class ProductSeeder extends Seeder
         ];
 
         foreach ($products as $product) {
-            Product::updateOrCreate($product);
+            Product::updateOrCreate([
+                'company_id' => $product['company_id'],
+                'name' => $product['name']
+            ], $product);
         }
     }
 }

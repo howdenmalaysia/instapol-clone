@@ -22,7 +22,9 @@ class IDTypeSeeder extends Seeder
         ];
 
         foreach($types as $type) {
-            IDType::updateOrCreate($type);
+            IDType::updateOrCreate([
+                'description' => $type
+            ]);
         }
     }
 }

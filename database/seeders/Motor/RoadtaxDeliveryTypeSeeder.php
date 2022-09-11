@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Seeders;
+namespace Database\Seeders\Motor;
 
 use App\Models\Motor\RoadtaxDeliveryType;
 use Illuminate\Database\Seeder;
