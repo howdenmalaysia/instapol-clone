@@ -9,6 +9,8 @@ class IDType extends Model
 {
     use HasFactory;
 
+    protected $table = 'id_types';
+
     protected $fillable = [
         'description'
     ];
