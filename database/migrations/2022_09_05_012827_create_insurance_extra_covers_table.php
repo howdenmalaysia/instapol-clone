@@ -35,6 +35,6 @@ class CreateInsuranceMotorExtraCoversTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('insurance_motor_extra_covers');
+        Schema::dropIfExists('insurance_extra_covers');
     }
 }
