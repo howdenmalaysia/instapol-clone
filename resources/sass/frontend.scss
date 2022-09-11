@@ -6,7 +6,7 @@ body {
 
     .navbar-fixed-top {
         z-index: 1066;
-        padding-top: 0.2rem;
+        padding-top: .2rem;
         box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .5);
 
         .nav-item, .nav-link {
@@ -124,7 +124,7 @@ body {
 
         .form-control {
             background-color: #f6f5f5;
-            text-indent: 0.625rem;
+            text-indent: .625rem;
             border: 0;
         }
 
@@ -253,7 +253,7 @@ body {
             content: "\F1CE";
             font-size: 1.125rem;
             position: absolute;
-            left: calc(50% - 0.5625rem);
+            left: calc(50% - .5625rem);
             -webkit-animation: fa-spin 2s linear infinite;
             animation: fa-spin 2s linear infinite;
             border-radius: 2rem !important;
