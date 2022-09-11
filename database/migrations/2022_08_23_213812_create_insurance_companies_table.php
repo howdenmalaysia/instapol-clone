@@ -19,7 +19,8 @@ class CreateInsuranceCompaniesTable extends Migration
             $table->string('name');
             $table->string('logo');
             $table->unsignedInteger('sequence');
-            $table->tinyInteger('active');
+            $table->tinyInteger('active')->default(false);
+            $table->tinyInteger('coming_soon')->default(true);
 
             $table->timestamps();
         });
