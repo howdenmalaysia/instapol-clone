@@ -57,7 +57,7 @@ class APIData extends DataTransferObject
     /** @var string|null */
     public $nvic;
     
-    /** @var \App\DataTransferObjects\Motor\VehicleData */
+    /** @var \App\DataTransferObjects\Motor\VehicleData|null */
     public $vehicle;
     
     /** @var object|null */
