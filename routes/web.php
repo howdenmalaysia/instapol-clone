@@ -45,8 +45,17 @@ Route::middleware(['web'])->group(function() {
             'middleware' => ['web']
         ], function () {
             Route::get('/', [MotorController::class, 'index'])->name('motor.index');
-            Route::post('/', [MotorController::class, 'index_POST'])->name('motor.index-post');
-            Route::post('/vehicle-details', [MotorController::class, 'vehicleDetails'])->name('motor.vehicle-details');
+            Route::post('/', [MotorController::class, 'index_POST']);
+            Route::get('/vehicle-details', [MotorController::class, 'vehicleDetails'])->name('motor.vehicle-details');
+            Route::post('/vehicle-details', [MotorController::class, 'vehicleDetails_POST']);
+            Route::get('/compare', [MotorController::class, 'compare'])->name('motor.compare');
+            Route::post('/compare', [MotorController::class, 'compare_POST']);
+            Route::get('/add-ons', [MotorController::class, 'addOns'])->name('motor.add-ons');
+            Route::post('/add-ons', [MotorController::class, 'addOns_POST']);
+            Route::get('/policy-holder', [MotorController::class, 'policyHolder'])->name('motor.policy-holder');
+            Route::post('/policy-holder', [MotorController::class, 'policyHolder_POST']);
+            Route::get('/payment/summary', [MotorController::class, 'paymentSummary'])->name('motor.payment-summary');
+            Route::post('/payment/summary', [MotorController::class, 'paymentSummary_POST']);
         }
     );
 });
