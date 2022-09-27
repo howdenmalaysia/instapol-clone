@@ -498,6 +498,9 @@ return [
         'how' => 'How',
     ],
     'motor' => [
+        'compare' => 'Compare',
+        'compare_and_buy' => 'Compare & Buy Car Insurance With One Click',
+        'compare_desc' => 'Car Insurance Quotes in Seconds from Our Pre-Selected Insurer/Takaful Operators',
         'get_quote' => 'Get Motor Insurance Quote',
         'insure_motor' => 'Insure the Motor',
         'car_insurance' => 'Car Insurance',
@@ -512,7 +515,40 @@ return [
         'company_resgistration' => 'Company Registration Number',
         'partner' => 'Our Partner Insurers & Takaful Operators',
         'coming_soon' => 'Coming Soon',
-        'confirm_your_car' => 'Confirm Your Car'
+        'confirm_your_car' => 'Confirm Your Car',
+        'steps' => [
+            'confirm_your_car' => 'Confirm Your Car',
+            'compare_quote' => 'Compare Quote',
+            'add_on' => 'Add On',
+            'personal_details' => 'Enter Personal Detail',
+            'buy' => 'Buy'
+        ],
+        'vehicle_details' => [
+            'want_best_quote' => 'You want the best quotes for:',
+            'insurance_information' => 'Your insurance information',
+            'car_number' => 'Car Number',
+            'make' => 'Car Make',
+            'model' => 'Car Model',
+            'engine_capacity' => 'Engine CC',
+            'year' => 'Car Year',
+            'variant' => 'Variant',
+            'ncd' => 'No Claim Discount (NCD)',
+            'coverage' => 'Coverage',
+            'next_coverage_period' => 'Next Coverage Period',
+            'my_vehicle_information' => 'Yes! This is my vehicle information',
+            'need_assistance' => 'I need assistance'
+        ],
+        'compare_page' => [
+            'scroll_down' => 'Scroll down for our highlights of the policies on offer.',
+            'click_compare' => 'Click "Compare" to see full policy features side by side.',
+            'tell_us_more' => 'Tell us more info and we will get you a better price',
+            'basic_info' => 'Basic Info',
+            'driver_info' => 'Driver Info',
+            'gender' => 'Gender',
+            'marital_status' => 'Marital Status',
+            'male' => 'Male',
+            'female' => 'Female',
+        ],
     ],
     'products' => [
         'motor' => 'Motor Insurance',
@@ -528,6 +564,13 @@ return [
         'continue' => 'Continue',
         'next' => 'Next',
         'submit' => 'Submit',
-        'pay' => 'Pay Now'
+        'pay' => 'Pay Now',
+        'back' => 'Back',
+        'update' => 'Update',
+        'buy' => 'Buy Now',
+        'compare' => 'Compare',
+    ],
+    'modal' => [
+        'appreciate_your_patience' => 'We appreciate your patience!',
     ]
 ];

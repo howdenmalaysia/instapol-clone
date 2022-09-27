@@ -23,7 +23,7 @@
             </div>
             <div class="row">
                 <div class="col-12">
-                    <form action="{{ route('motor.index-post') }}" method="POST" id="motor-details-form" data-parsley-validate>
+                    <form action="{{ route('motor.index') }}" method="POST" id="motor-details-form" data-parsley-validate>
                         @csrf
                         <section id="motor-details" class="mb-4 nm-10">
                             <div class="container">
@@ -40,10 +40,10 @@
                                                 <div class="row">
                                                     <div class="col-12 text-center">
                                                         <div class="btn-group" role="group">
-                                                            <input type="radio" id="id-type-1" class="btn-check" name="id_type" value="1" checked>
+                                                            <input type="radio" id="id-type-1" class="btn-check" name="id_type" value="1" {{ optional(optional($motor)->policy_holder)->id_type === 1 ? 'checked' : 'checked' }}>
                                                             <label id="private-reg" class="btn btn-primary text-white rounded-start border active text-uppercase" for="id-type-1">{{ __('frontend.motor.private_registered') }}</label>
                     
-                                                            <input type="radio" id="id-type-2" class="btn-check" name="id_type" value="2">
+                                                            <input type="radio" id="id-type-2" class="btn-check" name="id_type" value="2" {{ optional(optional($motor)->policy_holder)->id_type === 2 ? 'checked' : '' }}>
                                                             <label id="company-reg" class="btn btn-light rounded-end text-uppercase" for="id-type-2">{{ __('frontend.motor.company_registered') }}</label>
                                                         </div>
                                                     </div>
@@ -64,6 +64,7 @@
                                                             minlength="2"
                                                             maxlength="15"
                                                             pattern="[a-zA-Z0-9]+"
+                                                            value="{{ old('vehicle_number', $motor->vehicle_number ?? '') }}"
                                                             required
                                                             data-parsley-required-message="Please enter your vehicle number"
                                                             data-parsley-pattern-message="Please enter a valid vehicle number"
@@ -79,6 +80,11 @@
                                                     <div class="col-1"></div>
                                                 </div>
                                             </div>
+                                            @if ($errors->any())
+                                                @foreach ($errors->all() as $error)
+                                                    <div class="text-center text-danger">{{ $error }}</div>
+                                                @endforeach
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
@@ -103,6 +109,7 @@
                                                     pattern="\d{5}"
                                                     placeholder="Vehicle Postcode eg: 52100"
                                                     maxlength="5"
+                                                    value="{{ old('postcode', $motor->postcode ?? '') }}"
                                                     required
                                                     data-parsley-type="number"
                                                     data-parsley-required-message="Please enter your postcode"
@@ -123,8 +130,9 @@
                                                     type="text"
                                                     placeholder="870312-12-1234"
                                                     autocomplete="off"
-                                                    name="ic_number"
+                                                    name="id_number"
                                                     minlength="12"
+                                                    value="{{ old('id_number', $motor->policy_holder->id_number ?? '') }}"
                                                     pattern="\d{2}([0][1-9]|[1][0-2])([0][1-9]|[1-2][0-9]|[3][0-1])-\d{2}-\d{4}"
                                                     data-parsley-required-message="Please enter your ID number"
                                                     data-parsley-pattern-message="Please enter a valid ID number"
@@ -147,11 +155,12 @@
                                                     autocorrect="off"
                                                     spellcheck="off"
                                                     name="phone_number"
+                                                    value="{{ old('phone_number', $motor->policy_holder->phone_number ?? '') }}"
                                                     placeholder="eg: 0122228888"
-                                                    required
                                                     pattern="(0?1)[0-46-9][0-9]{7,8}"
                                                     minlength="9"
                                                     maxlength="11"
+                                                    required
                                                     data-parsley-type="number"
                                                     data-parsley-required-message="Please enter your contact number"
                                                     data-parsley-pattern-message="Please enter a valid contact number"
@@ -173,6 +182,7 @@
                                                     autocorrect="off"
                                                     spellcheck="off"
                                                     name="email"
+                                                    value="{{ old('email', $motor->policy_holder->email) }}"
                                                     placeholder="E-Mail Address"
                                                     required
                                                     data-parsley-type="email"
@@ -189,7 +199,6 @@
                                                 <button type="button" class="h4 bg-primary d-inline-block text-white border-0 text-center text-uppercase fw-bold" id="btn-continue">{{ __('frontend.button.continue') }}</button>
                                             </div>
                                         </div>
-                                      
                                     </div>
                                 </div>
                             </div>
@@ -218,7 +227,6 @@
 @push('after-scripts')
 <script>
     $(function() {
-        $('#owner-loacation-details').hide();
         new Inputmask({mask: '999999-99-9999'}).mask('#id-number');
 
         $('#vehicle-no-continue').on('click', function() {
@@ -250,9 +258,10 @@
         $('#btn-continue').on('click', function() {
             let form = $('#motor-details-form');
 
-            if(form.parsley().isValid()) {
+            if(form.parsley().validate()) {
                 $('input[name=id_type]').val($('input[name=id_type]:checked').val());
                 $(this).addClass('loadingButton');
+
                 form.submit();
             } else {
                 console.log(form.parsley())
