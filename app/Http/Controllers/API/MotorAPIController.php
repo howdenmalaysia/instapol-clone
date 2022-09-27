@@ -42,7 +42,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
     public function getVehicleDetails(Request $request) : VehicleVariantData
     {
         // Create a Log Record
-        Log::info("[API/GetVehicleDetails] Received Request: {json_encode($request->all())}");
+        Log::info("[API/GetVehicleDetails] Received Request: " . json_encode($request->all()));
 
         // Get State Details with Postcode
         $postcode = $this->getPostcodeDetails($request->postcode);
@@ -62,7 +62,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             $insurer = $this->getInsurerClass($request->insurance_company->id);
             $result = $insurer->vehicleDetails($data);
         } catch(Exception $ex) {
-            Log::error("[GetVehicleDetails] An error occurred. {$ex->getMessage()}");
+            Log::error("[API/GetVehicleDetails] An error occurred. {$ex->getMessage()}");
         }
 
         if(!$result->status) {
