@@ -41,13 +41,13 @@ class VehicleData extends DataTransferObject
     public $chassisNo;
     
     /** @var float */
-    public $marketValue;
+    public $marketValue = 0.00;
     
     /** @var float */
-    public $purchasePrice;
+    public $purchasePrice = 0.00;
     
     /** @var string */
-    public $style;
+    public $style = '';
     
     /** @var string */
     public $nvic;
@@ -80,14 +80,14 @@ class VehicleData extends DataTransferObject
     public $polExpDate;
     
     /** @var string */
-    public $assembly_type_code;
+    public $assembly_type_code = '';
     
     /** @var float */
-    public $min_market_value;
+    public $min_market_value = 0.00;
     
     /** @var float */
-    public $max_market_value;
+    public $max_market_value = 0.00;
     
     /** @var string */
-    public $ncdcode;
+    public $ncdcode = '';
 }
