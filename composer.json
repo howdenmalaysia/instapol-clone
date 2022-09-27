@@ -16,6 +16,7 @@
         "guzzlehttp/guzzle": "^6.5.8",
         "laravel/framework": "^8.0",
         "laravel/jetstream": "^2.9",
+        "laravel/sanctum": "^2.15",
         "laravel/tinker": "^2.0",
         "livewire/livewire": "^2.5",
         "maatwebsite/excel": "^3.1",
