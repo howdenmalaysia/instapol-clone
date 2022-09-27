@@ -19,7 +19,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::prefix('/motor')->middleware('auth:sanctum')->group(function() {
+Route::prefix('/motor')->group(function() {
     Route::post('/vehicle-details', [MotorAPIController::class, 'getVehicleDetails'])->name('motor.api.vehicle-details');
     Route::post('/quote/{quote_type?}', [MotorAPIController::class, 'getQuote'])->name('motor.api.quote');
     Route::post('/create-quotation', [MotorAPIController::class, 'createQuotation'])->name('motor.api.create-quotation');
