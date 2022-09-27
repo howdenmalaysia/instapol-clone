@@ -12,7 +12,7 @@ class Quotation extends Model
     protected $fillable = [
         'product_type',
         'email_address',
-        'requst_param',
+        'request_param',
         'referrer',
         'remarks',
         'active',
