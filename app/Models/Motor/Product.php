@@ -29,6 +29,6 @@ class Product extends Model
 
     public function insurance_company()
     {
-        return $this->belongsTo(Company::class);
+        return $this->belongsTo(InsuranceCompany::class, 'company_id', 'id');
     }
 }
