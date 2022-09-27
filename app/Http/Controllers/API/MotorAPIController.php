@@ -521,11 +521,11 @@ class MotorAPIController extends Controller implements MotorAPIInterface
         }
     }
 
-    private function getPostcodeDetails(int $postcode) : Collection
+    private function getPostcodeDetails(int $postcode) : Postcode
     {
         return Postcode::with('state')
         ->where('postcode', $postcode)
-        ->get();
+        ->first();
     }
 
     private function getProduct(int $product_id) : Product
