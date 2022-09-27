@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Insurance;
 use App\DataTransferObjects\Motor\QuotationData;
 use App\DataTransferObjects\Motor\VehicleData;
 use App\Http\Controllers\Controller;
+use App\Models\Motor\InsuranceCompany;
+use App\Models\Motor\Product;
 use App\Models\Motor\Quotation;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -13,9 +15,13 @@ use Illuminate\Validation\Rule;
 
 class MotorController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return view('frontend.motor.index');
+        $insurers = InsuranceCompany::orderBy('sequence')
+            ->get();
+        
+        $motor = $request->session()->get('motor', []);        
+        return view('frontend.motor.index')->with(['insurers' => $insurers, 'motor' => $motor]);
     }
 
     public function index_POST(Request $request)
@@ -24,43 +30,43 @@ class MotorController extends Controller
             'id_type' => ['required', 'numeric', Rule::in([1, 2])],
             'vehicle_number' => 'required|string',
             'postcode' => 'required|numeric',
-            'ic_number' => 'required|string',
+            'id_number' => 'required|string',
             'phone_number' => 'required|numeric',
             'email' => 'required|email:rfc,dns'
         ]);
 
         if ($validator->fails()) {
-            return view('frontend.motor.index')->withErrors($validator->errors());
+            return redirect()->route('motor.index')->withErrors($validator->errors());
         }
 
         // Extract User Data
         $gender = $marital_status = '';
         $driving_experience = 0;
 
-        switch ($request->input('id_type')) {
+        switch ($request->id_type) {
             case 1: {
-                    $gender = getGenderFromIC($request->input('ic_number'));
-                    $driving_experience = getAgeFromIC($request->input('ic_number')) - 18;
+                $gender = getGenderFromIC($request->id_number);
+                $driving_experience = getAgeFromIC($request->id_number) - 18;
 
-                    break;
-                }
+                break;
+            }
             case 2: {
-                    $gender = $marital_status = 'O';
+                $gender = $marital_status = 'O';
 
-                    break;
-                }
+                break;
+            }
         }
 
         $session = (object) [
             'referrer' => $request->cookie('referrer'),
-            'vehicle_number' => $request->input('vehicle_number'),
-            'postcode' => $request->input('postcode'),
-            'policy_holder' => [
-                'id_type' => $request->input('id_type'),
-                'ic_number' => $request->input('ic_number'),
-                'email' => $request->input('email'),
-                'phone_number' => $request->input('phone_number'),
-                'date_of_birth' => formatDateFromIC($request->input('ic_number')),
+            'vehicle_number' => $request->vehicle_number,
+            'postcode' => $request->postcode,
+            'policy_holder' => (object) [
+                'id_type' => $request->id_type,
+                'id_number' => $request->id_number,
+                'email' => $request->email,
+                'phone_number' => $request->phone_number,
+                'date_of_birth' => formatDateFromIC($request->id_number),
                 'gender' => $gender,
                 'marital_status' => $marital_status,
                 'driving_experience' => $driving_experience,
@@ -79,6 +85,23 @@ class MotorController extends Controller
         $this->checkMotorSessionObject($request);
 
         $session = $request->session()->get('motor');
+
+        $products = Product::with('insurance_company')->get();
+        $product_ids = $insurer_ids = [];
+        foreach($products as $product) {
+            array_push($product_ids, $product->id);
+            array_push($insurer_ids, $product->insurance_company->id);
+        }
+
+        return view('frontend.motor.vehicle_details')->with([
+            'product_ids' => $product_ids,
+            'insurer_ids' => $insurer_ids
+        ]);
+    }
+
+    public function vehicleDetails_POST(Request $request)
+    {
+        // return redirect()->route();
     }
 
     private function quotation(object $motor)
@@ -100,9 +123,6 @@ class MotorController extends Controller
             'yearMake' => $motor->vehicle->manufacture_year ?? '',
             'engineNo' => $motor->vehicle->engine_number ?? $motor->vehicle->extra_attribute->engine_number ?? '',
             'chassisNo' => $motor->vehicle->chassis_number ?? $motor->vehicle->extra_attribute->chassis_number ?? '',
-            'marketValue' => 0.00,
-            'purchasePrice' => 0.00,
-            'style' => '',
             'nvic' => $motor->vehicle->nvic ?? $motor->variants[0]->nvic ?? '',
             'variant' => $motor->vehicle->variant ?? $motor->variants[0]->variant ?? '',
             'seatingCapacity' => $motor->vehicle->extra_attribute->seating_capacity ?? '',
@@ -113,33 +133,26 @@ class MotorController extends Controller
             'nextNCD' => $motor->vehicle->ncd_percentage ?? '',
             'nextNcdEffDate' => $motor->vehicle->inception_date ?? '',
             'polExpDate' => !empty($inception_date) ? $inception_date->subDay()->format('Y-m-d') : '',
-            'assembly_type_code' => '',
-            'min_market_value' => 0.00,
-            'max_market_value' => 0.00,
-            'ncdcode' => '',
         ]);
 
         $quote = new QuotationData([
             'vehicle_postcode' => $motor->postcode ?? '',
             'vehicle_no' => $motor->vehicle_number ?? '',
             'id_type' => $motor->policy_holder->id_type ?? '',
-            'id_no' => formatIC($motor->policy_holder->ic_number ?? ''),
+            'id_no' => formatIC($motor->policy_holder->id_number ?? ''),
             'email_address' => $motor->policy_holder->email ?? '',
             'name' => $motor->policy_holder->name ?? '',
             'phone_number' => $motor->policy_holder->phone_number ?? '',
             'postcode' => $motor->postcode ?? '',
-            'h_vehicle' => json_encode($vehicle),
-            'h_vehicle_list' => json_encode($vehicle),
+            'h_vehicle' => $vehicle,
+            'h_vehicle_list' => $vehicle,
         ]);
         
-        $response = Quotation::updateOrCreate([
-            'id' => $motor->quotation_id ?? null
-        ], [
+        $response = Quotation::create([
             'product_type' => $quote->product_type,
             'email_address' => $quote->email_address,
             'request_param' => json_encode($quote),
             'referrer' => $motor->referrer,
-            'remarks' => '',
             'active' => 1,
             'compare_page' => 0
         ]);
