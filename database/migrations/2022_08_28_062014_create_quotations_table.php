@@ -19,9 +19,9 @@ class CreateQuotationsTable extends Migration
             $table->unsignedInteger('product_type')->references('id')->on('product_type');
             $table->string('email_address');
             $table->json('request_param');
-            $table->string('referrer');
-            $table->string('remarks');
-            $table->tinyInteger('active');
+            $table->string('referrer')->nullable();
+            $table->string('remarks')->nullable();
+            $table->tinyInteger('active')->default(true);
             $table->tinyInteger('compare_page');
 
             $table->timestamps();
