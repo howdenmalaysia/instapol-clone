@@ -33,8 +33,7 @@ window.instapol = window.axios.create({
     baseURL: process.env.MIX_HOWDEN_API_DOMAIN,
     timeout: 60000,
     headers: {
-        'Accept': 'application/json',
-        'Authorization': 'Bearer ' + document.querySelector('meta[name=access-token]').content,
+        'Accept': 'application/json'
     }
 });
 
