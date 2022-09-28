@@ -36,6 +36,31 @@ window.swalLoading = function () {
     });
 }
 
+window.swalAlert = function (message, icon = 'error', callback = null, showDenyButton = false) {
+    var title = '';
+    switch(icon) {
+        case 'success': {
+            title = 'Yay!';
+            break;
+        }
+        case 'warning': {
+            title = 'Hmm...';
+            break;
+        }
+        case 'error': {
+            title = 'Oops...';
+            break;
+        }
+    }
+
+    Swal.fire({
+        title: title,
+        icon: icon,
+        text: message,
+        showDenyButton: showDenyButton,
+    }).then(callback);
+}
+
 window.swalHide = function () {
     Swal.close();
 }
