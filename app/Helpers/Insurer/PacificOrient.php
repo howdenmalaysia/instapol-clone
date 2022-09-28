@@ -609,8 +609,8 @@ class PacificOrient implements InsurerLibraryInterface
         $request_options = [
             'timeout' => 60,
             'headers' => [
-                'Content-Type' => 'application/xml',
-                'Accept' => 'text/xml',
+                'Content-Type' => 'text/xml; charset=utf-8',
+                'Accept' => 'text/xml; charset=utf-8',
                 'SOAPAction' => self::SOAP_ACTION_DOMAIN . $path
             ],
             'body' => $xml
