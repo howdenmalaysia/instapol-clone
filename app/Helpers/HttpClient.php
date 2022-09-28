@@ -43,7 +43,7 @@ class HttpClient
         $promise = $client->requestAsync($method, $url, $options);
         $promise->then(
             function($res) use (&$status, &$response, &$response_header) {
-                if($res->getStatusCode() === '200') {
+                if($res->getStatusCode() == '200') {
                     $status = true;
                     $response = (string) $res->getBody();
                 } else {
