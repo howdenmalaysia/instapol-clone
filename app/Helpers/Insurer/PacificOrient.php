@@ -51,9 +51,9 @@ class PacificOrient implements InsurerLibraryInterface
 
     public function vehicleDetails(object $input) : VIXNCDResponse
     {
-        $data = [
-            'token' => $token,
-            'id_number' => $id_number,
+        $data = (object) [
+            'token' => $this->token,
+            'id_number' => $input->id_number,
             'vehicle_number' => $input->vehicle_number
         ];
 
@@ -72,7 +72,7 @@ class PacificOrient implements InsurerLibraryInterface
 
         // 1. Check Gap In Cover
         if($inception_date->lessThan($today)) {
-            $gap_in_cover = $today->diffInDaysFiltered($inception_date);
+            $gap_in_cover = $today->diffInDays($inception_date);
 
             if($gap_in_cover > self::ALLOWED_GAP_IN_COVER) {
                 return $this->abort(__('api.gap_in_cover', ['days' => abs($gap_in_cover)]));
