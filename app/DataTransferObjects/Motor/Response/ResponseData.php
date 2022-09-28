@@ -15,4 +15,7 @@ class ResponseData extends DataTransferObject
     
     /** @var int */
     public $code = 200;
+
+    /** @var array|null */
+    public $response_header = null;
 }
