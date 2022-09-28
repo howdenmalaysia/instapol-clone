@@ -21,6 +21,8 @@ class APILogs extends Model
         'response'
     ];
 
+    protected $table = 'api_logs';
+
     public function insurer()
     {
         return $this->belongsTo(InsuranceCompany::class);
