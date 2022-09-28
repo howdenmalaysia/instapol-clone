@@ -135,7 +135,7 @@
             swalLoading();
             let motor = JSON.parse($('#motor').val());
 
-            products.forEach(product => {
+            products.forEach(product_id => {
                 instapol.post("{{ route('motor.api.vehicle-details') }}", {
                     vehicle_number: motor.vehicle_number,
                     postcode: motor.postcode,
@@ -143,7 +143,7 @@
                     id_type: motor.policy_holder.id_type,
                     email: motor.policy_holder.email,
                     phone_number: motor.policy_holder.phone_number,
-                    product_id: product.id
+                    product_id: product_id
                 }).then((response) => {
                     console.log(response);
                 }).catch((error) => {
