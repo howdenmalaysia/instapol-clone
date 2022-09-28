@@ -511,9 +511,11 @@ class MotorAPIController extends Controller implements MotorAPIInterface
 
     private function getInsurerClass(int $product_id)
     {
+        $insurer = Product::findOrFail($product_id)->insurance_company->pluck('id', 'name');
+
         switch($product_id) {
-            case 10: {
-                return new PacificOrient();
+            case '9': {
+                return new PacificOrient($insurer->id, $insurer->name);
 
                 break;
             }
