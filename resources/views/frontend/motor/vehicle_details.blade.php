@@ -121,7 +121,9 @@
 @endsection
 
 @push('after-scripts')
-    <script>
+<script>
+        let products = JSON.parse("{{ json_encode($product_ids) }}");
+
         $(function() {
             fetchData();
             $('#btn-continue').on('click', function() {
@@ -133,18 +135,22 @@
             swalLoading();
             let motor = JSON.parse($('#motor').val());
 
-            instapol.post("{{ route('motor.api.vehicle-details') }}", {
-                vehicle_number: motor.vehicle_number,
-                postcode: motor.postcode,
-                id_number: motor.policy_holder.id_number,
-                id_type: motor.policy_holder.id_type,
-                email: motor.policy_holder.email,
-                phone_number: motor.policy_holder.phone_number,
-            }).then((response) => {
-                console.log(response);
-            }).catch((error) => {
-                console.log(error.response);
+            products.forEach(product => {
+                instapol.post("{{ route('motor.api.vehicle-details') }}", {
+                    vehicle_number: motor.vehicle_number,
+                    postcode: motor.postcode,
+                    id_number: motor.policy_holder.id_number,
+                    id_type: motor.policy_holder.id_type,
+                    email: motor.policy_holder.email,
+                    phone_number: motor.policy_holder.phone_number,
+                    product_id: product.id
+                }).then((response) => {
+                    console.log(response);
+                }).catch((error) => {
+                    console.log(error.response);
+                });
             });
+
         }
     </script>
 @endpush
