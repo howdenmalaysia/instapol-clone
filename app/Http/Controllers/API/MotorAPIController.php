@@ -61,24 +61,27 @@ class MotorAPIController extends Controller implements MotorAPIInterface
         try {
             $insurer = $this->getInsurerClass($request->product_id);
             $result = $insurer->vehicleDetails($data);
+
+            if(!$result->status) {
+                $this->abort($result->response);
+            }
+    
+            // Log Vehicle Data to DB
+    
+            // Include Insurer Details in Response
+            $product = Product::with(['insurance_company'])
+                ->where($request->product_id)
+                ->get();
+            $result->response->insurer = $product->insurance_company->name;
+            $result->response->product_name = $product->name;
+    
+            return new VehicleVariantData($result->response->toArray());
         } catch(Exception $ex) {
             Log::error("[API/GetVehicleDetails] An error occurred. {$ex->getMessage()}");
+            
+            return $this->abort($ex->getMessage());
         }
 
-        if(!$result->status) {
-            $this->abort($result->response);
-        }
-
-        // Log Vehicle Data to DB
-
-        // Include Insurer Details in Response
-        $product = Product::with(['insurance_company'])
-            ->where($request->product_id)
-            ->get();
-        $result->response->insurer = $product->insurance_company->name;
-        $result->response->product_name = $product->name;
-
-        return new VehicleVariantData($result->response->toArray());
     }
 
     public function getQuote(Request $request, $quote_type)
