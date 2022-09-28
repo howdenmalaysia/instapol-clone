@@ -602,7 +602,7 @@ class PacificOrient implements InsurerLibraryInterface
     public function cURL(string $path, string $xml, string $method = 'POST', array $header = []) : ResponseData
     {
         // Concatenate URL
-        $url = $this->domain . $path;
+        $url = $this->host . $path;
 
         // Check XML Error
         libxml_use_internal_errors(true);
