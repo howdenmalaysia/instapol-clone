@@ -10,7 +10,7 @@ class ResponseData extends DataTransferObject
     /** @var bool */
     public $status = true;
     
-    /** @var object */
+    /** @var object|string */
     public $response;
     
     /** @var int */
