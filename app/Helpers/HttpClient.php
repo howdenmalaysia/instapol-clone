@@ -2,7 +2,7 @@
 
 namespace App\Helpers;
 
-use App\DataTransferObjects\Motor\ResponseData;
+use App\DataTransferObjects\Motor\Response\ResponseData;
 use Exception;
 use GuzzleHttp\Client as GuzzleHttpClient;
 use GuzzleHttp\HandlerStack;
@@ -40,7 +40,7 @@ class HttpClient
         $response = '';
         $response_header = [];
 
-        $promise = $client->requestAsyns($method, $url, $options);
+        $promise = $client->requestAsync($method, $url, $options);
         $promise->then(
             function($res) use (&$status, &$response, &$response_header) {
                 if($res->getStatusCode() === '200') {
