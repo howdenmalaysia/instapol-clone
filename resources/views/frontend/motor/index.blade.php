@@ -40,10 +40,10 @@
                                                 <div class="row">
                                                     <div class="col-12 text-center">
                                                         <div class="btn-group" role="group">
-                                                            <input type="radio" id="id-type-1" class="btn-check" name="id_type" value="1" {{ optional($motor)->policy_holder->id_type === 1 ? 'checked' : 'checked' }}>
+                                                            <input type="radio" id="id-type-1" class="btn-check" name="id_type" value="1" {{ $motor->policy_holder->id_type ?? '' === 1 ? 'checked' : 'checked' }}>
                                                             <label id="private-reg" class="btn btn-primary text-white rounded-start border active text-uppercase" for="id-type-1">{{ __('frontend.motor.private_registered') }}</label>
                     
-                                                            <input type="radio" id="id-type-2" class="btn-check" name="id_type" value="2" {{ optional($motor)->policy_holder->id_type === 2 ? 'checked' : '' }}>
+                                                            <input type="radio" id="id-type-2" class="btn-check" name="id_type" value="2" {{ $motor->policy_holder->id_type ?? '' === 2 ? 'checked' : '' }}>
                                                             <label id="company-reg" class="btn btn-light rounded-end text-uppercase" for="id-type-2">{{ __('frontend.motor.company_registered') }}</label>
                                                         </div>
                                                     </div>
@@ -109,7 +109,7 @@
                                                     pattern="\d{5}"
                                                     placeholder="Vehicle Postcode eg: 52100"
                                                     maxlength="5"
-                                                    value="{{ old('postcode', optional($motor)->postcode ?? '') }}"
+                                                    value="{{ old('postcode', $motor->postcode ?? '') }}"
                                                     required
                                                     data-parsley-type="number"
                                                     data-parsley-required-message="Please enter your postcode"
@@ -132,10 +132,10 @@
                                                     autocomplete="off"
                                                     name="id_number"
                                                     minlength="12"
-                                                    value="{{ old('id_number', optional($motor)->policy_holder->id_number ?? '') }}"
+                                                    value="{{ old('id_number', $motor->policy_holder->id_number ?? '') }}"
                                                     pattern="\d{2}([0][1-9]|[1][0-2])([0][1-9]|[1-2][0-9]|[3][0-1])-\d{2}-\d{4}"
                                                     data-parsley-required-message="Please enter your ID number"
-                                                    data-parsley-pattern-message="Please enter a valid ID number"optional($motor)
+                                                    data-parsley-pattern-message="Please enter a valid ID number"
                                                     data-parsley-errors-container="#id-number-errors"
                                                     required
                                                 >
@@ -155,7 +155,7 @@
                                                     autocorrect="off"
                                                     spellcheck="off"
                                                     name="phone_number"
-                                                    value="{{ old('phone_number', optional($motor)->policy_holder->phone_number ?? '') }}"
+                                                    value="{{ old('phone_number', $motor->policy_holder->phone_number ?? '') }}"
                                                     placeholder="eg: 0122228888"
                                                     pattern="(0?1)[0-46-9][0-9]{7,8}"
                                                     minlength="9"
@@ -182,7 +182,7 @@
                                                     autocorrect="off"
                                                     spellcheck="off"
                                                     name="email"
-                                                    value="{{ old('email', optional($motor)->policy_holder->email) }}"
+                                                    value="{{ old('email', $motor->policy_holder->email ?? '') }}"
                                                     placeholder="E-Mail Address"
                                                     required
                                                     data-parsley-type="email"
