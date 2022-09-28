@@ -18,7 +18,6 @@ class PacificOrient implements InsurerLibraryInterface
     protected $agent_code;
     protected $user_id;
     protected $host;
-    protected $token_host;
 
     // Settings
     private const PRODUCT = 'PC'; // Private Comprehensive
@@ -44,7 +43,6 @@ class PacificOrient implements InsurerLibraryInterface
         $this->agent_code = config('insurer.config.pno.agent_code');
         $this->user_id = config('insurer.config.pno.user_id');
         $this->host = config('insurer.config.pno.host');
-        $this->token_host = config('insurer.config.pno.token_host');
 
         $this->token = $this->getToken();
     }
@@ -451,7 +449,7 @@ class PacificOrient implements InsurerLibraryInterface
 
     public function getToken() : string
     {
-        $path = 'IAccessToken/GetAccessToken';
+        $path = 'POAT/Service.svc';
 
         $data = [
             'agent_code' => $this->agent_code,
