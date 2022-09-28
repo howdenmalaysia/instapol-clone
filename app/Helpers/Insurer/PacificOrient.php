@@ -632,10 +632,11 @@ class PacificOrient implements InsurerLibraryInterface
         $code = null;
 
         // Update the response
-        $log->update([
-            'response_header' => $result->response_header,
-            'response' => $result->response
-        ]);
+        APILogs::find($log->id)
+            ->update([
+                'response_header' => $result->response_header,
+                'response' => $result->response
+            ]);
 
         if($result->status) {
             $response = simplexml_load_string($result->response);
