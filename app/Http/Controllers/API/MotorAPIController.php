@@ -39,7 +39,8 @@ use Illuminate\Support\Str;
 
 class MotorAPIController extends Controller implements MotorAPIInterface
 {
-    public function getVehicleDetails(Request $request) : VehicleVariantData
+    /** @return VehicleVariantData|Response */
+    public function getVehicleDetails(Request $request)
     {
         // Create a Log Record
         Log::info("[API/GetVehicleDetails] Received Request: " . json_encode($request->all()));
