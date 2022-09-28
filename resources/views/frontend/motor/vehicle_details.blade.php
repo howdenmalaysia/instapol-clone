@@ -147,6 +147,9 @@
                 }).then((response) => {
                     console.log(response);
                 }).catch((error) => {
+                    swalAlert(error.response.data, () => {
+                        window.location = "{{ route('motor.index') }}"
+                    })
                     console.log(error.response);
                 });
             });
