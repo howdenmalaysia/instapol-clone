@@ -36,7 +36,7 @@ window.swalLoading = function () {
     });
 }
 
-window.swalAlert = function (message, icon = 'error', callback = null, showDenyButton = false) {
+window.swalAlert = function (message, callback = null, showDenyButton = false, icon = 'error') {
     var title = '';
     switch(icon) {
         case 'success': {
