@@ -625,7 +625,7 @@ class PacificOrient implements InsurerLibraryInterface
             'domain' => $this->host,
             'path' => $path,
             'request_header' => json_encode($request_options['headers']),
-            'request' => $xml,
+            'request' => json_encode($xml),
         ]);
 
         $result = HttpClient::curl($method, $url, $request_options);
