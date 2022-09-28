@@ -634,8 +634,8 @@ class PacificOrient implements InsurerLibraryInterface
         // Update the response
         APILogs::find($log->id)
             ->update([
-                'response_header' => $result->response_header,
-                'response' => $result->response
+                'response_header' => json_encode($result->response_header),
+                'response' => json_encode($result->response)
             ]);
 
         if($result->status) {
