@@ -59,7 +59,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
         ]);
 
         try {
-            $insurer = $this->getInsurerClass($request->insurance_company->id);
+            $insurer = $this->getInsurerClass($request->product_id);
             $result = $insurer->vehicleDetails($data);
         } catch(Exception $ex) {
             Log::error("[API/GetVehicleDetails] An error occurred. {$ex->getMessage()}");
@@ -505,13 +505,11 @@ class MotorAPIController extends Controller implements MotorAPIInterface
         }
     }
 
-    private function getInsurerClass(int $insurer_id)
+    private function getInsurerClass(int $product_id)
     {
-        $insurer_name = InsuranceCompany::findOrFail($insurer_id)->pluck('name');
-
-        switch($insurer_id) {
-            case '9': {
-                return new PacificOrient($insurer_id, $insurer_name);
+        switch($product_id) {
+            case 10: {
+                return new PacificOrient();
 
                 break;
             }
