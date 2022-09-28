@@ -459,6 +459,7 @@ class PacificOrient implements InsurerLibraryInterface
             'product' => self::PRODUCT,
             'ref_no' => time(),
             'path' => $this->host . $path,
+            'soap_action' => self::SOAP_ACTION_DOMAIN . '/' . $path,
         ];
 
         $xml = view('backend.xml.pacific.get_token')->with($data)->render();
@@ -475,7 +476,6 @@ class PacificOrient implements InsurerLibraryInterface
     private function getVIXNCD(object $input) : ResponseData
     {
         $path = 'getvehicleinfo/GetVehicleInfo.asmx';
-        $token = $this->getToken();
 
         $xml = view('backend.xml.pacific.vehicle_details')->with($input)->render();
 
