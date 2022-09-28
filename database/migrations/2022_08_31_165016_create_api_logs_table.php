@@ -21,9 +21,9 @@ class CreateApiLogsTable extends Migration
             $table->string('domain');
             $table->string('path');
             $table->json('request_header');
-            $table->json('request');
+            $table->longText('request');
             $table->json('response_header')->nullable();
-            $table->json('response')->nullable();
+            $table->longText('response')->nullable();
 
             $table->timestamps();
         });

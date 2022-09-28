@@ -623,7 +623,7 @@ class PacificOrient implements InsurerLibraryInterface
             'domain' => $this->host,
             'path' => $path,
             'request_header' => json_encode($request_options['headers']),
-            'request' => json_encode($xml),
+            'request' => $xml,
         ]);
 
         $result = HttpClient::curl($method, $url, $request_options);
@@ -633,7 +633,7 @@ class PacificOrient implements InsurerLibraryInterface
         APILogs::find($log->id)
             ->update([
                 'response_header' => json_encode($result->response_header),
-                'response' => json_encode($result->response)
+                'response' => $result->response
             ]);
 
         if($result->status) {
