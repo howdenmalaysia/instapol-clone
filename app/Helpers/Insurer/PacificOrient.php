@@ -458,7 +458,7 @@ class PacificOrient implements InsurerLibraryInterface
             'user_id' => $this->user_id,
             'product' => self::PRODUCT,
             'ref_no' => time(),
-            'path' => $this->domain . $path,
+            'path' => $this->host . $path,
         ];
 
         $xml = view('backend.xml.pacific.get_token')->with($data)->render();
@@ -622,7 +622,7 @@ class PacificOrient implements InsurerLibraryInterface
         $log = APILogs::create([
             'insurance_company_id' => config('insurer.config.pno.id'), // Hardcoded Insurance Company ID
             'method' => $method,
-            'domain' => $this->domain,
+            'domain' => $this->host,
             'path' => $path,
             'request_header' => $request_options['headers'],
             'request' => $xml,
