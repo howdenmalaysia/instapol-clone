@@ -455,7 +455,7 @@ class PacificOrient implements InsurerLibraryInterface
             'agent_code' => $this->agent_code,
             'user_id' => $this->user_id,
             'product' => self::PRODUCT,
-            'ref_no' => time(),
+            'ref_no' => config('setting.howden.short_code') . Str::random(13),
             'path' => $this->host . $path,
             'soap_action' => self::SOAP_ACTION_DOMAIN . '/' . $path,
         ];
@@ -468,7 +468,7 @@ class PacificOrient implements InsurerLibraryInterface
             return $this->abort($result->response->respDescription);
         }
 
-        return $result->response->TokenResp->accessToken;
+        return $result->response->accessToken;
     }
 
     private function getVIXNCD(object $input) : ResponseData
@@ -643,10 +643,16 @@ class PacificOrient implements InsurerLibraryInterface
                 return $this->abort(trans('api.xml_error'));
             }
 
-            if(strpos($path, 'GetAccessToken') !== false) {
+            if(strpos($path, 'POAT') !== false) {
                 $response->registerXPathNamespace('res', 'http://schemas.datacontract.org/2004/07/PO.TravelAssurance');
+
+                $response = (object) [
+                    'accessToken' => (string) $response->xpath('//res:accessToken')[0],
+                ];
             } else {
                 $response->registerXPathNamespace('res', 'http://schemas.datacontract.org/2004/07/PO.Web.API');
+    
+                $response = $response->xpath('//res:Body')[0];
             }
 
             if((int) $response->xpath('//res:respCode') === 0) {
@@ -655,11 +661,9 @@ class PacificOrient implements InsurerLibraryInterface
                 return $this->abort(trans('api.api_error', [
                     'code' => $code,
                     'company' => $this->company,
-                    'message' => $response->xpath('//res;respDescription')[0],
+                    'message' => $response->xpath('//res:respDescription')[0],
                 ]));
             }
-
-            $response = $response->xpath('//res:Body')[0];
         } else {
             $message = !empty($result->response) ? $result->response : trans('api.empty_response', ['company' => $this->company]);
 
