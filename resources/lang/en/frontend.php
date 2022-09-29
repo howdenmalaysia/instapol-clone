@@ -79,13 +79,6 @@ return [
             '1' => [
                 'title' => 'Personal Information and Collection of Data',
                 'description' => [
-                    '1' => 'We collect, use, process your Personal Data for purposes relating to your engagement of our services and for other purposes which includes the following :',
-                    '2' => 'If you DO NOT consent to us processing your Personal Data for the purposes above, please notify us using the contact details stated in Section 9 below.',
-                ]
-            ],
-            '2' => [
-                'title' => 'Why do we collect Personal Data',
-                'description' => [
                     '1' => 'The Personal Data may include information concerning name as per the Identity Card, preferred name, identity card number, age, contact details include office number, house number, mobile number, facsimile number, residential address, business address, email address, birth date, gender, race, nationality, religion, marital status, occupation, designation, income range, bank account details, income tax details, your spouse details and children details such as name and birth date, information as to physical and mental health, political opinions, religious beliefs or other beliefs of a similar in nature, any alleged commission of an offence or any other data which is necessary for the performance of our services to you ("Personal Data").',
                     '2' => 'In addition to the Personal Data you provide to us directly and voluntarily by engaging our services, we may have also collected your Personal Data from events and talks organised by us, seminars, conferences, events and talks organised by a third party and through introduction from a third party, name cards or any identity materials that you have distributed voluntarily.'
                 ],
@@ -95,6 +88,13 @@ return [
                     'iii' => 'Enable us to send you information by email, telecommunication means (telephone calls or text messages) or social media about our products and services offered by us or third parties that we think may interest you.',
                     'iv' => 'Meeting any legal or regulatory requirements relating to our provision of services and deliverables and to make disclosure under the requirements of any applicable law, regulation, direction, court order, by-law, guideline, circular.',
                     'v' => 'Collection of outstanding payments from you for services rendered and our internal record keeping.'
+                ]
+            ],
+            '2' => [
+                'title' => 'Why do we collect Personal Data',
+                'description' => [
+                    '1' => 'We collect, use, process your Personal Data for purposes relating to your engagement of our services and for other purposes which includes the following :',
+                    '2' => 'If you DO NOT consent to us processing your Personal Data for the purposes above, please notify us using the contact details stated in Section 9 below.',
                 ]
             ],
             '3' => [
@@ -119,7 +119,7 @@ return [
                 ]
             ],
             '5' => [
-                'title' => 'Disclosure of Personal Data',
+                'title' => 'Your Rights of Access and Correction of Personal Dataa',
                 'description' => [
                     '1' => 'You have the right to request access to and correction of Personal Data held by us and in this respect, you may write to us on the following:',
                     '2' => 'Upon receipt of your written request to the contact details provided in Section 9 below, we may accept or refuse your request to access or rectify your personal information. If we refuse we shall provide reasons for our refusal.'
@@ -293,7 +293,7 @@ return [
             'description' => [
                 'i' => 'Customer\'s motor insurance/takaful may be cancelled at any time by giving a written notice to us. Upon cancellation, the customer is entitled to a refund of the premium/contribution based on short-period rates provided that the customer has not made a claim. The rates are as follows :',
                 'ii' => 'For matters of refund and cancellation, all written notice must be sent to instaPol (<a href="mailto:instaPol@my.howdengroup.com">instaPol@my.howdengroup.com</a>) and will thereafter be forwarded to the Insurer / Takaful Operator. The Insurer / Takaful Operator will process the request for cancellation and will be the party responsible for the refund.',
-                'iii' => 'The Insurer / Takaful Operator may also cancel this Policy by giving the customer fourteen (14) days notice in writing by registered post to the customer\'s last address known to instaPol (instaPol@my.howdengroup.com). The customer will be entitled to a refund of premium/contribution if no claim was incurred prior to cancellation. Your refund will be the difference between the total premium/contribution and the customary short period rates provided above as calculated for from the time the Insurer / Takaful Operator were is on risk until the date of cancellation. This clause Policy may only apply to certain Insurer / Takaful Operator, subject to the final terms and conditions of the insurance/takaful product offered by your selected the Insurer(s) / Takaful Operator(s).'
+                'iii' => 'The Insurer / Takaful Operator may also cancel this Policy by giving the customer fourteen (14) days notice in writing by registered post to the customer\'s last address known to instaPol (instaPol@my.howdengroup.com). The customer will be entitled to a refund of premium/contribution if no claim was incurred prior to cancellation. Your refund will be the difference between the total premium/contribution and the customary short period rates provided above as calculated for from the time the Insurer / Takaful Operator until the date of cancellation. This clause Policy may only apply to certain Insurer / Takaful Operator, subject to the final terms and conditions of the insurance/takaful product offered by your selected the Insurer(s) / Takaful Operator(s).'
             ],
             'period_of_insurance' => 'Period of Insurance / Takaful',
             'refund_premium' => 'Refund of Premium / Contribution',
