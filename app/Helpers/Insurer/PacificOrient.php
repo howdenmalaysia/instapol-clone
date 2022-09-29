@@ -462,7 +462,7 @@ class PacificOrient implements InsurerLibraryInterface
 
         $xml = view('backend.xml.pacific.get_token')->with($data)->render();
         
-        $result = $this->cURL($path, $xml);
+        $result = $this->cURL($path, $xml, self::SOAP_ACTION_DOMAIN . '/IAccessToken/GetAccessToken');
 
         if(!$result->status) {
             return $this->abort($result->response->respDescription);
@@ -597,7 +597,7 @@ class PacificOrient implements InsurerLibraryInterface
         }
     }
 
-    public function cURL(string $path, string $xml, string $method = 'POST', array $header = []) : ResponseData
+    public function cURL(string $path, string $xml, string $soap_action = null, string $method = 'POST', array $header = []) : ResponseData
     {
         // Concatenate URL
         $url = $this->host . $path;
@@ -611,7 +611,7 @@ class PacificOrient implements InsurerLibraryInterface
             'headers' => [
                 'Content-Type' => 'text/xml; charset=utf-8',
                 'Accept' => 'text/xml; charset=utf-8',
-                'SOAPAction' => self::SOAP_ACTION_DOMAIN . $path
+                'SOAPAction' => $soap_action ?? self::SOAP_ACTION_DOMAIN . '/' . $path
             ],
             'body' => $xml
         ];

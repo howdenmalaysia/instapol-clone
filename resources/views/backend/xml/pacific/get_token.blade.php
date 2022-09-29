@@ -1,15 +1,12 @@
-<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
-  <s:Header>
-    <Action s:mustUnderstand="1" xmlns="http://schemas.microsoft.com/ws/2005/05/addressing/none">{{ $soap_action }}</Action>
-  </s:Header>
-  <s:Body>
-    <GetAccessToken xmlns="http://tempuri.org/">
-      <reqData xmlns:d4p1="http://schemas.datacontract.org/2004/07/PO.TravelAssurance" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
-        <d4p1:agentId>{{ $agent_code }}</d4p1:agentId>
-        <d4p1:productId>{{ $product }}</d4p1:productId>
-        <d4p1:refNo>{{ $ref_no }}</d4p1:refNo>
-        <d4p1:userId>{{ $user_id }}</d4p1:userId>
-      </reqData>
-    </GetAccessToken>
-  </s:Body>
-</s:Envelope>
+<s11:Envelope xmlns:s11='http://schemas.xmlsoap.org/soap/envelope/'>
+  <s11:Body>
+    <ns1:GetAccessToken xmlns:ns1='http://tempuri.org/'>
+      <ns1:reqData>
+        <ns2:agentId xmlns:ns2='http://schemas.datacontract.org/2004/07/PO.TravelAssurance'>{{ $agent_code }}</ns2:agentId>
+        <ns2:productId xmlns:ns2='http://schemas.datacontract.org/2004/07/PO.TravelAssurance'>{{ $product }}</ns2:productId>
+        <ns2:refNo xmlns:ns2='http://schemas.datacontract.org/2004/07/PO.TravelAssurance'>{{ $ref_no }}</ns2:refNo>
+        <ns2:userId xmlns:ns2='http://schemas.datacontract.org/2004/07/PO.TravelAssurance'>{{ $user_id }}</ns2:userId>
+      </ns1:reqData>
+    </ns1:GetAccessToken>
+  </s11:Body>
+</s11:Envelope>

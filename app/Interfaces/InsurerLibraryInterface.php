@@ -11,6 +11,6 @@ interface InsurerLibraryInterface {
     public function premiumDetails(object $input, $full_quote) : PremiumResponse;
     public function quotation(object $input) : PremiumResponse;
     public function submission(object $input) : ResponseData;
-    public function cURL(string $path, string $xml, string $method = 'POST', array $header = []) : ResponseData;
+    public function cURL(string $path, string $xml, string $soap_action = null, string $method = 'POST', array $header = []) : ResponseData;
     public function abort(string $message, int $code = 500) : ResponseData;
 }
