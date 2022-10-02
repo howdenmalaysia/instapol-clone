@@ -49,7 +49,7 @@ class PacificOrient implements InsurerLibraryInterface
 
     public function vehicleDetails(object $input) : VIXNCDResponse
     {
-        $data = (object) [
+        $data = [
             'token' => $this->token,
             'id_number' => $input->id_number,
             'vehicle_number' => $input->vehicle_number
@@ -471,25 +471,25 @@ class PacificOrient implements InsurerLibraryInterface
         return $result->response->accessToken;
     }
 
-    private function getVIXNCD(object $input) : ResponseData
+    private function getVIXNCD(array $input) : ResponseData
     {
         $path = 'getvehicleinfo/GetVehicleInfo.asmx';
 
         $xml = view('backend.xml.pacific.vehicle_details')->with($input)->render();
 
-        $result = $this->cURL($path, $xml);
+        $result = $this->cURL($path, $xml, self::SOAP_ACTION_DOMAIN . '/RequestVehicleInfo');
 
         if(!$result->status) {
             return $this->abort($result->response);
         }
 
         // 1. Check for Error
-        if(!empty($result->response->VehicleInfoResp->ErrorDesc)) {
-            return $this->abort("P&O Error! {$result->response->VehicleInfoResp->ErrorDesc}");
+        if(!empty($result->response->RequestVehicleInfoResponse->RequestVehicleInfoResult->ErrorDesc)) {
+            return $this->abort("P&O Error! {$result->response->RequestVehicleInfoResponse->RequestVehicleInfoResult->ErrorDesc}");
         }
 
         return new ResponseData([
-            'response' => $result->response->VehicleInfoResp,
+            'response' => $result->response->RequestVehicleInfoResponse->RequestVehicleInfoResult,
         ]);
     }
 
@@ -640,7 +640,7 @@ class PacificOrient implements InsurerLibraryInterface
             $response = simplexml_load_string($result->response);
 
             if($response === false) {
-                return $this->abort(trans('api.xml_error'));
+                return $this->abort(__('api.xml_error'));
             }
 
             if(strpos($path, 'POAT') !== false) {
@@ -652,20 +652,22 @@ class PacificOrient implements InsurerLibraryInterface
             } else {
                 $response->registerXPathNamespace('res', 'http://schemas.datacontract.org/2004/07/PO.Web.API');
     
-                $response = $response->xpath('//res:Body')[0];
+                $response = $response->xpath('soap:Body')[0];
             }
 
-            if((int) $response->xpath('//res:respCode') === 0) {
-                $code = (string) $response->xpath('//res:respCode')[0];
-
-                return $this->abort(trans('api.api_error', [
-                    'code' => $code,
-                    'company' => $this->company,
-                    'message' => $response->xpath('//res:respDescription')[0],
-                ]));
+            if(!empty($response->xpath('//res:respCode'))) {
+                if((int) $response->xpath('//res:respCode') !== 0) {
+                    $code = (string) $response->xpath('//res:respCode')[0];
+    
+                    return $this->abort(__('api.api_error', [
+                        'code' => $code,
+                        'company' => $this->company,
+                        'message' => $response->xpath('//res:respDescription')[0],
+                    ]));
+                }
             }
         } else {
-            $message = !empty($result->response) ? $result->response : trans('api.empty_response', ['company' => $this->company]);
+            $message = !empty($result->response) ? $result->response : __('api.empty_response', ['company' => $this->company]);
 
             return $this->abort($message);
         }
