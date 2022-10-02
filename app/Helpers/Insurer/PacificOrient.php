@@ -47,7 +47,8 @@ class PacificOrient implements InsurerLibraryInterface
         $this->token = $this->getToken();
     }
 
-    public function vehicleDetails(object $input) : VIXNCDResponse
+    /** @return VIXNCDResponse|ResponseData */
+    public function vehicleDetails(object $input)
     {
         $data = [
             'token' => $this->token,
@@ -64,8 +65,8 @@ class PacificOrient implements InsurerLibraryInterface
             ]));
         }
 
-        $inception_date = Carbon::createFromFormat('Y-m-d', $vix->response->effDate);
-        $expiry_date = $vix->response->expDate;
+        $inception_date = Carbon::createFromFormat('Y-m-d', $vix->response->inception_date);
+        $expiry_date = $vix->response->expiry_date;
         $today = Carbon::today();
 
         // 1. Check Gap In Cover
@@ -77,7 +78,6 @@ class PacificOrient implements InsurerLibraryInterface
             }
 
             $inception_date = $today;
-            $expiry_date = $today->addYear()->subDay()->format('Y-m-d');
         } else if($today->addMonths(2)->lessThan($inception_date)) {
             return $this->abort(__('api.earlier_renewal'), config('setting.response_codes.earlier_renewal'));
         }
@@ -93,27 +93,27 @@ class PacificOrient implements InsurerLibraryInterface
 
         $variants = [];
         array_push($variants, [
-            'nvic' => (string) $vix->response->NVIC,
-            'sum_insured' => $vix->response->SumInsured,
+            'nvic' => (string) $vix->response->nvic,
+            'sum_insured' => $vix->response->sum_insured,
             'variant' => '' 
         ]);
 
         return new VIXNCDResponse([
-            'chassis_number' => $vix->response->ChassisNumber,
+            'chassis_number' => $vix->response->chassis_number,
             'coverage' => 'Comprehensive',
-            'engine_capacity' => $vix->response->EngineCC,
-            'engine_number' => $vix->response->EngineNumber,
-            'expiry_date' => Carbon::parse($vix->response->NextXDate)->format('Y-m-d'),
-            'inception_date' => Carbon::parse($vix->response->NextEDate)->format('Y-m-d'),
-            'make' => $vix->response->VehicleMake,
-            'model' => $vix->response->VehicleModel,
-            'manufacture_year' => $vix->response->YearManufactured,
+            'engine_capacity' => $vix->response->engine_capacity,
+            'engine_number' => $vix->response->engine_number,
+            'expiry_date' => Carbon::parse($vix->response->expiry_date)->format('Y-m-d'),
+            'inception_date' => Carbon::parse($vix->response->inception_date)->format('Y-m-d'),
+            'make' => $vix->response->make,
+            'model' => $vix->response->model,
+            'manufacture_year' => $vix->response->manufacturing_year,
             'max_sum_insured' => $sum_insured,
             'min_sum_insured' => $sum_insured,
             'sum_insured' => $sum_insured,
             'sum_insured_type' => 'Agreed Value',
-            'ncd_percentage' => $vix->response->NCD,
-            'seating_capacity' => $vix->response->SeatingCapacity,
+            'ncd_percentage' => $vix->response->ncd,
+            'seating_capacity' => $vix->response->seating_capacity,
             'variants' => $variants
         ]);
     }
@@ -488,8 +488,25 @@ class PacificOrient implements InsurerLibraryInterface
             return $this->abort("P&O Error! {$result->response->RequestVehicleInfoResponse->RequestVehicleInfoResult->ErrorDesc}");
         }
 
+        $data = $result->response->RequestVehicleInfoResponse->RequestVehicleInfoResult;
+        $response = (object) [
+            'chassis_number' => (string) $data->ChassisNumber,
+            'engine_capacity' => (int) $data->EngineCC,
+            'engine_number' => (string)$data->EngineNumber,
+            'error_description' => (string) $data->ErrorDesc,
+            'expiry_date' => (string) $data->NextXDate,
+            'inception_date' => (string) $data->NextEDate,
+            'make' => (int) $data->VehicleMake,
+            'manufacturing_year' => (int) $data->YearManufactured,
+            'model' => (int) $data->VehicleModel,
+            'ncd' => (int) $data->NCD,
+            'nvic' => (string) $data->NVIC,
+            'seating_capacity' => (int) $data->SeatingCapacity,
+            'sum_insured' => (int) $data->SumInsured
+        ];
+
         return new ResponseData([
-            'response' => $result->response->RequestVehicleInfoResponse->RequestVehicleInfoResult,
+            'response' => $response,
         ]);
     }
 
@@ -653,19 +670,20 @@ class PacificOrient implements InsurerLibraryInterface
                 $response->registerXPathNamespace('res', 'http://schemas.datacontract.org/2004/07/PO.Web.API');
     
                 $response = $response->xpath('soap:Body')[0];
-            }
 
-            if(!empty($response->xpath('//res:respCode'))) {
-                if((int) $response->xpath('//res:respCode') !== 0) {
-                    $code = (string) $response->xpath('//res:respCode')[0];
-    
-                    return $this->abort(__('api.api_error', [
-                        'code' => $code,
-                        'company' => $this->company,
-                        'message' => $response->xpath('//res:respDescription')[0],
-                    ]));
+                if(!empty($response->xpath('//res:respCode'))) {
+                    if((int) $response->xpath('//res:respCode') !== 0) {
+                        $code = (string) $response->xpath('//res:respCode')[0];
+        
+                        return $this->abort(__('api.api_error', [
+                            'code' => $code,
+                            'company' => $this->company,
+                            'message' => $response->xpath('//res:respDescription')[0],
+                        ]));
+                    }
                 }
             }
+
         } else {
             $message = !empty($result->response) ? $result->response : __('api.empty_response', ['company' => $this->company]);
 

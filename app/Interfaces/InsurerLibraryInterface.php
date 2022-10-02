@@ -7,7 +7,8 @@ use App\DataTransferObjects\Motor\Response\ResponseData;
 use App\DataTransferObjects\Motor\Response\VIXNCDResponse;
 
 interface InsurerLibraryInterface {
-    public function vehicleDetails(object $input) : VIXNCDResponse;
+    /** @return VIXNCDResponse|ResponseData */
+    public function vehicleDetails(object $input);
     public function premiumDetails(object $input, $full_quote) : PremiumResponse;
     public function quotation(object $input) : PremiumResponse;
     public function submission(object $input) : ResponseData;
