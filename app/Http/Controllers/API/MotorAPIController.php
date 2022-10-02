@@ -15,7 +15,6 @@ use App\Models\InsuranceAddress;
 use App\Models\InsurancePremium;
 use App\Models\InsuranceRemark;
 use App\Models\Motor\Insurance;
-use App\Models\Motor\InsuranceCompany;
 use App\Models\Motor\InsuranceExtraAttribute;
 use App\Models\Motor\InsuranceExtraCover;
 use App\Models\Motor\InsuranceHolder;
@@ -34,7 +33,6 @@ use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 class MotorAPIController extends Controller implements MotorAPIInterface
