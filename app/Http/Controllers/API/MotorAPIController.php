@@ -70,7 +70,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             // Include Insurer Details in Response
             $product = Product::with(['insurance_company'])
                 ->where('id', $request->product_id)
-                ->get();
+                ->first();
             $result->response->insurer = $product->insurance_company->name;
             $result->response->product_name = $product->name;
     
