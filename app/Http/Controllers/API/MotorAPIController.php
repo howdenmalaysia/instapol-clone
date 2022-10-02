@@ -105,7 +105,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             'region' => $postcode->state->region,
             'state' => $postcode->state->name,
             'insurer_id' => $product->insurance_company->id,
-            'insurer_name' => $product->insurance_compay->name,
+            'insurer_name' => $product->insurance_company->name,
             'product_id' => $product->id,
             'gender' => $request->gender,
             'marital_status' => $request->marital_status,
