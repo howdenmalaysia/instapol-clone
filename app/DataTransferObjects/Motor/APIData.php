@@ -7,13 +7,13 @@ use Spatie\DataTransferObject\DataTransferObject;
 class APIData extends DataTransferObject
 {
     // Get Token
-    /** @var string|null */
+    /** @var string|int|null */
     public $user_id;
     
     /** @var string|null */
     public $agent_no;
     
-    /** @var string|null */
+    /** @var string|int|null */
     public $product_id;
     
     // Get Vehicle
@@ -42,7 +42,7 @@ class APIData extends DataTransferObject
     public $state;
 
     // Get Quote
-    /** @var string|null */
+    /** @var string|int|null */
     public $insurer_id;
 
     /** @var string|null */
