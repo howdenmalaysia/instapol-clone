@@ -62,7 +62,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             $result = $insurer->vehicleDetails($data);
 
             if(!$result->status) {
-                $this->abort($result->response);
+                return $this->abort($result->response);
             }
     
             // Log Vehicle Data to DB
