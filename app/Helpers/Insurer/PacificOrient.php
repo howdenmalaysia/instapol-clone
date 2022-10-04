@@ -64,7 +64,7 @@ class PacificOrient implements InsurerLibraryInterface
             if(!empty($vix->response)) {
                 return $this->abort($vix->response);
             }
-            
+
             return $this->abort(__('api.api_error', [
                 'company' => self::INSURER_NAME,
                 'code' => 0
@@ -89,7 +89,7 @@ class PacificOrient implements InsurerLibraryInterface
         }
 
         // 2. Check Sum Insured
-        $sum_insured = formatNumber($vix->response->SumInsured, 0);
+        $sum_insured = formatNumber($vix->response->sum_insured, 0);
         if($sum_insured < self::MIN_SUM_INSURED || $sum_insured > self::MAX_SUM_INSURED) {
             return $this->abort(__('api.sum_insured_referred_between', [
                 'min_sum_insured' => self::MIN_SUM_INSURED,
