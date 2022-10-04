@@ -38,6 +38,8 @@ class PacificOrient implements InsurerLibraryInterface
 
     private const SOAP_ACTION_DOMAIN = 'http://tempuri.org';
 
+    private const INSURER_NAME = 'Pacific & Orient Insurance';
+
     public function __construct()
     {
         $this->agent_code = config('insurer.config.pno.agent_code');
@@ -59,8 +61,12 @@ class PacificOrient implements InsurerLibraryInterface
         $vix = $this->getVIXNCD($data);
 
         if(!$vix->status) {
+            if(!empty($vix->response)) {
+                return $this->abort($vix->response);
+            }
+            
             return $this->abort(__('api.api_error', [
-                'company' => $input->company_name,
+                'company' => self::INSURER_NAME,
                 'code' => 0
             ]));
         }
