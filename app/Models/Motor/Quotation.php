@@ -9,6 +9,9 @@ class Quotation extends Model
 {
     use HasFactory;
 
+    public const INACTIVE = 0;
+    public const ACTIVE = 1;
+
     protected $fillable = [
         'product_type',
         'email_address',

@@ -111,29 +111,32 @@ class MotorController extends Controller
             $inception_date = Carbon::createFromFormat('Y-m-d', $motor->vehicle->inception_date);
         }
 
-        $vehicle = new VehicleData([
-            'vehRegNo' => $motor->vehicle_number ?? '',
-            'classCode' => $motor->vehicle->extra_attribute->class_code ?? '',
-            'coverage_code' => $motor->vehicle->extra_attribute->coverage_code ?? '',
-            'vehicle_use_code' => $motor->vehicle->extra_attribute->vehicle_use_code ?? '',
-            'makeCode' => $motor->vehicle->extra_attribute->make_code ?? '',
-            'make' => $motor->vehicle->make ?? '',
-            'modelCode' => $motor->vehicle->extra_attribute->model_code ?? '',
-            'model' => $motor->vehicle->model ?? '',
-            'yearMake' => $motor->vehicle->manufacture_year ?? '',
-            'engineNo' => $motor->vehicle->engine_number ?? $motor->vehicle->extra_attribute->engine_number ?? '',
-            'chassisNo' => $motor->vehicle->chassis_number ?? $motor->vehicle->extra_attribute->chassis_number ?? '',
-            'nvic' => $motor->vehicle->nvic ?? $motor->variants[0]->nvic ?? '',
-            'variant' => $motor->vehicle->variant ?? $motor->variants[0]->variant ?? '',
-            'seatingCapacity' => $motor->vehicle->extra_attribute->seating_capacity ?? '',
-            'engineCapacity' => $motor->vehicle->engine_capacity ?? '',
-            'ncdEffDate' => !empty($inception_date) ? $inception_date->subYear()->format('Y-m-d') : '',
-            'ncdExpDate' => !empty($inception_date) ? $inception_date->subDay()->format('Y-m-d') : '',
-            'curNCD' => $motor->vehicle->ncd_percentage ?? '',
-            'nextNCD' => $motor->vehicle->ncd_percentage ?? '',
-            'nextNcdEffDate' => $motor->vehicle->inception_date ?? '',
-            'polExpDate' => !empty($inception_date) ? $inception_date->subDay()->format('Y-m-d') : '',
-        ]);
+        if(!empty($motor->vehicle->ncd_percentage)) {
+            $vehicle = new VehicleData([
+                'vehicle_number' => $motor->vehicle_number ?? '',
+                'class_ode' => $motor->vehicle->extra_attribute->class_code ?? '',
+                'coverage_code' => $motor->vehicle->extra_attribute->coverage_code ?? '',
+                'vehicle_use_code' => $motor->vehicle->extra_attribute->vehicle_use_code ?? '',
+                'make_code' => $motor->vehicle->extra_attribute->make_code ?? '',
+                'make' => $motor->vehicle->make ?? '',
+                'model_code' => $motor->vehicle->extra_attribute->model_code ?? '',
+                'model' => $motor->vehicle->model ?? '',
+                'year_make' => $motor->vehicle->manufacture_year ?? '',
+                'engine_no' => $motor->vehicle->engine_number ?? $motor->vehicle->extra_attribute->engine_number ?? '',
+                'chassis_no' => $motor->vehicle->chassis_number ?? $motor->vehicle->extra_attribute->chassis_number ?? '',
+                'nvic' => $motor->vehicle->nvic ?? $motor->variants[0]->nvic ?? '',
+                'variant' => $motor->vehicle->variant ?? $motor->variants[0]->variant ?? '',
+                'seating_capacity' => $motor->vehicle->extra_attribute->seating_capacity ?? '',
+                'engine_capacity' => $motor->vehicle->engine_capacity ?? '',
+                'ncd_effective_date' => !empty($inception_date) ? $inception_date->subYear()->format('Y-m-d') : '',
+                'ncd_expiry_date' => !empty($inception_date) ? $inception_date->subDay()->format('Y-m-d') : '',
+                'current_ncd' => $motor->vehicle->ncd_percentage ?? '',
+                'next_ncd' => $motor->vehicle->ncd_percentage ?? '',
+                'next_ncd_effective_date' => $motor->vehicle->inception_date ?? '',
+                'policy_expiry_date' => !empty($inception_date) ? $inception_date->subDay()->format('Y-m-d') : '',
+            ]);
+        }
+
 
         $quote = new QuotationData([
             'vehicle_postcode' => $motor->postcode ?? '',
@@ -144,16 +147,18 @@ class MotorController extends Controller
             'name' => $motor->policy_holder->name ?? '',
             'phone_number' => $motor->policy_holder->phone_number ?? '',
             'postcode' => $motor->postcode ?? '',
-            'h_vehicle' => $vehicle,
-            'h_vehicle_list' => $vehicle,
+            'h_vehicle' => $vehicle ?? null,
+            'h_vehicle_list' => $vehicle ?? null,
         ]);
         
-        $response = Quotation::create([
+        $response = Quotation::updateOrCreate([
             'product_type' => $quote->product_type,
+            'vehicle_number' => $quote->vehicle_no,
             'email_address' => $quote->email_address,
+            'active' => Quotation::ACTIVE,
+        ], [
             'request_param' => json_encode($quote),
             'referrer' => $motor->referrer,
-            'active' => 1,
             'compare_page' => 0
         ]);
 
