@@ -17,6 +17,7 @@ class CreateQuotationsTable extends Migration
             $table->id();
             
             $table->unsignedInteger('product_type')->references('id')->on('product_type');
+            $table->string('vehicle_number');
             $table->string('email_address');
             $table->json('request_param');
             $table->string('referrer')->nullable();
