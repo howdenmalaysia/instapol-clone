@@ -83,7 +83,7 @@ class PacificOrient implements InsurerLibraryInterface
             $gap_in_cover = $today->diffInDays($inception_date);
 
             if($gap_in_cover > self::ALLOWED_GAP_IN_COVER) {
-                return $this->abort(__('api.gap_in_cover', ['days' => abs($gap_in_cover)]));
+                return $this->abort(__('api.gap_in_cover', ['days' => abs($gap_in_cover)]), config('setting.response_codes.gap_in_cover'));
             }
 
             $inception_date = $today;
@@ -97,7 +97,7 @@ class PacificOrient implements InsurerLibraryInterface
             return $this->abort(__('api.sum_insured_referred_between', [
                 'min_sum_insured' => self::MIN_SUM_INSURED,
                 'max_sum_insured' => self::MAX_SUM_INSURED
-            ]));
+            ]), config('setting.response_codes.sum_insured_referred'));
         }
 
         $variants = [];

@@ -72,7 +72,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
                         'remarks' => $result->response
                     ]);
 
-                return $this->abort($result->response);
+                return $this->abort($result->response, $result->code);
             }         
     
             // Include Insurer Details in Response

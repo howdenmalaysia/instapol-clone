@@ -21,11 +21,16 @@ return [
         'company_registration_no' => 4
     ],
     'response_codes' => [
+        // Underwriting Related
+        'earlier_renewal' => 460,
+        'sum_insured_referred' => 461,
+        'gap_in_cover' => 462,
+
+        // Logic Related
         'unsupported_id_types' => 480,
-        'earlier_renewal' => 481,
-        'invalid_insurance_status' => 490,
-        'insurance_record_mismatch' => 491,
-        'total_payable_not_match' => 492
+        'invalid_insurance_status' => 481,
+        'insurance_record_mismatch' => 482,
+        'total_payable_not_match' => 483
     ],
     'howden' => [
         'short_code' => env('HOWDEN_SHORT_CODE')
