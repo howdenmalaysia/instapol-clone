@@ -106,25 +106,28 @@ class PacificOrient implements InsurerLibraryInterface
             'variant' => '' 
         ]);
 
-        return new VIXNCDResponse([
-            'chassis_number' => $vix->response->chassis_number,
-            'coverage' => 'Comprehensive',
-            'engine_capacity' => $vix->response->engine_capacity,
-            'engine_number' => $vix->response->engine_number,
-            'expiry_date' => Carbon::parse($vix->response->expiry_date)->format('Y-m-d'),
-            'inception_date' => Carbon::parse($vix->response->inception_date)->format('Y-m-d'),
-            'make_code' => $vix->response->make,
-            'model_code' => $vix->response->model,
-            'manufacture_year' => $vix->response->manufacturing_year,
-            'max_sum_insured' => roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_UP, true, self::MAX_SUM_INSURED),
-            'min_sum_insured' => roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_DOWN, false, self::MIN_SUM_INSURED),
-            'sum_insured' => $sum_insured,
-            'sum_insured_type' => 'Agreed Value',
-            'ncd_percentage' => floatval($vix->response->ncd),
-            'seating_capacity' => $vix->response->seating_capacity,
-            'variants' => $variants,
-            'vehicle_number' => $input->vehicle_number
-        ]);
+        return (object) [
+            'status' => true,
+            'response' => new VIXNCDResponse([
+                'chassis_number' => $vix->response->chassis_number,
+                'coverage' => 'Comprehensive',
+                'engine_capacity' => $vix->response->engine_capacity,
+                'engine_number' => $vix->response->engine_number,
+                'expiry_date' => Carbon::parse($vix->response->expiry_date)->format('Y-m-d'),
+                'inception_date' => Carbon::parse($vix->response->inception_date)->format('Y-m-d'),
+                'make_code' => $vix->response->make,
+                'model_code' => $vix->response->model,
+                'manufacture_year' => $vix->response->manufacturing_year,
+                'max_sum_insured' => roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_UP, true, self::MAX_SUM_INSURED),
+                'min_sum_insured' => roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_DOWN, false, self::MIN_SUM_INSURED),
+                'sum_insured' => $sum_insured,
+                'sum_insured_type' => 'Agreed Value',
+                'ncd_percentage' => floatval($vix->response->ncd),
+                'seating_capacity' => $vix->response->seating_capacity,
+                'variants' => $variants,
+                'vehicle_number' => $input->vehicle_number
+            ])
+        ];
     }
 
     public function premiumDetails(object $input, $full_quote = false) : PremiumResponse

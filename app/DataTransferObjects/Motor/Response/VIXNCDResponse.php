@@ -6,8 +6,6 @@ use Spatie\DataTransferObject\DataTransferObject;
 
 class VIXNCDResponse extends DataTransferObject
 {
-    public bool $status;
-
     /** @var string|null */
     public $built_type;
     
