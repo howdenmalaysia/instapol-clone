@@ -85,6 +85,9 @@ class MotorController extends Controller
         $this->checkMotorSessionObject($request);
 
         $session = $request->session()->get('motor');
+        if(empty($session->motor)) {
+            return redirect()->route('motor.index');
+        }
 
         $products = Product::with('insurance_company')->get();
         $product_ids = $insurer_ids = [];
