@@ -5,6 +5,7 @@ namespace App\Helpers\Insurer;
 use App\DataTransferObjects\Motor\Response\PremiumResponse;
 use App\DataTransferObjects\Motor\Response\ResponseData;
 use App\DataTransferObjects\Motor\Response\VIXNCDResponse;
+use App\DataTransferObjects\Motor\VariantData;
 use App\Helpers\HttpClient;
 use App\Interfaces\InsurerLibraryInterface;
 use App\Models\APILogs;
@@ -100,11 +101,11 @@ class PacificOrient implements InsurerLibraryInterface
         }
 
         $variants = [];
-        array_push($variants, [
+        array_push($variants, new VariantData([
             'nvic' => (string) $vix->response->nvic,
             'sum_insured' => floatval($vix->response->sum_insured),
             'variant' => ''
-        ]);
+        ]));
 
         return (object) [
             'status' => true,
