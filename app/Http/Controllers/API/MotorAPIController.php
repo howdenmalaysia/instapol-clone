@@ -74,7 +74,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             $result->response->insurer = $product->insurance_company->name;
             $result->response->product_name = $product->name;
     
-            return new VehicleVariantData([
+            $data = new VehicleVariantData([
                 'insurer' => $result->response->insurer,
                 'product_name' => $result->response->product_name,
                 'vehicle_number' => $result->response->vehicle_number,
@@ -91,6 +91,8 @@ class MotorAPIController extends Controller implements MotorAPIInterface
                 'max_sum_insured' => $result->response->min_sum_insured,
                 'variants' => $result->response->variants,
             ]);
+
+            return $data->all();
         } catch(Exception $ex) {
             Log::error("[API/GetVehicleDetails] An error occurred. {$ex->getMessage()}");
             
