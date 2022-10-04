@@ -35,6 +35,8 @@ class PacificOrient implements InsurerLibraryInterface
     private const ALLOWED_GAP_IN_COVER = 7; // Days
     private const MIN_SUM_INSURED = 10000;
     private const MAX_SUM_INSURED = 500000;
+    private const ADJUSTMENT_RATE_UP = 10;
+    private const ADJUSTMENT_RATE_DOWN = 10;
 
     private const SOAP_ACTION_DOMAIN = 'http://tempuri.org';
 
@@ -111,16 +113,17 @@ class PacificOrient implements InsurerLibraryInterface
             'engine_number' => $vix->response->engine_number,
             'expiry_date' => Carbon::parse($vix->response->expiry_date)->format('Y-m-d'),
             'inception_date' => Carbon::parse($vix->response->inception_date)->format('Y-m-d'),
-            'make' => $vix->response->make,
-            'model' => $vix->response->model,
+            'make_code' => $vix->response->make,
+            'model_code' => $vix->response->model,
             'manufacture_year' => $vix->response->manufacturing_year,
-            'max_sum_insured' => $sum_insured,
-            'min_sum_insured' => $sum_insured,
+            'max_sum_insured' => roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_UP, true, self::MAX_SUM_INSURED),
+            'min_sum_insured' => roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_DOWN, false, self::MIN_SUM_INSURED),
             'sum_insured' => $sum_insured,
             'sum_insured_type' => 'Agreed Value',
             'ncd_percentage' => $vix->response->ncd,
             'seating_capacity' => $vix->response->seating_capacity,
-            'variants' => $variants
+            'variants' => $variants,
+            'vehicle_number' => $input->vehicle_number
         ]);
     }
 
@@ -508,7 +511,7 @@ class PacificOrient implements InsurerLibraryInterface
             'ncd' => (int) $data->NCD,
             'nvic' => (string) $data->NVIC,
             'seating_capacity' => (int) $data->SeatingCapacity,
-            'sum_insured' => (int) $data->SumInsured
+            'sum_insured' => (int) str_replace(',', '', $data->SumInsured)
         ];
 
         return new ResponseData([

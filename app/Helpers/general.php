@@ -131,3 +131,28 @@ if(!function_exists('getInsuranceStatus')) {
         return $status;
     }
 }
+
+if (!function_exists('roundSumInsured')) {
+    function roundSumInsured(int $sum_insured, float $percentage, $round_down = false, int $extrema = 0)
+    {
+        $amount = $sum_insured * ($percentage / 100);
+
+        if ($round_down) {
+            $precision = ($sum_insured + $amount) / 1000;
+            $sum_insured = 1000 * (floor($precision));
+
+            if($extrema != 0 && $sum_insured > $extrema) {
+                $sum_insured = $extrema;
+            }
+        } else {
+            $precision = ($sum_insured - $amount) / 1000;
+            $sum_insured = 1000 * (ceil($precision));
+
+            if($extrema != 0 && $sum_insured < $extrema) {
+                $sum_insured = $extrema;
+            }
+        }
+
+        return $sum_insured;
+    }
+}
