@@ -46,9 +46,9 @@ class QuotationData extends DataTransferObject
     /** @var string|null */
     public $h_product_id;
     
-    /** @var App\DataTransferObjects\Motor\VehicleData */
+    /** @var App\DataTransferObjects\Motor\VehicleData|null */
     public $h_vehicle;
     
-    /** @var App\DataTransferObjects\Motor\VehicleData */
+    /** @var App\DataTransferObjects\Motor\VehicleData|null */
     public $h_vehicle_list;
 }
