@@ -24,6 +24,7 @@ use App\Models\Motor\InsuranceMotorDriver;
 use App\Models\Motor\InsuranceMotorRoadtax;
 use App\Models\Motor\InsurancePromo;
 use App\Models\Motor\Product;
+use App\Models\Motor\Quotation;
 use App\Models\Motor\VehicleBodyType;
 use App\Models\Postcode;
 use App\Models\User;
@@ -64,9 +65,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
 
             if(!$result->status) {
                 return $this->abort($result->response);
-            }
-    
-            // Log Vehicle Data to DB
+            }         
     
             // Include Insurer Details in Response
             $product = Product::with(['insurance_company'])
