@@ -64,6 +64,14 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             $result = $insurer->vehicleDetails($data);
 
             if(!$result->status) {
+                Quotation::where('vehicle_number', strtoupper($request->vehicle_number))
+                    ->where('updated_at', '>=', Carbon::now()->subMonth())
+                    ->where('updated_at', '<', Carbon::now())
+                    ->where('active', Quotation::ACTIVE)
+                    ->update([
+                        'remarks' => $result->response
+                    ]);
+
                 return $this->abort($result->response);
             }         
     
