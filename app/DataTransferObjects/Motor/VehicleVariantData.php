@@ -61,4 +61,7 @@ class VariantData extends DataTransferObject
     
     /** @var string|null */
     public $variant;
+
+    /** @var float|null */
+    public $sum_insured;
 }
