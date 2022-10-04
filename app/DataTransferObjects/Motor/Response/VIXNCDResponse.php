@@ -57,10 +57,10 @@ class VIXNCDResponse extends DataTransferObject
     /** @var string|null */
     public $liberty_model_code;
 
-    /** @var double */
+    /** @var float */
     public $max_sum_insured;
     
-    /** @var double */
+    /** @var float */
     public $min_sum_insured;
     
     /** @var float */

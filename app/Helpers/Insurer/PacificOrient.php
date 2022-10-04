@@ -102,7 +102,7 @@ class PacificOrient implements InsurerLibraryInterface
         $variants = [];
         array_push($variants, [
             'nvic' => (string) $vix->response->nvic,
-            'sum_insured' => $vix->response->sum_insured,
+            'sum_insured' => floatval($vix->response->sum_insured),
             'variant' => '' 
         ]);
 

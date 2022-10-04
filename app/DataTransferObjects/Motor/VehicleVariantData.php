@@ -39,13 +39,13 @@ class VehicleVariantData extends DataTransferObject
     /** @var string|null */
     public $expiry_date;
     
-    /** @var int|null */
+    /** @var float|null */
     public $sum_insured;
     
-    /** @var int|null */
+    /** @var float|null */
     public $min_sum_insured;
     
-    /** @var int|null */
+    /** @var float|null */
     public $max_sum_insured;
 
     /**
