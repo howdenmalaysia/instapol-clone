@@ -8,10 +8,10 @@ class VehicleData extends DataTransferObject
 {
     
     /** @var string */
-    public $vehRegNo;
+    public $vehicle_number;
     
     /** @var string */
-    public $classCode;
+    public $class_code;
 	
     /** @var string */
     public $coverage_code;
@@ -20,31 +20,31 @@ class VehicleData extends DataTransferObject
     public $vehicle_use_code;
     
     /** @var string */
-    public $makeCode;
+    public $make_code;
     
     /** @var string */
     public $make;
     
     /** @var string */
-    public $modelCode;
+    public $model_code;
     
     /** @var string */
     public $model;
     
     /** @var string */
-    public $yearMake;
+    public $year_make;
     
     /** @var string */
-    public $engineNo;
+    public $engine_no;
     
     /** @var string */
-    public $chassisNo;
+    public $chassis_no;
     
     /** @var float */
-    public $marketValue = 0.00;
+    public $market_value = 0.00;
     
     /** @var float */
-    public $purchasePrice = 0.00;
+    public $purchase_price = 0.00;
     
     /** @var string */
     public $style = '';
@@ -56,28 +56,28 @@ class VehicleData extends DataTransferObject
     public $variant;
     
     /** @var string */
-    public $seatingCapacity;
+    public $seating_capacity;
     
     /** @var string */
-    public $engineCapacity;
+    public $engine_capacity;
     
     /** @var string */
-    public string $ncdEffDate;
+    public string $ncd_effective_date;
     
     /** @var string */
-    public $ncdExpDate;
+    public $ncd_expiry_date;
     
     /** @var string */
-    public $curNCD;
+    public $current_ncd;
     
     /** @var string */
-    public $nextNCD;
+    public $next_ncd;
     
     /** @var string */
-    public $nextNcdEffDate;
+    public $next_ncd_effective_date;
     
     /** @var string */
-    public $polExpDate;
+    public $policy_expiry_date;
     
     /** @var string */
     public $assembly_type_code = '';
@@ -89,5 +89,5 @@ class VehicleData extends DataTransferObject
     public $max_market_value = 0.00;
     
     /** @var string */
-    public $ncdcode = '';
+    public $ncd_code = '';
 }
