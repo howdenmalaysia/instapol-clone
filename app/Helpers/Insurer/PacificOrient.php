@@ -120,7 +120,7 @@ class PacificOrient implements InsurerLibraryInterface
             'min_sum_insured' => roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_DOWN, false, self::MIN_SUM_INSURED),
             'sum_insured' => $sum_insured,
             'sum_insured_type' => 'Agreed Value',
-            'ncd_percentage' => $vix->response->ncd,
+            'ncd_percentage' => floatval($vix->response->ncd),
             'seating_capacity' => $vix->response->seating_capacity,
             'variants' => $variants,
             'vehicle_number' => $input->vehicle_number

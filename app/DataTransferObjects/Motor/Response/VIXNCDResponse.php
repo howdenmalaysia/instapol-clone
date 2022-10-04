@@ -42,13 +42,13 @@ class VIXNCDResponse extends DataTransferObject
     /** @var int */
     public $manufacture_year;
     
-    /** @var string|null */
+    /** @var int|null */
     public $make_code;
     
     /** @var string|null */
     public $make;
     
-    /** @var string|null */
+    /** @var int|null */
     public $model_code;
 
     /** @var string|null */
@@ -69,7 +69,7 @@ class VIXNCDResponse extends DataTransferObject
     /** @var int */
     public $seating_capacity;
     
-    /** @var int */
+    /** @var float */
     public $sum_insured;
     
     /** @var string|null */
