@@ -7,6 +7,7 @@ use App\DataTransferObjects\Motor\FullQuoteResponse;
 use App\DataTransferObjects\Motor\QuoteResponse;
 use App\DataTransferObjects\Motor\Response\QuotationResponse;
 use App\DataTransferObjects\Motor\Response\SubmitCoverNoteResponse;
+use App\DataTransferObjects\Motor\VehicleData;
 use App\DataTransferObjects\Motor\VehicleVariantData;
 use App\Helpers\Insurer\PacificOrient;
 use App\Http\Controllers\Controller;
@@ -110,7 +111,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             'gender' => $request->gender,
             'marital_status' => $request->marital_status,
             'nvic' => $request->nvic,
-            'vehicle' => toObject($request->vehicle),
+            'vehicle' => new VehicleData($request->vehicle),
             'extra_cover' => toObject($request->extra_cover ?? []),
             'additional_driver' => toObject($request->additional_driver ?? []),
             'vehicle_body_type' => $vehicle_body_type_id,
