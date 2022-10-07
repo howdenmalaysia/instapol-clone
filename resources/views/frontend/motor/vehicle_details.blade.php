@@ -195,6 +195,8 @@
             $('#coverage').val(data.coverage);
             $('#inception-date').val(data.inception_date);
             $('#expiry-date').val(data.expiry_date);
+            $('#variants').val(data.nvic).trigger('change');
+            swalHide();
 
             motor.vehicle = {
                 make: data.make,
