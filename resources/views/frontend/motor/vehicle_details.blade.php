@@ -193,7 +193,7 @@
             $('#ncd-percentage').val(data.ncd_percentage);
             $('#coverage').val(data.coverage);
             $('#inception-date').val(data.inception_date);
-            $('#expiry-date')val(data.expiry_date);
+            $('#expiry-date').val(data.expiry_date);
 
             motor.vehicle = {
                 make: data.make,
