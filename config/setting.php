@@ -25,12 +25,18 @@ return [
         'earlier_renewal' => 460,
         'sum_insured_referred' => 461,
         'gap_in_cover' => 462,
+        'undergoing_renewal' => 463,
+        'invalid_id_number' => 464,
+        'invalid_vehicle_number' => 465,
+        'data_not_found' => 466,
+        'unable_to_get_ncd' => 467,
 
         // Logic Related
         'unsupported_id_types' => 480,
         'invalid_insurance_status' => 481,
         'insurance_record_mismatch' => 482,
-        'total_payable_not_match' => 483
+        'total_payable_not_match' => 483,
+        'general_error' => 490
     ],
     'howden' => [
         'short_code' => env('HOWDEN_SHORT_CODE')
