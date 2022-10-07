@@ -20,8 +20,8 @@ class Controller extends BaseController
         }
     }
 
-    public function abort($message = 'An error encountered.', int $code = 500)
+    public function abort($message = 'An error encountered.', int $code = 500, array $response_header = [])
     {
-        return (object) ['status' => false, 'response' => $message, 'code' => $code];
+        return abort($code, $message, $response_header);
     }
 }
