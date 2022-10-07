@@ -170,6 +170,7 @@
                     }
                 }).catch((error) => {
                     console.log(error);
+                    controller.abort();
                     swalAlert(error.response.data, () => {
                         setTimeout(() => {
                             window.location = "{{ route('motor.index') }}"
