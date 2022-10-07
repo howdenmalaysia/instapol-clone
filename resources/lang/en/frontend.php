@@ -496,6 +496,7 @@ return [
         'get_quotes_for_insurance' => 'Get Quotes for Insurance',
         'coming_soon' => 'Coming Soon',
         'how' => 'How',
+        'select' => 'Select',
     ],
     'motor' => [
         'compare' => 'Compare',
@@ -536,7 +537,8 @@ return [
             'coverage' => 'Coverage',
             'next_coverage_period' => 'Next Coverage Period',
             'my_vehicle_information' => 'Yes! This is my vehicle information',
-            'need_assistance' => 'I need assistance'
+            'need_assistance' => 'I need assistance',
+            'select_car_specs' => 'Please Select Your Car Spec'
         ],
         'compare_page' => [
             'scroll_down' => 'Scroll down for our highlights of the policies on offer.',

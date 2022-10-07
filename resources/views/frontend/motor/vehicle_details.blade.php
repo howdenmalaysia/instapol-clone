@@ -59,7 +59,24 @@
                                 <p>{{ __('frontend.motor.vehicle_details.variant') }}</p>
                             </div>
                             <div class="col-6">
-                                <select id="variant" name="variant" data-select></select>
+                                <div id="variant-popover" data-bs-container="body" data-bs-placement="top">
+                                    <select
+                                        id="variant"
+                                        name="variant"
+                                        data-select
+                                        required
+                                        data-parsley-errors-messages-disabled
+                                        data-bs-style="btn-danger"
+                                    >
+                                        <option value="">{{ '-- ' . __('frontend.general.select') . ' --' }}</option>
+                                        @if (!empty($motor->variants))
+                                            @foreach ($motor->variants as $variant)
+                                                <option value="{{ $variant->nvic }}">{{ $variant->variant }}</option>
+                                            @endforeach
+                                        @endif
+                                    </select>
+                                </div>
+                                <div class="invalid-tooltip">{{ __('frontend.motor.vehicle_details.select_car_specs') }}</div>
                             </div>
                         </div>
                     </div>
@@ -139,6 +156,9 @@
             const controller = new AbortController();
             let calls = [];
             let selectedVariant = null;
+            let gapInCover = false;
+            let sumInsuredReferred = false;
+            let errorMessage = '';
 
             products.forEach((product_id, key) => {
                 calls[key] = instapol.post("{{ route('motor.api.vehicle-details') }}", {
@@ -170,23 +190,74 @@
                             if(selectedVariant === null) {
                                 selectedVariant = response.data;
                             }
-                        }
 
-                        if(populated) {
-                            controller.abort();
+                            if(populated) {
+                                controller.abort();
+                            }
                         }
-                    } else {
-
                     }
                 }).catch((error) => {
                     console.log(error);
-                    swalAlert(error.response.data, () => {
-                        // setTimeout(() => {
-                        //     window.location = "{{ route('motor.index') }}"
-                        // }, 5000);
-                    })
+                    
+                    let shouldStop = false;
+                    switch(error.response.status) {
+                        case 460: // Earlier Renewal (2 months - MAX 62 days)
+                        case 463: // Undergoing Renewal
+                        case 464: // Invalid ID Number / Mismatch
+                        case 465: { // Invalid Vehicle Number
+                            shouldStop = true;
+
+                            break;
+                        }
+                        case 461: {
+                            sumInsuredReferred = true;
+                            errorMessage = error.response;
+
+                            break;
+                        }
+                        case 462: {
+                            gapInCover = true;
+                            errorMessage = error.response;
+
+                            break;
+                        }
+                    }
+
+                    if(shouldStop) {
+                        swalAlert(error.response.data, () => {
+                            window.location = "{{ route('motor.index') }}"
+                        });
+                    }
                 });
             });
+
+            axios.all(calls)
+                .then(() => {
+                    let length = $('#variants option').length;
+                    let selected = $('#variants').val();
+
+                    if(length === 1) {
+                        if(selectedVariant) {
+                            populate(selectedVariant);
+
+                            $('#variants').val(selectedVariant.variants[0].nvic).trigger('change');
+
+                            swalHide();
+                        } else if(gapInCover || sumInsuredReferred) {
+                            swalAlert(errorMessage, () => {
+                                window.location = "{{ route('motor.index') }}"
+                            });
+                        } else if(selected == '') {
+                            if(selectedVariant) {
+                                $('#variants').val(selectedVariant.variants[0].nvic).trigger('change');
+                            } else {
+                                $('#variant-popover').popover('show');
+                            }
+
+                            swalHide();
+                        }
+                    }
+                })
         }
 
         function populate(data) {

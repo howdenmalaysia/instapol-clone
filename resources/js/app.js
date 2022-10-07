@@ -36,7 +36,7 @@ window.swalLoading = function () {
     });
 }
 
-window.swalAlert = function (message, callback = null, showDenyButton = false, icon = 'error') {
+window.swalAlert = function (message, callback = null, showDenyButton = false, icon = 'error', confirmButtonText = 'Go Back') {
     var title = '';
     switch(icon) {
         case 'success': {
@@ -58,6 +58,9 @@ window.swalAlert = function (message, callback = null, showDenyButton = false, i
         icon: icon,
         text: message,
         showDenyButton: showDenyButton,
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        confirmButtonText: confirmButtonText
     }).then(callback);
 }
 
