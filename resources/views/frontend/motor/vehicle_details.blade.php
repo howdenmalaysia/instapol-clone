@@ -165,16 +165,25 @@
                                 controller.abort();
                             }
                         }
+
+                        if(singleVariant) {
+                            if(selectedVariant === null) {
+                                selectedVariant = response.data;
+                            }
+                        }
+
+                        if(populated) {
+                            controller.abort();
+                        }
                     } else {
 
                     }
                 }).catch((error) => {
                     console.log(error);
-                    controller.abort();
                     swalAlert(error.response.data, () => {
-                        setTimeout(() => {
-                            window.location = "{{ route('motor.index') }}"
-                        }, 5000);
+                        // setTimeout(() => {
+                        //     window.location = "{{ route('motor.index') }}"
+                        // }, 5000);
                     })
                 });
             });
