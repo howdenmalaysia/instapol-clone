@@ -20,8 +20,8 @@ class Controller extends BaseController
         }
     }
 
-    public function abort($message = 'An error encountered.', int $code = 500, array $headers = [])
+    public function abort($message = 'An error encountered.', int $code = 500)
     {
-        return response()->json($message, $code, $headers);
+        return (object) ['status' => false, 'response' => $message, 'code' => $code];
     }
 }
