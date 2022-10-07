@@ -14,6 +14,7 @@ class Quotation extends Model
 
     protected $fillable = [
         'product_type',
+        'vehicle_number',
         'email_address',
         'request_param',
         'referrer',
