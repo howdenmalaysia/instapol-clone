@@ -9,13 +9,17 @@ return [
     'variant_not_match' => 'Variant combination does not match.',
 
     // Underwriting Related
-    'gap_in_cover' => 'Policy already lapsed for :days days.',
-    'sum_insured_referred' => 'Sum insured amount less than RM 10,000 [RM :sum_insured]',
+    'gap_in_cover' => 'It seems like your car insurance has expired more than :days days. Please WhatsApp us for help.',
+    'sum_insured_referred' => 'It seems like your market value of your car is less than RM 10,000.00. Please WhatsApp us for help. [RM :sum_insured]',
     'sum_insured_referred_between' => 'Sum insured amount must be between RM :min_sum_insured and RM :max_sum_insured.',
     'insured_age_referred' => 'You must be :min_age years of age or above and :max_age years of age or lower.',
     'vehicle_age_referred' => 'Vehicle must be :age years of age or lower.',
-    'earlier_renewal' => 'Unable to renew 2 months earlier from expiry date.',
     'referred_risk' => 'Vehicle falls under refer risks for :company. (:reason)',
+    'earlier_renewal' => 'Unfortunately, you may only renew your policy within 2 months before your policy\'s expiry date. Any questions? Feel free to reach out to our Customer Service team.',
+    'undergoing_renewal' => 'It seems like your car is undergoing renewal process by another provider. Please WhatsApp us for help.',
+    'invalid_vehicle_number' => 'Your vehicle registration number is either invalid or does not match the registered owner of the vehicle. Please WhatsApp us for help.',
+    'invalid_id_number' => 'Your ID number is either invalid OR your car number is not match the registered owner of the vehicle. Please WhatsApp us for help.',
+    'unable_to_get_ncd' => 'Unfortunately, we\'re unable to get the NCD for your vehicle. Please WhatsApp us for help.',
 
     // Logic Related
     'invalid_product' => 'Product not found.',
