@@ -181,7 +181,7 @@
 
         function populate(data) {
             // Car Make Logo
-            $('#car-make').attr('src', `{{ assets('images/manufacturer/${data.make.toUpperCase()}.png') }}`)
+            $('#car-make').attr('src', `{{ asset('images/manufacturer/${data.make.toUpperCase()}.png') }}`)
             $('#car-make').attr('alt', data.make.toUpperCase());
 
             // Vehicle Details
