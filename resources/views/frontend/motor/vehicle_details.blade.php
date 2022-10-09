@@ -145,8 +145,24 @@
         $(function() {
             $('#vehicle-details-form').hide();
             fetchData();
-            $('#btn-continue').on('click', function() {
 
+            $('#variants').on('change', function() {
+                if($(this).val() = '') {
+                    $('#variant-popover').popover('show');
+                }
+            });
+
+            $('#variants').on('select2:open', function() {
+                $('#variant-popover').popover('hide');
+            });
+
+            $('#btn-continue').on('click', function() {
+                let form = $('#vehicle-details-form');
+
+                if(form.parsley().isValid()) {
+                    $(this).addClass('loadingButton');
+                    form.submit();
+                }
             });
         });
 
@@ -154,14 +170,11 @@
             swalLoading();
 
             const controller = new AbortController();
-            let calls = [];
             let selectedVariant = null;
-            let gapInCover = false;
-            let sumInsuredReferred = false;
             let errorMessage = '';
 
             products.forEach((product_id, key) => {
-                calls[key] = instapol.post("{{ route('motor.api.vehicle-details') }}", {
+                instapol.post("{{ route('motor.api.vehicle-details') }}", {
                     vehicle_number: motor.vehicle_number,
                     postcode: motor.postcode,
                     id_number: motor.policy_holder.id_number,
@@ -189,6 +202,12 @@
                         if(singleVariant) {
                             if(selectedVariant === null) {
                                 selectedVariant = response.data;
+
+                                populate(selectedVariant);
+
+                                $('#variants').val(selectedVariant.variants[0].nvic).trigger('change');
+
+                                swalHide();
                             }
 
                             if(populated) {
@@ -204,60 +223,23 @@
                         case 460: // Earlier Renewal (2 months - MAX 62 days)
                         case 463: // Undergoing Renewal
                         case 464: // Invalid ID Number / Mismatch
-                        case 465: { // Invalid Vehicle Number
-                            shouldStop = true;
-
-                            break;
-                        }
-                        case 461: {
-                            sumInsuredReferred = true;
-                            errorMessage = error.response;
-
-                            break;
-                        }
-                        case 462: {
-                            gapInCover = true;
-                            errorMessage = error.response;
+                        case 465: // Invalid Vehicle Number
+                        case 461: // Sum Insured Referred
+                        case 462: { // Gap In Cover
+                            shouldStop = true
 
                             break;
                         }
                     }
 
                     if(shouldStop) {
+                        controller.abort();
                         swalAlert(error.response.data, () => {
                             window.location = "{{ route('motor.index') }}"
                         });
                     }
                 });
             });
-
-            axios.all(calls)
-                .then(() => {
-                    let length = $('#variants option').length;
-                    let selected = $('#variants').val();
-
-                    if(length === 1) {
-                        if(selectedVariant) {
-                            populate(selectedVariant);
-
-                            $('#variants').val(selectedVariant.variants[0].nvic).trigger('change');
-
-                            swalHide();
-                        } else if(gapInCover || sumInsuredReferred) {
-                            swalAlert(errorMessage, () => {
-                                window.location = "{{ route('motor.index') }}"
-                            });
-                        } else if(selected == '') {
-                            if(selectedVariant) {
-                                $('#variants').val(selectedVariant.variants[0].nvic).trigger('change');
-                            } else {
-                                $('#variant-popover').popover('show');
-                            }
-
-                            swalHide();
-                        }
-                    }
-                })
         }
 
         function populate(data) {
@@ -266,16 +248,16 @@
             $('#car-make').attr('alt', data.make.toUpperCase());
 
             // Vehicle Details
-            $('#vehicle-number').val(data.vehicle_number);
-            $('#make').val(data.make);
-            $('#model').val(data.model);
-            $('#engine-capacity').val(data.engine_capcity);
-            $('#manufacture-year').val(data.manufacture_year);
-            $('#ncd-percentage').val(data.ncd_percentage);
-            $('#coverage').val(data.coverage);
-            $('#inception-date').val(data.inception_date);
-            $('#expiry-date').val(data.expiry_date);
-            $('#variants').val(data.nvic).trigger('change');
+            $('#vehicle-number').text(data.vehicle_number);
+            $('#make').text(data.make || '-');
+            $('#model').text(data.model || '-');
+            $('#engine-capacity').text(data.engine_capacity);
+            $('#manufacture-year').text(data.manufacture_year);
+            $('#ncd-percentage').text(data.ncd_percentage + '%');
+            $('#coverage').text(data.coverage);
+            $('#inception-date').text(data.inception_date);
+            $('#expiry-date').text(data.expiry_date);
+            $('#variants').text(data.nvic).trigger('change');
             swalHide();
 
             motor.vehicle = {
