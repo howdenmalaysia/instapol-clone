@@ -13,7 +13,7 @@ class VIXNCDResponse extends DataTransferObject
     public $body_type_code;
     
     /** @var string|null */
-    public $body_type_desription;
+    public $body_type_description;
     
     /** @var string */
     public $chassis_number;
