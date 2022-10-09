@@ -1,0 +1,800 @@
+{
+    "makecode": [
+        {
+            "VEHMAKEMAJOR": "01",
+            "MAJORDESC": "ALFA ROMEO"
+        },
+        {
+            "VEHMAKEMAJOR": "02",
+            "MAJORDESC": "AUDI"
+        },
+        {
+            "VEHMAKEMAJOR": "03",
+            "MAJORDESC": "BMW"
+        },
+        {
+            "VEHMAKEMAJOR": "04",
+            "MAJORDESC": "CITROEN"
+        },
+        {
+            "VEHMAKEMAJOR": "05",
+            "MAJORDESC": "MERCEDES BENZ"
+        },
+        {
+            "VEHMAKEMAJOR": "06",
+            "MAJORDESC": "VOLVO"
+        },
+        {
+            "VEHMAKEMAJOR": "08",
+            "MAJORDESC": "PORSCHE"
+        },
+        {
+            "VEHMAKEMAJOR": "09",
+            "MAJORDESC": "SAAB"
+        },
+        {
+            "VEHMAKEMAJOR": "10",
+            "MAJORDESC": "CHEVROLET"
+        },
+        {
+            "VEHMAKEMAJOR": "100",
+            "MAJORDESC": "SMART"
+        },
+        {
+            "VEHMAKEMAJOR": "101",
+            "MAJORDESC": "HUMMER"
+        },
+        {
+            "VEHMAKEMAJOR": "105",
+            "MAJORDESC": "CHANA"
+        },
+        {
+            "VEHMAKEMAJOR": "106",
+            "MAJORDESC": "LMG"
+        },
+        {
+            "VEHMAKEMAJOR": "11",
+            "MAJORDESC": "HONDA"
+        },
+        {
+            "VEHMAKEMAJOR": "110",
+            "MAJORDESC": "MITSUBISHI FUSO"
+        },
+        {
+            "VEHMAKEMAJOR": "111",
+            "MAJORDESC": "GREAT WALL"
+        },
+        {
+            "VEHMAKEMAJOR": "112",
+            "MAJORDESC": "KING LONG"
+        },
+        {
+            "VEHMAKEMAJOR": "113",
+            "MAJORDESC": "JOYLONG"
+        },
+        {
+            "VEHMAKEMAJOR": "114",
+            "MAJORDESC": "CADILLAC"
+        },
+        {
+            "VEHMAKEMAJOR": "115",
+            "MAJORDESC": "INFINITI"
+        },
+        {
+            "VEHMAKEMAJOR": "12",
+            "MAJORDESC": "PEUGEOT"
+        },
+        {
+            "VEHMAKEMAJOR": "120",
+            "MAJORDESC": "FOTON"
+        },
+        {
+            "VEHMAKEMAJOR": "121",
+            "MAJORDESC": "MCLAREN"
+        },
+        {
+            "VEHMAKEMAJOR": "122",
+            "MAJORDESC": "HUANGHAI"
+        },
+        {
+            "VEHMAKEMAJOR": "13",
+            "MAJORDESC": "FIAT"
+        },
+        {
+            "VEHMAKEMAJOR": "133",
+            "MAJORDESC": "BAW"
+        },
+        {
+            "VEHMAKEMAJOR": "135",
+            "MAJORDESC": "KTM"
+        },
+        {
+            "VEHMAKEMAJOR": "138",
+            "MAJORDESC": "JBC"
+        },
+        {
+            "VEHMAKEMAJOR": "14",
+            "MAJORDESC": "OPEL"
+        },
+        {
+            "VEHMAKEMAJOR": "141",
+            "MAJORDESC": "DAIICHI"
+        },
+        {
+            "VEHMAKEMAJOR": "146",
+            "MAJORDESC": "BISON"
+        },
+        {
+            "VEHMAKEMAJOR": "15",
+            "MAJORDESC": "ROVER"
+        },
+        {
+            "VEHMAKEMAJOR": "150",
+            "MAJORDESC": "JAC"
+        },
+        {
+            "VEHMAKEMAJOR": "152",
+            "MAJORDESC": "JMC"
+        },
+        {
+            "VEHMAKEMAJOR": "156",
+            "MAJORDESC": "PINZGAUER"
+        },
+        {
+            "VEHMAKEMAJOR": "157",
+            "MAJORDESC": "FODAY"
+        },
+        {
+            "VEHMAKEMAJOR": "159",
+            "MAJORDESC": "DFSK"
+        },
+        {
+            "VEHMAKEMAJOR": "161",
+            "MAJORDESC": "HOHAN"
+        },
+        {
+            "VEHMAKEMAJOR": "163",
+            "MAJORDESC": "DEMAK"
+        },
+        {
+            "VEHMAKEMAJOR": "17",
+            "MAJORDESC": "DONG FENG"
+        },
+        {
+            "VEHMAKEMAJOR": "172",
+            "MAJORDESC": "FARID"
+        },
+        {
+            "VEHMAKEMAJOR": "174",
+            "MAJORDESC": "CAM"
+        },
+        {
+            "VEHMAKEMAJOR": "177",
+            "MAJORDESC": "BRABUS"
+        },
+        {
+            "VEHMAKEMAJOR": "179",
+            "MAJORDESC": "DS"
+        },
+        {
+            "VEHMAKEMAJOR": "18",
+            "MAJORDESC": "AUSTIN"
+        },
+        {
+            "VEHMAKEMAJOR": "180",
+            "MAJORDESC": "HAVAL"
+        },
+        {
+            "VEHMAKEMAJOR": "183",
+            "MAJORDESC": "BORGWARD"
+        },
+        {
+            "VEHMAKEMAJOR": "19",
+            "MAJORDESC": "DATSUN"
+        },
+        {
+            "VEHMAKEMAJOR": "21",
+            "MAJORDESC": "DAIHATSU"
+        },
+        {
+            "VEHMAKEMAJOR": "22",
+            "MAJORDESC": "FORD"
+        },
+        {
+            "VEHMAKEMAJOR": "23",
+            "MAJORDESC": "ISUZU"
+        },
+        {
+            "VEHMAKEMAJOR": "24",
+            "MAJORDESC": "MAZDA"
+        },
+        {
+            "VEHMAKEMAJOR": "25",
+            "MAJORDESC": "MITSUBISHI"
+        },
+        {
+            "VEHMAKEMAJOR": "26",
+            "MAJORDESC": "NISSAN"
+        },
+        {
+            "VEHMAKEMAJOR": "27",
+            "MAJORDESC": "SUBARU"
+        },
+        {
+            "VEHMAKEMAJOR": "28",
+            "MAJORDESC": "SUZUKI"
+        },
+        {
+            "VEHMAKEMAJOR": "29",
+            "MAJORDESC": "TOYOTA"
+        },
+        {
+            "VEHMAKEMAJOR": "30",
+            "MAJORDESC": "NAZA"
+        },
+        {
+            "VEHMAKEMAJOR": "31",
+            "MAJORDESC": "PROTON"
+        },
+        {
+            "VEHMAKEMAJOR": "32",
+            "MAJORDESC": "HICOM"
+        },
+        {
+            "VEHMAKEMAJOR": "33",
+            "MAJORDESC": "PERODUA"
+        },
+        {
+            "VEHMAKEMAJOR": "34",
+            "MAJORDESC": "TD2000"
+        },
+        {
+            "VEHMAKEMAJOR": "35",
+            "MAJORDESC": "MITSUOKA"
+        },
+        {
+            "VEHMAKEMAJOR": "36",
+            "MAJORDESC": "CHRYSLER"
+        },
+        {
+            "VEHMAKEMAJOR": "37",
+            "MAJORDESC": "M.G."
+        },
+        {
+            "VEHMAKEMAJOR": "38",
+            "MAJORDESC": "BENTLEY"
+        },
+        {
+            "VEHMAKEMAJOR": "41",
+            "MAJORDESC": "KAWASAKI"
+        },
+        {
+            "VEHMAKEMAJOR": "42",
+            "MAJORDESC": "YAMAHA"
+        },
+        {
+            "VEHMAKEMAJOR": "43",
+            "MAJORDESC": "CATERPILLAR"
+        },
+        {
+            "VEHMAKEMAJOR": "45",
+            "MAJORDESC": "DAIMLER"
+        },
+        {
+            "VEHMAKEMAJOR": "47",
+            "MAJORDESC": "FERRARI"
+        },
+        {
+            "VEHMAKEMAJOR": "48",
+            "MAJORDESC": "HARLEY DAVIDSON"
+        },
+        {
+            "VEHMAKEMAJOR": "49",
+            "MAJORDESC": "HOLDEN"
+        },
+        {
+            "VEHMAKEMAJOR": "52",
+            "MAJORDESC": "HINO"
+        },
+        {
+            "VEHMAKEMAJOR": "54",
+            "MAJORDESC": "HYOSUNG"
+        },
+        {
+            "VEHMAKEMAJOR": "55",
+            "MAJORDESC": "HYUNDAI"
+        },
+        {
+            "VEHMAKEMAJOR": "56",
+            "MAJORDESC": "JAGUAR"
+        },
+        {
+            "VEHMAKEMAJOR": "57",
+            "MAJORDESC": "JEEP"
+        },
+        {
+            "VEHMAKEMAJOR": "58",
+            "MAJORDESC": "KIA"
+        },
+        {
+            "VEHMAKEMAJOR": "59",
+            "MAJORDESC": "LAND ROVER"
+        },
+        {
+            "VEHMAKEMAJOR": "62",
+            "MAJORDESC": "MAHINDRA"
+        },
+        {
+            "VEHMAKEMAJOR": "64",
+            "MAJORDESC": "MINI"
+        },
+        {
+            "VEHMAKEMAJOR": "66",
+            "MAJORDESC": "PIAGGIO"
+        },
+        {
+            "VEHMAKEMAJOR": "69",
+            "MAJORDESC": "RENAULT"
+        },
+        {
+            "VEHMAKEMAJOR": "71",
+            "MAJORDESC": "ROLLS ROYCE"
+        },
+        {
+            "VEHMAKEMAJOR": "73",
+            "MAJORDESC": "SSANGYONG"
+        },
+        {
+            "VEHMAKEMAJOR": "75",
+            "MAJORDESC": "TATA"
+        },
+        {
+            "VEHMAKEMAJOR": "76",
+            "MAJORDESC": "TRIUMPH"
+        },
+        {
+            "VEHMAKEMAJOR": "77",
+            "MAJORDESC": "TVR"
+        },
+        {
+            "VEHMAKEMAJOR": "78",
+            "MAJORDESC": "VESPA"
+        },
+        {
+            "VEHMAKEMAJOR": "79",
+            "MAJORDESC": "VOLKSWAGEN"
+        },
+        {
+            "VEHMAKEMAJOR": "81",
+            "MAJORDESC": "LAMBORGHINI"
+        },
+        {
+            "VEHMAKEMAJOR": "82",
+            "MAJORDESC": "MODENAS"
+        },
+        {
+            "VEHMAKEMAJOR": "83",
+            "MAJORDESC": "LEXUS"
+        },
+        {
+            "VEHMAKEMAJOR": "84",
+            "MAJORDESC": "BUFORI"
+        },
+        {
+            "VEHMAKEMAJOR": "86",
+            "MAJORDESC": "DAEWOO"
+        },
+        {
+            "VEHMAKEMAJOR": "87",
+            "MAJORDESC": "INOKOM"
+        },
+        {
+            "VEHMAKEMAJOR": "89",
+            "MAJORDESC": "MAXUS"
+        },
+        {
+            "VEHMAKEMAJOR": "90",
+            "MAJORDESC": "LOTUS"
+        },
+        {
+            "VEHMAKEMAJOR": "91",
+            "MAJORDESC": "MASERATI"
+        },
+        {
+            "VEHMAKEMAJOR": "92",
+            "MAJORDESC": "SCANIA"
+        },
+        {
+            "VEHMAKEMAJOR": "94",
+            "MAJORDESC": "SKODA"
+        },
+        {
+            "VEHMAKEMAJOR": "95",
+            "MAJORDESC": "COMEL"
+        },
+        {
+            "VEHMAKEMAJOR": "96",
+            "MAJORDESC": "CHERY"
+        },
+        {
+            "VEHMAKEMAJOR": "9913",
+            "MAJORDESC": "YANGTSE"
+        },
+        {
+            "VEHMAKEMAJOR": "9914",
+            "MAJORDESC": "SUNBEAM"
+        },
+        {
+            "VEHMAKEMAJOR": "9915",
+            "MAJORDESC": "ZNA"
+        },
+        {
+            "VEHMAKEMAJOR": "9917",
+            "MAJORDESC": "ZENITH"
+        },
+        {
+            "VEHMAKEMAJOR": "9918",
+            "MAJORDESC": "XIAMEN"
+        },
+        {
+            "VEHMAKEMAJOR": "9919",
+            "MAJORDESC": "WESTSTAR"
+        },
+        {
+            "VEHMAKEMAJOR": "9920",
+            "MAJORDESC": "WARISAN PUSTAKA"
+        },
+        {
+            "VEHMAKEMAJOR": "9921",
+            "MAJORDESC": "WAGON ENGINEERING"
+        },
+        {
+            "VEHMAKEMAJOR": "9922",
+            "MAJORDESC": "VARIOUS"
+        },
+        {
+            "VEHMAKEMAJOR": "9923",
+            "MAJORDESC": "UMW ENGINEERING"
+        },
+        {
+            "VEHMAKEMAJOR": "9924",
+            "MAJORDESC": "UD TRUCKS"
+        },
+        {
+            "VEHMAKEMAJOR": "9925",
+            "MAJORDESC": "TUAH"
+        },
+        {
+            "VEHMAKEMAJOR": "9926",
+            "MAJORDESC": "TRUCKQUIP SDN BHD"
+        },
+        {
+            "VEHMAKEMAJOR": "9927",
+            "MAJORDESC": "TN FABRICATION ASB & ENG WR SB"
+        },
+        {
+            "VEHMAKEMAJOR": "9928",
+            "MAJORDESC": "TN ENGINEERING (JB) SDN BHD"
+        },
+        {
+            "VEHMAKEMAJOR": "9929",
+            "MAJORDESC": "SYM"
+        },
+        {
+            "VEHMAKEMAJOR": "9931",
+            "MAJORDESC": "SUNNY ENGINEER"
+        },
+        {
+            "VEHMAKEMAJOR": "9932",
+            "MAJORDESC": "SUMMIT VBW"
+        },
+        {
+            "VEHMAKEMAJOR": "9933",
+            "MAJORDESC": "SUARA KEKAL SDN BHD"
+        },
+        {
+            "VEHMAKEMAJOR": "9934",
+            "MAJORDESC": "SOON HUP MOTOR WORKS"
+        },
+        {
+            "VEHMAKEMAJOR": "9935",
+            "MAJORDESC": "SINOTRUCK"
+        },
+        {
+            "VEHMAKEMAJOR": "9936",
+            "MAJORDESC": "SHORE LANDER"
+        },
+        {
+            "VEHMAKEMAJOR": "9937",
+            "MAJORDESC": "SHENYANG BRILLIANCE"
+        },
+        {
+            "VEHMAKEMAJOR": "9938",
+            "MAJORDESC": "SHANDONG KAMA"
+        },
+        {
+            "VEHMAKEMAJOR": "9939",
+            "MAJORDESC": "SERI ZENEITH"
+        },
+        {
+            "VEHMAKEMAJOR": "9940",
+            "MAJORDESC": "SCOMI"
+        },
+        {
+            "VEHMAKEMAJOR": "9941",
+            "MAJORDESC": "ROYAL ENFIELD MOTOR"
+        },
+        {
+            "VEHMAKEMAJOR": "9942",
+            "MAJORDESC": "ROCSTA"
+        },
+        {
+            "VEHMAKEMAJOR": "9943",
+            "MAJORDESC": "OTHERCOMMERCIAL"
+        },
+        {
+            "VEHMAKEMAJOR": "9944",
+            "MAJORDESC": "NO VEH DETAILS"
+        },
+        {
+            "VEHMAKEMAJOR": "9945",
+            "MAJORDESC": "NITRO"
+        },
+        {
+            "VEHMAKEMAJOR": "9946",
+            "MAJORDESC": "NIMOTA"
+        },
+        {
+            "VEHMAKEMAJOR": "9947",
+            "MAJORDESC": "NEW MOTORCYCLE"
+        },
+        {
+            "VEHMAKEMAJOR": "9948",
+            "MAJORDESC": "NA"
+        },
+        {
+            "VEHMAKEMAJOR": "9949",
+            "MAJORDESC": "MZ MOTORRAD"
+        },
+        {
+            "VEHMAKEMAJOR": "9950",
+            "MAJORDESC": "MV AUGUSTA"
+        },
+        {
+            "VEHMAKEMAJOR": "9951",
+            "MAJORDESC": "MOTO GUZZI"
+        },
+        {
+            "VEHMAKEMAJOR": "9952",
+            "MAJORDESC": "MORRIS"
+        },
+        {
+            "VEHMAKEMAJOR": "9953",
+            "MAJORDESC": "MOFAZ"
+        },
+        {
+            "VEHMAKEMAJOR": "9954",
+            "MAJORDESC": "MG ROVER"
+        },
+        {
+            "VEHMAKEMAJOR": "9955",
+            "MAJORDESC": "MG"
+        },
+        {
+            "VEHMAKEMAJOR": "9956",
+            "MAJORDESC": "MAN"
+        },
+        {
+            "VEHMAKEMAJOR": "9957",
+            "MAJORDESC": "MALAYSIA POWER STEEL IND S.B"
+        },
+        {
+            "VEHMAKEMAJOR": "9958",
+            "MAJORDESC": "LORIMAS"
+        },
+        {
+            "VEHMAKEMAJOR": "9959",
+            "MAJORDESC": "LKDJ (LEAN KEE IND. SDN BHD)"
+        },
+        {
+            "VEHMAKEMAJOR": "9960",
+            "MAJORDESC": "LINDE"
+        },
+        {
+            "VEHMAKEMAJOR": "9961",
+            "MAJORDESC": "LADA NIVA"
+        },
+        {
+            "VEHMAKEMAJOR": "9962",
+            "MAJORDESC": "KYMCO"
+        },
+        {
+            "VEHMAKEMAJOR": "9963",
+            "MAJORDESC": "KOBELCO"
+        },
+        {
+            "VEHMAKEMAJOR": "9964",
+            "MAJORDESC": "KAMA"
+        },
+        {
+            "VEHMAKEMAJOR": "9965",
+            "MAJORDESC": "JOHN DEERE"
+        },
+        {
+            "VEHMAKEMAJOR": "9966",
+            "MAJORDESC": "JIANGSU JOYLONG"
+        },
+        {
+            "VEHMAKEMAJOR": "9967",
+            "MAJORDESC": "HYSTER"
+        },
+        {
+            "VEHMAKEMAJOR": "9968",
+            "MAJORDESC": "HUP SOON"
+        },
+        {
+            "VEHMAKEMAJOR": "9969",
+            "MAJORDESC": "HILLMAN"
+        },
+        {
+            "VEHMAKEMAJOR": "9970",
+            "MAJORDESC": "HELI"
+        },
+        {
+            "VEHMAKEMAJOR": "9971",
+            "MAJORDESC": "HARGON ENGINEER"
+        },
+        {
+            "VEHMAKEMAJOR": "9972",
+            "MAJORDESC": "GREEN ORANGES"
+        },
+        {
+            "VEHMAKEMAJOR": "9973",
+            "MAJORDESC": "G F (M) ENGINEERING SDN BHD"
+        },
+        {
+            "VEHMAKEMAJOR": "9974",
+            "MAJORDESC": "FIRAMA ENGINEER"
+        },
+        {
+            "VEHMAKEMAJOR": "9975",
+            "MAJORDESC": "FAW"
+        },
+        {
+            "VEHMAKEMAJOR": "9976",
+            "MAJORDESC": "ERA"
+        },
+        {
+            "VEHMAKEMAJOR": "9977",
+            "MAJORDESC": "DUCATI"
+        },
+        {
+            "VEHMAKEMAJOR": "9978",
+            "MAJORDESC": "DNC ASIATIC"
+        },
+        {
+            "VEHMAKEMAJOR": "9979",
+            "MAJORDESC": "DAF"
+        },
+        {
+            "VEHMAKEMAJOR": "9980",
+            "MAJORDESC": "CHOOTIANVEH BODYBUILDER"
+        },
+        {
+            "VEHMAKEMAJOR": "9981",
+            "MAJORDESC": "CHAI TAT LEE MACHINERY"
+        },
+        {
+            "VEHMAKEMAJOR": "9982",
+            "MAJORDESC": "CASE"
+        },
+        {
+            "VEHMAKEMAJOR": "9983",
+            "MAJORDESC": "BULLOCKS"
+        },
+        {
+            "VEHMAKEMAJOR": "9984",
+            "MAJORDESC": "BUDIWATA"
+        },
+        {
+            "VEHMAKEMAJOR": "9985",
+            "MAJORDESC": "BRP CAM AM"
+        },
+        {
+            "VEHMAKEMAJOR": "9986",
+            "MAJORDESC": "SYARIKAT BOON KOON"
+        },
+        {
+            "VEHMAKEMAJOR": "9987",
+            "MAJORDESC": "BKZ MOTORS"
+        },
+        {
+            "VEHMAKEMAJOR": "9989",
+            "MAJORDESC": "BIMOTA"
+        },
+        {
+            "VEHMAKEMAJOR": "9990",
+            "MAJORDESC": "BENELLI"
+        },
+        {
+            "VEHMAKEMAJOR": "9991",
+            "MAJORDESC": "BEDFORD"
+        },
+        {
+            "VEHMAKEMAJOR": "9992",
+            "MAJORDESC": "B M I ENGINEERING SDN BHD"
+        },
+        {
+            "VEHMAKEMAJOR": "9993",
+            "MAJORDESC": "AUMAN"
+        },
+        {
+            "VEHMAKEMAJOR": "9994",
+            "MAJORDESC": "ATOS"
+        },
+        {
+            "VEHMAKEMAJOR": "9995",
+            "MAJORDESC": "ASTON MARTIN"
+        },
+        {
+            "VEHMAKEMAJOR": "9996",
+            "MAJORDESC": "APRILLIA"
+        },
+        {
+            "VEHMAKEMAJOR": "9997",
+            "MAJORDESC": "ALLIED PACIFIC"
+        },
+        {
+            "VEHMAKEMAJOR": "9998",
+            "MAJORDESC": "ALL OTHER MAKES"
+        },
+        {
+            "VEHMAKEMAJOR": "9999",
+            "MAJORDESC": "ACEGOLD"
+        },
+        {
+            "VEHMAKEMAJOR": "BENG",
+            "MAJORDESC": "BENTENG"
+        },
+        {
+            "VEHMAKEMAJOR": "CHGN",
+            "MAJORDESC": "CHANGAN"
+        },
+        {
+            "VEHMAKEMAJOR": "IVEC",
+            "MAJORDESC": "IVECO"
+        },
+        {
+            "VEHMAKEMAJOR": "KEEW",
+            "MAJORDESC": "KEEWAY MOTOR"
+        },
+        {
+            "VEHMAKEMAJOR": "KIV",
+            "MAJORDESC": "KIV"
+        },
+        {
+            "VEHMAKEMAJOR": "LEXS",
+            "MAJORDESC": "LEXSTAR"
+        },
+        {
+            "VEHMAKEMAJOR": "LOND",
+            "MAJORDESC": "LONDON"
+        },
+        {
+            "VEHMAKEMAJOR": "SEW",
+            "MAJORDESC": "SEW ENGINEERING SDN BHD"
+        },
+        {
+            "VEHMAKEMAJOR": "SPIR",
+            "MAJORDESC": "SPIRAL PRODUCTS SDN BHD"
+        },
+        {
+            "VEHMAKEMAJOR": "TESL",
+            "MAJORDESC": "TESLA"
+        },
+        {
+            "VEHMAKEMAJOR": "ZXAU",
+            "MAJORDESC": "ZX AUTO"
+        }
+    ]
+}

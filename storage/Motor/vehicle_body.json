@@ -1,0 +1,328 @@
+{
+    "vehbody": [
+        {
+            "VEHBODYCODE": "01",
+            "VEHBODYDESC": "Saloon"
+        },
+        {
+            "VEHBODYCODE": "02",
+            "VEHBODYDESC": "HATCHBACK"
+        },
+        {
+            "VEHBODYCODE": "03",
+            "VEHBODYDESC": "Van"
+        },
+        {
+            "VEHBODYCODE": "04",
+            "VEHBODYDESC": "4 Wheel Drive"
+        },
+        {
+            "VEHBODYCODE": "05",
+            "VEHBODYDESC": "PICKUP"
+        },
+        {
+            "VEHBODYCODE": "06",
+            "VEHBODYDESC": "Lorry"
+        },
+        {
+            "VEHBODYCODE": "07",
+            "VEHBODYDESC": "Motorcycle"
+        },
+        {
+            "VEHBODYCODE": "08",
+            "VEHBODYDESC": "Trailer"
+        },
+        {
+            "VEHBODYCODE": "09",
+            "VEHBODYDESC": "Aeroback"
+        },
+        {
+            "VEHBODYCODE": "10",
+            "VEHBODYDESC": "Coupe"
+        },
+        {
+            "VEHBODYCODE": "11",
+            "VEHBODYDESC": "Stationwagon"
+        },
+        {
+            "VEHBODYCODE": "12",
+            "VEHBODYDESC": "Sports/High Performance car"
+        },
+        {
+            "VEHBODYCODE": "13",
+            "VEHBODYDESC": "Notchback Sedan"
+        },
+        {
+            "VEHBODYCODE": "14",
+            "VEHBODYDESC": "4 Door Sedan"
+        },
+        {
+            "VEHBODYCODE": "21",
+            "VEHBODYDESC": "2 Door Sedan"
+        },
+        {
+            "VEHBODYCODE": "22",
+            "VEHBODYDESC": "Jeep"
+        },
+        {
+            "VEHBODYCODE": "23",
+            "VEHBODYDESC": "2 Door Sports"
+        },
+        {
+            "VEHBODYCODE": "24",
+            "VEHBODYDESC": "3 Door Sedan"
+        },
+        {
+            "VEHBODYCODE": "25",
+            "VEHBODYDESC": "Motokar"
+        },
+        {
+            "VEHBODYCODE": "26",
+            "VEHBODYDESC": "LORRY RIGID"
+        },
+        {
+            "VEHBODYCODE": "27",
+            "VEHBODYDESC": "SEDAN"
+        },
+        {
+            "VEHBODYCODE": "28",
+            "VEHBODYDESC": "2 DOOR COUPE"
+        },
+        {
+            "VEHBODYCODE": "29",
+            "VEHBODYDESC": "KARAVAN"
+        },
+        {
+            "VEHBODYCODE": "30",
+            "VEHBODYDESC": "LUTON VAN"
+        },
+        {
+            "VEHBODYCODE": "31",
+            "VEHBODYDESC": "N/BACK"
+        },
+        {
+            "VEHBODYCODE": "32",
+            "VEHBODYDESC": "2 DOOR"
+        },
+        {
+            "VEHBODYCODE": "33",
+            "VEHBODYDESC": "WINDOW VAN"
+        },
+        {
+            "VEHBODYCODE": "34",
+            "VEHBODYDESC": "BOX VAN"
+        },
+        {
+            "VEHBODYCODE": "35",
+            "VEHBODYDESC": "SPORTY SEDAN"
+        },
+        {
+            "VEHBODYCODE": "36",
+            "VEHBODYDESC": "3 DOORS L/BACK"
+        },
+        {
+            "VEHBODYCODE": "37",
+            "VEHBODYDESC": "TOW TRUCK"
+        },
+        {
+            "VEHBODYCODE": "38",
+            "VEHBODYDESC": "LORRY RIGID - CARGO AM"
+        },
+        {
+            "VEHBODYCODE": "39",
+            "VEHBODYDESC": "GLASS VAN"
+        },
+        {
+            "VEHBODYCODE": "40",
+            "VEHBODYDESC": "SEMI PANEL VAN"
+        },
+        {
+            "VEHBODYCODE": "41",
+            "VEHBODYDESC": "PANEL VAN"
+        },
+        {
+            "VEHBODYCODE": "42",
+            "VEHBODYDESC": "TIPPER TRUCK"
+        },
+        {
+            "VEHBODYCODE": "43",
+            "VEHBODYDESC": "PRIME MOVER"
+        },
+        {
+            "VEHBODYCODE": "44",
+            "VEHBODYDESC": "NA"
+        },
+        {
+            "VEHBODYCODE": "45",
+            "VEHBODYDESC": "MULTI UTILITY VEHICLE"
+        },
+        {
+            "VEHBODYCODE": "46",
+            "VEHBODYDESC": "BUS"
+        },
+        {
+            "VEHBODYCODE": "47",
+            "VEHBODYDESC": "LIMOUSINE"
+        },
+        {
+            "VEHBODYCODE": "48",
+            "VEHBODYDESC": "CHASSIS CAB"
+        },
+        {
+            "VEHBODYCODE": "49",
+            "VEHBODYDESC": "MOBILE EQUIPMENT"
+        },
+        {
+            "VEHBODYCODE": "50",
+            "VEHBODYDESC": "ARTICULATED VEHICLE"
+        },
+        {
+            "VEHBODYCODE": "51",
+            "VEHBODYDESC": "SEMI TRAILER - LUTON/KOTAK"
+        },
+        {
+            "VEHBODYCODE": "52",
+            "VEHBODYDESC": "FORKLIFT"
+        },
+        {
+            "VEHBODYCODE": "53",
+            "VEHBODYDESC": "LORRY RIGID - DUMPER/TIPPER"
+        },
+        {
+            "VEHBODYCODE": "54",
+            "VEHBODYDESC": "LORRY RIGID - VEHICLE CARRIER"
+        },
+        {
+            "VEHBODYCODE": "55",
+            "VEHBODYDESC": "WAGON"
+        },
+        {
+            "VEHBODYCODE": "56",
+            "VEHBODYDESC": "COMPACTOR"
+        },
+        {
+            "VEHBODYCODE": "57",
+            "VEHBODYDESC": "LORRY RIGID - LUTON/BOX"
+        },
+        {
+            "VEHBODYCODE": "59",
+            "VEHBODYDESC": "LORRY RIGID - SAMPAH"
+        },
+        {
+            "VEHBODYCODE": "60",
+            "VEHBODYDESC": "SUV"
+        },
+        {
+            "VEHBODYCODE": "61",
+            "VEHBODYDESC": "ROAD ROLLER"
+        },
+        {
+            "VEHBODYCODE": "62",
+            "VEHBODYDESC": "LORRY RIGID - TUNDA"
+        },
+        {
+            "VEHBODYCODE": "63",
+            "VEHBODYDESC": "LORRY RIGID - REFRIGERATED"
+        },
+        {
+            "VEHBODYCODE": "64",
+            "VEHBODYDESC": "CONVERTIBLE"
+        },
+        {
+            "VEHBODYCODE": "65",
+            "VEHBODYDESC": "C/CHAS"
+        },
+        {
+            "VEHBODYCODE": "66",
+            "VEHBODYDESC": "CABRIOLET"
+        },
+        {
+            "VEHBODYCODE": "67",
+            "VEHBODYDESC": "DOUBLE CAB PICK UP"
+        },
+        {
+            "VEHBODYCODE": "68",
+            "VEHBODYDESC": "ROADSTER"
+        },
+        {
+            "VEHBODYCODE": "69",
+            "VEHBODYDESC": "SOFTTOP"
+        },
+        {
+            "VEHBODYCODE": "70",
+            "VEHBODYDESC": "SINGLE CAB PICK-UP"
+        },
+        {
+            "VEHBODYCODE": "71",
+            "VEHBODYDESC": "ALUMINIUM WITH ALUMINIUM ROOF"
+        },
+        {
+            "VEHBODYCODE": "72",
+            "VEHBODYDESC": "WOOD TRAY"
+        },
+        {
+            "VEHBODYCODE": "73",
+            "VEHBODYDESC": "STEEL TRAY"
+        },
+        {
+            "VEHBODYCODE": "74",
+            "VEHBODYDESC": "STEEL WITH ALUMINIUM ROOF"
+        },
+        {
+            "VEHBODYCODE": "75",
+            "VEHBODYDESC": "DUAL CAB PICKUP"
+        },
+        {
+            "VEHBODYCODE": "76",
+            "VEHBODYDESC": "UTILITY PICK UP"
+        },
+        {
+            "VEHBODYCODE": "77",
+            "VEHBODYDESC": "LORRY RIGID - FOOD CATERING"
+        },
+        {
+            "VEHBODYCODE": "78",
+            "VEHBODYDESC": "LORRY RIGID - KANDANG HAIWAN"
+        },
+        {
+            "VEHBODYCODE": "79",
+            "VEHBODYDESC": "LORRY RIGID - TAIL LIFT"
+        },
+        {
+            "VEHBODYCODE": "80",
+            "VEHBODYDESC": "LORRY RIGID - ROLL ON ROLL OFF"
+        },
+        {
+            "VEHBODYCODE": "81",
+            "VEHBODYDESC": "LORRY RIGID - TANGKI DIESEL"
+        },
+        {
+            "VEHBODYCODE": "82",
+            "VEHBODYDESC": "MPV"
+        },
+        {
+            "VEHBODYCODE": "83",
+            "VEHBODYDESC": "PENGGERAK UTAMA"
+        },
+        {
+            "VEHBODYCODE": "84",
+            "VEHBODYDESC": "SEMI TRAILER - KARGO AM"
+        },
+        {
+            "VEHBODYCODE": "85",
+            "VEHBODYDESC": "SEMI TRAILER - KONTENA"
+        },
+        {
+            "VEHBODYCODE": "86",
+            "VEHBODYDESC": "SEMI TRAILER - LOW LOADER"
+        },
+        {
+            "VEHBODYCODE": "87",
+            "VEHBODYDESC": "DOUBLE CAB PICK-UP"
+        },
+        {
+            "VEHBODYCODE": "88",
+            "VEHBODYDESC": "STEEL TIPPER"
+        }
+    ]
+}
