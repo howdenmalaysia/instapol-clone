@@ -102,23 +102,23 @@ class PacificOrient implements InsurerLibraryInterface
         array_push($variants, new VariantData([
             'nvic' => (string) $vix->response->nvic,
             'sum_insured' => floatval($vix->response->sum_insured),
-            'variant' => $details->variant
+            'variant' => $details->variant ?? ''
         ]));
 
         return (object) [
             'status' => true,
             'response' => new VIXNCDResponse([
-                'body_type_code' => $details->body_type_code,
-                'body_type_description' => $details->body_type_description,
+                'body_type_code' => $details->body_type_code ?? '',
+                'body_type_description' => $details->body_type_description ?? '',
                 'chassis_number' => $vix->response->chassis_number,
                 'coverage' => 'Comprehensive',
                 'engine_capacity' => $vix->response->engine_capacity,
                 'engine_number' => $vix->response->engine_number,
                 'expiry_date' => Carbon::parse($vix->response->expiry_date)->format('d M Y'),
                 'inception_date' => Carbon::parse($vix->response->inception_date)->format('d M Y'),
-                'make' => $details->make,
+                'make' => $details->make ?? '',
                 'make_code' => $vix->response->make,
-                'model' => $details->model,
+                'model' => $details->model ?? '',
                 'model_code' => $vix->response->model,
                 'manufacture_year' => $vix->response->manufacturing_year,
                 'max_sum_insured' => roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_UP, true, self::MAX_SUM_INSURED),
