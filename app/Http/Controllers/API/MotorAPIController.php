@@ -62,6 +62,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
         try {
             $insurer = $this->getInsurerClass($request->product_id);
             $result = $insurer->vehicleDetails($data);
+            Log::info("[API/GetVehicleDetails] VIXNCD Response: " . json_encode($result));
 
             if(!$result->status) {
                 Quotation::where('vehicle_number', strtoupper($request->vehicle_number))
@@ -106,7 +107,6 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             
             return $this->abort($ex->getMessage());
         }
-
     }
 
     public function getQuote(Request $request, $quote_type)
