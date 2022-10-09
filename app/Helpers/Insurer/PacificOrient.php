@@ -903,7 +903,7 @@ class PacificOrient implements InsurerLibraryInterface
                         'make' => $this->getMake(trim($model['VEHMAKEMAJOR'])),
                         'model' => trim($model['MINORDESC']),
                         'variant' => $variant,
-                        'body_type_code' => VehicleBodyType::where('name', ucwords(strtolower(trim($model['BODYDESC']))))->pluck('id')->first()->id,
+                        'body_type_code' => VehicleBodyType::where('name', ucwords(strtolower(trim($model['BODYDESC']))))->pluck('id')->first(),
                         'body_type_description' => trim($model['BODYDESC']),
                     ];
                 }
