@@ -22,6 +22,6 @@ class Controller extends BaseController
 
     public function abort($message = 'An error encountered.', int $code = 500, array $response_header = [])
     {
-        return response()->json($message, $code, $response_header);
+        return (object) ['status' => false, 'message' => $message, 'code' => $code];
     }
 }
