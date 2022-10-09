@@ -9,8 +9,11 @@ use App\DataTransferObjects\Motor\VariantData;
 use App\Helpers\HttpClient;
 use App\Interfaces\InsurerLibraryInterface;
 use App\Models\APILogs;
+use App\Models\Motor\VehicleBodyType;
 use Carbon\Carbon;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 
 class PacificOrient implements InsurerLibraryInterface
@@ -63,7 +66,7 @@ class PacificOrient implements InsurerLibraryInterface
 
         $vix = $this->getVIXNCD($data);
 
-        if(!$vix->status) {
+        if(!$vix->status && is_string($vix->response)) {
             return $this->abort($vix->response);
         }
 
@@ -92,23 +95,30 @@ class PacificOrient implements InsurerLibraryInterface
             ]), config('setting.response_codes.sum_insured_referred'));
         }
 
+        // Get Vehicle Details From Mapping Files
+        $details = $this->getModelDetails((string) $vix->response->nvic);
+
         $variants = [];
         array_push($variants, new VariantData([
             'nvic' => (string) $vix->response->nvic,
             'sum_insured' => floatval($vix->response->sum_insured),
-            'variant' => ''
+            'variant' => $details->variant
         ]));
 
         return (object) [
             'status' => true,
             'response' => new VIXNCDResponse([
+                'body_type_code' => $details->body_type_code,
+                'body_type_description' => $details->body_type_description,
                 'chassis_number' => $vix->response->chassis_number,
                 'coverage' => 'Comprehensive',
                 'engine_capacity' => $vix->response->engine_capacity,
                 'engine_number' => $vix->response->engine_number,
                 'expiry_date' => Carbon::parse($vix->response->expiry_date)->format('d M Y'),
                 'inception_date' => Carbon::parse($vix->response->inception_date)->format('d M Y'),
+                'make' => $details->make,
                 'make_code' => $vix->response->make,
+                'model' => $details->model,
                 'model_code' => $vix->response->model,
                 'manufacture_year' => $vix->response->manufacturing_year,
                 'max_sum_insured' => roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_UP, true, self::MAX_SUM_INSURED),
@@ -856,5 +866,52 @@ class PacificOrient implements InsurerLibraryInterface
         }
 
         return $code;
+    }
+
+    private function getMake(int $make_code)
+    {
+        try {
+            $json = File::get(storage_path('Motor/ism_make.json'));
+            $make_listing = json_decode($json, true);
+
+            foreach ($make_listing['makecode'] as $make) {
+                if (trim($make['VEHMAKEMAJOR']) == $make_code) {
+                    return trim($make['MAJORDESC']);
+                }
+            }
+        } catch (FileNotFoundException $ex) {
+            return $this->abort('Make mapping file not found!');
+        }
+
+        return '';
+    }
+
+    private function getModelDetails(string $nvic)
+    {
+        $model_details = null;
+
+        try {
+            $json = File::get(storage_path('Motor/ism_model.json'));
+            $model_listing = json_decode($json, true);
+
+            foreach ($model_listing['modelcode'] as $model) {
+                if (trim($model['NVIC']) == $nvic) {
+                    // Remove model from variant
+                    $variant = str_replace(trim($model['MINORDESC']) . ' ', '', trim($model['REDBOOKDESC']));
+
+                    $model_details = (object) [
+                        'make' => $this->getMake(trim($model['VEHMAKEMAJOR'])),
+                        'model' => trim($model['MINORDESC']),
+                        'variant' => $variant,
+                        'body_type_code' => VehicleBodyType::where('name', ucwords(strtolower(trim($model['BODYDESC']))))->pluck('id')->id,
+                        'body_type_description' => trim($model['BODYDESC']),
+                    ];
+                }
+            }
+        } catch (FileNotFoundException $ex) {
+            return $this->abort('Model mapping file not found!');
+        }
+
+        return $model_details;
     }
 }
