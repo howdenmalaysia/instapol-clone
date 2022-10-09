@@ -15,7 +15,7 @@ class Controller extends BaseController
 
     public function checkMotorSessionObject(Request $request)
     {
-        if(empty($request->session()->get('motor')) && $request->url() !== route('motor.index')) {
+        if(empty($request->session()->get('motor'))) {
             return redirect()->route('motor.index');
         }
     }
