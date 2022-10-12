@@ -10,13 +10,13 @@ class VehicleData extends DataTransferObject
     /** @var string */
     public $vehicle_number;
     
-    /** @var string|null */
+    /** @var string|int|null */
     public $class_code;
 	
     /** @var string */
     public $coverage_code;
     
-    /** @var string|null */
+    /** @var string|int|null */
     public $vehicle_use_code;
     
     /** @var int */
@@ -31,7 +31,7 @@ class VehicleData extends DataTransferObject
     /** @var string */
     public $model;
     
-    /** @var string */
+    /** @var int */
     public $manufacture_year;
     
     /** @var string */
@@ -55,10 +55,10 @@ class VehicleData extends DataTransferObject
     /** @var string */
     public $variant;
     
-    /** @var string */
+    /** @var int */
     public $seating_capacity;
     
-    /** @var string */
+    /** @var int */
     public $engine_capacity;
     
     /** @var string */
@@ -67,10 +67,10 @@ class VehicleData extends DataTransferObject
     /** @var string */
     public $ncd_expiry_date;
     
-    /** @var string */
+    /** @var float */
     public $current_ncd;
     
-    /** @var string */
+    /** @var float */
     public $next_ncd;
     
     /** @var string */
