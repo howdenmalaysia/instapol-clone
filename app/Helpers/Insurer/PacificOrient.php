@@ -44,8 +44,6 @@ class PacificOrient implements InsurerLibraryInterface
 
     private const SOAP_ACTION_DOMAIN = 'http://tempuri.org';
 
-    private const INSURER_NAME = 'Pacific & Orient Insurance';
-
     public function __construct()
     {
         $this->agent_code = config('insurer.config.pno.agent_code');
@@ -659,7 +657,6 @@ class PacificOrient implements InsurerLibraryInterface
         ]);
 
         $result = HttpClient::curl($method, $url, $request_options);
-        $code = null;
 
         // Update the response
         APILogs::find($log->id)
@@ -694,8 +691,7 @@ class PacificOrient implements InsurerLibraryInterface
 
         return new ResponseData([
             'status' => $result->status,
-            'response' => $response,
-            'code' => $code
+            'response' => $response
         ]);
     }
 
