@@ -257,6 +257,13 @@
             $('#coverage').text(data.coverage);
             $('#inception-date').text(data.inception_date);
             $('#expiry-date').text(data.expiry_date);
+
+            data.variants.forEach((variant) => {
+                let option = new Option(variant.variant, variant.nric, false, false);
+
+                $('#variants').append(option).trigger('change');
+            });
+
             $('#variants').text(data.nvic).trigger('change');
             swalHide();
 
@@ -273,13 +280,7 @@
                 expiry_date: data.expiry_date,
                 seating_capacity: data.seating_capacity
             };
-
-            data.variants.forEach((variant) => {
-                let option = new Option(variant.variant, variant.nric, false, false);
-
-                $('#variants').append(option).trigger('change');
-            });
-
+            
             motor.variants = data.variants;
 
             $('#motor').val(JSON.stringify('motor'));
