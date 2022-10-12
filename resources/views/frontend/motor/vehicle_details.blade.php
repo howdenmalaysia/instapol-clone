@@ -269,7 +269,7 @@
             motor.vehicle = {
                 make: data.make,
                 model: data.model,
-                engine_capcity: data.engine_capcity,
+                engine_capacity: data.engine_capacity,
                 chassis_number: data.chassis_number,
                 engine_number: data.engine_number,
                 manufacture_year: data.manufacture_year,
