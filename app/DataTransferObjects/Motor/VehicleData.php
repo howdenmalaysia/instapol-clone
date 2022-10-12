@@ -32,13 +32,13 @@ class VehicleData extends DataTransferObject
     public $model;
     
     /** @var string */
-    public $year_make;
+    public $manufacture_year;
     
     /** @var string */
-    public $engine_no;
+    public $engine_number;
     
     /** @var string */
-    public $chassis_no;
+    public $chassis_number;
     
     /** @var float */
     public $market_value = 0.00;
