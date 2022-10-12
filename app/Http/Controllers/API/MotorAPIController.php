@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\API;
 
 use App\DataTransferObjects\Motor\APIData;
-use App\DataTransferObjects\Motor\FullQuoteResponse;
-use App\DataTransferObjects\Motor\QuoteResponse;
+use App\DataTransferObjects\Motor\Response\FullQuoteResponse;
+use App\DataTransferObjects\Motor\Response\QuoteResponse;
 use App\DataTransferObjects\Motor\Response\QuotationResponse;
 use App\DataTransferObjects\Motor\Response\SubmitCoverNoteResponse;
 use App\DataTransferObjects\Motor\VehicleData;
@@ -125,38 +125,40 @@ class MotorAPIController extends Controller implements MotorAPIInterface
         $full_quote = $quote_type === 'full';
 
         // Get State Details with Postcode
-        $postcode = $this->getPostcodeDetails($request->postcode);
+        $postcode = $this->getPostcodeDetails($request->motor->postcode);
         
         // Get Product Details
         $product = $this->getProduct($request->product_id);
 
         // Get Vehicle Body Type Details
-        $vehicle_body_type_id = VehicleBodyType::where('name', $request->vehicle_body_type)->pluck('id');
+        if(!empty($request->motor->vehicle_body_type)) {
+            $vehicle_body_type_id = VehicleBodyType::where('name', $request->motor->vehicle_body_type)->pluck('id');
+        }
 
         $data = new APIData([
-            'id_type' => $request->id_type,
-            'id_number' => $request->id_number,
-            'vehicle_number' => strtoupper($request->vehicle_number),
+            'id_type' => $request->motor->id_type,
+            'id_number' => $request->motor->id_number,
+            'vehicle_number' => strtoupper($request->motor->vehicle_number),
             'postcode' => $postcode->postcode,
-            'email' => $request->email,
+            'email' => $request->motor->policy_holder->email,
             'region' => $postcode->state->region,
             'state' => $postcode->state->name,
             'insurer_id' => $product->insurance_company->id,
             'insurer_name' => $product->insurance_company->name,
             'product_id' => $product->id,
-            'gender' => $request->gender,
-            'marital_status' => $request->marital_status,
+            'gender' => $request->motor->policy_holder->gender,
+            'marital_status' => $request->motor->policy_holder->marital_status,
             'nvic' => $request->nvic,
-            'vehicle' => new VehicleData($request->vehicle),
+            'vehicle' => new VehicleData($request->motor->vehicle),
             'extra_cover' => toObject($request->extra_cover ?? []),
             'additional_driver' => toObject($request->additional_driver ?? []),
-            'vehicle_body_type' => $vehicle_body_type_id,
+            'vehicle_body_type' => $vehicle_body_type_id ?? null,
             'phone_number' => $request->phone_number,
             'occupation' => strtoupper($request->occupation)
         ]);
 
-        $insurer_helper = $this->getInsurerClass($product->insurance_company->id);
-        $result = $insurer_helper->premiumDetails($data, $full_quote);
+        $insurer = $this->getInsurerClass($product->insurance_company->id);
+        $result = $insurer->premiumDetails($data, $full_quote);
 
         if(!$result->status) {
             return abort($result->code, $result->response);
