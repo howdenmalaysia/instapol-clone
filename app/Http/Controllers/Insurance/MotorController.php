@@ -124,13 +124,13 @@ class MotorController extends Controller
     {
         $session = $this->checkMotorSessionObject($request);
 
-        if($session->holder->id_type === config('setting.id_type.company_registration_no')) {
-            if(empty($session->holder->gender)) {
-                $session->holder->gender = 'O';
+        if($session->policy_holder->id_type === config('setting.id_type.company_registration_no')) {
+            if(empty($session->policy_holder->gender)) {
+                $session->policy_holder->gender = 'O';
             }
 
-            if(empty($session->holder->marital_status)) {
-                $session->holder->marital_status = 'O';
+            if(empty($session->policy_holder->marital_status)) {
+                $session->policy_holder->marital_status = 'O';
             }
         }
 
@@ -148,8 +148,8 @@ class MotorController extends Controller
         // Update Session
         $motor->user_id = auth()->user()->id ?? '';
         $motor->product_id = intval($request->product_id);
-        $motor->holder->gender = $request->gender;
-        $motor->holder->marital_status = $request->marital_status;
+        $motor->policy_holder->gender = $request->gender;
+        $motor->policy_holder->marital_status = $request->marital_status;
         $motor->av_code = $request->av_code;
 
         if($premium->vehicle->nvic === '-') {
