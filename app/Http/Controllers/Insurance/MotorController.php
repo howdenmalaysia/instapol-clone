@@ -10,6 +10,7 @@ use App\Models\Motor\Product;
 use App\Models\Motor\Quotation;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -99,7 +100,75 @@ class MotorController extends Controller
 
     public function vehicleDetails_POST(Request $request)
     {
-        // return redirect()->route();
+        $session = $this->checkMotorSessionObject($request);
+        $session->vehicle->nvic = $request->nvic;
+        $session->coverage_type = $request->coverage_type;
+        $session->user_id = auth()->user()->id ?? '';
+
+        if(!empty($session->quotation_id)) {
+            $quote = $this->updateQuotation($session);
+        } else {
+            $quote = $this->quotation($session);
+        }
+
+        $session->quotation_id = $quote['quotation']->id ?? $session->quotation_id ?? '';
+        $request->session()->put('motor', $session);
+        
+        return redirect()->route('motor.compare');
+    }
+
+    public function compare(Request $request)
+    {
+        $session = $this->checkMotorSessionObject($request);
+
+        if($session->holder->id_type === config('setting.id_type.company_registration_no')) {
+            if(empty($session->holder->gender)) {
+                $session->holder->gender = 'O';
+            }
+
+            if(empty($session->holder->marital_status)) {
+                $session->holder->marital_status = 'O';
+            }
+        }
+
+        $products = Product::with('insurance_company')->get();
+
+        return view('frontend.motor.compare')->with(['products' => $products]);
+    }
+
+    public function compare_POST(Request $request)
+    {
+        $this->checkMotorSessionObject($request);
+        $motor = json_decode($request->motor);
+        $premium = json_decode($request->premium);
+
+        // Update Session
+        $motor->user_id = auth()->user()->id ?? '';
+        $motor->product_id = intval($request->product_id);
+        $motor->holder->gender = $request->gender;
+        $motor->holder->marital_status = $request->marital_status;
+        $motor->av_code = $request->av_code;
+
+        if($premium->vehicle->nvic === '-') {
+            $premium->vehicle->nvic = $motor->vehicle->nvic;
+        }
+
+        $motor->vehicle = $premium->vehicle;
+        $motor->premium = (object) [
+            'basic_premium' => $premium->basic_premium,
+            'ncd' => $premium->ncd_percentage,
+            'total_benefit_amount' => $premium->total_benefit_amount,
+            'loading_percentage' => $premium->loading_percentage,
+			'loading_amount' => $premium->loading_amount,
+			'gross_premium' => $premium->gross_premium,
+			'sst_percent' => $premium->sst_percent,
+			'sst_amount' => $premium->sst_amount,
+			'stamp_duty' => $premium->stamp_duty,
+			'total_payable' => $premium->total_payable,
+			'total_contribution' => $premium->total_contribution,
+        ];
+
+        // $motor->extra_cover_list = 
     }
 
     private function quotation(object $motor)
@@ -162,4 +231,64 @@ class MotorController extends Controller
 
         return $response;
     }
+
+    private function updateQuotation(object $data)
+    {
+        $quotation = Quotation::findOrFail($data->quotation_id);
+        $param = $quotation->requset_param;
+
+        $vehicle = new VehicleData([
+            'vehicle_number' => $data->vehicle_number ?? '',
+            'class_code' => $data->vehicle->extra_attribute->class_code ?? '',
+            'coverage_code' => $data->vehicle->extra_attribute->coverage_code ?? '',
+            'vehicle_user_code' => $data->vehicle->extra_attribute->vehicle_use_code ?? '',
+            'make_code' => $data->vehicle->extra_attribute->make_code ?? '',
+            'make' => $data->vehicle->make ?? '',
+            'model_code' => $data->vehicle->extra_attribute->model_code ?? '',
+            'model' => $data->vehicle->model ?? '',
+            'manufacture_year' => $data->vehicle->manufacture_year ?? '',
+            'engine_number' => $data->vehicle->engine_number ?? $data->vehicle->extra_attribute->engine_number,
+            'chassis_number-' => $data->vehicle->chassis_number ?? $data->vehicle->extra_attribute->chassis_number,
+            'market_value' => $data->vehicle->sum_insured ?? 0.00,
+            'purchase_price' => 0.00,
+            'style' => '',
+            'nvic' => $data->vehicle->nvic,
+            'variant' => $data->vehicle->variant ?? $data->variants[0]->variant ?? '',
+            'seating_capacity' => $data->vehicle->extra_attribute->seating_capacity ?? $data->vehicle->seating_capacity ?? '',
+            'engine_capacity' => $data->vehicle->engine_capacity ?? '',
+            'ncd_effective_date' => Carbon::createFromFormat('Y-m-d', $data->vehicle->inception_date)->subYear()->format('Y-m-d'),
+            'ncd_expiry_date' => Carbon::createFromFormat('Y-m-d', $data->vehicle->inception_date)->subDay()->format('Y-m-d'),
+            'current_ncd' => $data->vehicle->ncd_percentage ?? '',
+            'next_ncd' => $data->vehicle->ncd_percentage ?? '',
+            'next_ncd_effective_date' => $data->vehicle->inception_date ?? '',
+            'policy_expiry_date' => Carbon::createFromFormat('Y-m-d', $data->vehicle->inception_date)->subDay()->format('Y-m-d'),
+            'assembly_type_code' => '',
+            'min_market_value' => $data->vehicle->min_sum_insured ?? 0.00,
+            'max_market_value' => $data->vehicle->max_sum_insured ?? 0.00,
+            'ncd_code' => '',
+        ]);
+
+        $param->h_vehicle = json_encode($vehicle);
+        $param->product_type = $data->product_type_id ?? 2;
+        $param->vehicle_postcode = $data->postcode ?? '';
+        $param->vehicle_number = $data->vehicle_number ?? '';
+        $param->id_type = $data->holder->id_type;
+        $param->id_number = str_replace('-', '', $data->holder->id_number);
+        $param->email_address = $data->holder->email ?? '';
+        $param->name = $data->holder->name ?? '';
+        $param->phone_number = $data->holder->phone_number ?? '';
+        $param->h_company_id = $param->h_product_id = '';
+
+        $quotation->product_type = $data->product_type ?? 2;
+        $quotation->email_address = $data->holder->email;
+        $quotation->request_param = $param;
+        $quotation->save();
+
+        $response['quotation'] = $quotation;
+        $response['vehicle'] = json_encode($vehicle);
+
+        return $response;
+    }
+
+
 }
