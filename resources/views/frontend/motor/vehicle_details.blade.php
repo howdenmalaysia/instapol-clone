@@ -253,9 +253,9 @@
             $('#engine-capacity').text(data.engine_capacity);
             $('#manufacture-year').text(data.manufacture_year);
             $('#ncd-percentage').text(data.ncd_percentage + '%');
-            $('#coverage-type').text(data.coverage);
             $('#inception-date').text(data.inception_date);
             $('#expiry-date').text(data.expiry_date);
+            $('#coverage-type').val(data.coverage);
 
             data.variants.forEach((variant) => {
                 let option = new Option(variant.variant, variant.nvic, false, false);
