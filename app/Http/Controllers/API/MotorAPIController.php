@@ -152,7 +152,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             'nvic' => $request->nvic,
             'vehicle' => new VehicleData([
                 'vehicle_number' => $request->motor->vehicle_number ?? '',
-                'class_ode' => $request->motor->vehicle->extra_attribute->class_code ?? '',
+                'class_code' => $request->motor->vehicle->extra_attribute->class_code ?? '',
                 'coverage_code' => $request->motor->vehicle->extra_attribute->coverage_code ?? '',
                 'vehicle_use_code' => $request->motor->vehicle->extra_attribute->vehicle_use_code ?? '',
                 'make_code' => $request->motor->vehicle->extra_attribute->make_code ?? '',
