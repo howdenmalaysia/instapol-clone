@@ -284,7 +284,7 @@ class MotorController extends Controller
 
         $quotation->product_type = $data->product_type ?? 2;
         $quotation->email_address = $data->policy_holder->email;
-        $quotation->request_param = $param;
+        $quotation->request_param = json_encode($param);
         $quotation->save();
 
         $response['quotation'] = $quotation;
