@@ -40,10 +40,10 @@
                                                 <div class="row">
                                                     <div class="col-12 text-center">
                                                         <div class="btn-group" role="group">
-                                                            <input type="radio" id="id-type-1" class="btn-check" name="id_type" value="1" {{ $motor->policy_holder->id_type ?? '' === 1 ? 'checked' : 'checked' }}>
+                                                            <input type="radio" id="id-type-1" class="btn-check" name="id_type" value="1" {{ !empty($motor->policy_holder->id_type) && $motor->policy_holder->id_type === 1 ? 'checked' : 'checked' }}>
                                                             <label id="private-reg" class="btn btn-primary text-white rounded-start border active text-uppercase" for="id-type-1">{{ __('frontend.motor.private_registered') }}</label>
                     
-                                                            <input type="radio" id="id-type-2" class="btn-check" name="id_type" value="2" {{ $motor->policy_holder->id_type ?? '' === 2 ? 'checked' : '' }}>
+                                                            <input type="radio" id="id-type-2" class="btn-check" name="id_type" value="2" {{ !empty($motor->policy_holder->id_type) && $motor->policy_holder->id_type === 2 ? 'checked' : '' }}>
                                                             <label id="company-reg" class="btn btn-light rounded-end text-uppercase" for="id-type-2">{{ __('frontend.motor.company_registered') }}</label>
                                                         </div>
                                                     </div>
