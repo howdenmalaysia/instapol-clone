@@ -150,7 +150,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             'gender' => $request->motor->policy_holder->gender,
             'marital_status' => $request->motor->policy_holder->marital_status,
             'nvic' => $request->nvic,
-            'vehicle' => new VehicleData($request->motor->vehicle),
+            'vehicle' => new VehicleData((array) $request->motor->vehicle),
             'extra_cover' => toObject($request->extra_cover ?? []),
             'additional_driver' => toObject($request->additional_driver ?? []),
             'vehicle_body_type' => $vehicle_body_type_id ?? null,
