@@ -283,7 +283,7 @@
 
             motor.variants = data.variants;
 
-            $('#motor').val(JSON.stringify('motor'));
+            $('#motor').val(JSON.stringify(motor));
             $('#vehicle-details-form').show();
         }
     </script>
