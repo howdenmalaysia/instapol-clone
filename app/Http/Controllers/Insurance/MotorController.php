@@ -238,7 +238,7 @@ class MotorController extends Controller
     private function updateQuotation(object $data)
     {
         $quotation = Quotation::findOrFail($data->quotation_id);
-        $param = $quotation->requset_param;
+        $param = $quotation->request_param;
 
         $vehicle = new VehicleData([
             'vehicle_number' => $data->vehicle_number ?? '',
