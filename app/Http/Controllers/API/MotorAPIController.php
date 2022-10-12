@@ -123,6 +123,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
     public function getQuote(Request $request, $quote_type)
     {
         $full_quote = $quote_type === 'full';
+        $request->motor = toObject($request->motor);
 
         // Get State Details with Postcode
         $postcode = $this->getPostcodeDetails($request->motor->postcode);
