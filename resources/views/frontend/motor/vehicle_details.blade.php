@@ -147,7 +147,7 @@
             fetchData();
 
             $('#variants').on('change', function() {
-                if($(this).val() = '') {
+                if($(this).val() == '') {
                     $('#variant-popover').popover('show');
                 }
             });
