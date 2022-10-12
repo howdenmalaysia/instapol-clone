@@ -258,7 +258,7 @@ class MotorController extends Controller
             'nvic' => $data->vehicle->nvic,
             'variant' => $data->variants[0]->variant ?? '',
             'seating_capacity' => $data->vehicle->extra_attribute->seating_capacity ?? '',
-            'engine_capacity' => $data->vehicle->extra_attribute->engine_capacity ?? '',
+            'engine_capacity' => $data->vehicle->engine_capacity ?? '',
             'ncd_effective_date' => Carbon::createFromFormat('Y-m-d', $data->vehicle->inception_date)->subYear()->format('Y-m-d'),
             'ncd_expiry_date' => Carbon::createFromFormat('Y-m-d', $data->vehicle->inception_date)->subDay()->format('Y-m-d'),
             'current_ncd' => $data->vehicle->ncd_percentage ?? '',
