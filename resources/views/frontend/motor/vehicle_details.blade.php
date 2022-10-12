@@ -187,32 +187,30 @@
                 }).then((response) => {
                     console.log(response);
 
-                    if(!response.data.code) {
-                        let populated = $('#variant option').length > 1;
-                        let singleVariant = response.data.variants.length === 1;
+                    let populated = $('#variant option').length > 1;
+                    let singleVariant = response.data.variants.length === 1;
 
-                        if(!populated && !singleVariant) {
-                            populate(response.data, controller);
+                    if(!populated && !singleVariant) {
+                        populate(response.data, controller);
 
-                            if(selectedVariant) {
-                                controller.abort();
-                            }
+                        if(selectedVariant) {
+                            controller.abort();
+                        }
+                    }
+
+                    if(singleVariant) {
+                        if(selectedVariant === null) {
+                            selectedVariant = response.data;
+
+                            populate(selectedVariant);
+
+                            $('#variants').val(selectedVariant.variants[0].nvic).trigger('change');
+
+                            swalHide();
                         }
 
-                        if(singleVariant) {
-                            if(selectedVariant === null) {
-                                selectedVariant = response.data;
-
-                                populate(selectedVariant);
-
-                                $('#variants').val(selectedVariant.variants[0].nvic).trigger('change');
-
-                                swalHide();
-                            }
-
-                            if(populated) {
-                                controller.abort();
-                            }
+                        if(populated) {
+                            controller.abort();
                         }
                     }
                 }).catch((error) => {
@@ -259,7 +257,7 @@
             $('#expiry-date').text(data.expiry_date);
 
             data.variants.forEach((variant) => {
-                let option = new Option(variant.variant, variant.nric, false, false);
+                let option = new Option(variant.variant, variant.nvic, false, false);
 
                 $('#variants').append(option).trigger('change');
             });
