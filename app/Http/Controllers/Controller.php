@@ -18,6 +18,8 @@ class Controller extends BaseController
         if(empty($request->session()->get('motor'))) {
             return redirect()->route('motor.index');
         }
+
+        return json_decode($request->session()->get('motor'));
     }
 
     public function abort($message = 'An error encountered.', int $code = 500, array $response_header = [])
