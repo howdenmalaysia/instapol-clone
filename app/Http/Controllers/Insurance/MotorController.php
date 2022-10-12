@@ -244,7 +244,7 @@ class MotorController extends Controller
             'vehicle_number' => $data->vehicle_number ?? '',
             'class_code' => $data->vehicle->extra_attribute->class_code ?? '',
             'coverage_code' => $data->vehicle->extra_attribute->coverage_code ?? '',
-            'vehicle_user_code' => $data->vehicle->extra_attribute->vehicle_use_code ?? '',
+            'vehicle_use_code' => $data->vehicle->extra_attribute->vehicle_use_code ?? '',
             'make_code' => $data->vehicle->extra_attribute->make_code ?? '',
             'make' => $data->vehicle->make ?? '',
             'model_code' => $data->vehicle->extra_attribute->model_code ?? '',
