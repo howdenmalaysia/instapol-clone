@@ -67,10 +67,10 @@ class VehicleData extends DataTransferObject
     /** @var string */
     public $ncd_expiry_date;
     
-    /** @var float */
+    /** @var float|int */
     public $current_ncd;
     
-    /** @var float */
+    /** @var float|int */
     public $next_ncd;
     
     /** @var string */
