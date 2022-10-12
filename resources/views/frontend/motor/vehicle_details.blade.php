@@ -277,7 +277,8 @@
                 coverage: data.coverage,
                 inception_date: data.inception_date,
                 expiry_date: data.expiry_date,
-                seating_capacity: data.seating_capacity
+                seating_capacity: data.seating_capacity,
+                extra_attribute: data.extra_attribute
             };
 
             motor.variants = data.variants;

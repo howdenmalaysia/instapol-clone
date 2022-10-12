@@ -48,6 +48,9 @@ class VehicleVariantData extends DataTransferObject
     /** @var float|null */
     public $max_sum_insured;
 
+    /** @var object */
+    public $extra_attribute;
+
     /**
      * @var \App\DataTransferObjects\Motor\VariantData[]|null
      */

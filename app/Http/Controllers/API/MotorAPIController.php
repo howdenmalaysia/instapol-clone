@@ -99,6 +99,17 @@ class MotorAPIController extends Controller implements MotorAPIInterface
                 'min_sum_insured' => $result->response->max_sum_insured,
                 'max_sum_insured' => $result->response->min_sum_insured,
                 'variants' => $result->response->variants,
+                'extra_attribute' => (object) [
+                    'make_code' => $result->response->make_code,
+                    'model_code' => $result->response->model_code,
+                    'vehicle_use_code' => $result->response->vehicle_use_code ?? '',
+                    'vehicle_type_code' => $result->response->vehicle_type_code ?? '',
+                    'class_code' => $result->response->class_code ?? '',
+                    'coverage_code' => $result->response->coverage,
+                    'engine_number' => $result->response->engine_number,
+                    'chassis_number' => $result->response->chassis_number,
+                    'seating_capacity' => $result->response->seating_capacity,
+                ]
             ]);
 
             return $data->all();
