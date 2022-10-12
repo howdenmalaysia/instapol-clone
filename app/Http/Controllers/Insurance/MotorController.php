@@ -198,7 +198,7 @@ class MotorController extends Controller
         if(!empty($motor->vehicle->ncd_percentage)) {
             $vehicle = new VehicleData([
                 'vehicle_number' => $motor->vehicle_number ?? '',
-                'class_ode' => $motor->vehicle->extra_attribute->class_code ?? '',
+                'class_code' => $motor->vehicle->extra_attribute->class_code ?? '',
                 'coverage_code' => $motor->vehicle->extra_attribute->coverage_code ?? '',
                 'vehicle_use_code' => $motor->vehicle->extra_attribute->vehicle_use_code ?? '',
                 'make_code' => $motor->vehicle->extra_attribute->make_code ?? '',
