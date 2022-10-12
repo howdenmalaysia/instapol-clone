@@ -99,7 +99,8 @@ class MotorController extends Controller
 
     public function vehicleDetails_POST(Request $request)
     {
-        $session = $this->checkMotorSessionObject($request);
+        $this->checkMotorSessionObject($request);
+        $session = json_decode($request->motor);
         $session->vehicle->nvic = $request->nvic;
         $session->coverage_type = $request->coverage_type;
         $session->user_id = auth()->user()->id ?? '';
