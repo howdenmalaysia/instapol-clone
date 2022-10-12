@@ -61,7 +61,7 @@
                             <div class="col-6">
                                 <div id="variant-popover" data-bs-container="body" data-bs-placement="top">
                                     <select
-                                        id="variant"
+                                        id="variants"
                                         name="variant"
                                         data-select
                                         required
@@ -280,7 +280,7 @@
                 expiry_date: data.expiry_date,
                 seating_capacity: data.seating_capacity
             };
-            
+
             motor.variants = data.variants;
 
             $('#motor').val(JSON.stringify('motor'));
