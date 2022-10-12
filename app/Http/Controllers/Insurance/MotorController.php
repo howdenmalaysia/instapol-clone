@@ -82,7 +82,11 @@ class MotorController extends Controller
 
     public function vehicleDetails(Request $request)
     {
-        $this->checkMotorSessionObject($request);
+        if(empty($request->session()->get('motor'))) {
+            return redirect()->route('motor.index');
+        }
+        
+        $session = $request->session()->get('motor');
 
         $products = Product::with('insurance_company')->get();
         $product_ids = $insurer_ids = [];
@@ -99,7 +103,10 @@ class MotorController extends Controller
 
     public function vehicleDetails_POST(Request $request)
     {
-        $this->checkMotorSessionObject($request);
+        if(empty($request->session()->get('motor'))) {
+            return redirect()->route('motor.index');
+        }
+        
         $session = json_decode($request->motor);
         // Reformat Dates
         $session->vehicle->inception_date = Carbon::createFromFormat('d M Y', $session->vehicle->inception_date)->format('Y-m-d');
@@ -122,7 +129,11 @@ class MotorController extends Controller
 
     public function compare(Request $request)
     {
-        $session = $this->checkMotorSessionObject($request);
+        if(empty($request->session()->get('motor'))) {
+            return redirect()->route('motor.index');
+        }
+        
+        $session = $request->session()->get('motor');
 
         if($session->policy_holder->id_type === config('setting.id_type.company_registration_no')) {
             if(empty($session->policy_holder->gender)) {
@@ -141,7 +152,10 @@ class MotorController extends Controller
 
     public function compare_POST(Request $request)
     {
-        $this->checkMotorSessionObject($request);
+        if(empty($request->session()->get('motor'))) {
+            return redirect()->route('motor.index');
+        }
+        
         $motor = json_decode($request->motor);
         $premium = json_decode($request->premium);
 
