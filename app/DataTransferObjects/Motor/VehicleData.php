@@ -10,22 +10,22 @@ class VehicleData extends DataTransferObject
     /** @var string */
     public $vehicle_number;
     
-    /** @var string */
+    /** @var string|null */
     public $class_code;
 	
     /** @var string */
     public $coverage_code;
     
-    /** @var string */
+    /** @var string|null */
     public $vehicle_use_code;
     
-    /** @var string */
+    /** @var int */
     public $make_code;
     
     /** @var string */
     public $make;
     
-    /** @var string */
+    /** @var int */
     public $model_code;
     
     /** @var string */
