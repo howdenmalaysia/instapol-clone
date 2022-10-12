@@ -137,8 +137,8 @@ class MotorAPIController extends Controller implements MotorAPIInterface
         }
 
         $data = new APIData([
-            'id_type' => $request->motor->id_type,
-            'id_number' => $request->motor->id_number,
+            'id_type' => $request->motor->policy_holder->id_type,
+            'id_number' => $request->motor->policy_holder->id_number,
             'vehicle_number' => strtoupper($request->motor->vehicle_number),
             'postcode' => $postcode->postcode,
             'email' => $request->motor->policy_holder->email,
