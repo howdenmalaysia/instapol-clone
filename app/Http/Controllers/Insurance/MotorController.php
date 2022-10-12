@@ -275,15 +275,15 @@ class MotorController extends Controller
         $param->product_type = $data->product_type_id ?? 2;
         $param->vehicle_postcode = $data->postcode ?? '';
         $param->vehicle_number = $data->vehicle_number ?? '';
-        $param->id_type = $data->holder->id_type;
-        $param->id_number = str_replace('-', '', $data->holder->id_number);
-        $param->email_address = $data->holder->email ?? '';
-        $param->name = $data->holder->name ?? '';
-        $param->phone_number = $data->holder->phone_number ?? '';
+        $param->id_type = $data->policy_holder->id_type;
+        $param->id_number = str_replace('-', '', $data->policy_holder->id_number);
+        $param->email_address = $data->policy_holder->email ?? '';
+        $param->name = $data->policy_holder->name ?? '';
+        $param->phone_number = $data->policy_holder->phone_number ?? '';
         $param->h_company_id = $param->h_product_id = '';
 
         $quotation->product_type = $data->product_type ?? 2;
-        $quotation->email_address = $data->holder->email;
+        $quotation->email_address = $data->policy_holder->email;
         $quotation->request_param = $param;
         $quotation->save();
 
