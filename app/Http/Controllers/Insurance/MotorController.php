@@ -10,7 +10,6 @@ use App\Models\Motor\Product;
 use App\Models\Motor\Quotation;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
