@@ -319,7 +319,7 @@ class PacificOrient implements InsurerLibraryInterface
             'detariff' => $premium->response->detariff,
             'detariff_premium' => formatNumber($premium->response->detariff_premium),
             'discount' => formatNumber($premium->response->discount),
-            'discount_amount' => formatNumber($premium->discount_amount),
+            'discount_amount' => formatNumber($premium->response->discount_amount),
             'excess_amount' => formatNumber($premium->response->excess_amount),
             'extra_cover' => $this->sortExtraCoverList($input->extra_cover),
             'gross_premium' => formatNumber($premium->response->gross_premium),
