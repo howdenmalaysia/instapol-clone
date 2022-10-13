@@ -476,7 +476,7 @@ class PacificOrient implements InsurerLibraryInterface
         
         $result = $this->cURL($path, $xml, self::SOAP_ACTION_DOMAIN . '/IAccessToken/GetAccessToken');
 
-        $data = $result->response->Body->GetAccessTokenResponse->GetAccessTokenResult;
+        $data = $result->response->GetAccessTokenResponse->GetAccessTokenResult;
         if(!$result->status) {
             return $this->abort($data->respDescription);
         }
