@@ -299,7 +299,7 @@ class PacificOrient implements InsurerLibraryInterface
             'vehicle_number' => $input->vehicle_number,
         ];
 
-        $premium = $this->getPremium($input);
+        $premium = $this->getPremium($data);
 
         if(!$premium->status) {
             return $this->abort($premium->response);
@@ -561,7 +561,7 @@ class PacificOrient implements InsurerLibraryInterface
         }
 
         // 1. Check for Error
-        if($data->respCode !== '000') {
+        if((string) $data->respCode !== '000') {
             return $this->abort("P&O Error! {$data->respDescription}");
         }
 
