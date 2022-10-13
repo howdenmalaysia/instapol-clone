@@ -131,7 +131,8 @@ class PacificOrient implements InsurerLibraryInterface
         ];
     }
 
-    public function premiumDetails(object $input, $full_quote = false) : PremiumResponse
+    /** @return PremiumResponse|ResponseData */
+    public function premiumDetails(object $input, $full_quote = false)
     {
         $vehicle = $input->vehicle ?? null;
         $ncd_amount = $basic_premium = $total_benefit_amount = $gross_premium = $sst_percent = $sst_amount = $stamp_duty = $excess_amount = $total_payable = $net_premium = 0;

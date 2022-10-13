@@ -9,7 +9,9 @@ use App\DataTransferObjects\Motor\Response\VIXNCDResponse;
 interface InsurerLibraryInterface {
     /** @return VIXNCDResponse|ResponseData */
     public function vehicleDetails(object $input);
-    public function premiumDetails(object $input, $full_quote) : PremiumResponse;
+
+    /** @return PremiumResponse|ResponseData */
+    public function premiumDetails(object $input, $full_quote);
     public function quotation(object $input) : PremiumResponse;
     public function submission(object $input) : ResponseData;
     public function cURL(string $path, string $xml, string $soap_action = null, string $method = 'POST', array $header = []) : ResponseData;
