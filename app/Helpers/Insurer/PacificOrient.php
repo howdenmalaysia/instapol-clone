@@ -842,12 +842,13 @@ class PacificOrient implements InsurerLibraryInterface
 
             $_extra_cover->sequence = $sequence;
 
-            $sorted = array_values(Arr::sort($extra_cover_list, function ($value) {
-                return $value->sequence;
-            }));
-    
-            return $sorted;
         }
+        
+        $sorted = array_values(Arr::sort($extra_cover_list, function ($value) {
+            return $value->sequence;
+        }));
+        
+        return $sorted;
     }
 
     private function getStateCode(string $state)
