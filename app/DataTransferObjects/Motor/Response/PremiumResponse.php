@@ -49,4 +49,10 @@ class PremiumResponse extends DataTransferObject
 
     /** @var float|null */
     public $act_premium;
+
+    /** @var float|null */
+    public $discount = 0;
+
+    /** @var float|null */
+    public $discount_amount = 0;
 }
