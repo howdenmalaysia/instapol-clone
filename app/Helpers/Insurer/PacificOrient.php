@@ -135,7 +135,7 @@ class PacificOrient implements InsurerLibraryInterface
     public function premiumDetails(object $input, $full_quote = false)
     {
         $vehicle = $input->vehicle ?? null;
-        $ncd_amount = $basic_premium = $total_benefit_amount = $gross_premium = $sst_percent = $sst_amount = $stamp_duty = $excess_amount = $total_payable = $net_premium = 0;
+        $ncd_amount = $basic_premium = $total_benefit_amount = $gross_premium = $sst_percent = $sst_amount = $stamp_duty = $excess_amount = $total_payable = 0;
 
         $id_number = $company_registration_number = '';
         switch($input->id_type) {
@@ -183,14 +183,14 @@ class PacificOrient implements InsurerLibraryInterface
             $vehicle = (object) [
                 'coverage' => $vehicle_vix->response->coverage,
                 'engine_capacity' => $vehicle_vix->response->engine_capacity,
-                'expiry_date' => $vehicle_vix->response->expiry_date,
+                'expiry_date' => Carbon::createFromFormat('d M Y', $vehicle_vix->response->expiry_date)->format('Y-m-d'),
                 'extra_attribute' => (object) [
                     'chassis_number' => $vehicle_vix->response->chassis_number,
                     'cover_type' => $vehicle_vix->response->cover_type,
                     'engine_number' => $vehicle_vix->response->engine_number,
                     'seating_capacity' => $vehicle_vix->response->seating_capacity,
                 ],
-                'inception_date' => $vehicle_vix->response->inception_date,
+                'inception_date' => Carbon::createFromFormat('d M Y', $vehicle_vix->response->inception_date)->format('Y-m-d'),
                 'make' =>  $vehicle_vix->response->make,
                 'manufacture_year' => $vehicle_vix->response->manufacture_year,
                 'max_sum_insured' => $vehicle_vix->response->max_sum_insured,
@@ -288,7 +288,7 @@ class PacificOrient implements InsurerLibraryInterface
             'additional_driver' => $input->additional_driver,
             'email' => $input->email,
             'extra_cover' => $input->extra_cover,
-            'gender' => $this->getGender($input->gender),
+            'gender' => $input->gender,
             'id_type' => $input->id_type,
             'id_number' => $input->id_number,
             'marital_status' => $this->getMaritalStatusCode($input->marital_status),
