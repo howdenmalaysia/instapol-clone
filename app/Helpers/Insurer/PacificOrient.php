@@ -285,6 +285,7 @@ class PacificOrient implements InsurerLibraryInterface
         }
         
         $data = (object) [
+            'age' => $input->age,
             'additional_driver' => $input->additional_driver,
             'email' => $input->email,
             'extra_cover' => $input->extra_cover,
