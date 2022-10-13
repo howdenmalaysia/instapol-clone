@@ -120,58 +120,59 @@ class MotorAPIController extends Controller implements MotorAPIInterface
         }
     }
 
-    public function getQuote(Request $request, $quote_type)
+    public function getQuote(Request $request, string $quote_type = '')
     {
         $full_quote = $quote_type === 'full';
-        $request->motor = toObject($request->motor);
+        $motor = toObject($request->motor);
 
         // Get State Details with Postcode
-        $postcode = $this->getPostcodeDetails($request->motor->postcode);
+        $postcode = $this->getPostcodeDetails($motor->postcode);
         
         // Get Product Details
         $product = $this->getProduct($request->product_id);
 
         // Get Vehicle Body Type Details
-        if(!empty($request->motor->vehicle_body_type)) {
-            $vehicle_body_type_id = VehicleBodyType::where('name', $request->motor->vehicle_body_type)->pluck('id');
+        if(!empty($motor->vehicle_body_type)) {
+            $vehicle_body_type_id = VehicleBodyType::where('name', $motor->vehicle_body_type)->pluck('id');
         }
 
         $data = new APIData([
-            'id_type' => $request->motor->policy_holder->id_type,
-            'id_number' => $request->motor->policy_holder->id_number,
-            'vehicle_number' => strtoupper($request->motor->vehicle_number),
+            'age' => getAgeFromIC($motor->policy_holder->id_number),
+            'id_type' => $motor->policy_holder->id_type,
+            'id_number' => $motor->policy_holder->id_number,
+            'vehicle_number' => strtoupper($motor->vehicle_number),
             'postcode' => $postcode->postcode,
-            'email' => $request->motor->policy_holder->email,
+            'email' => $motor->policy_holder->email,
             'region' => $postcode->state->region,
             'state' => $postcode->state->name,
             'insurer_id' => $product->insurance_company->id,
             'insurer_name' => $product->insurance_company->name,
             'product_id' => $product->id,
-            'gender' => $request->motor->policy_holder->gender,
-            'marital_status' => $request->motor->policy_holder->marital_status,
-            'nvic' => $request->nvic,
+            'gender' => $motor->policy_holder->gender,
+            'marital_status' => $motor->policy_holder->marital_status,
+            'nvic' => $motor->vehicle->nvic,
             'vehicle' => new VehicleData([
-                'vehicle_number' => $request->motor->vehicle_number ?? '',
-                'class_code' => $request->motor->vehicle->extra_attribute->class_code ?? '',
-                'coverage_code' => $request->motor->vehicle->extra_attribute->coverage_code ?? '',
-                'vehicle_use_code' => $request->motor->vehicle->extra_attribute->vehicle_use_code ?? '',
-                'make_code' => $request->motor->vehicle->extra_attribute->make_code ?? '',
-                'make' => $request->motor->vehicle->make ?? '',
-                'model_code' => $request->motor->vehicle->extra_attribute->model_code ?? '',
-                'model' => $request->motor->vehicle->model ?? '',
-                'manufacture_year' => $request->motor->vehicle->manufacture_year ?? '',
-                'engine_number' => $request->motor->vehicle->engine_number ?? $request->motor->vehicle->extra_attribute->engine_number ?? '',
-                'chassis_number' => $request->motor->vehicle->chassis_number ?? $request->motor->vehicle->extra_attribute->chassis_number ?? '',
-                'nvic' => $request->motor->vehicle->nvic ?? $request->motor->variants[0]->nvic ?? '',
-                'variant' => $request->motor->vehicle->variant ?? $request->motor->variants[0]->variant ?? '',
-                'seating_capacity' => $request->motor->vehicle->extra_attribute->seating_capacity ?? '',
-                'engine_capacity' => $request->motor->vehicle->engine_capacity ?? '',
-                'ncd_effective_date' => !empty($inception_date) ? $inception_date->subYear()->format('Y-m-d') : '',
-                'ncd_expiry_date' => !empty($inception_date) ? $inception_date->subDay()->format('Y-m-d') : '',
-                'current_ncd' => $request->motor->vehicle->ncd_percentage ?? '',
-                'next_ncd' => $request->motor->vehicle->ncd_percentage ?? '',
-                'next_ncd_effective_date' => $request->motor->vehicle->inception_date ?? '',
-                'policy_expiry_date' => !empty($inception_date) ? $inception_date->subDay()->format('Y-m-d') : '',
+                'vehicle_number' => $motor->vehicle_number,
+                'class_code' => $motor->vehicle->extra_attribute->class_code,
+                'coverage_code' => $motor->vehicle->extra_attribute->coverage_code,
+                'vehicle_use_code' => $motor->vehicle->extra_attribute->vehicle_use_code,
+                'make_code' => $motor->vehicle->extra_attribute->make_code,
+                'make' => $motor->vehicle->make,
+                'model_code' => $motor->vehicle->extra_attribute->model_code,
+                'model' => $motor->vehicle->model,
+                'manufacture_year' => $motor->vehicle->manufacture_year,
+                'engine_number' => $motor->vehicle->extra_attribute->engine_number,
+                'chassis_number' => $motor->vehicle->extra_attribute->chassis_number,
+                'nvic' => $motor->vehicle->nvic ?? $motor->variants[0]->nvic,
+                'variant' => $motor->vehicle->variant ?? $motor->variants[0]->variant,
+                'seating_capacity' => $motor->vehicle->extra_attribute->seating_capacity,
+                'engine_capacity' => $motor->vehicle->engine_capacity,
+                'ncd_effective_date' => Carbon::parse($motor->vehicle->inception_date)->subYear()->format('Y-m-d'),
+                'ncd_expiry_date' => Carbon::parse($motor->vehicle->inception_date)->subDay()->format('Y-m-d'),
+                'current_ncd' => $motor->vehicle->ncd_percentage,
+                'next_ncd' => $motor->vehicle->ncd_percentage,
+                'next_ncd_effective_date' => Carbon::parse($motor->vehicle->inception_date)->format('Y-m-d'),
+                'policy_expiry_date' => Carbon::parse($motor->vehicle->inception_date)->subDay()->format('Y-m-d'),
             ]),
             'extra_cover' => toObject($request->extra_cover ?? []),
             'additional_driver' => toObject($request->additional_driver ?? []),
@@ -180,7 +181,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             'occupation' => strtoupper($request->occupation)
         ]);
 
-        $insurer = $this->getInsurerClass($product->insurance_company->id);
+        $insurer = $this->getInsurerClass($product->id);
         $result = $insurer->premiumDetails($data, $full_quote);
 
         if(!$result->status) {

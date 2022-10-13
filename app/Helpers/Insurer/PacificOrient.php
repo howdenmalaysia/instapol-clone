@@ -203,6 +203,7 @@ class PacificOrient implements InsurerLibraryInterface
             ];
 
             $data = (object) [
+                'age' => $input->age,
                 'gender' => $input->gender,
                 'id_type' => $input->id_type,
                 'id_number' => $id_number,
@@ -221,15 +222,14 @@ class PacificOrient implements InsurerLibraryInterface
                 return $this->abort($premium->response);
             }
 
-            $excess_amount = $premium->response->excessAmt;
-            $net_premium = $premium->response->
-            $ncd_amount = $premium->response->ncdAmt;
-            $basic_premium = $premium->response->detariffPremium;
+            $excess_amount = $premium->response->excess_amount;
+            $ncd_amount = $premium->response->ncd_amount;
+            $basic_premium = $premium->response->basic_premium;
             $total_benefit_amount = 0;
-            $gross_premium = $premium->response->grossPremium;
-            $stamp_duty = $premium->response->stampDuty;
-            $sst_amount = $premium->response->serviceTaxAmt;
-            $total_payable = $premium->response->totalPremium;
+            $gross_premium = $premium->response->gross_premium;
+            $stamp_duty = $premium->response->stamp_duty;
+            $sst_amount = $premium->response->sst_amount;
+            $total_payable = $premium->response->total_premium;
             $sst_percent = ($sst_amount / $gross_premium) * 100;
 
             $extra_cover_list = [];
@@ -304,41 +304,39 @@ class PacificOrient implements InsurerLibraryInterface
             return $this->abort($premium->response);
         }
 
-        if(!empty($premium->response->extraCoverage)) {
-            foreach($premium->response->extraCoverage as $extra) {
-                $total_benefit_amount += formatNumber($extra->totalPremium);
-                $extra_cover->premium = formatNumber($extra->totalPremium);
+        if(!empty($premium->response->extra_coverage)) {
+            foreach($premium->response->extra_coverage as $extra) {
+                $total_benefit_amount += formatNumber($extra->total_premium);
+                $extra_cover->premium = formatNumber($extra->total_premium);
             }
         }
 
         $response = new PremiumResponse([
-            'act_premium' => formatNumber($premium->response->actPremium),
-            'basic_premium' => formatNumber($premium->response->basicPremium),
-            'basic_nett_premium' => formatNumber($premium->response->basicNettPremium),
+            'act_premium' => formatNumber($premium->response->act_premium),
+            'basic_premium' => formatNumber($premium->response->basic_premium),
             'detariff' => $premium->response->detariff,
-            'detariff_premium' => formatNumber($premium->response->detariffPremium),
-            'discount' => $premium->response->discount,
-            'discount_amount' => formatNumber($premium->discountAmt),
-            'excess_amount' => formatNumber($premium->response->excessAmt),
+            'detariff_premium' => formatNumber($premium->response->detariff_premium),
+            'discount' => formatNumber($premium->response->discount),
+            'discount_amount' => formatNumber($premium->discount_amount),
+            'excess_amount' => formatNumber($premium->response->excess_amount),
             'extra_cover' => $this->sortExtraCoverList($input->extra_cover),
-            'gross_premium' => formatNumber($premium->response->grossPremium),
-            'loading' => formatNumber($premium->response->loadingAmt),
-            'ncd' => formatNumber($premium->response->ncdAmt),
-            'net_premium' => formatNumber($premium->response->basicNettPremium + $premium->response->serviceTaxAmt + $premium->response->stampDuty),
-            'premium_before_rebate' => formatNumber($premium->response->premiumBeforeRebate),
-            'rebate_amount' => formatNumber($premium->response->rebateAmt),
-            'sst_amount' => formatNumber($premium->response->serviceTaxAmt),
-            'sst_percent' => formatNumber(($premium->response->serviceTaxAmt / $premium->response->grossPremium) * 100),
-            'stamp_duty' => formatNumber($premium->response->stampDuty),
-            'tariff_premium' => formatNumber($premium->response->tariffPremium),
+            'gross_premium' => formatNumber($premium->response->gross_premium),
+            'loading' => formatNumber($premium->response->loading_amount),
+            'ncd' => formatNumber($premium->response->ncd_amount),
+            'net_premium' => formatNumber($premium->response->basic_nett_premium + $premium->response->sst_amount + $premium->response->stamp_duty),
+            'sst_amount' => formatNumber($premium->response->sst_amount),
+            'sst_percent' => formatNumber(($premium->response->sst_amount / $premium->response->gross_premium) * 100),
+            'stamp_duty' => formatNumber($premium->response->stamp_duty),
+            'tariff_premium' => formatNumber($premium->response->tariff_premium),
             'total_benefit_amount' => formatNumber($total_benefit_amount),
-            'total_contribution' => formatNumber($premium->response->totalPremium),
-            'total_payable' => formatNumber($premium->response->totalPremium),
+            'total_contribution' => formatNumber($premium->response->total_premium),
+            'total_payable' => formatNumber($premium->response->total_premium),
             'request_id' => $premium->response->requestId,
         ]);
 
         if($full_quote) {
             // Revert to premium without extra covers
+            $response->excess_amount = $excess_amount;
             $response->basic_premium = $basic_premium;
             $response->ncd = $ncd_amount;
             $response->gross_premium = $gross_premium;
@@ -533,14 +531,14 @@ class PacificOrient implements InsurerLibraryInterface
             'all_rider' => 'N', // Default to No,
             'is_company' => $input->id_type === config('setting.id_type.company_registration_no') ? 'Y' : 'N',
             'coverage' => self::COVER_TYPE,
-            'effective_date' => $input,
-            'expiry_date' => $input,
-            'extra_cover' => $input->extra_cover,
-            'gender' => $this->getGender($input->gender),
+            'effective_date' => $input->vehicle->inception_date,
+            'expiry_date' => $input->vehicle->expiry_date,
+            'extra_cover' => $input->extra_cover ?? [],
+            'gender' => $input->gender,
             'age' => $input->age,
             'marital_status' => $input->marital_status,
-            'ncd_percentage' => $input->ncd_percentage,
-            'additional_driver_count' => count($input->additional_driver),
+            'ncd_percentage' => $input->vehicle->ncd_percentage,
+            'additional_driver_count' => count($input->additional_driver ?? []) + 1,
             'id_number' => $input->id_number,
             'hire_purchase' => 'N',
             'postcode' => $input->postcode,
@@ -549,19 +547,48 @@ class PacificOrient implements InsurerLibraryInterface
             'token' => $token,
             'nvic' => $input->vehicle->nvic,
             'vehicle_number' => $input->vehicle_number,
-            'vehicle_type' => $input->vehicle->seating_capacity <= 5 ? '2-01' : '2-06'
+            'vehicle_type' => $input->vehicle->extra_attribute->seating_capacity <= 5 ? '2-01' : '2-06'
         ];
 
         $xml = view('backend.xml.pacific.premium')->with($data)-> render();
 
-        $result = $this->cURL($path, $xml);
+        $result = $this->cURL($path, $xml, self::SOAP_ACTION_DOMAIN . '/IInsurance/PremiumRequest');
+        $data = $result->response->PremiumRequestResponse->PremiumRequestResult;
 
         if(!$result->status) {
             return $this->abort($result->response);
         }
 
+        // 1. Check for Error
+        if($data->respCode !== '000') {
+            return $this->abort("P&O Error! {$data->respDescription}");
+        }
+
+        $response = (object) [
+            'act_premium' => $data->actPremium,
+            'basic_premium' => $data->basicPremium,
+            'basic_nett_premium' => $data->basicNettPremium,
+            'detariff' => $data->detariff,
+            'detariff_premium' => $data->detariffPremium,
+            'discount' => $data->discount,
+            'discount_amount' => $data->discountAmt,
+            'excess_amount' => $data->excessAmt,
+            'extra_coverage' => $data->extra_coverage,
+            'gross_premium' => $data->grossPremium,
+            'loading_amount' => $data->loadingAmt,
+            'ncd_amount' => $data->ncdAmt,
+            'non_act_premium' => $data->nonActPrem,
+            'reference_number' => $data->refNo,
+            'request_id' => $data->requestId,
+            'sst_amount' => $data->serviceTaxAmt,
+            'stamp_duty' => $data->stampDuty,
+            'sum_insured' => $data->sumInsured,
+            'tariff_premium' => $data->tariffPremium,
+            'total_premium' => $data->totalPremium
+        ];
+
         return new ResponseData([
-            'response' => $result->response->PremiumRequestResponse,
+            'response' => $response,
         ]);
     }
 

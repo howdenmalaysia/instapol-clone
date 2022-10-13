@@ -42,6 +42,9 @@ class APIData extends DataTransferObject
     public $state;
 
     // Get Quote
+    /** @var int|null */
+    public $age;
+    
     /** @var string|int|null */
     public $insurer_id;
 
