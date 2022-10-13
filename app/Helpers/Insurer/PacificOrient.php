@@ -477,11 +477,12 @@ class PacificOrient implements InsurerLibraryInterface
         
         $result = $this->cURL($path, $xml, self::SOAP_ACTION_DOMAIN . '/IAccessToken/GetAccessToken');
 
+        $data = $result->response->Body->GetAccessTokenResponse->GetAccessTokenResult;
         if(!$result->status) {
-            return $this->abort($result->response->respDescription);
+            return $this->abort($data->respDescription);
         }
 
-        return $result->response->accessToken;
+        return $data->accessToken;
     }
 
     private function getVIXNCD(array $input) : ResponseData
@@ -491,17 +492,17 @@ class PacificOrient implements InsurerLibraryInterface
         $xml = view('backend.xml.pacific.vehicle_details')->with($input)->render();
 
         $result = $this->cURL($path, $xml, self::SOAP_ACTION_DOMAIN . '/RequestVehicleInfo');
+        $data = $result->response->RequestVehicleInfoResponse->RequestVehicleInfoResult;
 
         if(!$result->status) {
             return $this->abort($result->response);
         }
 
         // 1. Check for Error
-        if(!empty($result->response->RequestVehicleInfoResponse->RequestVehicleInfoResult->ErrorDesc)) {
-            return $this->abort("P&O Error! {$result->response->RequestVehicleInfoResponse->RequestVehicleInfoResult->ErrorDesc}");
+        if(!empty($data->ErrorDesc)) {
+            return $this->abort("P&O Error! {$data->ErrorDesc}");
         }
 
-        $data = $result->response->RequestVehicleInfoResponse->RequestVehicleInfoResult;
         $response = (object) [
             'chassis_number' => (string) $data->ChassisNumber,
             'engine_capacity' => (int) $data->EngineCC,
@@ -666,25 +667,25 @@ class PacificOrient implements InsurerLibraryInterface
             ]);
 
         if($result->status) {
-            $response = simplexml_load_string($result->response);
+            $cleaned_xml = preg_replace('/(<\/|<)[a-zA-Z]+:([a-zA-Z0-9]+[ =>])/', '$1$2', $result->response);
+            $response = simplexml_load_string($cleaned_xml);
 
             if($response === false) {
                 return $this->abort(__('api.xml_error'));
             }
 
-            if(strpos($path, 'POAT') !== false) {
-                $response->registerXPathNamespace('res', 'http://schemas.datacontract.org/2004/07/PO.TravelAssurance');
-
-                $response = (object) [
-                    'accessToken' => (string) $response->xpath('//res:accessToken')[0],
-                ];
-            } else {
-                $response->registerXPathNamespace('res', 'http://schemas.datacontract.org/2004/07/PO.Web.API');
-    
-                $response = $response->xpath('soap:Body')[0];
-            }
+            $response = $response->xpath('Body')[0];
         } else {
-            $message = !empty($result->response) ? $result->response : __('api.empty_response', ['company' => $this->company]);
+            $message = '';
+            if(empty($result->response)) {
+                $message = __('api.empty_response', ['company' => $this->company]);
+            } else {
+                if(is_string($result->response)) {
+                    $message = $result->response;
+                } else {
+                    $message = 'An Error Encountered. ' . json_encode($result->response);
+                }
+            }
 
             return $this->abort($message);
         }
