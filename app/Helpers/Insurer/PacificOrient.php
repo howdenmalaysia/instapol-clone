@@ -223,14 +223,14 @@ class PacificOrient implements InsurerLibraryInterface
                 return $this->abort($premium->response);
             }
 
-            $excess_amount = $premium->response->excess_amount;
-            $ncd_amount = $premium->response->ncd_amount;
-            $basic_premium = $premium->response->basic_premium;
+            $excess_amount = formatNumber($premium->response->excess_amount);
+            $ncd_amount = formatNumber($premium->response->ncd_amount);
+            $basic_premium = formatNumber($premium->response->basic_premium);
             $total_benefit_amount = 0;
-            $gross_premium = $premium->response->gross_premium;
-            $stamp_duty = $premium->response->stamp_duty;
-            $sst_amount = $premium->response->sst_amount;
-            $total_payable = $premium->response->total_premium;
+            $gross_premium = formatNumber($premium->response->gross_premium);
+            $stamp_duty = formatNumber($premium->response->stamp_duty);
+            $sst_amount = formatNumber($premium->response->sst_amount);
+            $total_payable = formatNumber($premium->response->total_premium);
             $sst_percent = ($sst_amount / $gross_premium) * 100;
 
             $extra_cover_list = [];
