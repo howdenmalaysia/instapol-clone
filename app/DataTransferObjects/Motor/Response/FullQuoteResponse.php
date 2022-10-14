@@ -16,7 +16,7 @@ class FullQuoteResponse extends DataTransferObject
     public $basic_premium;
 
     /** @var int|float */
-    public $ncd;
+    public $ncd_amount;
 
     /** @var int|float */
     public $total_benefit_amount;
@@ -35,6 +35,9 @@ class FullQuoteResponse extends DataTransferObject
 
     /** @var int|float */
     public $excess_amount;
+
+    /** @var int|float */
+    public $loading;
 
     /** @var int|float */
     public $total_payable;
