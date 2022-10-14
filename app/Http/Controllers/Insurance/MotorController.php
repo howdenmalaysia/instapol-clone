@@ -47,6 +47,7 @@ class MotorController extends Controller
             case 1: {
                 $gender = getGenderFromIC($request->id_number);
                 $driving_experience = getAgeFromIC($request->id_number) - 18;
+                $marital_status = 'S';
 
                 break;
             }
