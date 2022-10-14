@@ -188,12 +188,23 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             return abort($result->code, $result->response);
         }
 
-        // Include Company & Product Details
-        $result->response->company = $product->insurance_company->name;
-        $result->response->product_name = $product->name;
-
         if($full_quote) {
-            $quote = new FullQuoteResponse((array) $result->response);
+            $quote = new FullQuoteResponse([
+                'company' => $product->insurance_company->name,
+                'product_name' => $product->name,
+                'basic_premium' => $result->response->basic_premium,
+                'ncd_amount' => $result->response->ncd_amount,
+                'total_benefit_amount' => $result->response->total_benefit_amount,
+                'gross_premium' => $result->response->gross_premium,
+                'sst_percent' => $result->response->sst_percent,
+                'sst_amount' => $result->response->sst_amount,
+                'stamp_duty' => $result->response->stamp_duty,
+                'excess_amount' => $result->response->excess_amount,
+                'loading' => $result->response->loading,
+                'total_payable' => $result->response->total_payable,
+                'net_premium' => $result->response->net_premium,
+                'extra_cover' => $result->response->extra_cover,
+            ]);
         } else {
             $quote = new QuoteResponse((array) $result->response);
         }
