@@ -2,6 +2,8 @@
 
 namespace App\Helpers\Insurer;
 
+use App\DataTransferObjects\Motor\ExtraCover;
+use App\DataTransferObjects\Motor\OptionList;
 use App\DataTransferObjects\Motor\Response\PremiumResponse;
 use App\DataTransferObjects\Motor\Response\ResponseData;
 use App\DataTransferObjects\Motor\Response\VIXNCDResponse;
@@ -233,14 +235,14 @@ class PacificOrient implements InsurerLibraryInterface
 
             $extra_cover_list = [];
             foreach(self::EXTRA_COVERAGE_LIST as $_extra_cover_code) {
-                $extra_cover = (object) [
+                $extra_cover = new ExtraCover([
                     'selected' => false,
                     'readonly' => false,
                     'extra_cover_code' => $_extra_cover_code,
                     'extra_cover_description' => $this->getExtraCoverDescription($_extra_cover_code),
                     'premium' => 0,
                     'sum_insured' => 0
-                ];
+                ]);
 
                 $sum_insured_amount = 0;
 
@@ -249,13 +251,13 @@ class PacificOrient implements InsurerLibraryInterface
                         $extra_cover->extra_cover_name = 'Windscreen or Windows';
 
                         // Options List for Windscreen
-                        $option_list = (object) [
+                        $option_list = new OptionList([
                             'name' => 'sum_insured',
                             'description' => 'Sum Insured Amount',
                             'values' => generateExtraCoverSumInsured(500, 10000, 1000),
                             'any_value' => true,
                             'increment' => 100
-                        ];
+                        ]);
 
                         $extra_cover->option_list = $option_list;
 
@@ -854,7 +856,6 @@ class PacificOrient implements InsurerLibraryInterface
             }
 
             $_extra_cover->sequence = $sequence;
-
         }
         
         $sorted = array_values(Arr::sort($extra_cover_list, function ($value) {
