@@ -305,9 +305,16 @@ class PacificOrient implements InsurerLibraryInterface
         }
 
         if(!empty($premium->response->extra_coverage)) {
-            foreach($premium->response->extra_coverage as $extra) {
-                $total_benefit_amount += formatNumber($extra->total_premium);
-                $extra_cover->premium = formatNumber($extra->total_premium);
+            foreach($input->extra_cover as $extra_cover) {
+                foreach($premium->response->extra_coverage as $extra) {
+                    if((string) $extra->coverageId === $extra_cover->extra_cover_code) {
+                        $extra_cover->premium = formatNumber((float) $extra->premium);
+    
+                        if(!empty($extra->sumInsured)) {
+                            $extra_cover->sum_insured = formatNumber((float) $extra->sumInsured);
+                        }
+                    }
+                }
             }
         }
 
@@ -566,6 +573,12 @@ class PacificOrient implements InsurerLibraryInterface
             return $this->abort("P&O Error! {$data->respDescription}");
         }
 
+        // 2. Retrieve Extra Cover
+        $extra_cover = [];
+        foreach($data->extraCoverage->extraCoverageResp as $extra) {
+            array_push($extra_cover, $extra);
+        }
+
         $response = (object) [
             'act_premium' => (float) $data->actPremium,
             'basic_premium' => (float) $data->basicPremium,
@@ -575,7 +588,7 @@ class PacificOrient implements InsurerLibraryInterface
             'discount' => (float) $data->discount,
             'discount_amount' => (float) $data->discountAmt,
             'excess_amount' => (float) $data->excessAmt,
-            'extra_coverage' => (float) $data->extra_coverage,
+            'extra_coverage' => $extra_cover,
             'gross_premium' => (float) $data->grossPremium,
             'loading_amount' => (float) $data->loadingAmt,
             'ncd_amount' => (float) $data->ncdAmt,
