@@ -332,7 +332,7 @@ class PacificOrient implements InsurerLibraryInterface
             'tariff_premium' => formatNumber($premium->response->tariff_premium),
             'total_benefit_amount' => formatNumber($total_benefit_amount),
             'total_payable' => formatNumber($premium->response->total_premium),
-            'request_id' => $premium->response->requestId,
+            'request_id' => $premium->response->request_id,
         ]);
 
         if($full_quote) {
