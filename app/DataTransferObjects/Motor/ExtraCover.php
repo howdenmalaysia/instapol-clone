@@ -27,7 +27,7 @@ class ExtraCover extends DataTransferObject
     /** @var \App\DataTransferObjects\Motor\OptionList|null */
     public $option_list;
 
-    /** @var int */
+    /** @var int|null */
     public $sequence;
 }
 
