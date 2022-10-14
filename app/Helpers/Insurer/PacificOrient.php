@@ -567,26 +567,26 @@ class PacificOrient implements InsurerLibraryInterface
         }
 
         $response = (object) [
-            'act_premium' => $data->actPremium,
-            'basic_premium' => $data->basicPremium,
-            'basic_nett_premium' => $data->basicNettPremium,
-            'detariff' => $data->detariff,
-            'detariff_premium' => $data->detariffPremium,
-            'discount' => $data->discount,
-            'discount_amount' => $data->discountAmt,
-            'excess_amount' => $data->excessAmt,
-            'extra_coverage' => $data->extra_coverage,
-            'gross_premium' => $data->grossPremium,
-            'loading_amount' => $data->loadingAmt,
-            'ncd_amount' => $data->ncdAmt,
-            'non_act_premium' => $data->nonActPrem,
-            'reference_number' => $data->refNo,
-            'request_id' => $data->requestId,
-            'sst_amount' => $data->serviceTaxAmt,
-            'stamp_duty' => $data->stampDuty,
-            'sum_insured' => $data->sumInsured,
-            'tariff_premium' => $data->tariffPremium,
-            'total_premium' => $data->totalPremium
+            'act_premium' => (float) $data->actPremium,
+            'basic_premium' => (float) $data->basicPremium,
+            'basic_nett_premium' => (float) $data->basicNettPremium,
+            'detariff' => (string) $data->detariff,
+            'detariff_premium' => (float) $data->detariffPremium,
+            'discount' => (float) $data->discount,
+            'discount_amount' => (float) $data->discountAmt,
+            'excess_amount' => (float) $data->excessAmt,
+            'extra_coverage' => (float) $data->extra_coverage,
+            'gross_premium' => (float) $data->grossPremium,
+            'loading_amount' => (float) $data->loadingAmt,
+            'ncd_amount' => (float) $data->ncdAmt,
+            'non_act_premium' => (float) $data->nonActPrem,
+            'reference_number' => (string) $data->refNo,
+            'request_id' => (string) $data->requestId,
+            'sst_amount' => (float) $data->serviceTaxAmt,
+            'stamp_duty' => (float) $data->stampDuty,
+            'sum_insured' => (float) $data->sumInsured,
+            'tariff_premium' => (float) $data->tariffPremium,
+            'total_premium' => (float) $data->totalPremium
         ];
 
         return new ResponseData([
@@ -847,7 +847,7 @@ class PacificOrient implements InsurerLibraryInterface
         $sorted = array_values(Arr::sort($extra_cover_list, function ($value) {
             return $value->sequence;
         }));
-        
+
         return $sorted;
     }
 
