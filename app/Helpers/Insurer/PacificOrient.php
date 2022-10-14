@@ -53,8 +53,7 @@ class PacificOrient implements InsurerLibraryInterface
         $this->token = $this->getToken();
     }
 
-    /** @return VIXNCDResponse|ResponseData */
-    public function vehicleDetails(object $input)
+    public function vehicleDetails(object $input) : object
     {
         $data = [
             'token' => $this->token,
@@ -131,8 +130,7 @@ class PacificOrient implements InsurerLibraryInterface
         ];
     }
 
-    /** @return PremiumResponse|ResponseData */
-    public function premiumDetails(object $input, $full_quote = false)
+    public function premiumDetails(object $input, $full_quote = false) : object
     {
         $vehicle = $input->vehicle ?? null;
         $ncd_amount = $basic_premium = $total_benefit_amount = $gross_premium = $sst_percent = $sst_amount = $stamp_duty = $excess_amount = $total_payable = 0;
@@ -348,10 +346,13 @@ class PacificOrient implements InsurerLibraryInterface
             $response->total_payable = $total_payable;
         }
 
-        return $response;
+        return (object) [
+            'status' => true,
+            'response' => $response
+        ];
     }
 
-    public function quotation(object $input) : PremiumResponse
+    public function quotation(object $input) : object
     {
         $data = (object) [
             'additional_driver' => $input->additional_driver,
@@ -391,7 +392,7 @@ class PacificOrient implements InsurerLibraryInterface
         ]);
     }
 
-    public function submission(object $input) : ResponseData
+    public function submission(object $input) : object
     {
         // Get Extra Attribute
         $extra_attribute = json_decode($input->insurance->extra_attribute->value);
