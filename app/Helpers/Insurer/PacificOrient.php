@@ -251,7 +251,7 @@ class PacificOrient implements InsurerLibraryInterface
                         // Options List for Windscreen
                         $option_list = (object) [
                             'name' => 'sum_insured',
-                            'desctipion' => 'Sum Insured Amount',
+                            'description' => 'Sum Insured Amount',
                             'values' => generateExtraCoverSumInsured(500, 10000, 1000),
                             'any_value' => true,
                             'increment' => 100
