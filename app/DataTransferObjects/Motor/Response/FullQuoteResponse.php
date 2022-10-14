@@ -16,9 +16,6 @@ class FullQuoteResponse extends DataTransferObject
     public $basic_premium;
 
     /** @var int|float */
-    public $ncd_percentage;
-
-    /** @var int|float */
     public $ncd;
 
     /** @var int|float */
@@ -40,9 +37,6 @@ class FullQuoteResponse extends DataTransferObject
     public $excess_amount;
 
     /** @var int|float */
-    public $total_contribution;
-
-    /** @var int|float */
     public $total_payable;
 
     /** @var int|float|null */
@@ -50,7 +44,4 @@ class FullQuoteResponse extends DataTransferObject
 
     /** @var \App\DataTransferObjects\Motor\ExtraCover[] */
     public $extra_cover;
-
-    /** @var \App\DataTransferObjects\Motor\Vehicle */
-    public $vehicle;
 }
