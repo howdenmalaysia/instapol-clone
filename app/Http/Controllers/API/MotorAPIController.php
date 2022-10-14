@@ -193,9 +193,9 @@ class MotorAPIController extends Controller implements MotorAPIInterface
         $result->response->product_name = $product->name;
 
         if($full_quote) {
-            $quote = new FullQuoteResponse($result->response->attributesToArray());
+            $quote = new FullQuoteResponse((array) $result->response);
         } else {
-            $quote = new QuoteResponse($result->response->attributesToArray());
+            $quote = new QuoteResponse((array) $result->response);
         }
 
         return $quote->all();
