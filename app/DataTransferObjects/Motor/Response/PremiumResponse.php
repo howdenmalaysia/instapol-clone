@@ -11,15 +11,18 @@ class PremiumResponse extends DataTransferObject
     
     /** @var array */
     public $extra_cover;
+
+    /** @var float */
+    public $excess_amount = 0;
     
     /** @var float */
     public $gross_premium;
+
+    /** @var float */
+    public $loading = 0;
     
     /** @var float */
-    public $ncd;
-    
-    /** @var float */
-    public $net_premium;
+    public $ncd_amount;
     
     /** @var float */
     public $sst_amount;
@@ -34,25 +37,28 @@ class PremiumResponse extends DataTransferObject
     public $total_benefit_amount;
     
     /** @var float */
-    public $total_contribution;
-    
-    /** @var float */
     public $total_payable;
     
 
     // Optional Fields
-    /** @var float|null */
-    public $excess_amount = 0;
-
     /** @var string|null */
     public $request_id;
 
     /** @var float|null */
     public $act_premium;
 
+    /** @var string|null */
+    public $detariff;
+
+    /** @var float|null */
+    public $detariff_premium = 0;
+
     /** @var float|null */
     public $discount = 0;
 
     /** @var float|null */
     public $discount_amount = 0;
+
+    /** @var float|null */
+    public $tariff_premium = 0;
 }
