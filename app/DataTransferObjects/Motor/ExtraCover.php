@@ -18,6 +18,9 @@ class ExtraCover extends DataTransferObject
     /** @var string */
     public $extra_cover_description;
 
+    /** @var float */
+    public $sum_insured;
+
     /** @var int|float */
     public $premium;
 
