@@ -559,8 +559,8 @@ return [
             'lowest_price' => 'Lowest Price',
             'highest_price' => 'Highest Price',
             'offline' => 'Offline',
-            'Market Value' => 'Market Value',
-            'Agreed Value' => 'Agreed Value'
+            'market_value' => 'Market Value',
+            'agreed_value' => 'Agreed Value'
         ],
     ],
     'products' => [
