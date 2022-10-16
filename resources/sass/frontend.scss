@@ -190,7 +190,11 @@ body {
     #compare {
         .insurer-card {
             .insurer-logo {
-                height: 100px;
+                height: 110px;
+
+                img {
+                    height: 100px;
+                }
             }
         }
     }
