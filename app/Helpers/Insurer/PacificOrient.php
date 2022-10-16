@@ -8,6 +8,7 @@ use App\DataTransferObjects\Motor\Response\PremiumResponse;
 use App\DataTransferObjects\Motor\Response\ResponseData;
 use App\DataTransferObjects\Motor\Response\VIXNCDResponse;
 use App\DataTransferObjects\Motor\VariantData;
+use App\DataTransferObjects\Motor\Vehicle;
 use App\Helpers\HttpClient;
 use App\Interfaces\InsurerLibraryInterface;
 use App\Models\APILogs;
@@ -180,7 +181,7 @@ class PacificOrient implements InsurerLibraryInterface
             }
 
             // Format Vehicle Object
-            $vehicle = (object) [
+            $vehicle = new Vehicle([
                 'coverage' => $vehicle_vix->response->coverage,
                 'engine_capacity' => $vehicle_vix->response->engine_capacity,
                 'expiry_date' => Carbon::createFromFormat('d M Y', $vehicle_vix->response->expiry_date)->format('Y-m-d'),
@@ -201,7 +202,7 @@ class PacificOrient implements InsurerLibraryInterface
                 'sum_insured_type' => $vehicle_vix->response->sum_insured_type,
                 'sum_insured' => $vehicle_vix->response->sum_insured,
                 'variant' => $selected_variant->variant,
-            ];
+            ]);
 
             $data = (object) [
                 'age' => $input->age,
@@ -333,8 +334,10 @@ class PacificOrient implements InsurerLibraryInterface
             'loading' => formatNumber($premium->response->loading_amount),
             'ncd_amount' => formatNumber($premium->response->ncd_amount),
             'net_premium' => formatNumber($premium->response->basic_nett_premium + $premium->response->sst_amount + $premium->response->stamp_duty),
+            'sum_insured' => formatNumber($premium->response->sum_insured),
+            'sum_insured_type' => $vehicle->sum_insured_type,
             'sst_amount' => formatNumber($premium->response->sst_amount),
-            'sst_percent' => formatNumber(($premium->response->sst_amount / $premium->response->gross_premium) * 100),
+            'sst_percent' => formatNumber(ceil(($premium->response->sst_amount / $premium->response->gross_premium) * 100)),
             'stamp_duty' => formatNumber($premium->response->stamp_duty),
             'tariff_premium' => formatNumber($premium->response->tariff_premium),
             'total_benefit_amount' => formatNumber($total_benefit_amount),
