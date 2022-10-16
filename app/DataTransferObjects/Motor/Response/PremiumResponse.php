@@ -41,7 +41,9 @@ class PremiumResponse extends DataTransferObject
     
     /** @var float */
     public $total_payable;
-    
+
+    /** @var float */
+    public $sum_insured;
 
     // Optional Fields
     /** @var string|null */
