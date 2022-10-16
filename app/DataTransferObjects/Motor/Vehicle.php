@@ -39,13 +39,13 @@ class Vehicle extends DataTransferObject
     /** @var string */
     public $sum_insured_type;
 
-    /** @var int */
+    /** @var int|float */
     public $sum_insured;
 
-    /** @var int */
+    /** @var int|float */
     public $min_sum_insured;
 
-    /** @var int */
+    /** @var int|float */
     public $max_sum_insured;
 
     /** @var array|null */
