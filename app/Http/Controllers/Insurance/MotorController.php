@@ -189,6 +189,16 @@ class MotorController extends Controller
         // $motor->extra_cover_list = 
     }
 
+    public function compareDetail(Request $request)
+    {
+
+    }
+
+    public function compareDetail_POST(Request $request)
+    {
+        
+    }
+
     private function quotation(object $motor)
     {
         $inception_date = null;
