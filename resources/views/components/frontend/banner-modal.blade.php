@@ -6,7 +6,7 @@
                     <div class="col-12">
                         <div class="modal-body p-0">
                             <button type="button" class="btn-close position-absolute" data-bs-dismiss="modal" aria-label="Close"></button>
-                            <img src="{{ $image }}" alt="Banner Image" class="img-fluid rounded">
+                            <img src="{{ $image }}" alt="Banner Image" {{ $attributes->merge(['class' => 'img-fluid rounded']) }}>
                         </div>
                     </div>
                 </div>
