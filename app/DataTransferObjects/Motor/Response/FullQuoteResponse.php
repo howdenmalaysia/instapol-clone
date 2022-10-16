@@ -34,6 +34,12 @@ class FullQuoteResponse extends DataTransferObject
     public $stamp_duty;
 
     /** @var int|float */
+    public $sum_insured;
+    
+    /** @var string */
+    public $sum_insured_type;
+
+    /** @var int|float */
     public $excess_amount;
 
     /** @var int|float */
