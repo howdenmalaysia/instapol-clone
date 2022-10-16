@@ -48,6 +48,6 @@ class Vehicle extends DataTransferObject
     /** @var int|float */
     public $max_sum_insured;
 
-    /** @var array|null */
+    /** @var object|null */
     public $extra_attribute;
 }
