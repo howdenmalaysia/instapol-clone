@@ -16,7 +16,7 @@
                     </span>
                 </td>
                 <td class="text-end">RM</td>
-                <td id="basic-premium" class="text-end">{{ $basic_premium }}</td>
+                <td id="basic-premium" class="text-end">{{ $basicPremium }}</td>
             </tr>
             <tr>
                 <td>
@@ -26,7 +26,7 @@
                     </span>
                 </td>
                 <td class="text-end">RM</td>
-                <td id="ncd" class="text-end">{{ $ncd_amount }}</td>
+                <td id="ncd" class="text-end">{{ $ncdAmount }}</td>
             </tr>
             <tr>
                 <td>
@@ -36,7 +36,7 @@
                     </span>
                 </td>
                 <td class="text-end">RM</td>
-                <td id="add-ons-premium" class="text-end">{{ $total_benefit_amount }}</td>
+                <td id="add-ons-premium" class="text-end">{{ $totalBenefitAmount }}</td>
             </tr>
             <tr>
                 <td class="border-bottom border-5" colspan="3"></td>
@@ -49,17 +49,17 @@
                     </span>
                 </td>
                 <td class="text-end">RM</td>
-                <td id="gross-premium" class="text-end">{{ $gross_premium }}</td>
+                <td id="gross-premium" class="text-end">{{ $grossPremium }}</td>
             </tr>
             <tr>
                 <td>{{ '+ ' . __('frontend.price_card.service_tax') }}</td>
                 <td class="text-end">RM</td>
-                <td id="sst" class="text-end">{{ $sst_amount }}</td>
+                <td id="sst" class="text-end">{{ $sstAmount }}</td>
             </tr>
             <tr>
                 <td>{{ '+ ' . __('frontend.price_card.stamp_duty') }}</td>
                 <td class="text-end">RM</td>
-                <td id="stamp-duty" class="text-end">{{ $stamp_duty }}</td>
+                <td id="stamp-duty" class="text-end">{{ $stampDuty }}</td>
             </tr>
             <tr>
                 <td>{{ '+ ' . __('frontend.price_card.road_tax') }}</td>
@@ -72,7 +72,7 @@
             <tr>
                 <td class="fw-bold text-uppercase">{{ __('frontend.price_card.total_payable') }}</td>
                 <td class="fw-bold text-end">RM</td>
-                <td id="total-payable" class="fw-bold text-end">{{ $total_payable }}</td>
+                <td id="total-payable" class="fw-bold text-end">{{ $totalPayable }}</td>
             </tr>
         </tbody>
     </table>
