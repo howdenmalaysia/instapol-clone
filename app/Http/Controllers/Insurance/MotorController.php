@@ -167,11 +167,6 @@ class MotorController extends Controller
         $motor->policy_holder->marital_status = $request->marital_status;
         $motor->av_code = $request->av_code;
 
-        if($premium->vehicle->nvic === '-') {
-            $premium->vehicle->nvic = $motor->vehicle->nvic;
-        }
-
-        $motor->vehicle = $premium->vehicle;
         $motor->premium = (object) [
             'basic_premium' => $premium->basic_premium,
             'ncd' => $premium->ncd_percentage,
