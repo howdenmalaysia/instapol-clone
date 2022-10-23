@@ -169,7 +169,7 @@ class MotorController extends Controller
 
         $motor->premium = (object) [
             'basic_premium' => $premium->basic_premium,
-            'ncd_percentage' => $premium->ncd_percentage,
+            'ncd_amount' => $premium->ncd_amount,
             'total_benefit_amount' => $premium->total_benefit_amount,
             'loading_percentage' => $premium->loading_percentage,
 			'loading_amount' => $premium->loading_amount,

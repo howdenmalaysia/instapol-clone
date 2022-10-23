@@ -194,7 +194,6 @@ class MotorAPIController extends Controller implements MotorAPIInterface
                 'product_name' => $product->name,
                 'basic_premium' => $result->response->basic_premium,
                 'ncd_amount' => $result->response->ncd_amount,
-                'ncd_percentage' => $result->response->ncd_percentage,
                 'total_benefit_amount' => $result->response->total_benefit_amount,
                 'gross_premium' => $result->response->gross_premium,
                 'sst_percent' => $result->response->sst_percent,
