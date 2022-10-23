@@ -8,7 +8,7 @@
             <div class="row">
                 <div class="col-12 col-lg-4">
                     <x-pricing-card
-                        insurer-logo='{{ asset("images/insurer/{$product->insurance_company->logo}") }}'
+                        insurer-logo='{{ asset("images/insurer/{$product->insurance_company->logo}x") }}'
                         insurer-name="{{ $product->insurance_company->name }}"
                         basic-premium="{{ $premium->basic_premium }}"
                         ncd-amount="{{ $premium->ncd_amount }}"
@@ -31,7 +31,7 @@
                                 <div id="extra-coverages">
                                     <h3 class="card-title fw-bold border-bottom py-4 px-md-3">{{ __('frontend.motor.add_ons_page.additional_coverage') }}</h3>
                                     @foreach (array_chunk(session('motor')->extra_cover_list, 5)[0] as $_extra_cover)
-                                        <div class="extra-coverage">
+                                        <div class="extra-coverage mb-3">
                                             <div class="row px-md-3">
                                                 <div class="col-1">
                                                     <input type="checkbox" class="form-check-input extra-coverage-checkbox" name="extra_coverage[]" id="{{ $_extra_cover->extra_cover_code }}" {{ $_extra_cover->selected ? 'checked' : '' }} />
@@ -83,7 +83,7 @@
                                                     @endif
                                                 </div>
                                                 <div class="col-2 premium">
-                                                    {{ 'RM ' . $_extra_cover->premium }}
+                                                    {{ 'RM ' . number_format($_extra_cover->premium, 2) }}
                                                 </div>
                                             </div>
                                             @if (!empty($extra_cover->option_list))
@@ -230,7 +230,7 @@
 
         });
 
-        $('#btn-delete').on('click'. () => {
+        $('#btn-delete').on('click', () => {
             $(this).closest('info').remove();
         });
 
