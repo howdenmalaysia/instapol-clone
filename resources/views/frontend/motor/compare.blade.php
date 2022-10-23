@@ -253,15 +253,15 @@
             $('#landing-banner').modal('show');
             getPremium();
 
-            $('#male-label, #female-label').on('click', () => {
-                if(!$(this).hasClass('active')) {
-                    $(this).removeClass('btn-light').toggleClass('active btn-primary border text-white');
-                    $(this).siblings('label.btn').removeClass('active btn-primary border text-white').toggleClass('btn-light');
+            $('#male-label, #female-label').on('click', (e) => {
+                if(!$(e.target).hasClass('active')) {
+                    $(e.target).removeClass('btn-light').toggleClass('active btn-primary border text-white');
+                    $(e.target).siblings('label.btn').removeClass('active btn-primary border text-white').toggleClass('btn-light');
                 }
             });
 
-            $('#sort-by').on('change', () => {
-                sortPrice($(this).val() == 'HP');
+            $('#sort-by').on('change', (e) => {
+                sortPrice($(e.target).val() == 'HP');
             });
 
             $('#btn-update').on('click', () => {
@@ -273,14 +273,14 @@
                 getPremium();
             });
 
-            $('.btn-buy').on('click', () => {
-                $(this).addClass('loadingButton');
+            $('.btn-buy').on('click', (e) => {
+                $(e.target).addClass('loadingButton');
 
                 if(controller) {
                     controller.abort();
                 }
 
-                let product_id = $(this).data('product_id');
+                let product_id = $(e.target).data('product_id');
                 motor.insurance_company_id = product_id;
                 $('#motor').val(JSON.stringify(motor));
 
