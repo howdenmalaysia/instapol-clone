@@ -95,15 +95,19 @@ class PacificOrient implements InsurerLibraryInterface
             ]), config('setting.response_codes.sum_insured_referred'));
         }
 
-        // Get Vehicle Details From Mapping Files
-        $details = $this->getModelDetails((string) $vix->response->nvic);
+        $nvic = explode('|', (string) $vix->response->nvic);
 
         $variants = [];
-        array_push($variants, new VariantData([
-            'nvic' => (string) $vix->response->nvic,
-            'sum_insured' => floatval($vix->response->sum_insured),
-            'variant' => $details->variant ?? ''
-        ]));
+        foreach($nvic as $_nvic) {
+            // Get Vehicle Details From Mapping Files
+            $details = $this->getModelDetails($_nvic);
+    
+            array_push($variants, new VariantData([
+                'nvic' => (string) $vix->response->nvic,
+                'sum_insured' => floatval($vix->response->sum_insured),
+                'variant' => $details->variant ?? ''
+            ]));
+        }
 
         return (object) [
             'status' => true,
