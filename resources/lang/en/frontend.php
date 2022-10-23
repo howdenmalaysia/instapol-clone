@@ -535,6 +535,7 @@ return [
             'variant' => 'Variant',
             'ncd' => 'No Claim Discount (NCD)',
             'coverage' => 'Coverage',
+            'comprehensive' => 'Comprehensive',
             'next_coverage_period' => 'Next Coverage Period',
             'my_vehicle_information' => 'Yes! This is my vehicle information',
             'need_assistance' => 'I need assistance',
