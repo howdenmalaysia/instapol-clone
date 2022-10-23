@@ -176,6 +176,7 @@ class PacificOrient implements InsurerLibraryInterface
                 foreach($vehicle_vix->response->variants as $variant) {
                     if($variant->nvic === $input->nvic) {
                         $selected_variant = $variant;
+                        break;
                     }
                 }
             }
