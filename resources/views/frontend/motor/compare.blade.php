@@ -156,7 +156,7 @@
                         <input type="hidden" id="gender" name="gender" />
                         <input type="hidden" id="products" value='@json($products)'>
                         <input type="hidden" id="motor" name="motor" value='@json(session('motor'))' />
-                        <input type="hidden" id="insurance-premium" name="insurance_premium" />
+                        <input type="hidden" id="insurance-premium" name="premium" />
                         <input type="hidden" id="av-code" name="av_variant" />
                         <input type="hidden" id="av-variant" name="av_code" />
                         <input type="hidden" id="marital-status" name="marital_status" />
