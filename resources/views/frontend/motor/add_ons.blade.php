@@ -7,7 +7,17 @@
         <x-slot name="content">
             <div class="row">
                 <div class="col-12 col-lg-4">
-                    <x-pricing-card insurer-logo="{{ asset("images/insurer/{$product->insurance_company->logo}.png") }}" insurer-name="{{ $product->insurance_company->name }}" data={{ $premium }} />
+                    <x-pricing-card
+                        insurer-logo='{{ asset("images/insurer/{$product->insurance_company->logo}.png") }}'
+                        insurer-name="{{ $product->insurance_company->name }}"
+                        basic-premium="{{ $premium->basic_premium }}"
+                        ncd-amount="{{ $premium->ncd_amount }}"
+                        total-benefit-amount="{{ $premium->total_benefit_amount }}"
+                        gross-premium="{{ $premium->gross_premium }}"
+                        sst-amount="{{ $premium->sst_amount }}"
+                        stamp-duty="{{ $premium->stamp_duty }}"
+                        total-payable="{{ $premium->total_payable }}"
+                    />
                 </div>
                 <div class="col-12 col-lg-8">
                     <div class="card border">
