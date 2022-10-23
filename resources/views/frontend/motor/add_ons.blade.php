@@ -8,7 +8,7 @@
             <div class="row">
                 <div class="col-12 col-lg-4">
                     <x-pricing-card
-                        insurer-logo='{{ asset("images/insurer/{$product->insurance_company->logo}.png") }}'
+                        insurer-logo='{{ asset("images/insurer/{$product->insurance_company->logo}") }}'
                         insurer-name="{{ $product->insurance_company->name }}"
                         basic-premium="{{ $premium->basic_premium }}"
                         ncd-amount="{{ $premium->ncd_amount }}"
