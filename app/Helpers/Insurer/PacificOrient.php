@@ -557,6 +557,7 @@ class PacificOrient implements InsurerLibraryInterface
             'age' => $input->age,
             'marital_status' => $input->marital_status,
             'ncd_percentage' => $input->vehicle->ncd_percentage,
+            'additional_driver_count' => count($input->additional_driver ?? []) + 1,
             'id_number' => $input->id_number,
             'hire_purchase' => 'N',
             'postcode' => $input->postcode,
