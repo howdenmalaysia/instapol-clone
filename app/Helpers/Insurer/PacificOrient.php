@@ -343,6 +343,7 @@ class PacificOrient implements InsurerLibraryInterface
             'total_benefit_amount' => formatNumber($total_benefit_amount),
             'total_payable' => formatNumber($premium->response->total_premium),
             'request_id' => $premium->response->request_id,
+            'named_drivers_needed' => false,
         ]);
 
         if($full_quote) {

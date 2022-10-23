@@ -48,6 +48,9 @@ class PremiumResponse extends DataTransferObject
     /** @var string */
     public $sum_insured_type;
 
+    /** @var bool */
+    public $named_drivers_needed;
+
     // Optional Fields
     /** @var string|null */
     public $request_id;

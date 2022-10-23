@@ -206,6 +206,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
                 'total_payable' => $result->response->total_payable,
                 'net_premium' => $result->response->net_premium,
                 'extra_cover' => $result->response->extra_cover,
+                'named_drivers_needed' => $result->response->named_drivers_needed
             ]);
         } else {
             $quote = new QuoteResponse((array) $result->response);

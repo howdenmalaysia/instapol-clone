@@ -51,6 +51,9 @@ class FullQuoteResponse extends DataTransferObject
     /** @var int|float|null */
     public $net_premium;
 
+    /** @var bool */
+    public $named_drivers_needed;
+
     /** @var \App\DataTransferObjects\Motor\ExtraCover[] */
     public $extra_cover;
 }
