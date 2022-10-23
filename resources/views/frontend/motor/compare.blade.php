@@ -273,7 +273,7 @@
                 getPremium();
             });
 
-            $('#btn-buy').on('click', () => {
+            $('.btn-buy').on('click', () => {
                 $(this).addClass('loadingButton');
 
                 if(controller) {
