@@ -282,6 +282,7 @@
 
                 let product_id = $(this).data('product_id');
                 motor.insurance_company_id = product_id;
+                $('#motor').val(JSON.stringify(motor));
 
                 $('#insurance-premium').val(JSON.stringify(premiums[product_id]));
 
