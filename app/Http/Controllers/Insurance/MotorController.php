@@ -162,7 +162,7 @@ class MotorController extends Controller
 
         // Update Session
         $motor->user_id = auth()->user()->id ?? '';
-        $motor->product_id = intval($request->product_id);
+        $motor->product_id = intval($motor->insurance_company_id);
         $motor->policy_holder->gender = $request->gender;
         $motor->policy_holder->marital_status = $request->marital_status;
         $motor->av_code = $request->av_code;
@@ -188,7 +188,7 @@ class MotorController extends Controller
 
         $motor->extra_cover_list = $premium->extra_cover;
         $motor->named_drivers_needed = $premium->named_drivers_needed;
-        
+
         $request->session()->put('motor', $motor);
 
         return redirect()->route('motor.add-ons');
