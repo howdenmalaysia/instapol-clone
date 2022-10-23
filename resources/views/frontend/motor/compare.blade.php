@@ -305,7 +305,6 @@
 
             products.forEach((product) => {
                 $('#insurer-' + product.id + ' .premium').html("<span style='border-width: 2px' class='spinner-border'></span>");
-                $('#insurer-' + product.id + ' .btn-buy').html('Select');
 
                 $('#insurer-' + product.id).find('button').attr('disabled', true);
 
