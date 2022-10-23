@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Motor\InsuranceCompany;
 use App\Models\Motor\Product;
 use App\Models\Motor\Quotation;
+use App\Models\Relationship;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -86,8 +87,6 @@ class MotorController extends Controller
         if(empty($request->session()->get('motor'))) {
             return redirect()->route('motor.index');
         }
-        
-        $session = $request->session()->get('motor');
 
         $products = Product::with('insurance_company')->get();
         $product_ids = $insurer_ids = [];
@@ -109,6 +108,7 @@ class MotorController extends Controller
         }
         
         $session = json_decode($request->motor);
+
         // Reformat Dates
         $session->vehicle->inception_date = Carbon::createFromFormat('d M Y', $session->vehicle->inception_date)->format('Y-m-d');
         $session->vehicle->expiry_date = Carbon::createFromFormat('d M Y', $session->vehicle->expiry_date)->format('Y-m-d');
@@ -186,7 +186,42 @@ class MotorController extends Controller
 			'total_contribution' => $premium->total_contribution,
         ];
 
-        // $motor->extra_cover_list = 
+        $motor->extra_cover_list = $premium->extra_cover;
+        $motor->named_drivers_needed = $premium->named_drivers_needed;
+        
+        $request->session()->put('motor', $motor);
+
+        return redirect()->route('motor.add-ons');
+    }
+
+    public function addOns(Request $request)
+    {
+        if(empty($request->session()->get('motor'))) {
+            return redirect()->route('motor.index');
+        }
+
+        $session = $request->session()->get('session');
+
+        $relationships = Relationship::all();
+
+        $product = Product::find($session->product_id);
+
+        $premium = (object) [
+            'basic_premium' => formatNumber($session->premium->basic_premium),
+            'ncd_amount' => formatNumber($session->premium->ncd_amount),
+            'total_benefit_amount' => formatNumber($session->premium->total_benefit_amount),
+            'gross_premium' => formatNumber($session->premium->gross_premium),
+            'sst_amount' => formatNumber($session->premium->sst_amount),
+            'stamp_duty' => formatNumber($session->premium->stamp_duty),
+            'total_payable' => formatNumber($session->premium->total_payable),
+            'loading_amount' => formatNumber($session->premium->loading_amount)
+        ];
+
+        return view('frontend.motor.add-ons')->with([
+            'relationships' => $relationships,
+            'premium' => $premium,
+            'product' => $product
+        ]);
     }
 
     public function compareDetail(Request $request)

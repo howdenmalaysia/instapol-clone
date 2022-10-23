@@ -230,6 +230,10 @@ body {
     .rounded {
         border-radius: 1rem !important;
     }
+    
+    button.rounded {
+        border-radius: 10rem !important;
+    }
 
     .rounded-end {
         border-bottom-right-radius: 1rem !important;
@@ -308,5 +312,10 @@ body {
         .stepper-label {
             bottom: 35px;
         }
+    }
+
+    // Font Awesome
+    .fa-15x {
+        font-size: 1.5rem;
     }
 }

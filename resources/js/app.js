@@ -86,8 +86,13 @@ $(function() {
     });
 
     $('[data-select]').select2({
-        width: '100%'
+        width: '100%',
+        theme: 'bootstrap-5'
     }).on('select2:select', function () {
         $(this).parsley().validate();
     });
+
+    $('[data-bs-toggle=tooltip]').each((index, element) => {
+        new bootstrap.Tooltip(element);
+    })
 });

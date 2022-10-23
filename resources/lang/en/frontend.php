@@ -196,8 +196,8 @@ return [
                     'essential' => 'Yes',
                     'necessary' => 'Strictly necessary'
                 ],
-                'new_relic' => [
-                    'name' => 'JSESSIONID,intercom-session-cyym0u3i,intercom-id-cyym0u3i,ei_client_id,ajs_anonymous_id,_mkto_trk,_ga,_biz_uid,_biz_pendingA,_biz_nAc_biz_flagsA',
+                 'new_relic' => [
+                   'name' => 'JSESSIONID,intercom-session-cyym0u3i,intercom-id-cyym0u3i,ei_client_id,ajs_anonymous_id,_mkto_trk,_ga,_biz_uid,_biz_pendingA,_biz_nAc_biz_flagsA',
                     'purpose' => 'These cookies are set by New Relic to enable us to monitor site performance.',
                     'essential' => 'Yes',
                     'necessary' => 'Strictly necessary'
@@ -562,6 +562,43 @@ return [
             'market_value' => 'Market Value',
             'agreed_value' => 'Agreed Value'
         ],
+        'add_ons_page' => [
+            'add_ons' => 'Add Ons',
+            'sum_insured' => 'Sum Insured',
+            'sum_insured_amount' => 'Sum Imsured Amount',
+            'additional_coverage' => 'Additional Coverage',
+            'additional_driver' => 'Additional Driver(s)',
+            'add_driver' => 'Add Driver',
+            'body_type' => 'Body Type',
+            'driver' => 'Driver',
+            'road_tax_renewal' => 'Road Tax Renewal',
+            'road_tax_fee' => 'Road Tax Fee',
+            'myeg_fee' => 'MYEG Fee',
+            'eservice_fee' => 'eService Fee',
+            'delivery_fee' => 'Delivery Fee',
+            'service_tax' => 'Service Tax',
+            'additional_driver_note' => 'Only named driver will be protected from the policy and it may impacts the premium price under additional coverages. Refer pricing summary (on the left) for details.',
+            'add_driver' => 'Add Driver',
+            'mco_note' => 'Please note that during PPN - FASA period, the delivery of roadtax sticker will be delayed and longer than usual delivery time (> 7 days).',
+            'tooltip' => [
+                'windscreen' => 'Coverage for damage to the glass only.',
+                'llop' => 'Covers you against legal liability sought by your passengers against you in an event of accident due to your negligence',
+                'lltp' => 'Acts of negligence your passenger(s) suing you for injury caused to them (except your own family members)',
+                'srcc' => 'Cover damages to your vehicle caused directly by persons involved in a strike, riot or disturbance of public peace.',
+                'accessories' => 'If you have fitted your car with expensive accessories, then it is a good idea to gconsider getting this add-ons as insurance companies do not cover aftermarket accessories, only standard installations as listed by car manufacturer during claim.',
+                'pa' => 'Personal accident plan while traveling in your vehilce is now available for purchase',
+                'ncd' => 'This extension provides covers for compensation for loss of "No Claim Discount" (NCD)',
+            ],
+            'body_type_modal' => [
+                'header' => 'Please choose your vehicle body type based on the description below',
+                'saloon' => 'Saloon',
+                'saloon_description' => '(Sedan / Hatchback / Coupe / Wagon / Convertible)',
+                'non_saloon' => 'Non-Saloon',
+                'non_saloon_description' => '(MPV / SUV / Pick Up)',
+                'need_assisstance' => 'Need Assisstance?',
+                'contact_us' => 'Please contact us at',
+            ]
+        ],
     ],
     'products' => [
         'motor' => 'Motor Insurance',
@@ -582,8 +619,36 @@ return [
         'update' => 'Update',
         'buy' => 'Buy Now',
         'compare' => 'Compare',
+        'show_more' => 'Show More',
+        'show_less' => 'Show Less',
+        'close' => 'Close'
+    ],
+    'fields' => [
+        'name' => 'Name',
+        'id_number' => 'ID Number',
+        'relationship' => 'Relationship',
     ],
     'modal' => [
         'appreciate_your_patience' => 'We appreciate your patience!',
+    ],
+    'price_card' => [
+        'basic_premium' => 'Basic Premium / Contribution',
+        'ncd' => 'NCD',
+        'additional_coverage' => 'Additional Coverages',
+        'gross_premium' => 'Gross Premium / Contribution',
+        'service_tax' => 'Service Tax',
+        'stamp_duty' => 'Stamp Duty',
+        'road_tax' => 'Road Tax (Incl. Delivery)',
+        'total_payable' => 'Total Payable',
+        'tooltip' => [
+            'basic_premium' => 'Basic Premium',
+            'ncd' => 'No Claim Discount',
+            'additional_coverage' => 'Total Price of Selected Add Ons',
+            'gross_premium' => 'Gross Premium'
+        ]
+
+    ],
+    'relationships' => [
+        'Parent / Parent-In-Law' => 'Parent / Parent-In-Law',
     ]
 ];
