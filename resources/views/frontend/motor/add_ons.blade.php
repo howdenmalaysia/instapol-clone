@@ -279,6 +279,13 @@
 
     function refreshPremium()
     {
+        let selected_extra_cover = [];
+        $('.extra-coverage-checkbox:checked').each((index, element) => {
+            selected_extra_cover.push(motor.extra_cover_list.find((item) => {
+                return item.extra_cover_code === $(element).val();
+            }));
+        });
+
         instapol.post("{{ route('motor.api.quote') }}", {
             product_id: motor.product_id
             motor: motor,
