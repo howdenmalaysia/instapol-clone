@@ -20,4 +20,7 @@ class RoadtaxResponse extends DataTransferObject
 
     /** @var float */
     public $sst;
+
+    /** @var float */
+    public $total;
 }
