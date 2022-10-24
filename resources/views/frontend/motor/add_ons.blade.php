@@ -280,9 +280,9 @@
     function refreshPremium()
     {
         instapol.post("{{ route('motor.api.quote') }}", {
-            product_id: motor.product_id,
-            motor: motor
-            extra_cover: extra_cover,
+            product_id: motor.product_id
+            motor: motor,
+            extra_cover: selected_extra_cover,
             roadtax: $('#roadtax-checkbox').is(':checked')
         }).then((res) => {
             console.log(res);
