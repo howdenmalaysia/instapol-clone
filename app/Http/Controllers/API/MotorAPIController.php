@@ -552,7 +552,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             'eservice_fee' => formatNumber($e_service_fee),
             'delivery_fee' => formatNumber($delivery_fee),
             'sst' => formatNumber($sst),
-            'total' => $total
+            'total' => formatNumber($total)
         ]);
 
         return $response->all();
