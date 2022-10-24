@@ -43,17 +43,20 @@ class MotorController extends Controller
         // Extract User Data
         $gender = $marital_status = '';
         $driving_experience = 0;
+        $id_type = null;
 
         switch ($request->id_type) {
             case 1: {
                 $gender = getGenderFromIC($request->id_number);
                 $driving_experience = getAgeFromIC($request->id_number) - 18;
                 $marital_status = 'S';
+                $id_type = config('setting.id_type.nric_no');
 
                 break;
             }
             case 2: {
                 $gender = $marital_status = 'O';
+                $id_type = config('setting.id_type.company_registration_no');
 
                 break;
             }
@@ -64,7 +67,7 @@ class MotorController extends Controller
             'vehicle_number' => $request->vehicle_number,
             'postcode' => $request->postcode,
             'policy_holder' => (object) [
-                'id_type' => $request->id_type,
+                'id_type' => $id_type,
                 'id_number' => formatIC($request->id_number),
                 'email' => $request->email,
                 'phone_number' => $request->phone_number,
