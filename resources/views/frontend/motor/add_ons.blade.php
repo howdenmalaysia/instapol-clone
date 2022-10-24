@@ -8,8 +8,8 @@
             <div class="row">
                 <div class="col-12 col-lg-4">
                     <x-pricing-card
-                        insurer-logo='{{ asset("images/insurer/{$product->insurance_company->logo}x") }}'
-                        insurer-name="{{ $product->insurance_company->name }}"
+                        insurer-logo='{{ asset("images/insurer/{$product->insurance_company->logo}") }}'
+                        insurer-name="{!! $product->insurance_company->name !!}"
                         basic-premium="{{ $premium->basic_premium }}"
                         ncd-amount="{{ $premium->ncd_amount }}"
                         total-benefit-amount="{{ $premium->total_benefit_amount }}"
@@ -145,7 +145,7 @@
                                     <h3 class="card-title fw-bold border-bottom py-4 px-md-3">{{ __('frontend.motor.add_ons_page.road_tax_renewal') }}</h3>
                                     <div class="row align-items-center px-md-3">
                                         <div class="col-1">
-                                            <input type="checkbox" id="roaxtax-checkbox" class="form-check-input" name="roadtax" />
+                                            <input type="checkbox" id="roadtax-checkbox" class="form-check-input" name="roadtax" />
                                         </div>
                                         <div class="col-8">
                                             <div class="row align-items-center">
