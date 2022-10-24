@@ -651,5 +651,9 @@ return [
     ],
     'relationships' => [
         'Parent / Parent-In-Law' => 'Parent / Parent-In-Law',
+        'Spouse' => 'Spouse',
+        'Child' => 'Child',
+        'Sibling / Relative' => 'Sibling / Relative',
+        'Other' => 'Other'
     ]
 ];
