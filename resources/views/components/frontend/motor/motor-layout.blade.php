@@ -22,7 +22,7 @@
     <script>
         $(() => {
             $('.step-btn').on('click', (e) => {
-                let step = $(e.target).data('index')++;
+                let step = $(e.target).data('index') + 1;
                 let url = '';
 
                 switch(step) {
