@@ -286,7 +286,7 @@
 
                 $('#insurance-premium').val(JSON.stringify(premiums[product_id]));
                 $('#h-gender').val($('input[name=gender]:checked').val());
-                $('#h-marital-status').val($('#marital-status').val(););
+                $('#h-marital-status').val($('#marital-status').val());
 
                 $('#product-form').submit();
             });
