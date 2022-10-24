@@ -7,7 +7,7 @@ use App\DataTransferObjects\Motor\Response\FullQuoteResponse;
 use App\DataTransferObjects\Motor\Response\QuoteResponse;
 use App\DataTransferObjects\Motor\Response\QuotationResponse;
 use App\DataTransferObjects\Motor\Response\SubmitCoverNoteResponse;
-use App\DataTransferObjects\Motor\VehicleData;
+use App\DataTransferObjects\Motor\Vehicle;
 use App\DataTransferObjects\Motor\VehicleVariantData;
 use App\Helpers\Insurer\PacificOrient;
 use App\Http\Controllers\Controller;
@@ -151,28 +151,27 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             'gender' => $motor->policy_holder->gender,
             'marital_status' => $motor->policy_holder->marital_status,
             'nvic' => $motor->vehicle->nvic,
-            'vehicle' => new VehicleData([
-                'vehicle_number' => $motor->vehicle_number,
-                'class_code' => $motor->vehicle->extra_attribute->class_code,
-                'coverage_code' => $motor->vehicle->extra_attribute->coverage_code,
-                'vehicle_use_code' => $motor->vehicle->extra_attribute->vehicle_use_code,
-                'make_code' => $motor->vehicle->extra_attribute->make_code,
+            'vehicle' => new Vehicle([
                 'make' => $motor->vehicle->make,
-                'model_code' => $motor->vehicle->extra_attribute->model_code,
                 'model' => $motor->vehicle->model,
-                'manufacture_year' => $motor->vehicle->manufacture_year,
-                'engine_number' => $motor->vehicle->extra_attribute->engine_number,
-                'chassis_number' => $motor->vehicle->extra_attribute->chassis_number,
                 'nvic' => $motor->vehicle->nvic ?? $motor->variants[0]->nvic,
                 'variant' => $motor->vehicle->variant ?? $motor->variants[0]->variant,
-                'seating_capacity' => $motor->vehicle->extra_attribute->seating_capacity,
                 'engine_capacity' => $motor->vehicle->engine_capacity,
-                'ncd_effective_date' => Carbon::parse($motor->vehicle->inception_date)->subYear()->format('Y-m-d'),
-                'ncd_expiry_date' => Carbon::parse($motor->vehicle->inception_date)->subDay()->format('Y-m-d'),
-                'current_ncd' => $motor->vehicle->ncd_percentage,
-                'next_ncd' => $motor->vehicle->ncd_percentage,
-                'next_ncd_effective_date' => Carbon::parse($motor->vehicle->inception_date)->format('Y-m-d'),
-                'policy_expiry_date' => Carbon::parse($motor->vehicle->inception_date)->subDay()->format('Y-m-d'),
+                'manufacture_year' => $motor->vehicle->manufacture_year,
+                'ncd_percentage' => $motor->vehicle->ncd_percentage,
+                'coverage' => $motor->vehicle->coverage,
+                'inception_date' => Carbon::parse($motor->vehicle->inception_date)->format('Y-m-d'),
+                'expiry_date' => Carbon::parse($motor->vehicle->inception_date)->subDay()->format('Y-m-d'),
+                'extra_attribute' => (object) [
+                    'class_code' => $motor->vehicle->extra_attribute->class_code,
+                    'coverage_code' => $motor->vehicle->extra_attribute->coverage_code,
+                    'make_code' => $motor->vehicle->extra_attribute->make_code,
+                    'model_code' => $motor->vehicle->extra_attribute->model_code,
+                    'engine_number' => $motor->vehicle->extra_attribute->engine_number,
+                    'chassis_number' => $motor->vehicle->extra_attribute->chassis_number,
+                    'vehicle_use_code' => $motor->vehicle->extra_attribute->vehicle_use_code,
+                    'seating_capacity' => $motor->vehicle->extra_attribute->seating_capacity,
+                ]
             ]),
             'extra_cover' => toObject($request->extra_cover ?? []),
             'additional_driver' => toObject($request->additional_driver ?? []),
