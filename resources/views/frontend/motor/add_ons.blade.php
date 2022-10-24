@@ -275,7 +275,9 @@
             $('#eservice-fee-display').text(' ').toggleClass('loadingButton');
             $('#delivery-fee-display').text(' ').toggleClass('loadingButton');
             $('#service-tax-display').text(' ').toggleClass('loadingButton');
-            
+
+            $('#body-type-modal').modal('hide');
+
             calculateRoadtax();
         });
 
