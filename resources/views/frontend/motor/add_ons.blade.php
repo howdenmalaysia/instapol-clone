@@ -82,7 +82,7 @@
                                                     @endif
                                                 </div>
                                                 <div class="col-1 text-end">RM</div>
-                                                <div class="col-2 text-end premium">{{ number_format($_extra_cover->premium, 2) }}</div>
+                                                <div id="{{ $_extra_cover->extra_cover_code . '-premium' }}" class="col-2 text-end premium">{{ number_format($_extra_cover->premium, 2) }}</div>
                                             </div>
                                             @if (!empty($extra_cover->option_list))
                                                 <div class="row">
@@ -313,6 +313,17 @@
             roadtax: $('#roadtax-checkbox').is(':checked')
         }).then((res) => {
             console.log(res);
+
+            // Update Pricing Card
+            $('#add-ons-premium').text(`RM ${formatMoney(res.data.total_benefit_amount)}`);
+            $('#gross-premium').text(`RM ${formatMoney(res.data.gross_premium)}`);
+            $('#sst').text(`RM ${formatMoney(res.data.sst_amount)}`);
+            $('#total-payable').text(`RM ${formatMoney(res.data.total_payable)}`);
+
+            // Update Add Ons Pricing
+            res.data.extra_cover.foreach((extra_cover) => {
+                $(`#${extra_cover.extra_cover_code}-premium`).text(`RM ${formatMoney(extra_cover.premium)}`).removeClass('loadingButton');
+            });
         }).catch((err) => {
             console.log(err.response);
         });
@@ -328,11 +339,17 @@
         }).then((res) => {
             console.log(res);
 
+            // Update Pricing Display
             $('#roadtax-price-display').removeClass('loadingButton').text(`RM ${formatMoney(res.data.roadtax_price)}`);
             $('#myeg-fee-display').removeClass('loadingButton').text(`RM ${formatMoney(res.data.myeg_fee)}`);
             $('#eservice-fee-display').removeClass('loadingButton').text(`RM ${formatMoney(res.data.eservice_fee)}`);
             $('#delivery-fee-display').removeClass('loadingButton').text(`RM ${formatMoney(res.data.delivery_fee)}`);
             $('#service-tax-display').removeClass('loadingButton').text(`RM ${formatMoney(res.data.sst)}`);
+
+
+            // Update Pricing Card
+            $('#road-tax').text(`RM ${res.data.total}`);
+            $('#total-payable').text(`RM ${parseFloat(res.data.total) + parseFloat($('#total-payable').text().replace(',', ''))}`)
         }).catch((err) => {
             console.log(err.response);
         });
