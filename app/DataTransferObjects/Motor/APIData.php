@@ -63,7 +63,7 @@ class APIData extends DataTransferObject
     /** @var \App\DataTransferObjects\Motor\VehicleData|null */
     public $vehicle;
     
-    /** @var object|null */
+    /** @var array|null */
     public $extra_cover;
     
     /** @var object|null */
