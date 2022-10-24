@@ -269,21 +269,15 @@
 
         $('#btn-continue-modal').on('click', () => {
             $('#body-type').val($('input[name=modal_body_type]:checked').val());
-            
-            if($(e.target).is(':checked')) {
-                let premium = $(e.target).parent().parent().find('.premium');
-                
-                if(!premium.hasClass('loadingButton')) {
-                    premium.text(' ').toggleClass('loadingButton');
-                }
 
-                calculateRoadtax();
-            } else {
-                $('#roadtax-price-display').text('RM 0.00');
-                $('#myeg-fee-display').text('RM 0.00');
-                $('#eservice-fee-display').text('RM 0.00');
-                $('#delivery-fee-display').text('RM 0.00');
-                $('#service-tax-display').text('RM 0.00');
+            calculateRoadtax();
+            $('#roadtax-price-display').text(' ').toggleClass('loadingButton');
+            $('#myeg-fee-display').text(' ').toggleClass('loadingButton');
+            $('#eservice-fee-display').text(' ').toggleClass('loadingButton');
+            $('#delivery-fee-display').text(' ').toggleClass('loadingButton');
+            $('#service-tax-display').text(' ').toggleClass('loadingButton');
+        });
+
             }
         });
         $('#roadtax-checkbox').on('change', (e) => {
