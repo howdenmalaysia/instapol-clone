@@ -151,7 +151,7 @@
                                             <div class="row align-items-center">
                                                 <div class="col-3">{{ __('frontend.motor.add_ons_page.road_tax_fee') }}</div>
                                                 <div class="col-9 d-flex justify-content-between align-items-center">
-                                                    <select name="body_type" id="body-type" class="form-control w-75">
+                                                    <select name="body_type" id="body-type" class="form-control w-75" disabled>
                                                         <option value="">{{ __('frontend.motor.add_ons_page.body_type') }}</option>
                                                         <option value="saloon">{{ __('frontend.motor.add_ons_page.body_type_modal.saloon') }}</option>
                                                         <option value="non-saloon">{{ __('frontend.motor.add_ons_page.body_type_modal.non_saloon') }}</option>
@@ -267,26 +267,9 @@
             $(html).insertAfter($('.info').last());
         });
 
-        $('#body-type').on('click', (e) => {
-            e.preventDefault();
-
-            $('#body-type-modal').modal('show');
-        });
-
-        $('#btn-cotinue-modal').on('click', () => {
+        $('#btn-continue-modal').on('click', () => {
             $('#body-type').val($('input[name=modal_body_type]:checked').val());
-
-            $('#body-type-modal').modal('hide');
-        });
-
-        $(' .extra-coverage-checkbox').on('change', (e) => {
-            if($(e.target).is(':checked')) {
-                $(e.target).parent().parent().find('.premium').text(' ').toggleClass('loadingButton');
-                refreshPremium();
-            }
-        });
-
-        $('#roadtax-checkbox').on('change', (e) => {
+            
             if($(e.target).is(':checked')) {
                 let premium = $(e.target).parent().parent().find('.premium');
                 
@@ -302,6 +285,9 @@
                 $('#delivery-fee-display').text('RM 0.00');
                 $('#service-tax-display').text('RM 0.00');
             }
+        });
+        $('#roadtax-checkbox').on('change', (e) => {
+            $('#body-type-modal').modal('show');
         });
     });
 
