@@ -195,7 +195,7 @@
                                 </div>
                             </div>
                             <div class="hidden">
-                                <input type="hidden" id="motor" name="motor" value="@json(session('motor'))">
+                                <input type="hidden" id="motor" name="motor" value='@json(session('motor'))'>
                             </div>
                         </form>
                     </div>
