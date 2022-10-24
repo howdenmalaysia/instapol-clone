@@ -280,8 +280,13 @@
 
             }
         });
+
         $('#roadtax-checkbox').on('change', (e) => {
-            $('#body-type-modal').modal('show');
+            if($(e.target).is(':checked')) {
+                $('#body-type-modal').modal('show');
+            }
+        });
+
         });
     });
 
