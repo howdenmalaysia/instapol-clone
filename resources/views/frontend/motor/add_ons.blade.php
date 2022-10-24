@@ -270,14 +270,19 @@
         $('#btn-continue-modal').on('click', () => {
             $('#body-type').val($('input[name=modal_body_type]:checked').val());
 
-            calculateRoadtax();
             $('#roadtax-price-display').text(' ').toggleClass('loadingButton');
             $('#myeg-fee-display').text(' ').toggleClass('loadingButton');
             $('#eservice-fee-display').text(' ').toggleClass('loadingButton');
             $('#delivery-fee-display').text(' ').toggleClass('loadingButton');
             $('#service-tax-display').text(' ').toggleClass('loadingButton');
+            
+            calculateRoadtax();
         });
 
+        $('.extra-coverage-checkbox').on('change', (e) => {
+            if($(e.target).is(':checked')) {
+                $(e.target).parent().parent().find('.premium').text(' ').toggleClass('loadingButton');
+                refreshPremium();
             }
         });
 
