@@ -544,6 +544,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
 
         $e_service_fee = (floatval($roadtax_price) + 9.28) * 0.02;
         $sst = $e_service_fee * 0.06;
+        $total = floatval($roadtax_price) + floatval($e_service_fee) + floatval($delivery_fee) + floatval($sst) + 9.28;
 
         $response = new RoadtaxResponse([
             'roadtax_price' => formatNumber($roadtax_price),
@@ -551,6 +552,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             'eservice_fee' => formatNumber($e_service_fee),
             'delivery_fee' => formatNumber($delivery_fee),
             'sst' => formatNumber($sst),
+            'total' => $total
         ]);
 
         return $response->all();
