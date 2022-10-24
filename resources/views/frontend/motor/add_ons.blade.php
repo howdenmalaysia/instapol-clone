@@ -267,12 +267,16 @@
             $(html).insertAfter($('.info').last());
         });
 
-        $('#body-type').on('click', () => {
+        $('#body-type').on('click', (e) => {
+            e.preventDefault();
+
             $('#body-type-modal').modal('show');
         });
 
-        $('#body-type-modal').on('hide.bs.modal', () => {
+        $('#btn-cotinue-modal').on('click', () => {
             $('#body-type').val($('input[name=modal_body_type]:checked').val());
+
+            $('#body-type-modal').modal('hide');
         });
 
         $(' .extra-coverage-checkbox').on('change', (e) => {
