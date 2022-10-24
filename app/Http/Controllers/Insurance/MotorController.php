@@ -174,14 +174,12 @@ class MotorController extends Controller
             'basic_premium' => $premium->basic_premium,
             'ncd_amount' => $premium->ncd_amount,
             'total_benefit_amount' => $premium->total_benefit_amount,
-            'loading_percentage' => $premium->loading_percentage,
-			'loading_amount' => $premium->loading_amount,
+			'loading' => $premium->loading,
 			'gross_premium' => $premium->gross_premium,
 			'sst_percent' => $premium->sst_percent,
 			'sst_amount' => $premium->sst_amount,
 			'stamp_duty' => $premium->stamp_duty,
 			'total_payable' => $premium->total_payable,
-			'total_contribution' => $premium->total_contribution,
         ];
 
         $motor->vehicle->sum_insured = $premium->sum_insured;
@@ -203,26 +201,15 @@ class MotorController extends Controller
             return redirect()->route('motor.index');
         }
 
-        $session = $request->session()->get('session');
+        $session = $request->session()->get('motor');
 
         $relationships = Relationship::all();
 
         $product = Product::find($session->product_id);
 
-        $premium = (object) [
-            'basic_premium' => formatNumber($session->premium->basic_premium),
-            'ncd_amount' => formatNumber($session->premium->ncd_amount),
-            'total_benefit_amount' => formatNumber($session->premium->total_benefit_amount),
-            'gross_premium' => formatNumber($session->premium->gross_premium),
-            'sst_amount' => formatNumber($session->premium->sst_amount),
-            'stamp_duty' => formatNumber($session->premium->stamp_duty),
-            'total_payable' => formatNumber($session->premium->total_payable),
-            'loading_amount' => formatNumber($session->premium->loading_amount)
-        ];
-
-        return view('frontend.motor.add-ons')->with([
+        return view('frontend.motor.add_ons')->with([
             'relationships' => $relationships,
-            'premium' => $premium,
+            'premium' => $session->premium,
             'product' => $product
         ]);
     }
