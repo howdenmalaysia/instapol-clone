@@ -214,7 +214,22 @@ class MotorAPIController extends Controller implements MotorAPIInterface
                 'named_drivers_needed' => $result->response->named_drivers_needed
             ]);
         } else {
-            $quote = new QuoteResponse((array) $result->response);
+            $quote = new QuoteResponse([
+                'company' => $product->insurance_company->name,
+                'product_name' => $product->name,
+                'roadtax' => $result->response->roadtax ?? [],
+                'basic_premium' => $result->response->basic_premium,
+                'ncd_amount' => $result->response->ncd_amount,
+                'total_benefit_amount' => $result->response->total_benefit_amount,
+                'gross_premium' => $result->response->gross_premium,
+                'sst_percent' => $result->response->sst_percent,
+                'sst_amount' => $result->response->sst_amount,
+                'stamp_duty' => $result->response->stamp_duty,
+                'sum_insured' => $result->response->sum_insured,
+                'excess_amount' => $result->response->excess_amount,
+                'loading' => $result->response->loading,
+                'total_payable' => $result->response->total_payable,
+            ]);
         }
 
         return $quote->all();
