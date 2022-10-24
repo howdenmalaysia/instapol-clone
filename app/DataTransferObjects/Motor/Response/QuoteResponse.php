@@ -7,47 +7,50 @@ use Spatie\DataTransferObject\DataTransferObject;
 class QuoteResponse extends DataTransferObject
 {
     /** @var string */
-    public $make;
+    public $company;
 
     /** @var string */
-    public $model;
+    public $product_name;
+    
+    /** @var object|null */
+    public $roadtax;
 
-    /** @var string */
-    public $nvic;
-
-    /** @var string */
-    public $variant;
-
-    /** @var int */
-    public $engine_capacity;
-
-    /** @var int */
-    public $manufacture_year;
+    /** @var \App\DataTransferObjects\Motor\ExtraCover[]|null */
+    public $extra_cover;
 
     /** @var int|float */
-    public $ncd_percentage;
+    public $basic_premium;
 
-    /** @var string */
-    public $coverage;
+    /** @var int|float */
+    public $ncd_amount;
 
-    /** @var string */
-    public $inception_date;
+    /** @var int|float */
+    public $total_benefit_amount;
 
-    /** @var string */
-    public $expiry_date;
+    /** @var int|float */
+    public $gross_premium;
 
-    /** @var string */
-    public $sum_insured_type;
+    /** @var int|float */
+    public $sst_percent;
 
-    /** @var int */
+    /** @var int|float */
+    public $sst_amount;
+
+    /** @var int|float */
+    public $stamp_duty;
+
+    /** @var int|float */
     public $sum_insured;
 
-    /** @var int */
-    public $min_sum_insured;
+    /** @var int|float */
+    public $excess_amount;
 
-    /** @var int */
-    public $max_sum_insured;
+    /** @var int|float */
+    public $loading;
 
-    /** @var array|null */
-    public $extra_attribute;
+    /** @var int|float */
+    public $total_payable;
+
+    /** @var int|float|null */
+    public $net_premium;
 }
