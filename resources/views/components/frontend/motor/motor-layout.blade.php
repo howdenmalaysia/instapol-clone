@@ -17,3 +17,35 @@
         </div>
     </section>
 </section>
+
+@push('after-scripts')
+    <script>
+        $(() => {
+            $('.step-btn').on('click', (e) => {
+                let step = $(e.target).data('index')++;
+                let url = '';
+
+                switch(step) {
+                    case 1: {
+                        url = "{{ route('motor.vehicle-details') }}";
+                        break;
+                    }
+                    case 2: {
+                        url = "{{ route('motor.compare') }}";
+                        break;
+                    }
+                    case 3: {
+                        url = "{{ route('motor.add-ons') }}"
+                        break;
+                    }
+                    case: 4 {
+                        url = "{{ route('motor.policy-holder') }}"
+                        break;
+                    }
+                }
+
+                window.location.href = url;
+            });
+        });
+    </script>
+@endpush
