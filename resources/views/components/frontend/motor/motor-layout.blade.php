@@ -38,7 +38,7 @@
                         url = "{{ route('motor.add-ons') }}"
                         break;
                     }
-                    case: 4 {
+                    case 4: {
                         url = "{{ route('motor.policy-holder') }}"
                         break;
                     }
