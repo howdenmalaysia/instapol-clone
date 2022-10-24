@@ -8,13 +8,13 @@ class PricingCard extends Component
 {
     public string $insurerLogo;
     public string $insurerName;
-    public float $basicPremium;
-    public float $ncdAmount;
-    public float $totalBenefitAmount;
-    public float $grossPremium;
-    public float $sstAmount;
-    public float $stampDuty;
-    public float $totalPayable;
+    public string $basicPremium;
+    public string $ncdAmount;
+    public string $totalBenefitAmount;
+    public string $grossPremium;
+    public string $sstAmount;
+    public string $stampDuty;
+    public string $totalPayable;
 
     /**
      * Create a new component instance.
