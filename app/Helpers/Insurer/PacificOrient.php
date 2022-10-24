@@ -294,7 +294,7 @@ class PacificOrient implements InsurerLibraryInterface
             'age' => $input->age,
             'additional_driver' => $input->additional_driver,
             'email' => $input->email,
-            'extra_cover' => $input->extra_cover,
+            'extra_cover' => new ExtraCover((array) $input->extra_cover),
             'gender' => $input->gender,
             'id_type' => $input->id_type,
             'id_number' => $input->id_number,
