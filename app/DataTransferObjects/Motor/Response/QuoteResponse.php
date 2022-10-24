@@ -53,7 +53,4 @@ class QuoteResponse extends DataTransferObject
 
     /** @var int|float|null */
     public $net_premium;
-
-    /** @var \App\DataTransferObjects\Motor\ExtraCover[] */
-    public $extra_cover;
 }
