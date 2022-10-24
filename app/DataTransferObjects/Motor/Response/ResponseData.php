@@ -6,7 +6,6 @@ use Spatie\DataTransferObject\DataTransferObject;
 
 class ResponseData extends DataTransferObject
 {
-    
     /** @var bool */
     public $status = true;
     
