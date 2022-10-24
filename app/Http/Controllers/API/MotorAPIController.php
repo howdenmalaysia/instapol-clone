@@ -232,6 +232,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
                 'excess_amount' => $result->response->excess_amount,
                 'loading' => $result->response->loading,
                 'total_payable' => $result->response->total_payable,
+                'extra_cover' => $result->response->extra_cover,
             ]);
         }
 
