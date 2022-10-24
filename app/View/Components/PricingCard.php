@@ -34,13 +34,13 @@ class PricingCard extends Component
     {
         $this->insurerLogo = $insurerLogo;
         $this->insurerName = $insurerName;
-        $this->basicPremium = number_format($basicPremium, 2);
-        $this->ncdAmount = number_format($ncdAmount, 2);
-        $this->totalBenefitAmount = number_format($totalBenefitAmount, 2);
-        $this->grossPremium = number_format($grossPremium, 2);
-        $this->sstAmount = number_format($sstAmount, 2);
-        $this->stampDuty = number_format($stampDuty, 2);
-        $this->totalPayable = number_format($totalPayable, 2);
+        $this->basicPremium = number_format(floatval($basicPremium), 2);
+        $this->ncdAmount = number_format(floatval($ncdAmount), 2);
+        $this->totalBenefitAmount = number_format(floatval($totalBenefitAmount), 2);
+        $this->grossPremium = number_format(floatval($grossPremium), 2);
+        $this->sstAmount = number_format(floatval($sstAmount), 2);
+        $this->stampDuty = number_format(floatval($stampDuty), 2);
+        $this->totalPayable = number_format(floatval($totalPayable), 2);
     }
 
     /**
