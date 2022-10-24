@@ -290,5 +290,19 @@
             console.log(err.response);
         });
     }
+
+    function calculateRoadtax()
+    {
+        instapol.post("{{ route('motor.api.calculate-roadtax') }}", {
+            engine_capacity: motor.vehicle.engine_capacity,
+            id_type: motor.policy_holder.id_type,
+            postcode: motor.postcode,
+            body_type: $('#body-type').val(),
+        }).then((res) => {
+            console.log(res);
+        }).catch((err) => {
+            console.log(err.response);
+        });
+    }
 </script>
 @endpush

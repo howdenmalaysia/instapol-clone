@@ -24,4 +24,5 @@ Route::prefix('motor')->group(function() {
     Route::post('quote/{quote_type?}', [MotorAPIController::class, 'getQuote'])->name('motor.api.quote');
     Route::post('create-quotation', [MotorAPIController::class, 'createQuotation'])->name('motor.api.create-quotation');
     Route::post('submit-cover-note', [MotorAPIController::class, 'submitCoverNote'])->name('motor.api.submit-cover-note');
+    Route::post('calculate-roadtax', [MotorAPIController::class, 'calculateRoadtax'])->name('motor.api.calculate-roadtax');
 });

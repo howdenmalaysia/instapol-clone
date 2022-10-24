@@ -6,6 +6,7 @@ use App\DataTransferObjects\Motor\APIData;
 use App\DataTransferObjects\Motor\Response\FullQuoteResponse;
 use App\DataTransferObjects\Motor\Response\QuoteResponse;
 use App\DataTransferObjects\Motor\Response\QuotationResponse;
+use App\DataTransferObjects\Motor\Response\RoadtaxResponse;
 use App\DataTransferObjects\Motor\Response\SubmitCoverNoteResponse;
 use App\DataTransferObjects\Motor\Vehicle;
 use App\DataTransferObjects\Motor\VehicleVariantData;
@@ -25,8 +26,10 @@ use App\Models\Motor\InsuranceMotorRoadtax;
 use App\Models\Motor\InsurancePromo;
 use App\Models\Motor\Product;
 use App\Models\Motor\Quotation;
+use App\Models\Motor\RoadtaxDeliveryType;
 use App\Models\Motor\VehicleBodyType;
 use App\Models\Postcode;
+use App\Models\RoadTaxMatrix;
 use App\Models\User;
 use Carbon\Carbon;
 use Exception;
@@ -501,6 +504,52 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             Log::error("[API/CreateQuotation] An Error Encountered. {$ex->getMessage()}");
             DB::rollBack();
         }
+    }
+
+    public function calculateRoadtax(Request $request)
+    {
+        // 1. Get Region from Postcode
+        $region = Postcode::with('state')->findOrFail($request->postcode)->first()->state->region;
+
+        // 2. Get Roadtax Matrix
+        $roadtax = RoadTaxMatrix::where('engine_capacity_from', '>=', $request->engine_capacity)
+            ->where('engine_capacity_to', '<=', $request->engine_capacity)
+            ->where('region', $region)
+            ->where('registration_type', $request->id_type === config('setting.id_type.nric_no') ? 'Individual' : 'Company')
+            ->where('saloon', $request->body_type === 'saloon')
+            ->first();
+
+        // 3. Get Delivery Fee
+        if($region === 'East') {
+            $delivery_fee = RoadtaxDeliveryType::where('description', RoadtaxDeliveryType::EM)->first()->processing_fee;
+        } else {
+            if((int) $request->postcode >= 40000 && (int) $request->postcode <= 68100) {
+                $delivery_fee = RoadtaxDeliveryType::where('description', RoadtaxDeliveryType::KV)->first()->processing_fee;
+            } else {
+                $delivery_fee = RoadtaxDeliveryType::where('description', RoadtaxDeliveryType::OTHERS)->first()->processing_fee;
+            }
+        }
+
+        // 4. Calculation
+        $roadtax_price = formatNumber($roadtax->base_rate);
+        if(!empty($roadtax->progressive_rate)) {
+            $additional_engine_capacity = $request->engine_capacity - $roadtax->engine_capacity_from - 1;
+
+            $roadtax_price += $additional_engine_capacity * $roadtax->progressive_rate;
+        }
+
+        $e_service_fee = ($roadtax_price + 9.28) * 0.02;
+        $sst = $e_service_fee * 0.06;
+
+        $response = new RoadtaxResponse([
+            'roadtax_price' => $roadtax_price,
+            'myeg_fee' => 9.28,
+            'eservice_fee' => $e_service_fee,
+            'delivery_fee' => $delivery_fee,
+            'sst' => $sst,
+        ]);
+
+        return $response->all();
     }
 
     public function submitCoverNote(Request $request) : SubmitCoverNoteResponse
