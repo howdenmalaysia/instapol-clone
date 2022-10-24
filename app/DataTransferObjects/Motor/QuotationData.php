@@ -16,7 +16,7 @@ class QuotationData extends DataTransferObject
     /** @var string */
     public $vehicle_no;
     
-    /** @var string */
+    /** @var int */
     public $id_type;
     
     /** @var string */
