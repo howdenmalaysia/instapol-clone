@@ -35,6 +35,12 @@ class FullQuoteResponse extends DataTransferObject
 
     /** @var int|float */
     public $sum_insured;
+
+    /** @var int|float */
+    public $min_sum_insured;
+
+    /** @var int|float */
+    public $max_sum_insured;
     
     /** @var string */
     public $sum_insured_type;

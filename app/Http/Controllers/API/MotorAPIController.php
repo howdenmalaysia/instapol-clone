@@ -203,6 +203,8 @@ class MotorAPIController extends Controller implements MotorAPIInterface
                 'sst_amount' => $result->response->sst_amount,
                 'stamp_duty' => $result->response->stamp_duty,
                 'sum_insured' => $result->response->sum_insured,
+                'min_sum_insured' => $result->response->min_sum_insured,
+                'max_sum_insured' => $result->response->max_sum_insured,
                 'sum_insured_type' => $result->response->sum_insured_type,
                 'excess_amount' => $result->response->excess_amount,
                 'loading' => $result->response->loading,

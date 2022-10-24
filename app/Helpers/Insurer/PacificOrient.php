@@ -340,6 +340,8 @@ class PacificOrient implements InsurerLibraryInterface
             'ncd_amount' => formatNumber($premium->response->ncd_amount),
             'net_premium' => formatNumber($premium->response->basic_nett_premium + $premium->response->sst_amount + $premium->response->stamp_duty),
             'sum_insured' => formatNumber($premium->response->sum_insured),
+            'min_sum_insured' => formatNumber($vehicle_vix->response->min_sum_insured),
+            'max_sum_insured' => formatNumber($vehicle_vix->response->max_sum_insured),
             'sum_insured_type' => $vehicle->sum_insured_type,
             'sst_amount' => formatNumber($premium->response->sst_amount),
             'sst_percent' => formatNumber(ceil(($premium->response->sst_amount / $premium->response->gross_premium) * 100)),
