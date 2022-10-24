@@ -536,9 +536,9 @@ class MotorAPIController extends Controller implements MotorAPIInterface
         // 4. Calculation
         $roadtax_price = formatNumber($roadtax->base_rate);
         if(!empty($roadtax->progressive_rate)) {
-            $additional_engine_capacity = $request->engine_capacity - $roadtax->engine_capacity_from - 1;
+            $additional_engine_capacity = abs($request->engine_capacity - $roadtax->engine_capacity_from) + 1;
 
-            $roadtax_price += $additional_engine_capacity * $roadtax->progressive_rate;
+            $roadtax_price += floatval($additional_engine_capacity) * floatval($roadtax->progressive_rate);
         }
 
         $e_service_fee = ($roadtax_price + 9.28) * 0.02;
