@@ -515,7 +515,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
         $roadtax = RoadTaxMatrix::where('engine_capacity_from', '>=', $request->engine_capacity)
             ->where('engine_capacity_to', '<=', $request->engine_capacity)
             ->where('region', $region)
-            ->where('registration_type', function($query) use($request) {
+            ->where(function($query) use($request) {
                 $query->where('registration_type', $request->id_type === config('setting.id_type.nric_no') ? 'Individual' : 'Company');
                 $query->orWhere('registration_type', NULL);
             })
