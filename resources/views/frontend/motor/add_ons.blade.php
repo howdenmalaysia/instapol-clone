@@ -31,15 +31,14 @@
                                 <div id="extra-coverages">
                                     <h3 class="card-title fw-bold border-bottom py-4 px-md-3">{{ __('frontend.motor.add_ons_page.additional_coverage') }}</h3>
                                     @foreach (array_chunk(session('motor')->extra_cover_list, 5)[0] as $_extra_cover)
-                                        <div class="extra-coverage mb-3">
+                                        <div class="mb-2 extra-coverage">
                                             <div class="row px-md-3">
                                                 <div class="col-1">
-                                                    <input type="checkbox" class="form-check-input extra-coverage-checkbox" name="extra_coverage[]" id="{{ $_extra_cover->extra_cover_code }}" {{ $_extra_cover->selected ? 'checked' : '' }} />
+                                                    <input type="checkbox" class="form-check-input extra-coverage-checkbox" name="extra_coverage[]" value="{{ $_extra_cover->extra_cover_code }}" {{ $_extra_cover->selected ? 'checked' : '' }} />
                                                 </div>
-                                                <div class="col-8">
+                                                <div class="col-8 d-flex justify-content-between">
                                                     <label for="{{ '#' . $_extra_cover->extra_cover_code }}">{{ $_extra_cover->extra_cover_description }}</label>
-                                                </div>
-                                                <div class="col-1">
+                                                    
                                                     @if (strpos($_extra_cover->extra_cover_description, 'Windscreen') !== false)
                                                         <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('frontend.motor.add_ons_page.tooltip.windscreen') }}">
                                                             <i class="fa-solid fa-circle-question text-primary fa-15x"></i>
@@ -82,9 +81,8 @@
                                                         @endif
                                                     @endif
                                                 </div>
-                                                <div class="col-2 premium">
-                                                    {{ 'RM ' . number_format($_extra_cover->premium, 2) }}
-                                                </div>
+                                                <div class="col-1 text-end">RM</div>
+                                                <div class="col-2 text-end premium">{{ number_format($_extra_cover->premium, 2) }}</div>
                                             </div>
                                             @if (!empty($extra_cover->option_list))
                                                 <div class="row">
@@ -100,9 +98,11 @@
                                             @endif
                                         </div>
                                     @endforeach
-                                    <div class="mt-4">
-                                        <button type="button" id="show-more-add-ons" class="btn btn-light float-end rounded">{{ __('frontend.button.show_more') }}</button>
-                                    </div>
+                                    @if (count(session('motor')->extra_cover_list) > 5)
+                                        <div class="mt-4">
+                                            <button type="button" id="show-more-add-ons" class="btn btn-light float-end rounded">{{ __('frontend.button.show_more') }}</button>
+                                        </div>
+                                    @endif
                                 </div>
                                 @if (session('motor')->named_drivers_needed)
                                     <div id="additional-driver" class="mt-3">
@@ -150,39 +150,44 @@
                                         <div class="col-8">
                                             <div class="row align-items-center">
                                                 <div class="col-3">{{ __('frontend.motor.add_ons_page.road_tax_fee') }}</div>
-                                                <div class="col-6">
-                                                    <select name="body_type" id="body-type" class="form-control">
+                                                <div class="col-9 d-flex justify-content-between align-items-center">
+                                                    <select name="body_type" id="body-type" class="form-control w-75">
                                                         <option value="">{{ __('frontend.motor.add_ons_page.body_type') }}</option>
+                                                        <option value="saloon">{{ __('frontend.motor.add_ons_page.body_type_modal.saloon') }}</option>
+                                                        <option value="non-saloon">{{ __('frontend.motor.add_ons_page.body_type_modal.non_saloon') }}</option>
                                                     </select>
+                                                    <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('frontend.motor.add_ons_page.tooltip.windscreen') }}">
+                                                        <i class="fa-solid fa-circle-question text-primary fa-15x"></i>
+                                                    </span>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-1">
-                                            <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('frontend.motor.add_ons_page.tooltip.windscreen') }}">
-                                                <i class="fa-solid fa-circle-question text-primary fa-15x"></i>
-                                            </span>
-                                        </div>
-                                        <div id="roadtax-price-display" class="col-2">RM 0.00</div>
+                                        <div class="col-1 text-end">RM</div>
+                                        <div id="roadtax-price-display" class="col-2 text-end t-end">0.00</div>
                                     </div>
                                     <div class="row align-items-center px-md-3 mt-2">
                                         <div class="col-1"></div>
-                                        <div class="col-9">{{ __('frontend.motor.add_ons_page.myeg_fee') }}</div>
-                                        <div id="myeg-fee-display" class="col-2">RM 0.00</div>
+                                        <div class="col-8">{{ __('frontend.motor.add_ons_page.myeg_fee') }}</div>
+                                        <div class="col-1 text-end">RM</div>
+                                        <div id="myeg-fee-display" class="col-2 text-end">0.00</div>
                                     </div>
                                     <div class="row align-items-center px-md-3 mt-2">
                                         <div class="col-1"></div>
-                                        <div class="col-9">{{ __('frontend.motor.add_ons_page.eservice_fee') }}</div>
-                                        <div id="eservice-fee-display" class="col-2">RM 0.00</div>
+                                        <div class="col-8">{{ __('frontend.motor.add_ons_page.eservice_fee') }}</div>
+                                        <div class="col-1 text-end">RM</div>
+                                        <div id="eservice-fee-display" class="col-2 text-end">0.00</div>
                                     </div>
                                     <div class="row align-items-center px-md-3 mt-2">
                                         <div class="col-1"></div>
-                                        <div class="col-9">{{ __('frontend.motor.add_ons_page.delivery_fee') }}</div>
-                                        <div id="delivery-fee-display" class="col-2">RM 0.00</div>
+                                        <div class="col-8">{{ __('frontend.motor.add_ons_page.delivery_fee') }}</div>
+                                        <div class="col-1 text-end">RM</div>
+                                        <div id="delivery-fee-display" class="col-2 text-end">0.00</div>
                                     </div>
                                     <div class="row align-items-center px-md-3 mt-2">
                                         <div class="col-1"></div>
-                                        <div class="col-9">{{ __('frontend.motor.add_ons_page.service_tax') }}</div>
-                                        <div id="service-tax-display" class="col-2">RM 0.00</div>
+                                        <div class="col-8">{{ __('frontend.motor.add_ons_page.service_tax') }}</div>
+                                        <div class="col-1 text-end">RM</div>
+                                        <div id="service-tax-display" class="col-2 text-end">0.00</div>
                                     </div>
                                     <div class="alert alert-success mt-4" role="alert">
                                         {{ __('frontend.motor.add_ons_page.mco_note') }}
@@ -204,12 +209,12 @@
                 <x-slot name="title">{{ __('frontend.motor.add_ons_page.body_type_modal.header') }}</x-slot>
                 <x-slot name="body">
                     <div class="form-check">
-                        <input type="radio" id="saloon" class="form-check-input" />
+                        <input type="radio" id="saloon" class="form-check-input" name="modal_body_type" value="saloon" />
                         <label for="saloon" class="form-check-label">{{ __('frontend.motor.add_ons_page.body_type_modal.saloon') }}</label>
                         <small>{{ __('frontend.motor.add_ons_page.body_type_modal.saloon_description') }}</small>
                     </div>
                     <div class="form-check">
-                        <input type="radio" id="non-saloon" class="form-check-input" />
+                        <input type="radio" id="non-saloon" class="form-check-input" name="modal_body_type" value="non-saloon" />
                         <label for="non-saloon" class="form-check-label">{{ __('frontend.motor.add_ons_page.body_type_modal.non_saloon') }}</label>
                         <small>{{ __('frontend.motor.add_ons_page.body_type_modal.non_saloon_description') }}</small>
                     </div>
@@ -226,8 +231,6 @@
     $(() => {
         $('#show-more-add-ons').on('click', () => {
             $(this).text("{{ __('frontend.button.show_less') }}");
-
-
         });
 
         $('#btn-delete').on('click', () => {
@@ -264,9 +267,30 @@
             $(html).insertAfter($('.info').last());
         });
 
-        $('#roadtax-checkbox, .extra-coverage-checkbox').on('change', () => {
-            if($(this).checked) {
+        $('#body-type').on('click', () => {
+            $('#body-type-modal').modal('show');
+        });
+
+        $('#body-type-modal').on('hide.bs.modal', () => {
+            $('#body-type').val($('input[name=modal_body_type]:checked').val());
+        });
+
+        $(' .extra-coverage-checkbox').on('change', (e) => {
+            if($(e.target).is(':checked')) {
+                $(e.target).parent().parent().find('.premium').text(' ').toggleClass('loadingButton');
                 refreshPremium();
+            }
+        });
+
+        $('#roadtax-checkbox').on('change', (e) => {
+            if($(e.target).is(':checked')) {
+                let premium = $(e.target).parent().parent().find('.premium');
+                
+                if(!premium.hasClass('loadingButton')) {
+                    premium.text(' ').toggleClass('loadingButton');
+                }
+
+                calculateRoadtax();
             } else {
                 $('#roadtax-price-display').text('RM 0.00');
                 $('#myeg-fee-display').text('RM 0.00');
