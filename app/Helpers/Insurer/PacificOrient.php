@@ -289,12 +289,17 @@ class PacificOrient implements InsurerLibraryInterface
             // Include Extra Covers to Get Premium
             $input->extra_cover = $extra_cover_list;
         }
+
+        $formatted_extra_cover = [];
+        foreach($input->extra_cover as $extra_cover) {
+            array_push($formatted_extra_cover, new ExtraCover((array) $extra_cover));
+        }
         
         $data = (object) [
             'age' => $input->age,
             'additional_driver' => $input->additional_driver,
             'email' => $input->email,
-            'extra_cover' => new ExtraCover((array) $input->extra_cover),
+            'extra_cover' => $formatted_extra_cover,
             'gender' => $input->gender,
             'id_type' => $input->id_type,
             'id_number' => $input->id_number,
@@ -313,7 +318,7 @@ class PacificOrient implements InsurerLibraryInterface
         }
 
         if(!empty($premium->response->extra_coverage)) {
-            foreach($input->extra_cover as $extra_cover) {
+            foreach($formatted_extra_cover as $extra_cover) {
                 foreach($premium->response->extra_coverage as $extra) {
                     if((string) $extra->coverageId === $extra_cover->extra_cover_code) {
                         $extra_cover->premium = formatNumber((float) $extra->premium);
@@ -334,14 +339,14 @@ class PacificOrient implements InsurerLibraryInterface
             'discount' => formatNumber($premium->response->discount),
             'discount_amount' => formatNumber($premium->response->discount_amount),
             'excess_amount' => formatNumber($premium->response->excess_amount),
-            'extra_cover' => $this->sortExtraCoverList($input->extra_cover),
+            'extra_cover' => $this->sortExtraCoverList($formatted_extra_cover),
             'gross_premium' => formatNumber($premium->response->gross_premium),
             'loading' => formatNumber($premium->response->loading_amount),
             'ncd_amount' => formatNumber($premium->response->ncd_amount),
             'net_premium' => formatNumber($premium->response->basic_nett_premium + $premium->response->sst_amount + $premium->response->stamp_duty),
             'sum_insured' => formatNumber($premium->response->sum_insured),
-            'min_sum_insured' => formatNumber($vehicle_vix->response->min_sum_insured),
-            'max_sum_insured' => formatNumber($vehicle_vix->response->max_sum_insured),
+            'min_sum_insured' => formatNumber($vehicle_vix->response->min_sum_insured ?? $vehicle->min_sum_insured),
+            'max_sum_insured' => formatNumber($vehicle_vix->response->max_sum_insured ?? $vehicle->max_sum_insured),
             'sum_insured_type' => $vehicle->sum_insured_type,
             'sst_amount' => formatNumber($premium->response->sst_amount),
             'sst_percent' => formatNumber(ceil(($premium->response->sst_amount / $premium->response->gross_premium) * 100)),
