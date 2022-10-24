@@ -15,7 +15,7 @@ class QuoteResponse extends DataTransferObject
     /** @var object|null */
     public $roadtax;
 
-    /** @var \App\DataTransferObjects\Motor\ExtraCover[]|null */
+    /** @var array|null */
     public $extra_cover;
 
     /** @var int|float */
