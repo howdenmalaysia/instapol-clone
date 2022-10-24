@@ -153,13 +153,13 @@
                     </div>
                     <form action="{{ route('motor.compare') }}" method="POST" id="product-form">
                         @csrf
-                        <input type="hidden" id="gender" name="gender" />
+                        <input type="hidden" id="h-gender" name="gender" />
                         <input type="hidden" id="products" value='@json($products)'>
                         <input type="hidden" id="motor" name="motor" value='@json(session('motor'))' />
                         <input type="hidden" id="insurance-premium" name="premium" />
                         <input type="hidden" id="av-code" name="av_variant" />
                         <input type="hidden" id="av-variant" name="av_code" />
-                        <input type="hidden" id="marital-status" name="marital_status" />
+                        <input type="hidden" id="h-marital-status" name="marital_status" />
                     </form>
                     {{-- <form action="{{ route('motor.compare-detail') }}" method="POST" id="compare-details-form">
                         @csrf
@@ -285,6 +285,8 @@
                 $('#motor').val(JSON.stringify(motor));
 
                 $('#insurance-premium').val(JSON.stringify(premiums[product_id]));
+                $('#h-gender').val($('input[name=gender]:checked').val());
+                $('#h-marital-status').val($('#marital-status').val(););
 
                 $('#product-form').submit();
             });
