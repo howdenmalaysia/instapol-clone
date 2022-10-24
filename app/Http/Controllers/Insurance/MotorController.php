@@ -184,6 +184,11 @@ class MotorController extends Controller
 			'total_contribution' => $premium->total_contribution,
         ];
 
+        $motor->vehicle->sum_insured = $premium->sum_insured;
+        $motor->vehicle->sum_insured_type = $premium->sum_insured_type;
+        $motor->vehicle->min_sum_insured = $premium->min_sum_insured;
+        $motor->vehicle->max_sum_insured = $premium->max_sum_insured;
+
         $motor->extra_cover_list = $premium->extra_cover;
         $motor->named_drivers_needed = $premium->named_drivers_needed;
 
