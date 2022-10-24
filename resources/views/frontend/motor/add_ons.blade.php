@@ -313,12 +313,6 @@
             roadtax: $('#roadtax-checkbox').is(':checked')
         }).then((res) => {
             console.log(res);
-
-            $('#roadtax-price-display').removeClass('loadingButton').text(`RM ${formatMoney(res.data.roadtax_price)}`);
-            $('#myeg-fee-display').removeClass('loadingButton').text(`RM ${formatMoney(res.data.myeg_fee)}`);
-            $('#eservice-fee-display').removeClass('loadingButton').text(`RM ${formatMoney(res.data.eservice_fee)}`);
-            $('#delivery-fee-display').removeClass('loadingButton').text(`RM ${formatMoney(res.data.delivery_fee)}`);
-            $('#service-tax-display').removeClass('loadingButton').text(`RM ${formatMoney(res.data.sst)}`);
         }).catch((err) => {
             console.log(err.response);
         });
@@ -334,6 +328,11 @@
         }).then((res) => {
             console.log(res);
 
+            $('#roadtax-price-display').removeClass('loadingButton').text(`RM ${formatMoney(res.data.roadtax_price)}`);
+            $('#myeg-fee-display').removeClass('loadingButton').text(`RM ${formatMoney(res.data.myeg_fee)}`);
+            $('#eservice-fee-display').removeClass('loadingButton').text(`RM ${formatMoney(res.data.eservice_fee)}`);
+            $('#delivery-fee-display').removeClass('loadingButton').text(`RM ${formatMoney(res.data.delivery_fee)}`);
+            $('#service-tax-display').removeClass('loadingButton').text(`RM ${formatMoney(res.data.sst)}`);
         }).catch((err) => {
             console.log(err.response);
         });
