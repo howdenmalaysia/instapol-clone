@@ -11,7 +11,7 @@ class InsuranceRemark extends Model
 
     protected $fillable = [
         'insurance_id',
-        'remarks',
+        'remark',
         'updated_at'
     ];
 
