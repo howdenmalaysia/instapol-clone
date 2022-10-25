@@ -40,5 +40,13 @@ return [
     ],
     'howden' => [
         'short_code' => env('HOWDEN_SHORT_CODE')
+    ],
+    'payment' => [
+        'gateway' => [
+            'url' => env('EGHL_PAYMENT_URL'),
+            'merchant_id' => env('EGHL_MERCHANT_ID'),
+            'merchant_name' => env('EGHL_MERCHANT_NAME'),
+            'merchant_password' => env('EGHL_MERCHANT_PASSWORD')
+        ]
     ]
 ];
