@@ -74,4 +74,26 @@ class APIData extends DataTransferObject
     
     /** @var string|null */
     public $occupation;
+
+    // Create Quotation
+    /** @var string|null */
+    public $nationality;
+
+    /** @var string|null */
+    public $name;
+
+    /** @var string|null */
+    public $date_of_birth;
+
+    /** @var string|null */
+    public $phone_code;
+
+    /** @var string|null */
+    public $address_one;
+
+    /** @var string|null */
+    public $adddress_two;
+
+    /** @var string|null */
+    public $city;
 }
