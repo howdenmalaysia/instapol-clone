@@ -376,6 +376,7 @@ class PacificOrient implements InsurerLibraryInterface
     public function quotation(object $input) : object
     {
         $data = (object) [
+            'age' => $input->age,
             'additional_driver' => $input->additional_driver,
             'email' => $input->email,
             'extra_cover' => $input->extra_cover,
