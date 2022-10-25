@@ -294,6 +294,7 @@
         $('.extra-coverage-checkbox').on('change', (e) => {
             if($(e.target).is(':checked')) {
                 $(e.target).parent().parent().find('.premium').text(' ').toggleClass('loadingButton');
+                $('#btn-next').toggleClass('loadingButton');
                 refreshPremium();
             }
         });
@@ -384,6 +385,9 @@
             res.data.extra_cover.forEach((extra_cover) => {
                 $(`#${extra_cover.extra_cover_code}-premium`).text(`${formatMoney(extra_cover.premium)}`).removeClass('loadingButton');
             });
+
+            // Remove Loading for Next Button
+            $('#btn-next').removeClass('loadingButton');
         }).catch((err) => {
             console.log(err.response);
         });
