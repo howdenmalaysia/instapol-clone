@@ -249,6 +249,10 @@
 
             $('#use-same-address').on('change', (e) => {
                 if($(e.target).is(':checked')) {
+                    $('#delivery-info').find('input').each((index, input) => {
+                        $(input).removeAttr('required');
+                    });
+
                     $('#delivery-info').hide();
                 }
             });
