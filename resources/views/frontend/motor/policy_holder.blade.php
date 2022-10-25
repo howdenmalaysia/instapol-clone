@@ -132,25 +132,27 @@
                                         <div class="row mt-3">
                                             <div class="col-12 col-sm-3"></div>
                                             <div class="col-12 col-sm-9">
-                                                <input type="checkbox" id="use-same-address" class="form-check-input col-3">
+                                                <input type="checkbox" id="use-same-address" class="form-check-input col-3" name="use_same_address" />
                                                 <label for="use-same-address" class="form-check-label col-9">{{ __('frontend.motor.policy_holder_page.use_same_address') }}</label>
                                             </div>
                                         </div>
                                         <div class="row mt-3">
-                                            <label for="" class="col-form-label col-12 col-sm-3">{{ __('frontend.fields.recipient_name') }}</label>
-                                            <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('frontend.motor.policy_holder_page.recipient_tooltip') }}">
-                                                <i class="fa-solid fa-circle-question text-primary fa-15x"></i>
-                                            </span>
+                                            <div class="col-12 col-sm-3">
+                                                <label for="delivery-recipient" class="col-form-label">{{ __('frontend.fields.recipient_name') }}</label>
+                                                <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('frontend.motor.policy_holder_page.recipient_tooltip') }}">
+                                                    <i class="fa-solid fa-circle-question text-primary fa-15x"></i>
+                                                </span>
+                                            </div>
                                             <div class="col-12 col-sm-9">
-                                                <input type="text" name="delivery_recipient" id="delivery-recipient" required />
+                                                <input type="text" id="delivery-recipient" class="form-control uppercase" name="delivery_recipient" required />
                                             </div>
                                         </div>
                                         <div class="row mt-3">
-                                            <label class="col-form-label col-12 col-sm-3">{{ __('frontend.fields.phone_number') }}</label>
+                                            <label for="delivery-phone-number" class="col-form-label col-12 col-sm-3">{{ __('frontend.fields.phone_number') }}</label>
                                             <div class="col-12 col-md-9">
                                                 <div class="input-group">
                                                     <span class="input-group-text" id="country-code">+60</span>
-                                                    <input type="text" id="delivery-phone-number" class="form-control" name="deluvery_phone_number"
+                                                    <input type="number" id="delivery-phone-number" class="form-control" name="delivery_phone_number"
                                                         required min="1"
                                                         pattern="(0?1)[0-46-9][0-9]{7,8}"
                                                         data-parsley-required-message="{{ __('frontend.motor.policy_holder_page.error_messages.required.phone_number') }}"
@@ -160,7 +162,7 @@
                                             </div>
                                         </div>
                                         <div class="row mt-3">
-                                            <label for="" class="col-form-label col-12 col-sm-3"></label>
+                                            <label for="delivery-address-1" class="col-form-label col-12 col-sm-3"></label>
                                             <div class="col-12 col-sm-9">
                                                 <input type="text" id="delivery-address-1" class="form-control uppercase" name="delivery_address_1" placeholder="{{ __('frontend.motor.policy_holder_page.placeholders.address_one') }}"
                                                     required data-parsley-required-message="{{ __('frontend.motor.policy_holder_page.error_messages.required.address') }}"
@@ -169,21 +171,21 @@
                                             </div>
                                         </div>
                                         <div class="row mt-3">
-                                            <label for="" class="col-form-label col-12 col-sm-3">{{ __('frontend.fields.postcode') }}</label>
+                                            <label for="delivery-postcode" class="col-form-label col-12 col-sm-3">{{ __('frontend.fields.postcode') }}</label>
                                             <div class="col-12 col-sm-9">
                                                 <input type="text" id="delivery-postcode" class="form-control uppercase" name="delivery_postcode" placeholder="{{ __('frontend.fields.postcode') }}"
                                                 required data-parsley-required-message="{{ __('frontend.motor.policy_holder_page.error_messages.required.delivery_postcode') }}" />
                                             </div>
                                         </div>
                                         <div class="row mt-3">
-                                            <label for="" class="col-form-label col-12 col-sm-3">{{ __('frontend.fields.city') }}</label>
+                                            <label for="delivery-city" class="col-form-label col-12 col-sm-3">{{ __('frontend.fields.city') }}</label>
                                             <div class="col-12 col-sm-9">
                                                 <input type="text" id="delivery-city" class="form-control uppercase" name="delivery_city" placeholder="{{ __('frontend.fields.city') }}"
                                                 required data-parsley-required-message="{{ __('frontend.motor.policy_holder_page.error_messages.required.delivery_city') }}" />
                                             </div>
                                         </div>
                                         <div class="row mt-3">
-                                            <label for="" class="col-form-label col-12 col-sm-3">{{ __('frontend.fields.state') }}</label>
+                                            <label for="delivery-state" class="col-form-label col-12 col-sm-3">{{ __('frontend.fields.state') }}</label>
                                             <div class="col-12 col-sm-9">
                                                 <input type="text" id="delivery-state" class="form-control uppercase" name="delivery_state" placeholder="{{ __('frontend.fields.state') }}"
                                                 required data-parsley-required-message="{{ __('frontend.motor.policy_holder_page.error_messages.required.delivery_state') }}" />
@@ -243,6 +245,12 @@
                 }).catch((err) => {
                     console.log(err);
                 });
+            });
+
+            $('#use-same-address').on('change', (e) => {
+                if($(e.target).is(':checked')) {
+                    $('#delivery-info').hide();
+                }
             });
         });
     </script>
