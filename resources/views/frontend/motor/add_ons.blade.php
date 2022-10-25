@@ -35,10 +35,10 @@
                                         <div class="mb-2 extra-coverage">
                                             <div class="row px-md-3">
                                                 <div class="col-1">
-                                                    <input type="checkbox" class="form-check-input extra-coverage-checkbox" name="extra_coverage[]" value="{{ $_extra_cover->extra_cover_code }}" {{ $_extra_cover->selected ? 'checked' : '' }} />
+                                                    <input type="checkbox" id="{{ 'checkbox-' . $_extra_cover->extra_cover_code }}" class="form-check-input extra-coverage-checkbox" name="extra_coverage[]" value="{{ $_extra_cover->extra_cover_code }}" {{ $_extra_cover->selected ? 'checked' : '' }} />
                                                 </div>
                                                 <div class="col-8 d-flex justify-content-between">
-                                                    <label for="{{ '#' . $_extra_cover->extra_cover_code }}">{{ $_extra_cover->extra_cover_description }}</label>
+                                                    <label for="{{ '#checkbox-' . $_extra_cover->extra_cover_code }}">{{ $_extra_cover->extra_cover_description }}</label>
                                                     
                                                     @if (strpos($_extra_cover->extra_cover_description, 'Windscreen') !== false)
                                                         <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('frontend.motor.add_ons_page.tooltip.windscreen') }}">
@@ -85,12 +85,12 @@
                                                 <div class="col-1 text-end">RM</div>
                                                 <div id="{{ $_extra_cover->extra_cover_code . '-premium' }}" class="col-2 text-end premium">{{ number_format($_extra_cover->premium, 2) }}</div>
                                             </div>
-                                            @if (!empty($extra_cover->option_list))
+                                            @if (!empty($_extra_cover->option_list))
                                                 <div class="row">
-                                                    <div class="col-5 px-md-3 mt-3">
-                                                        <small>{{ $extra_cover->option_list->description . ':' }}</small>
-                                                        <select id="{{ 'sum-insured-' . $_extra_cover->extra_cover_code }}" data-select>
-                                                            @foreach ($extra_cover->option_list->values as $option)
+                                                    <div class="col-5 px-md-3 mb-3 ms-3">
+                                                        <small>{{ $_extra_cover->option_list->description . ':' }}</small>
+                                                        <select id="{{ 'sum-insured-' . $_extra_cover->extra_cover_code }}" class="option-list" data-select data-extra-cover-code="{{ $_extra_cover->extra_cover_code }}">
+                                                            @foreach ($_extra_cover->option_list->values as $option)
                                                                 <option value="{{ $option }}">{{ 'RM ' . $option }}</option>
                                                             @endforeach
                                                         </select>
@@ -311,6 +311,12 @@
             selected_extra_cover.push(motor.extra_cover_list.find((item) => {
                 return item.extra_cover_code === $(element).val();
             }));
+        });
+
+        selected_extra_cover.forEach((extra_cover) => {
+            if(extra_cover.option_list) {
+                extra_cover.sum_insured = $(`#sum-insured-${extra_cover.extra_cover_code}`).val();
+            }
         });
 
         instapol.post("{{ route('motor.api.quote') }}", {
