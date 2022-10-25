@@ -285,6 +285,7 @@ class MotorController extends Controller
         $motor = json_decode($request->motor);
 
         $data = (object) [
+            'quotation_id' => $motor->quotation_id,
             'insurance_code' => $motor->insurance_code,
             'vehicle_number' => $motor->vehicle_number,
             'vehicle' => $motor->vehicle,
