@@ -398,19 +398,25 @@ class PacificOrient implements InsurerLibraryInterface
         }
 
         return new PremiumResponse([
-            'basic_premium' => formatNumber($quotation->response->basicPremium),
-            'excess_amount' => formatNumber($quotation->response->excessAmt),
+            'act_premium' => $quotation->response->act_premium,
+            'basic_premium' => $quotation->response->basic_premium,
+            'excess_amount' => $quotation->response->excess_amount,
             'extra_cover' => $this->sortExtraCoverList($input->extra_cover),
-            'gross_premium' => formatNumber($quotation->response->grossPremium),
-            'ncd' => formatNumber($quotation->response->ncdAmt),
-            'net_premium' => formatNumber($quotation->response->basicNettPremium + $quotation->response->serviceTaxAmt + $quotation->response->stampDuty),
-            'sst_amount' => formatNumber($quotation->response->serviceTaxAmt),
-            'sst_percent' => formatNumber(($quotation->response->serviceTaxAmt / $quotation->response->grossPremium) * 100),
-            'stamp_duty' => formatNumber($quotation->response->stampDuty),
-            'total_benefit_amount' => formatNumber($quotation->total_benefit_amount),
-            'total_contribution' => formatNumber($quotation->response->totalPremium),
-            'total_payable' => formatNumber($quotation->response->totalPremium),
+            'gross_premium' => $quotation->response->gross_premium,
+            'ncd_amount' => $quotation->response->ncd_amount,
+            'net_premium' => $quotation->response->net_premium,
+            'sst_amount' => $quotation->response->sst_amount,
+            'sst_percent' => $quotation->response->sst_percent,
+            'stamp_duty' => $quotation->response->stamp_duty,
+            'total_benefit_amount' => $quotation->total_benefit_amount,
+            'total_payable' => $quotation->response->total_payable,
             'request_id' => $quotation->response->requestId,
+            'loading' => $quotation->response->loading,
+            'sum_insured' => $quotation->response->sum_insured,
+            'sum_insured_type' => $input->vehicle->sum_insured_type,
+            'min_sum_insured' => $input->vehicle->min_sum_insured,
+            'max_sum_insured' => $input->vehicle->max_sum_insured,
+            'named_drivers_needed' => false,
         ]);
     }
 
