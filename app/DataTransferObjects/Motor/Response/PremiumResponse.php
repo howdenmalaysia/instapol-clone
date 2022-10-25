@@ -13,13 +13,13 @@ class PremiumResponse extends DataTransferObject
     public $extra_cover;
 
     /** @var float */
-    public $excess_amount = 0;
+    public $excess_amount = 0.00;
     
     /** @var float */
     public $gross_premium;
 
     /** @var float */
-    public $loading = 0;
+    public $loading = 0.00;
     
     /** @var float */
     public $ncd_amount;
@@ -68,14 +68,14 @@ class PremiumResponse extends DataTransferObject
     public $detariff;
 
     /** @var float|null */
-    public $detariff_premium = 0;
+    public $detariff_premium;
 
     /** @var float|null */
-    public $discount = 0;
+    public $discount;
 
     /** @var float|null */
-    public $discount_amount = 0;
+    public $discount_amount;
 
     /** @var float|null */
-    public $tariff_premium = 0;
+    public $tariff_premium;
 }
