@@ -322,7 +322,7 @@
 
             // Update Add Ons Pricing
             res.data.extra_cover.forEach((extra_cover) => {
-                $(`#${extra_cover.extra_cover_code}-premium`).text(`RM ${formatMoney(extra_cover.premium)}`).removeClass('loadingButton');
+                $(`#${extra_cover.extra_cover_code}-premium`).text(`${formatMoney(extra_cover.premium)}`).removeClass('loadingButton');
             });
         }).catch((err) => {
             console.log(err.response);
@@ -348,8 +348,8 @@
 
 
             // Update Pricing Card
-            $('#road-tax').text(`RM ${res.data.total}`);
-            $('#total-payable').text(`RM ${parseFloat(res.data.total) + parseFloat($('#total-payable').text().replace(',', ''))}`)
+            $('#road-tax').text(`RM ${formatMoney(res.data.total)}`);
+            $('#total-payable').text(`RM ${formatMoney(parseFloat(res.data.total) + parseFloat($('#total-payable').text().replace(',', '')))}`)
         }).catch((err) => {
             console.log(err.response);
         });
