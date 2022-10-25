@@ -321,7 +321,7 @@
             $('#total-payable').text(`RM ${formatMoney(res.data.total_payable)}`);
 
             // Update Add Ons Pricing
-            res.data.extra_cover.foreach((extra_cover) => {
+            res.data.extra_cover.forEach((extra_cover) => {
                 $(`#${extra_cover.extra_cover_code}-premium`).text(`RM ${formatMoney(extra_cover.premium)}`).removeClass('loadingButton');
             });
         }).catch((err) => {
