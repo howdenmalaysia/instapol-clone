@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Insurance\MotorController;
+use App\Http\Controllers\PaymentController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -57,9 +58,17 @@ Route::middleware(['web'])->group(function() {
             Route::get('/policy-holder', [MotorController::class, 'policyHolder'])->name('motor.policy-holder');
             Route::post('/policy-holder', [MotorController::class, 'policyHolder_POST']);
             Route::get('/payment/summary', [MotorController::class, 'paymentSummary'])->name('motor.payment-summary');
-            Route::post('/payment/summary', [MotorController::class, 'paymentSummary_POST']);
         }
     );
+});
+
+Route::group(['prefix' => 'payment'], function() {
+    Route::get('/insurance', [PaymentController::class, 'store'])->name('payment.store');
+    Route::match(['get', 'post'], '/callback', [PaymentController::class, 'callback'])->name('payment.callback');
+});
+
+Route::get('/test', function () {
+    return view('frontend.payment.summary');
 });
 
 // Redirects
