@@ -226,7 +226,7 @@ class MotorController extends Controller
         if(!empty($request->selected_extra_coverage)) {
             $selected_extra_cover = [];
             
-            foreach($request->selected_extra_cover as $selected) {
+            foreach($request->selected_extra_coverage as $selected) {
                 foreach($session->motor->extra_cover_list as $extra_cover) {
                     if($extra_cover->extra_cover_code === $selected->extra_cover_code) {
                         array_push($selected_extra_cover, (object) [
