@@ -156,3 +156,28 @@ if (!function_exists('roundSumInsured')) {
         return $sum_insured;
     }
 }
+
+if (!function_exists('generatePaymentID')) {
+    function generatePaymentID(int $attempt, string $insurance_code)
+    {
+        $attempt++;
+
+        return $insurance_code . '-' . str_pad($attempt, 3, '0', STR_PAD_LEFT);
+    }
+}
+
+if (!function_exists('generateExtraCoverSumInsured')) {
+    function generateExtraCoverSumInsured(int $min, int $max, int $incremment = 1000)
+    {
+        $values = [];
+
+        while ($min <= $max) {
+            array_push($values, $min);
+
+            $min = round($min + $incremment, ($incremment >= 1000 ? -3 : -2), PHP_ROUND_HALF_DOWN);
+        }
+
+        return $values;
+    }
+}
+

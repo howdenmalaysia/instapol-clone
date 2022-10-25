@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Insurance;
 use App\DataTransferObjects\Motor\QuotationData;
 use App\DataTransferObjects\Motor\VehicleData;
 use App\Http\Controllers\Controller;
+use App\Models\Motor\Insurance;
 use App\Models\Motor\InsuranceCompany;
 use App\Models\Motor\Product;
 use App\Models\Motor\Quotation;
@@ -15,6 +16,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Str;
 
 class MotorController extends Controller
 {
@@ -72,7 +74,7 @@ class MotorController extends Controller
                 'id_type' => $id_type,
                 'id_number' => formatIC($request->id_number),
                 'email' => $request->email,
-                'phone_number' => $request->phone_number,
+                'phone_number' => Str::startsWith($request->phone_number, '0') ? substr($request->phone_number, 1) : $request->phone_number,
                 'date_of_birth' => formatDateFromIC($request->id_number),
                 'gender' => $gender,
                 'marital_status' => $marital_status,
@@ -270,14 +272,67 @@ class MotorController extends Controller
         ]);
     }
 
-    public function compareDetail(Request $request)
+    public function policyHolder_POST(Request $request)
     {
+        if(empty($request->session()->get('motor'))) {
+            return redirect()->route('motor.index');
+        }
 
+        $data = (object) [
+            'insurance_code' => $request->motor->insurance_code,
+            'vehicle_number' => $request->motor->vehicle_number,
+            'vehicle' => $request->motor->vehicle,
+            'variants' => $request->motor->variants,
+            'product_type_id' => Product::TYPE_MOTOR,
+            'postcode' => $request->motor->postcode,
+            'policy_holder' => (object) [
+                'id_type' => $request->motor->policy_holder->id_type,
+                'id_number' => formatIC($request->motor->policy_holder->id_number),
+                'email' => $request->email ?? $request->motor->policy_holder->email,
+                'phone_number' => '0' . ($request->phone_number ?? $request->motor->policy_holder->phone_number),
+                'date_of_birth' => formatDateFromIC($request->motor->policy_holder->id_number),
+                'gender' => $request->motor->policy_holder->gender,
+                'marital_status' => $request->motor->policy_holder->marital_status,
+                'driving_experience' => $request->motor->policy_holder->driving_experience,
+                'name' => $request->name,
+                'address_1' => $request->address_1,
+                'address_2' => $request->address_2,
+                'city' => $request->city,
+                'state' => $request->state
+            ],
+        ];
+
+        $this->updateQuotation($data);
+
+        return redirect()->route('motor.payment-summary');
     }
 
-    public function compareDetail_POST(Request $request)
+    public function paymentSummary(Request $request)
     {
-        
+        if(empty($request->session()->get('motor'))) {
+            return redirect()->route('motor.index');
+        }
+
+        $session = $request->session()->get('motor');
+
+        $insurance = Insurance::findByInsuranceCode($session->insurance_code);
+
+        if(empty($insurance) || $insurance->isEmpty()) {
+
+        }
+
+
+        if($insurance->insurance_status === Insurance::STATUS_NEW_QUOTATION || $insurance->insurance_status === Insurance::STATUS_PAYMENT_FAILURE) {
+
+        } else if($insurance->insurance_status === Insurance::STATUS_PAYMENT_ACCEPTED || $insurance->insurance_status === Insurance::STATUS_POLICY_ISSUED) {
+            return redirect()->route();
+        } else {
+            return redirect()->route('motor.index');
+        }
+
+        return view('frontend.motor.summary')->with([
+            'insurance' => $insurance
+        ]);
     }
 
     private function quotation(object $motor)
@@ -385,7 +440,6 @@ class MotorController extends Controller
         $param->email_address = $data->policy_holder->email ?? '';
         $param->name = $data->policy_holder->name ?? '';
         $param->phone_number = $data->policy_holder->phone_number ?? '';
-        $param->h_company_id = $param->h_product_id = '';
 
         $quotation->product_type = $data->product_type ?? 2;
         $quotation->email_address = $data->policy_holder->email;

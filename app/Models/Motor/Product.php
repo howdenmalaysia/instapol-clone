@@ -10,6 +10,8 @@ class Product extends Model
 {
     use HasFactory;
 
+    public const TYPE_MOTOR = 2;
+
     protected $fillable = [
         'product_type_id',
         'company_id',

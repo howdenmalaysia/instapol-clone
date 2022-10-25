@@ -239,13 +239,16 @@ class MotorAPIController extends Controller implements MotorAPIInterface
         return $quote->all();
     }
 
-    public function createQuotation(Request $request) : QuotationResponse
+    /** @return QuotationResponse|Response */
+    public function createQuotation(Request $request)
     {
+        $motor = toObject($request->motor);
+
         // Get State Details with Postcode
-        $postcode = $this->getPostcodeDetails($request->postcode);
+        $postcode = $this->getPostcodeDetails($motor->postcode);
 
         // Get Product Details
-        $product = $this->getProduct($request->product_id);
+        $product = $this->getProduct($motor->product_id);
 
         // Get Vehicle Body Type Details
         if(!empty($request->vehicle_body_type)) {
@@ -254,35 +257,37 @@ class MotorAPIController extends Controller implements MotorAPIInterface
                 ->id;
         }
 
+        // Get the Variant to Construct DTO
+        $motor->vehicle->variant = array_filter($motor->variants, function($variant) use($motor) {
+            return $variant->nvic === $motor->vehicle->nvic;
+        })[0]->variant;
+
+
         $input = new APIData([
-            'id_type' => $request->id_type,
-            'id_number' => $request->id_number,
-            'nationality' => 'MYS',
-            'vehicle_number' => strtoupper($request->vehicle_number),
-            'postcode' => $request->postcode,
-            'email' => $request->email,
+            'age' => getAgeFromIC($motor->policy_holder->id_number),
+            'id_type' => $motor->policy_holder->id_type,
+            'id_number' => $motor->policy_holder->id_number,
+            'vehicle_number' => strtoupper($motor->vehicle_number),
+            'postcode' => $motor->postcode,
+            'email' => $motor->policy_holder->email,
             'region' => $postcode->state->region,
             'state' => strtoupper($postcode->state->name),
-            'company_id' => $product->insurance_company->id,
             'product_id' => $product->id,
-            'gender' => $request->gender,
-            'marital_status' => $request->marital_status,
-            'vehicle' => toObject($request->vehicle),
+            'gender' => $motor->policy_holder->gender,
+            'marital_status' => $motor->policy_holder->marital_status,
+            'vehicle' => new Vehicle((array) $motor->vehicle),
             'extra_cover' => toObject($request->extra_cover ?? []),
-            'additional_driver' => toObject($request->additional_driver ?? []),
-            'vehicle_body_type' => $vehicle_body_type_id,
-            'name' => strtoupper($request->name),
-            'date_of_birth' => $request->date_of_birth,
-            'age' => $request->id_type === 1 ? getAgeFromIC($request->id_number) : null,
-            'phone_code' => $request->phone_code,
-            'phone_number' => $request->phone_number,
-            'unit_no' => $request->unit_no,
-            'building_name' => strtoupper($request->building_name),
-            'address_one' => strtoupper($request->addreaa_one),
-            'address_two' => strtoupper($request->address_two),
-            'city' => strtoupper($request->city),
-            'referral_code' => $request->referral_code,
-            'occupation' => strtoupper($request->occupation),
+            'additional_driver' => toObject($motor->additional_driver ?? []),
+            'vehicle_body_type' => $vehicle_body_type_id ?? null,
+            'name' => strtoupper($motor->policy_holder->name),
+            'date_of_birth' => $motor->policy_holder->date_of_birth,
+            'age' => $motor->policy_holder->id_type === 1 ? getAgeFromIC($motor->policy_holder->id_number) : null,
+            'phone_code' => '60',
+            'phone_number' => $motor->policy_holder->phone_number,
+            'address_one' => strtoupper($motor->policy_holder->address_1),
+            'address_two' => strtoupper($motor->policy_holder->address_2),
+            'city' => strtoupper($motor->policy_holder->city),
+            'occupation' => strtoupper($request->occupation ?? ''),
         ]);
 
         // Remove '0' from phone number if exists
@@ -290,8 +295,8 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             $input->phone_number = substr($input->phone_number, 1);
         }
 
-        $insurer_class = $this->getInsurerClass($product->insurance_company->id);
-        $result = $insurer_class->premiumDetails($input);
+        $insurer_class = $this->getInsurerClass($product->id);
+        $result = $insurer_class->quotation($input);
 
         if(!$result->status) {
             return $this->abort($result->response, $result->code);
@@ -301,9 +306,9 @@ class MotorAPIController extends Controller implements MotorAPIInterface
         $insurance_code = '';
 
         // Check if the user exists in the system
-        $user = User::where('email', $request->email)->get();
+        $user = User::where('email', $input->email)->first();
 
-        if(empty($user)) {
+        if(empty($user->id)) {
             // Create user account
             $user = User::create([
                 'name' => strtoupper($input->name),
@@ -317,18 +322,23 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             DB::beginTransaction();
             
             // 1. Check if a record exists with vehicle number
-            $insurance_motor = InsuranceMotor::where('vehicle_number', $input->vehicle_number)->get();
+            $insurance_motor = InsuranceMotor::where('vehicle_number', $input->vehicle_number)->first();
+
+            $insurance_id = null;
+            if(!empty($insurance_motor)) {
+                $insurance_id = $insurance_motor->insurance_id;
+            }
 
             // 2a. Update or Insert to Insurance table
             $insurance = Insurance::updateOrCreate([
-                'id' => $insurance_motor->insurance_id ?? null
+                'id' => $insurance_id
             ], [
                 'product_id' => $product->id,
                 'customer_id' => $user->id,
                 'insurance_status' => Insurance::STATUS_NEW_QUOTATION,
                 'referrer' => $request->referrer,
-                'inception_date' => Carbon::parse($result->inception_date) ->format('Y-m-d'),
-                'expiry_date' => Carbon::parse($result->expiry_date) ->format('Y-m-d'),
+                'inception_date' => Carbon::parse($input->vehicle->inception_date) ->format('Y-m-d'),
+                'expiry_date' => Carbon::parse($input->vehicle->expiry_date) ->format('Y-m-d'),
                 'amount' => $quotation->total_payable,
                 'quotation_date' => Carbon::now()->format('Y-m-d'),
                 'channel' => 'online',
@@ -347,7 +357,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
                 'name' => $input->name,
                 'id_type_id' => $input->id_type,
                 'id_number' => $input->id_number,
-                'nationality' => $input->nationality,
+                'nationality' => 'MYS',
                 'date_of_birth' => $input->date_of_birth,
                 'age' => $input->age,
                 'gender' => $input->gender,
@@ -363,8 +373,8 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             InsuranceAddress::updateOrCreate([
                 'insurance_id' => $insurance->id
             ], [
-                'unit_no' => $input->unit_no,
-                'building_name' => $input->building_name,
+                'unit_no' => $input->unit_no ?? null,
+                'building_name' => $input->building_name ?? null,
                 'address_one' => $input->address_one,
                 'address_two' => $input->address_two,
                 'city' => $input->city,
@@ -375,33 +385,33 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             ]);
 
             // 5. Update or Insert to Insurance Motor Table
-            InsuranceMotor::updateOrCreate([
+            $insurance_motor = InsuranceMotor::updateOrCreate([
                 'insurance_id' => $insurance->id
             ], [
                 'vehicle_state_id' => $postcode->state->id,
-                'vehicle_number' => $quotation->vehicle_number,
-                'chassis_number' => $quotation->vehicle->chassis_number,
-                'engine_number' => $quotation->vehicle->engine_number,
-                'make' => $quotation->vehicle->make,
-                'model' => $quotation->vehicle->model,
-                'seating_capacity' => $quotation->vehicle->extra_attributes->seating_capacity,
-                'engine_capacity' => $quotation->vehicle->engine_capacity,
-                'manufacture_year' => $quotation->vehicle->manufacture_year,
-                'market_value' => $quotation->vehicle->sum_insured,
-                'nvic' => $quotation->vehicle->nvic,
-                'variant' => $quotation->vehicle->variant,
-                'ncd_percentage' => $quotation->vehicle->ncd_percentage,
+                'vehicle_number' => $input->vehicle_number,
+                'chassis_number' => $input->vehicle->extra_attribute->chassis_number,
+                'engine_number' => $input->vehicle->extra_attribute->engine_number,
+                'make' => $input->vehicle->make,
+                'model' => $input->vehicle->model,
+                'seating_capacity' => $input->vehicle->extra_attribute->seating_capacity,
+                'engine_capacity' => $input->vehicle->engine_capacity,
+                'manufactured_year' => $input->vehicle->manufacture_year,
+                'market_value' => $input->vehicle->sum_insured,
+                'nvic' => $input->vehicle->nvic,
+                'variant' => $input->vehicle->variant,
+                'ncd_percentage' => $input->vehicle->ncd_percentage,
                 'ncd_amount' => $quotation->ncd_amount,
-                'previous_ncd_percentage' => $this->getNCDPercentage($quotation->vehicle->ncd_percentage)->previous,
-                'next_ncd_percentage' => $this->getNCDPercentage($quotation->vehicle->ncd_percentage)->next,
-                'previous_inception_date' => Carbon::parse($input->expiry_date)->subYear()->addDay(),
-                'previous_expiry_date' => Carbon::parse($input->expiry_date)->subYear()->addDays(2),
-                'previous_policy_expiry' => Carbon::parse($input->expiry_date)->subYear()->addDay(2),
+                'previous_ncd_percentage' => $input->vehicle->extra_attribute->previous_ncd ?? 0.00,
+                'next_ncd_percentage' => $input->vehicle->extra_attribute->next_ncd ?? 0.00,
+                'previous_inception_date' => Carbon::parse($input->vehicle->expiry_date)->subYear()->addDay(),
+                'previous_expiry_date' => Carbon::parse($input->vehicle->expiry_date)->subYear()->addDays(2),
+                'previous_policy_expiry' => Carbon::parse($input->vehicle->expiry_date)->subYear()->addDay(2),
                 'disabled' => 'N',
                 'marital_status' => $input->marital_status,
                 'driving_experience' => $input->age - 18 > 0 ? $input->age - 18 : 1,
-                'loading' => 0.00,
-                'number_of_drivers' => $input->additional_driver->count(),
+                'loading' => $quotation->loading,
+                'number_of_drivers' => count($input->additional_driver),
                 'created_by' => $user->id,
                 'updated_by' => $user->id,
             ]);
@@ -413,7 +423,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
                 InsuranceExtraCover::create([
                     'insurance_id' => $insurance->id,
                     'insurance_extra_cover_type_id',
-                    'code' => $extra_cover->code,
+                    'code' => $extra_cover->extra_cover_code,
                     'description' => $extra_cover->description,
                     'sum_insured' => $extra_cover->sum_insured,
                     'amount' => $extra_cover->total_payable,
@@ -421,27 +431,29 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             }
 
             // 7. Update or Insert to Insurance Motor PA Table
-            // 8. Update or Insert to Insurance Motor Roadtax Table
-            InsuranceMotorRoadtax::updateOrCreate([
-                'insurance_id' => $insurance->id
-            ], [
-                'roadtax_delivery_region_id',
-                'roadtax_renewal_fee',
-                'e_service_fee',
-                'tax',
-                'issued',
-                'tracking_code',
-                'admin_charge',
-                'success',
-                'active',
-            ]);
+            // // 8. Update or Insert to Insurance Motor Roadtax Table
+            // if(!empty()) {
+            //     InsuranceMotorRoadtax::updateOrCreate([
+            //         'insurance_id' => $insurance->id
+            //     ], [
+            //         'roadtax_delivery_region_id',
+            //         'roadtax_renewal_fee',
+            //         'e_service_fee',
+            //         'tax',
+            //         'issued',
+            //         'tracking_code',
+            //         'admin_charge',
+            //         'success',
+            //         'active',
+            //     ]);
+            // }
 
-            // 9a. Delete Existing Records
-            InsuranceMotorDriver::where('insurance_id', $insurance->id)->delete();
-            // 9. Update or Insert to Insurance Motor Driver Table
+            // 9. Delete Existing Records
+            InsuranceMotorDriver::where('insurance_motor_id', $insurance_motor->id)->delete();
+            // 9a. Update or Insert to Insurance Motor Driver Table
             foreach($input->additional_driver as $additional_driver) {
                 InsuranceMotorDriver::create([
-                    'insurance_id' => $insurance->id,
+                    'insurance_motor_id' => $insurance_motor->id,
                     'name' => $additional_driver->name,
                     'id_number' => $additional_driver->id_number,
                 ]);
@@ -458,7 +470,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
                 'service_tax_amount' => number_format($quotation->sst_amount, 2, '.', ''),
                 'stamp_duty' => number_format($quotation->stamp_duty, 2, '.', ''),
                 'total_premium' => number_format($quotation->total_payable, 2, '.', ''),
-                'remarks'
+                'remarks' => '',
             ]);
 
             // 11. Insert to Insurance Remarks Table
@@ -486,7 +498,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             }
 
             InsuranceExtraAttribute::updateOrCreate([
-                'insurance_id' => $input->insurance->id
+                'insurance_id' => $insurance->id
             ], [
                 'value' => json_encode($input->vehicle->extra_attribute)
             ]);
@@ -497,10 +509,12 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             $quotation->insurance_company = $product->insurance_company->name;
             $quotation->product_name = $product->name;
 
-            return new QuotationResponse([
+            $quote = new QuotationResponse([
                 'insurance_code' => $insurance_code,
                 'quotation' => json_decode(json_encode($quotation), true),
             ]);
+
+            return $quote->all();
         } catch (Exception $ex) {
             Log::error("[API/CreateQuotation] An Error Encountered. {$ex->getMessage()}");
             DB::rollBack();
@@ -686,19 +700,5 @@ class MotorAPIController extends Controller implements MotorAPIInterface
         return Product::with('insurance_company')
             ->where('id', $product_id)
             ->firstOrFail();
-    }
-
-    private function getNCDPercentage($current_ncd) : object
-    {
-        $ncd = [0, 25, 30, 38.33, 45, 55];
-
-        $previous_ncd = $ncd[array_search($current_ncd, $ncd) - 1];
-        $next_ncd = $ncd[array_search($current_ncd, $ncd) + 1];
-
-        return (object) [
-            'current' => $current_ncd,
-            'previous' => $previous_ncd,
-            'next' => $next_ncd
-        ];
     }
 }
