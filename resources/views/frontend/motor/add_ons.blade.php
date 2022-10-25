@@ -199,6 +199,7 @@
                                 <input type="hidden" id="motor" name="motor" value='@json(session('motor'))' />
                                 <input type="hidden" id="selected-extra-coverage" name="selected_extra_coverage" />
                                 <input type="hidden" id="h-additional-drivers" name="additional_drivers" />
+                                <input type="hidden" id="h-roadtax" name="roadtax" />
                             </div>
                         </form>
                     </div>
@@ -403,13 +404,14 @@
         }).then((res) => {
             console.log(res);
 
+            $('#h-roadtax').val(JSON.stringify(res.data));
+
             // Update Pricing Display
             $('#roadtax-price-display').removeClass('loadingButton').text(`RM ${formatMoney(res.data.roadtax_price)}`);
             $('#myeg-fee-display').removeClass('loadingButton').text(`RM ${formatMoney(res.data.myeg_fee)}`);
             $('#eservice-fee-display').removeClass('loadingButton').text(`RM ${formatMoney(res.data.eservice_fee)}`);
             $('#delivery-fee-display').removeClass('loadingButton').text(`RM ${formatMoney(res.data.delivery_fee)}`);
             $('#service-tax-display').removeClass('loadingButton').text(`RM ${formatMoney(res.data.sst)}`);
-
 
             // Update Pricing Card
             $('#road-tax').text(`RM ${formatMoney(res.data.total)}`);

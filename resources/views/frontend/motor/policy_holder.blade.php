@@ -127,7 +127,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                @if ()
+                                @if (!empty(session('motor')->roadtax))
                                     <div id="delivery-info">
                                         <div class="row mt-3">
                                             <div class="col-12 col-sm-3"></div>

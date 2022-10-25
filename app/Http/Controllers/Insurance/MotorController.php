@@ -248,6 +248,10 @@ class MotorController extends Controller
             $session->additional_drivers = $request->additional_drivers;
         }
 
+        if(!empty($request->roadtax)) {
+            $session->roadtax = $request->roadtax;
+        }
+
         $request->session()->put('motor', $session);
 
         return redirect()->route('motor.policy-holder');
