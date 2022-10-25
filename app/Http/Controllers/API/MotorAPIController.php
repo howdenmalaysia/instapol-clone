@@ -524,12 +524,12 @@ class MotorAPIController extends Controller implements MotorAPIInterface
 
         // 3. Get Delivery Fee
         if($region === 'East') {
-            $delivery_fee = RoadtaxDeliveryType::where('description', RoadtaxDeliveryType::EM)->first()->processing_fee;
+            $delivery_fee = RoadtaxDeliveryType::where('description', RoadtaxDeliveryType::EM)->first();
         } else {
             if((int) $request->postcode >= 40000 && (int) $request->postcode <= 68100) {
-                $delivery_fee = RoadtaxDeliveryType::where('description', RoadtaxDeliveryType::KV)->first()->processing_fee;
+                $delivery_fee = RoadtaxDeliveryType::where('description', RoadtaxDeliveryType::KV)->first();
             } else {
-                $delivery_fee = RoadtaxDeliveryType::where('description', RoadtaxDeliveryType::OTHERS)->first()->processing_fee;
+                $delivery_fee = RoadtaxDeliveryType::where('description', RoadtaxDeliveryType::OTHERS)->first();
             }
         }
 
@@ -541,13 +541,13 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             $roadtax_price += formatNumber($additional_engine_capacity) * formatNumber($roadtax->progressive_rate);
         }
 
-        $e_service_fee = (formatNumber($roadtax_price) + 9.28) * 0.02;
+        $e_service_fee = (formatNumber($roadtax_price) + formatNumber($delivery_fee->processing_fee)) * 0.02;
         $sst = $e_service_fee * 0.06;
-        $total = formatNumber($roadtax_price) + formatNumber($e_service_fee) + formatNumber($delivery_fee) + formatNumber($sst) + 9.28;
+        $total = formatNumber($roadtax_price) + formatNumber($e_service_fee) + formatNumber($delivery_fee) + formatNumber($sst) + formatNumber($delivery_fee->processing_fee);
 
         $response = new RoadtaxResponse([
             'roadtax_price' => formatNumber($roadtax_price),
-            'myeg_fee' => 9.28,
+            'myeg_fee' => formatNumber($delivery_fee->processing_fee),
             'eservice_fee' => formatNumber($e_service_fee),
             'delivery_fee' => formatNumber($delivery_fee),
             'sst' => formatNumber($sst),
