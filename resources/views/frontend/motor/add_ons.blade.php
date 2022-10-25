@@ -196,7 +196,8 @@
                                 </div>
                             </div>
                             <div class="hidden">
-                                <input type="hidden" id="motor" name="motor" value='@json(session('motor'))'>
+                                <input type="hidden" id="motor" name="motor" value='@json(session('motor'))' />
+                                <input type="hidden" id="selected-extra-coverage" name="selected_extra_coverage" />
                             </div>
                         </form>
                     </div>
@@ -300,7 +301,32 @@
         });
 
         $('#btn-next').on('click', () => {
-            $('#add-ons-form').submit();
+            let selected_extra_cover = []
+
+            $('.extra-coverage-checkbox:checked').each((index, element) => {
+                selected_extra_cover.push({
+                    extra_cover_code: $(element).val(),
+                    sum_insured: $(`#sum-insured-${$(element).val()}`).val()
+                })
+            });
+
+            $('#selected-extra-coverage').val(JSON.stringify(selected_extra_cover));
+
+            if(!$('#roadtax-checkbox').is(':checked')) {
+                swalAlert("{{ __('frontend.modal.forget_road_tax') }}", (result) => {
+                    if(result.isConfirmed) {
+                        $('#roadtax-checkbox').attr('checked', true);
+                    } else {
+                        $('#add-ons-form').submit();
+                    }
+                }, true, 'warning', "{{ __('frontend.button.yes_i_want') }}");
+            } else {
+                $('#add-ons-form').submit();
+            }
+        });
+
+        $('.option-list').on('change', (e) => {
+            $(`#checkbox-${$(e.target).data('extra-cover-code')}`).trigger('change');
         });
     });
 
