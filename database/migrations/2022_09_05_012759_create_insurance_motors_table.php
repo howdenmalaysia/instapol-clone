@@ -30,7 +30,7 @@ class CreateInsuranceMotorsTable extends Migration
             $table->string('nvic');
             $table->string('variant');
             $table->decimal('ncd_percantage', 4);
-            $table->decimal('ncd_amount', 4);
+            $table->decimal('ncd_amount', 6);
             $table->decimal('previous_ncd_percentage', 4);
             $table->decimal('next_ncd_percentage', 4);
             $table->date('previous_inception_date');
