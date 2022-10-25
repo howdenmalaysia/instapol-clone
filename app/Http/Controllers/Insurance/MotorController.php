@@ -282,22 +282,24 @@ class MotorController extends Controller
             return redirect()->route('motor.index');
         }
 
+        $motor = json_decode($request->motor);
+
         $data = (object) [
-            'insurance_code' => $request->motor->insurance_code,
-            'vehicle_number' => $request->motor->vehicle_number,
-            'vehicle' => $request->motor->vehicle,
-            'variants' => $request->motor->variants,
+            'insurance_code' => $motor->insurance_code,
+            'vehicle_number' => $motor->vehicle_number,
+            'vehicle' => $motor->vehicle,
+            'variants' => $motor->variants,
             'product_type_id' => Product::TYPE_MOTOR,
-            'postcode' => $request->motor->postcode,
+            'postcode' => $motor->postcode,
             'policy_holder' => (object) [
-                'id_type' => $request->motor->policy_holder->id_type,
-                'id_number' => formatIC($request->motor->policy_holder->id_number),
-                'email' => $request->email ?? $request->motor->policy_holder->email,
-                'phone_number' => '0' . ($request->phone_number ?? $request->motor->policy_holder->phone_number),
-                'date_of_birth' => formatDateFromIC($request->motor->policy_holder->id_number),
-                'gender' => $request->motor->policy_holder->gender,
-                'marital_status' => $request->motor->policy_holder->marital_status,
-                'driving_experience' => $request->motor->policy_holder->driving_experience,
+                'id_type' => $motor->policy_holder->id_type,
+                'id_number' => formatIC($motor->policy_holder->id_number),
+                'email' => $request->email ?? $motor->policy_holder->email,
+                'phone_number' => '0' . ($request->phone_number ?? $motor->policy_holder->phone_number),
+                'date_of_birth' => formatDateFromIC($motor->policy_holder->id_number),
+                'gender' => $motor->policy_holder->gender,
+                'marital_status' => $motor->policy_holder->marital_status,
+                'driving_experience' => $motor->policy_holder->driving_experience,
                 'name' => $request->name,
                 'address_1' => $request->address_1,
                 'address_2' => $request->address_2,
