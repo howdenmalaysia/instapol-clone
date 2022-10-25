@@ -215,6 +215,41 @@ class MotorController extends Controller
         ]);
     }
 
+    public function addOns_POST(Request $request)
+    {
+        if(empty($request->session()->get('motor'))) {
+            return redirect()->route('motor.index');
+        }
+
+        $session = $request->session()->get('motor');
+
+        if(!empty($request->selected_extra_coverage)) {
+            $selected_extra_cover = [];
+            
+            foreach($request->selected_extra_cover as $selected) {
+                foreach($session->motor->extra_cover_list as $extra_cover) {
+                    if($extra_cover->extra_cover_code === $selected->extra_cover_code) {
+                        array_push($selected_extra_cover, (object) [
+                            'sum_insured' => $selected->sum_insured ?? $extra_cover->sum_insured,
+                            'description' => $extra_cover->extra_cover_description,
+                            'code' => $selected->extra_cover_code
+                        ]);
+                    }
+                }
+            }
+
+            $session->selected_extra_coverage = $selected_extra_cover;
+        }
+
+        if(!empty($request->additional_driver)) {
+            $session->additional_drivers = $request->additional_drivers;
+        }
+
+        $request->session()->put('motor', $session);
+
+        return redirect()->route('motor.policy-holder');
+    }
+
     public function policyHolder(Request $request)
     {
         if(empty($request->session()->get('motor'))) {
