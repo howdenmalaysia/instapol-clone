@@ -23,7 +23,7 @@ class InsuranceMotor extends Model
         'market_value',
         'nvic',
         'variant',
-        'ncd_percantage',
+        'ncd_percentage',
         'ncd_amount',
         'previous_ncd_percentage',
         'next_ncd_percentage',
