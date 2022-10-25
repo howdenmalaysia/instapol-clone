@@ -9,7 +9,7 @@ class VIXNCDResponse extends DataTransferObject
     /** @var string|null */
     public $built_type;
     
-    /** @var string|null */
+    /** @var int|null */
     public $body_type_code;
     
     /** @var string|null */
