@@ -609,6 +609,7 @@ return [
         ],
         'policy_holder_page' => [
             'policy_holder_details' => 'Policy Holder Details',
+            'edit_personal_detail' => 'Edit Personal Detail',
         ],
         'payment_summary_page' => [
             'summary' => 'Summary',
