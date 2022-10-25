@@ -83,4 +83,9 @@ class Insurance extends Model
     {
         return $this->hasMany(InsuranceRemark::class);
     }
+
+    public static function findByInsuranceCode(string $insurance_code) : self
+    {
+        return self::where('insurance_code', $insurance_code)->first();
+    }
 }
