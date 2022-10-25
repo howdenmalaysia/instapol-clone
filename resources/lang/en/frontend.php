@@ -497,6 +497,8 @@ return [
         'coming_soon' => 'Coming Soon',
         'how' => 'How',
         'select' => 'Please Select',
+        'no' => 'No',
+        'yes' => 'Yes',
     ],
     'motor' => [
         'compare' => 'Compare',
@@ -525,6 +527,7 @@ return [
             'buy' => 'Buy'
         ],
         'vehicle_details' => [
+            'vehicle_details' => 'Vehicle Details',
             'want_best_quote' => 'You want the best quotes for:',
             'insurance_information' => 'Your insurance information',
             'car_number' => 'Car Number',
@@ -539,7 +542,11 @@ return [
             'next_coverage_period' => 'Next Coverage Period',
             'my_vehicle_information' => 'Yes! This is my vehicle information',
             'need_assistance' => 'I need assistance',
-            'select_car_specs' => 'Please Select Your Car Spec'
+            'select_car_specs' => 'Please Select Your Car Spec',
+            'chassis_number' => 'Chassis Number',
+            'engine_number' => 'Engine Number',
+            'seating_capacity' => 'Seating Capacity',
+            'nvic' => 'NVIC'
         ],
         'compare_page' => [
             'scroll_down' => 'Scroll down for our highlights of the policies on offer.',
@@ -636,7 +643,9 @@ return [
         'compare' => 'Compare',
         'show_more' => 'Show More',
         'show_less' => 'Show Less',
-        'close' => 'Close'
+        'close' => 'Close',
+        'yes_i_want' => 'Yes, I want',
+        'edit' => 'Edit'
     ],
     'fields' => [
         'name' => 'Name',
@@ -654,6 +663,7 @@ return [
     ],
     'modal' => [
         'appreciate_your_patience' => 'We appreciate your patience!',
+        'forget_road_tax' => 'Are you forgetting your road tax? We can help you to process your road tax as well!'
     ],
     'price_card' => [
         'basic_premium' => 'Basic Premium / Contribution',
