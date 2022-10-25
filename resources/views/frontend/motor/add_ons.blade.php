@@ -362,7 +362,7 @@
 
             // Update Pricing Card
             $('#road-tax').text(`RM ${formatMoney(res.data.total)}`);
-            $('#total-payable').text(`RM ${formatMoney(parseFloat(res.data.total) + parseFloat($('#total-payable').text().replace(',', '')))}`)
+            $('#total-payable').text(`RM ${formatMoney(parseFloat(res.data.total))}`);
         }).catch((err) => {
             console.log(err.response);
         });
