@@ -9,6 +9,7 @@ use App\Models\Motor\InsuranceCompany;
 use App\Models\Motor\Product;
 use App\Models\Motor\Quotation;
 use App\Models\Relationship;
+use App\Models\State;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -214,6 +215,23 @@ class MotorController extends Controller
         ]);
     }
 
+    public function policyHolder(Request $request)
+    {
+        if(empty($request->session()->get('motor'))) {
+            return redirect()->route('motor.index');
+        }
+
+        $session = $request->session()->get('motor');
+        $product = Product::find($session->product_id);
+        $states = State::all('name');
+
+        return view('frontend.motor.policy_holder')->with([
+            'premium' => $session->premium,
+            'product' => $product,
+            'states' => $states
+        ]);
+    }
+
     public function compareDetail(Request $request)
     {
 
@@ -256,7 +274,6 @@ class MotorController extends Controller
                 'policy_expiry_date' => !empty($inception_date) ? $inception_date->subDay()->format('Y-m-d') : '',
             ]);
         }
-
 
         $quote = new QuotationData([
             'vehicle_postcode' => $motor->postcode ?? '',
