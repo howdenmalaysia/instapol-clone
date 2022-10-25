@@ -127,15 +127,15 @@
                                         </select>
                                     </div>
                                 </div>
+                                <div class="row mt-3">
+                                    <div class="col-12 col-sm-3"></div>
+                                    <div class="col-12 col-sm-9">
+                                        <input type="checkbox" id="use-same-address" class="form-check-input col-3" name="use_same_address" />
+                                        <label for="use-same-address" class="form-check-label col-9">{{ __('frontend.motor.policy_holder_page.use_same_address') }}</label>
+                                    </div>
+                                </div>
                                 @if (!empty(session('motor')->roadtax))
                                     <div id="delivery-info">
-                                        <div class="row mt-3">
-                                            <div class="col-12 col-sm-3"></div>
-                                            <div class="col-12 col-sm-9">
-                                                <input type="checkbox" id="use-same-address" class="form-check-input col-3" name="use_same_address" />
-                                                <label for="use-same-address" class="form-check-label col-9">{{ __('frontend.motor.policy_holder_page.use_same_address') }}</label>
-                                            </div>
-                                        </div>
                                         <div class="row mt-3">
                                             <div class="col-12 col-sm-3">
                                                 <label for="delivery-recipient" class="col-form-label">{{ __('frontend.fields.recipient_name') }}</label>
