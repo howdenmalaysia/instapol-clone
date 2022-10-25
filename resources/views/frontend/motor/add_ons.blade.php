@@ -200,8 +200,8 @@
                         </form>
                     </div>
                     <div class="d-flex justify-content-between mt-3">
-                        <button type="button" class="btn btn-link text-dark fw-bold">{{ __('frontend.button.back') }}</button>
-                        <button type="button" class="btn btn-primary text-white rounded">{{ __('frontend.button.next') }}</button>
+                        <button type="button" id="btn-back" class="btn btn-link text-dark fw-bold">{{ __('frontend.button.back') }}</button>
+                        <button type="button" id="btn-next" class="btn btn-primary text-white rounded">{{ __('frontend.button.next') }}</button>
                     </div>
                 </div>
             </div>
@@ -294,6 +294,12 @@
             }
         });
 
+        $('#btn-back').on('click', () => {
+            window.history.back();
+        });
+
+        $('#btn-next').on('click', () => {
+            $('#add-ons-form').submit();
         });
     });
 
