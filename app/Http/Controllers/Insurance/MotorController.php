@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Motor\InsuranceCompany;
 use App\Models\Motor\Product;
 use App\Models\Motor\Quotation;
+use App\Models\Postcode;
 use App\Models\Relationship;
 use App\Models\State;
 use Carbon\Carbon;
@@ -226,8 +227,8 @@ class MotorController extends Controller
         if(!empty($request->selected_extra_coverage)) {
             $selected_extra_cover = [];
             
-            foreach($request->selected_extra_coverage as $selected) {
-                foreach($session->motor->extra_cover_list as $extra_cover) {
+            foreach(json_decode($request->selected_extra_coverage) as $selected) {
+                foreach($session->extra_cover_list as $extra_cover) {
                     if($extra_cover->extra_cover_code === $selected->extra_cover_code) {
                         array_push($selected_extra_cover, (object) [
                             'sum_insured' => $selected->sum_insured ?? $extra_cover->sum_insured,
@@ -259,11 +260,13 @@ class MotorController extends Controller
         $session = $request->session()->get('motor');
         $product = Product::find($session->product_id);
         $states = State::all('name');
+        $city = Postcode::with(['state'])->where('postcode', $session->postcode)->first();
 
         return view('frontend.motor.policy_holder')->with([
             'premium' => $session->premium,
             'product' => $product,
-            'states' => $states
+            'states' => $states,
+            'city' => $city,
         ]);
     }
 
