@@ -92,7 +92,7 @@ class APIData extends DataTransferObject
     public $address_one;
 
     /** @var string|null */
-    public $adddress_two;
+    public $address_two;
 
     /** @var string|null */
     public $city;
