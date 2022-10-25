@@ -22,6 +22,7 @@
                 <div class="col-12 col-lg-8">
                     <div class="card border">
                         <form action="{{ route('motor.add-ons') }}" method="POST" id="add-ons-form">
+                            @csrf
                             <div class="card-body">
                                 <h3 class="card-title fw-bold border-bottom pb-4 px-md-3 mt-3">{{ __('frontend.motor.add_ons_page.sum_insured_amount') }}</h3>
                                 <div class="py-4 px-md-3" data-bs-toggle="tooltip" data-bs-placement="top" title="RM 69,000">

@@ -22,6 +22,7 @@
                 <div class="col-12 col-lg-8">
                     <div class="card border">
                         <form action="{{ route('motor.policy-holder') }}" method="POST" id="policy-holder-form" data-parsley-validate>
+                            @csrf
                             <div class="card-body">
                                 <h3 class="card-title fw-bold border-bottom pb-4 px-md-3 mt-3">Policy Holder Details</h3>
                                 <div class="row">
