@@ -113,7 +113,7 @@
                                         </div>
                                         <div class="row info px-md-3">
                                             <div class="col-4">
-                                                <label for="additional-driver-name" class="form-label">{{ __('frontend.fields.name') }}</label>
+                                                <label for="additional-driver-name" class="form-label uppercase">{{ __('frontend.fields.name') }}</label>
                                                 <input type="text" id="additional-driver-name" class="form-control" />
                                             </div>
                                             <div class="col-4">
@@ -198,6 +198,7 @@
                             <div class="hidden">
                                 <input type="hidden" id="motor" name="motor" value='@json(session('motor'))' />
                                 <input type="hidden" id="selected-extra-coverage" name="selected_extra_coverage" />
+                                <input type="hidden" id="h-additional-drivers" name="additional_drivers" />
                             </div>
                         </form>
                     </div>
@@ -303,6 +304,7 @@
         $('#btn-next').on('click', () => {
             let selected_extra_cover = []
 
+            // Consolidate Add Ons
             $('.extra-coverage-checkbox:checked').each((index, element) => {
                 selected_extra_cover.push({
                     extra_cover_code: $(element).val(),
@@ -311,6 +313,18 @@
             });
 
             $('#selected-extra-coverage').val(JSON.stringify(selected_extra_cover));
+
+            // Consolidate Additional Drivers
+            let additional_driver = [];
+            $('.info').each((index, element) => {
+                additional_driver.push({
+                    driver_name: $(element).find('#additional-driver-name').val(),
+                    driver_id_number: $(element).find('#additional-driver-id-number').val(),
+                    driver_relationship: $(element).find('#additional-driver-relationship').val()
+                })
+            });
+
+            $('#h-additional-driver').val(JSON.stringify(additional_driver));
 
             if(!$('#roadtax-checkbox').is(':checked')) {
                 swalAlert("{{ __('frontend.modal.forget_road_tax') }}", (result) => {
