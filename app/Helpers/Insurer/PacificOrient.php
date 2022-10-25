@@ -408,7 +408,7 @@ class PacificOrient implements InsurerLibraryInterface
             'sst_amount' => $quotation->response->sst_amount,
             'sst_percent' => $quotation->response->sst_percent,
             'stamp_duty' => $quotation->response->stamp_duty,
-            'total_benefit_amount' => $quotation->total_benefit_amount,
+            'total_benefit_amount' => $quotation->response->total_benefit_amount,
             'total_payable' => $quotation->response->total_payable,
             'request_id' => $quotation->response->requestId,
             'loading' => $quotation->response->loading,
