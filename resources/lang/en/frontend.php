@@ -610,6 +610,28 @@ return [
         'policy_holder_page' => [
             'policy_holder_details' => 'Policy Holder Details',
             'edit_personal_detail' => 'Edit Personal Detail',
+            'use_same_address' => 'Use address above for delivery purpose',
+            'recipient_tooltip' => 'The name of the person who is receiving road tax disc delivery',
+            'placeholders' => [
+                'address_one' => 'Address Line 1',
+                'address_two' => 'Address Line 2 (Optional)'
+            ],
+            'error_messages' => [
+                'required' => [
+                    'name' => 'Please enter your name',
+                    'email' => 'Please enter your email address',
+                    'phone_number' => 'Please enter your phone number',
+                    'address' => 'Please enter your address',
+                    'delivery_postcode' => 'Please enter the postcode for the road tax disc delivery',
+                    'delivery_city' => 'Please enter the city for the road tax disc delivery',
+                    'delivery_state' => 'Please enter the state for the road tax disc delivery'
+                ],
+                'valid' => [
+                    'name' => 'Please enter a valid name',
+                    'email' => 'Please enter a valid email address',
+                    'phone_number' => 'Please enter a valid phone number'
+                ]
+            ]
         ],
         'payment_summary_page' => [
             'summary' => 'Summary',
@@ -661,6 +683,7 @@ return [
         'postcode' => 'Postcode',
         'city' => 'City',
         'state' => 'State',
+        'recipient_name' => 'Recipient Name'
     ],
     'modal' => [
         'appreciate_your_patience' => 'We appreciate your patience!',
