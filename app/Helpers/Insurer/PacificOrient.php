@@ -414,8 +414,8 @@ class PacificOrient implements InsurerLibraryInterface
             'loading' => $quotation->response->loading,
             'sum_insured' => $quotation->response->sum_insured,
             'sum_insured_type' => $input->vehicle->sum_insured_type,
-            'min_sum_insured' => $input->vehicle->min_sum_insured,
-            'max_sum_insured' => $input->vehicle->max_sum_insured,
+            'min_sum_insured' => floatval($input->vehicle->min_sum_insured),
+            'max_sum_insured' => floatval($input->vehicle->max_sum_insured),
             'named_drivers_needed' => false,
         ]);
     }
