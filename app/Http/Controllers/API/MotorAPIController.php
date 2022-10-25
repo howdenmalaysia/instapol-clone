@@ -513,8 +513,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
         $region = Postcode::with(['state'])->findOrFail($request->postcode)->first()->state->region;
 
         // 2. Get Roadtax Matrix
-        $roadtax = RoadTaxMatrix::where('engine_capacity_from', '>=', $request->engine_capacity)
-            ->where('engine_capacity_to', '<=', $request->engine_capacity)
+        $roadtax = RoadTaxMatrix::whereRaw('? BETWEEN engine_capacity_from AND engine_capacity_to', $request->engine_capacity)
             ->where('region', $region)
             ->where(function($query) use($request) {
                 $query->where('registration_type', $request->id_type === config('setting.id_type.nric_no') ? 'Individual' : 'Company');
@@ -537,14 +536,14 @@ class MotorAPIController extends Controller implements MotorAPIInterface
         // 4. Calculation
         $roadtax_price = formatNumber($roadtax->base_rate);
         if(!empty($roadtax->progressive_rate)) {
-            $additional_engine_capacity = abs(intval($request->engine_capacity) - intval($roadtax->engine_capacity_from)) + 1;
+            $additional_engine_capacity = abs(intval($request->engine_capacity) - (intval($roadtax->engine_capacity_from) - 1));
 
-            $roadtax_price += floatval($additional_engine_capacity) * floatval($roadtax->progressive_rate);
+            $roadtax_price += formatNumber($additional_engine_capacity) * formatNumber($roadtax->progressive_rate);
         }
 
-        $e_service_fee = (floatval($roadtax_price) + 9.28) * 0.02;
+        $e_service_fee = (formatNumber($roadtax_price) + 9.28) * 0.02;
         $sst = $e_service_fee * 0.06;
-        $total = floatval($roadtax_price) + floatval($e_service_fee) + floatval($delivery_fee) + floatval($sst) + 9.28;
+        $total = formatNumber($roadtax_price) + formatNumber($e_service_fee) + formatNumber($delivery_fee) + formatNumber($sst) + 9.28;
 
         $response = new RoadtaxResponse([
             'roadtax_price' => formatNumber($roadtax_price),
