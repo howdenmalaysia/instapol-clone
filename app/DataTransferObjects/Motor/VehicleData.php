@@ -40,7 +40,7 @@ class VehicleData extends DataTransferObject
     /** @var string */
     public $chassis_number;
     
-    /** @var float */
+    /** @var float|int */
     public $market_value = 0.00;
     
     /** @var float */
@@ -82,10 +82,10 @@ class VehicleData extends DataTransferObject
     /** @var string */
     public $assembly_type_code = '';
     
-    /** @var float */
+    /** @var float|int */
     public $min_market_value = 0.00;
     
-    /** @var float */
+    /** @var float|int */
     public $max_market_value = 0.00;
     
     /** @var string */
