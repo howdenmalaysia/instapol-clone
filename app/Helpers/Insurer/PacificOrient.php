@@ -397,27 +397,30 @@ class PacificOrient implements InsurerLibraryInterface
             return $this->abort($quotation->response);
         }
 
-        return new PremiumResponse([
-            'act_premium' => $quotation->response->act_premium,
-            'basic_premium' => $quotation->response->basic_premium,
-            'excess_amount' => $quotation->response->excess_amount,
-            'extra_cover' => $this->sortExtraCoverList($input->extra_cover),
-            'gross_premium' => $quotation->response->gross_premium,
-            'ncd_amount' => $quotation->response->ncd_amount,
-            'net_premium' => $quotation->response->net_premium,
-            'sst_amount' => $quotation->response->sst_amount,
-            'sst_percent' => $quotation->response->sst_percent,
-            'stamp_duty' => $quotation->response->stamp_duty,
-            'total_benefit_amount' => $quotation->response->total_benefit_amount,
-            'total_payable' => $quotation->response->total_payable,
-            'request_id' => $quotation->response->request_id,
-            'loading' => $quotation->response->loading,
-            'sum_insured' => $quotation->response->sum_insured,
-            'sum_insured_type' => $input->vehicle->sum_insured_type,
-            'min_sum_insured' => floatval($input->vehicle->min_sum_insured),
-            'max_sum_insured' => floatval($input->vehicle->max_sum_insured),
-            'named_drivers_needed' => false,
-        ]);
+        return (object) [
+            'status' => true,
+            'response' => new PremiumResponse([
+                'act_premium' => $quotation->response->act_premium,
+                'basic_premium' => $quotation->response->basic_premium,
+                'excess_amount' => $quotation->response->excess_amount,
+                'extra_cover' => $this->sortExtraCoverList($input->extra_cover),
+                'gross_premium' => $quotation->response->gross_premium,
+                'ncd_amount' => $quotation->response->ncd_amount,
+                'net_premium' => $quotation->response->net_premium,
+                'sst_amount' => $quotation->response->sst_amount,
+                'sst_percent' => $quotation->response->sst_percent,
+                'stamp_duty' => $quotation->response->stamp_duty,
+                'total_benefit_amount' => $quotation->response->total_benefit_amount,
+                'total_payable' => $quotation->response->total_payable,
+                'request_id' => $quotation->response->request_id,
+                'loading' => $quotation->response->loading,
+                'sum_insured' => $quotation->response->sum_insured,
+                'sum_insured_type' => $input->vehicle->sum_insured_type,
+                'min_sum_insured' => floatval($input->vehicle->min_sum_insured),
+                'max_sum_insured' => floatval($input->vehicle->max_sum_insured),
+                'named_drivers_needed' => false,
+            ])
+        ];
     }
 
     public function submission(object $input) : object
