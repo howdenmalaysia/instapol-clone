@@ -410,7 +410,7 @@ class PacificOrient implements InsurerLibraryInterface
             'stamp_duty' => $quotation->response->stamp_duty,
             'total_benefit_amount' => $quotation->response->total_benefit_amount,
             'total_payable' => $quotation->response->total_payable,
-            'request_id' => $quotation->response->requestId,
+            'request_id' => $quotation->response->request_id,
             'loading' => $quotation->response->loading,
             'sum_insured' => $quotation->response->sum_insured,
             'sum_insured_type' => $input->vehicle->sum_insured_type,
