@@ -311,6 +311,8 @@ class MotorController extends Controller
 
         $this->updateQuotation($data);
 
+        $request->session()->put('motor', $motor);
+
         return redirect()->route('motor.payment-summary');
     }
 
