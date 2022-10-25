@@ -211,15 +211,22 @@
             <x-modal maxWidth="md" id="body-type-modal" headerClass="bg-primary text-white">
                 <x-slot name="title">{{ __('frontend.motor.add_ons_page.body_type_modal.header') }}</x-slot>
                 <x-slot name="body">
-                    <div class="form-check">
+                    <div class="form-check border-bottom">
                         <input type="radio" id="saloon" class="form-check-input" name="modal_body_type" value="saloon" />
                         <label for="saloon" class="form-check-label">{{ __('frontend.motor.add_ons_page.body_type_modal.saloon') }}</label>
                         <small>{{ __('frontend.motor.add_ons_page.body_type_modal.saloon_description') }}</small>
                     </div>
-                    <div class="form-check">
+                    <div class="form-check border-bottom">
                         <input type="radio" id="non-saloon" class="form-check-input" name="modal_body_type" value="non-saloon" />
                         <label for="non-saloon" class="form-check-label">{{ __('frontend.motor.add_ons_page.body_type_modal.non_saloon') }}</label>
                         <small>{{ __('frontend.motor.add_ons_page.body_type_modal.non_saloon_description') }}</small>
+                    </div>
+                    <div id="assistance">
+                        <p>{{ __('frontend.motor.add_ons_page.body_type_modal.need_assisstance') }}</p>
+                        <span>
+                            <p>{{ __('frontend.motor.add_ons_page.body_type_modal.contact_us') }}</p>
+                            <a href="mailto:instapol@my.howdengroup.com"> {{ config('setting.customer_service.email') }}</a>
+                        </span>
                     </div>
                 </x-slot>
             </x-modal>
