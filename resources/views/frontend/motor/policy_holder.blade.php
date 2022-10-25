@@ -24,11 +24,11 @@
                         <form action="{{ route('motor.policy-holder') }}" method="POST" id="policy-holder-form" data-parsley-validate>
                             @csrf
                             <div class="card-body">
-                                <h3 class="card-title fw-bold border-bottom pb-4 px-md-3 mt-3">Policy Holder Details</h3>
+                                <h3 class="card-title fw-bold border-bottom pb-4 px-md-3 mt-3">{{ __('frontend.motor.policy_holder_page.policy_holder_details') }}</h3>
                                 <div class="row">
-                                    <label class="col-form-label col-12 col-sm-3">Name</label>
+                                    <label class="col-form-label col-12 col-sm-3">{{ __('frontend.fields.name') }}</label>
                                     <div class="col-12 col-md-9">
-                                        <input type="text" id="policy-holder-name" class="form-control" name="name"
+                                        <input type="text" id="policy-holder-name" class="form-control uppercase" name="name"
                                             required
                                             data-parsley-pattern="[a-z A-Z&@',\/]{6,}"
                                             data-parsley-required-message="Please enter your name"
@@ -37,7 +37,7 @@
                                     </div>
                                 </div>
                                 <div class="row mt-3">
-                                    <label class="col-form-label col-12 col-sm-3">ID Type</label>
+                                    <label class="col-form-label col-12 col-sm-3">{{ __('frontend.fields.id_type') }}</label>
                                     <div class="col-12 col-md-9">
                                         <select name="id_type" id="id-type" class="form-control" disabled required data-parsley-error-messages-disabled>
                                             <option value=""></option>
@@ -47,13 +47,13 @@
                                     </div>
                                 </div>
                                 <div class="row mt-3">
-                                    <label class="col-form-label col-12 col-sm-3">ID Number</label>
+                                    <label class="col-form-label col-12 col-sm-3">{{ __('frontend.fields.id_number') }}</label>
                                     <div class="col-12 col-md-9">
                                         <input type="text" id="policy-holder-id-number" class="form-control" name="id_number" disabled />
                                     </div>
                                 </div>
                                 <div class="row mt-3">
-                                    <label class="col-form-label col-12 col-sm-3">Email</label>
+                                    <label class="col-form-label col-12 col-sm-3">{{ __('frontend.fields.email') }}</label>
                                     <div class="col-12 col-md-9">
                                         <input type="email" id="policy-holder-email" class="form-control" name="email"
                                             required
@@ -63,13 +63,13 @@
                                     </div>
                                 </div>
                                 <div class="row mt-3">
-                                    <label class="col-form-label col-12 col-sm-3">Date of Birth</label>
+                                    <label class="col-form-label col-12 col-sm-3">{{ __('frontend.fields.dob') }}</label>
                                     <div class="col-12 col-md-9">
                                         <input type="text" id="policy-holder-dob" class="form-control" name="date_of_birth" disabled />
                                     </div>
                                 </div>
                                 <div class="row mt-3">
-                                    <label class="col-form-label col-12 col-sm-3">Gender</label>
+                                    <label class="col-form-label col-12 col-sm-3">{{ __('frontend.fields.gender') }}</label>
                                     <div class="col-12 col-md-9">
                                         <select name="gender" id="policy-holder-gender" class="form-control" disabled>
                                             <option value=""></option>
@@ -79,7 +79,7 @@
                                     </div>
                                 </div>
                                 <div class="row mt-3">
-                                    <label class="col-form-label col-12 col-sm-3">Phone Number</label>
+                                    <label class="col-form-label col-12 col-sm-3">{{ __('frontend.fields.phone_number') }}</label>
                                     <div class="col-12 col-md-9">
                                         <div class="input-group">
                                             <span class="input-group-text" id="country-code">+60</span>
@@ -93,29 +93,29 @@
                                     </div>
                                 </div>
                                 <div class="row mt-3">
-                                    <label class="col-form-label col-12 col-sm-3">Address</label>
+                                    <label class="col-form-label col-12 col-sm-3">{{ __('frontend.fields.address') }}</label>
                                     <div class="col-12 col-md-9">
-                                        <input type="text" id="policy-holder-address-1" class="form-control" name="address_1" placeholder="Address line 1"
+                                        <input type="text" id="policy-holder-address-1" class="form-control uppercase" name="address_1" placeholder="Address line 1"
                                             required
                                             data-parsley-required-message="Please enter your address"
                                         />
-                                        <input type="text" id="policy-holder-address-2" class="form-control mt-2" name="address_2" placeholder="Address line 2 (Optional)" />
+                                        <input type="text" id="policy-holder-address-2" class="form-control mt-2 uppercase" name="address_2" placeholder="Address line 2 (Optional)" />
                                     </div>
                                 </div>
                                 <div class="row mt-3">
-                                    <label class="col-form-label col-12 col-sm-3">Postcode</label>
+                                    <label class="col-form-label col-12 col-sm-3">{{ __('frontend.fields.postcode') }}</label>
                                     <div class="col-12 col-md-9">
                                         <input type="text" id="policy-holder-postcode" class="form-control" name="postcode" disabled />
                                     </div>
                                 </div>
                                 <div class="row mt-3">
-                                    <label class="col-form-label col-12 col-sm-3">City</label>
+                                    <label class="col-form-label col-12 col-sm-3">{{ __('frontend.fields.city') }}</label>
                                     <div class="col-12 col-md-9">
                                         <input type="text" id="policy-holder-city" class="form-control" name="city" disabled />
                                     </div>
                                 </div>
                                 <div class="row mt-3">
-                                    <label class="col-form-label col-12 col-sm-3">State</label>
+                                    <label class="col-form-label col-12 col-sm-3">{{ __('frontend.fields.state') }}</label>
                                     <div class="col-12 col-md-9">
                                         <select name="state" id="policy-holder-state" class="form-control" disabled>
                                             <option value=""></option>

@@ -600,6 +600,20 @@ return [
                 'contact_us' => 'Please contact us at',
             ]
         ],
+        'policy_holder_page' => [
+            'policy_holder_details' => 'Policy Holder Details',
+        ],
+        'payment_summary_page' => [
+            'summary' => 'Summary',
+            'policy_holder' => 'Policy Holder',
+            'insurer' => 'Insurer',
+            'product' => 'Product',
+            'coverage_date' => 'Coverage Date',
+            'sum_insured' => 'Sum Insured / Sum Covered',
+            'next_ncd' => 'Next NCD',
+            'road_tax_renewal' => 'Road Tax Renewal',
+            'total_payable' => 'Total Payable',
+        ],
     ],
     'products' => [
         'motor' => 'Motor Insurance',
@@ -627,7 +641,16 @@ return [
     'fields' => [
         'name' => 'Name',
         'id_number' => 'ID Number',
+        'id_type' => 'ID Type',
+        'email' => 'Email',
+        'address' => 'Address',
+        'dob' => 'Date of Birth',
+        'gender' => 'Gender',
+        'phone_number' => 'Phone Number',
         'relationship' => 'Relationship',
+        'postcode' => 'Postcode',
+        'city' => 'City',
+        'state' => 'State',
     ],
     'modal' => [
         'appreciate_your_patience' => 'We appreciate your patience!',
