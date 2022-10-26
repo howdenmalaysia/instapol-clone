@@ -44,7 +44,7 @@
                                             </tr>
                                             <tr>
                                                 <th class="text-start">{{ __('frontend.motor.payment_summary_page.sum_insured') }}</th>
-                                                <td class="text-uppercase text-end">{{ 'RM ' . formatMoney($motor->market_value) }}</td>
+                                                <td class="text-uppercase text-end">{{ 'RM ' . number_format($motor->market_value, 2) }}</td>
                                             </tr>
                                             <tr>
                                                 <th class="text-start">{{ __('frontend.motor.payment_summary_page.next_ncd') }}</th>
@@ -140,13 +140,13 @@
                                                         <div class="col-12">
                                                             <div class="row">
                                                                 <div class="col-12 col-lg-6">{{ $_extra_cover->description }}</div>
-                                                                <div class="col-12 col-lg-6 text-end">{{ 'RM ' . formatMoney($_extra_cover->amount) }}</div>
+                                                                <div class="col-12 col-lg-6 text-end">{{ 'RM ' . number_format($_extra_cover->amount, 2) }}</div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div class="row">
                                                         <div class="col-12 col-lg-6">
-                                                            <p class="mb-0">{{ __('frontend.motor.payment_summary_page.sum_insured' . ' amount :' . formatMoney($_extra_cover->sum_insured)) }}</p>
+                                                            <p class="mb-0">{{ __('frontend.motor.payment_summary_page.sum_insured' . ' amount :' . number_format($_extra_cover->sum_insured, 2)) }}</p>
                                                         </div>
                                                     </div>
                                                 @endforeach
