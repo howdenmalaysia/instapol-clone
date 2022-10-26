@@ -500,6 +500,8 @@ return [
         'no' => 'No',
         'yes' => 'Yes',
         'to' => 'to',
+        'agree' => 'Agree',
+        'disagree' => 'Disagree'
     ],
     'motor' => [
         'compare' => 'Compare',
@@ -646,7 +648,15 @@ return [
             'no_add_ons' => 'No additional coverage selected',
             'no_additional_driver' => 'No additional driver',
             'no_roadtax' => 'No road tax renewal service',
-            'recipient_info' => 'Recipient Info'
+            'recipient_info' => 'Recipient Info',
+            'confirm_modal' => [
+                'title' => 'Confirmation',
+                'line_1' => 'I, :insured_name, confirm that:',
+                'line_2' => 'I understand that it is my duty to take reasonable care not to make a misrepresentation in answering the questions in this Application Form and I hereby declare that I have fully and accurately answered the questions above.',
+                'line_3' => 'I have read, understood and accepted that :pds and <a href="{{ route(\'frontend.privacy\') }}">Privacy Policy</a> for this product.',
+                'line_4' => 'Please make sure you review the order and personal details before go to payment page.',
+                'line_5' => 'Once you click \'Pay Now\', you cannot change these details.'
+            ]
         ],
     ],
     'products' => [

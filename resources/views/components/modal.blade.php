@@ -8,10 +8,14 @@
             <div class="modal-body">
                 {{ $body }}
             </div>
-            <div class="modal-footer text-end">
-                <button type="button" class="btn btn-secondary rounded" data-bs-dismiss="modal">{{ __('frontend.button.close') }}</button>
-                <button type="button" id="btn-continue-modal" class="btn btn-primary text-white rounded">{{ __('frontend.button.continue') }}</button>
-            </div>
+            @if (!empty($footer))
+                {{ $footer }}
+            @else
+                <div class="modal-footer text-end">
+                    <button type="button" class="btn btn-secondary rounded" data-bs-dismiss="modal">{{ __('frontend.button.close') }}</button>
+                    <button type="button" id="btn-continue-modal" class="btn btn-primary text-white rounded">{{ __('frontend.button.continue') }}</button>
+                </div>
+            @endif
         </div>
     </div>
 </div>

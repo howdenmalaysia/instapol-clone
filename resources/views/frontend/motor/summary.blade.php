@@ -321,7 +321,51 @@
                         </div>
                     </div>
                 </div>
+                <form action="{{ route('payment.store') }}" method="POST" id="payment-form">
+                    <div class="hidden">
+                        <input type="hidden" id="motor" name="motor" value='@json(session('motor'))' />
+                        <input type="hidden" id="description" name="description" value="{{ $product->product_type->name . ' : ' . $motor->vehicle_number }}" />
+                        <input type="hidden" id="total-payable" name="total_payable" value="{{ $insurance->amount }}" />
+                        <input type="hidden" id="insurance-code" name="insurance_code" value="{{ $insurance->insurance_code }}" />
+                    </div>
+                </form>
+                <x-modal maxWidth="md" id="body-type-modal" headerClass="bg-primary text-white">
+                    <x-slot name="title">{{ __('frontend.motor.payment_summary_page.confirm_modal.title') }}</x-slot>
+                    <x-slot name="body">
+                        <p>{{ str_replace(':insured_name', $policy_holder->name, __('frontend.motor.payment_summary_page.confirm_modal.line_1')) }}</p>
+                        <p>{{ '- ' . __('frontend.motor.payment_summary_page.confirm_modal.line_2') }}</p>
+                        <p>{!! '- ' . str_replace(':pds', '', __('frontend.motor.payment_summary_page.confirm_modal.line_3')) !!}</p>
+                        <div id="tnc-radio">
+                            <div class="form-check form-check-inline">
+                                <input type="radio" id="agree" class="form-check-input" value="agree">
+                                <label for="agree" class="form-check-label">{{ __('frontend.general.agree') }}</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input type="radio" id="disagree" class="form-check-input" value="disagree" />
+                                <label for="disagree" class="form-check-label">{{ __('frontend.general.disagree') }}</label>
+                            </div>
+                        </div>
+                        <p>{{ __('frontend.motor.payment_summary_page.confirm_modal.line_4') }}</p>
+                        <p>{{ __('frontend.motor.payment_summary_page.confirm_modal.line_5') }}</p>
+                    </x-slot>
+                    <x-slot name="footer">
+                        <div class="modal-footer text-end">
+                            <button type="button" class="btn btn-secondary rounded" data-bs-dismiss="modal">{{ __('frontend.button.close') }}</button>
+                            <button type="button" id="btn-pay-modal" class="btn btn-primary text-white rounded">{{ __('frontend.button.pay') }}</button>
+                        </div>
+                    </x-slot>
+                </x-modal>
             </div>
         </section>
     </section>
 @endsection
+
+@push('after-scripts')
+    <script>
+        $(() => {
+            $('#btn-pay-modal').on('click', () => {
+                $('#payment-form').submit();
+            });
+        });
+    </script>
+@endpush

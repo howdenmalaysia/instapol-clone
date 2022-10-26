@@ -369,7 +369,7 @@ class MotorController extends Controller
             $extra_cover = InsuranceExtraCover::where('insurance_id', $insurance->id)
                 ->first();
 
-            $product = Product::with(['insurance_company'])
+            $product = Product::with(['insurance_company', 'product_type'])
                 ->where('id', $insurance->product_id)
                 ->first();
         } else if($insurance->insurance_status === Insurance::STATUS_PAYMENT_ACCEPTED || $insurance->insurance_status === Insurance::STATUS_POLICY_ISSUED) {
