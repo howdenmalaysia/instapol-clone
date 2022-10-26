@@ -233,22 +233,24 @@
                 motor.policy_holder.phone_number = $('#policy-holder-phone-number').val();
 
                 // Roadtax Details
-                if(motor.roadtax && $('#use-same-address').is(':checked')) {
-                    motor.roadtax.name = $('#policy-holder-name').val();
-                    motor.roadtax.phone_number = $('#policy-holder-phone-number').val();
-                    motor.roadtax.address_one = $('#policy-holder-address-1').val();
-                    motor.roadtax.address_two = $('#policy-holder-address-2').val();
-                    motor.roadtax.postcode = motor.postcode;
-                    motor.roadtax.city = $('#policy-holder-city').val();
-                    motor.roadtax.state = $('#policy-holder-state').val();
-                } else {
-                    motor.roadtax.recipient_name = $('#delivery-recipient').val();
-                    motor.roadtax.recipient_phone_number = $('#delivery-phone-number').val();
-                    motor.roadtax.address_one = $('#delivery-address-1').val();
-                    motor.roadtax.address_two = $('#delivery-address-2').val();
-                    motor.roadtax.postcode = $('#delivery-postcode').val();
-                    motor.roadtax.city = $('#delivery-city').val();
-                    motor.roadtax.state = $('#delivery-state').val();
+                if(motor.roadtax) {
+                    if($('#use-same-address').is(':checked')) {
+                        motor.roadtax.name = $('#policy-holder-name').val();
+                        motor.roadtax.phone_number = $('#policy-holder-phone-number').val();
+                        motor.roadtax.address_one = $('#policy-holder-address-1').val();
+                        motor.roadtax.address_two = $('#policy-holder-address-2').val();
+                        motor.roadtax.postcode = motor.postcode;
+                        motor.roadtax.city = $('#policy-holder-city').val();
+                        motor.roadtax.state = $('#policy-holder-state').val();
+                    } else {
+                        motor.roadtax.recipient_name = $('#delivery-recipient').val();
+                        motor.roadtax.recipient_phone_number = $('#delivery-phone-number').val();
+                        motor.roadtax.address_one = $('#delivery-address-1').val();
+                        motor.roadtax.address_two = $('#delivery-address-2').val();
+                        motor.roadtax.postcode = $('#delivery-postcode').val();
+                        motor.roadtax.city = $('#delivery-city').val();
+                        motor.roadtax.state = $('#delivery-state').val();
+                    }
                 }
 
                 $('#motor').val(JSON.stringify(motor));
