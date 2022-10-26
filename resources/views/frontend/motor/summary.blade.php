@@ -77,13 +77,13 @@
                                     <x-pricing-card
                                         insurer-logo='{{ asset("images/insurer/{$product->insurance_company->logo}") }}'
                                         insurer-name="{!! $product->insurance_company->name !!}"
-                                        basic-premium="{{ $premium->basic_premium }}"
-                                        ncd-amount="{{ $motor->ncd_amount }}"
-                                        total-benefit-amount="{{ $premium->total_benefit_amount }}"
-                                        gross-premium="{{ $premium->gross_premium }}"
-                                        sst-amount="{{ $premium->service_tax_amount }}"
-                                        stamp-duty="{{ $premium->stamp_duty }}"
-                                        total-payable="{{ $premium->total_premium }}"
+                                        basic-premium="{{ session('motor')->quotation->basic_premium }}"
+                                        ncd-amount="{{ session('motor')->quotation->ncd_amount }}"
+                                        total-benefit-amount="{{ session('motor')->quotation->total_benefit_amount }}"
+                                        gross-premium="{{ session('motor')->quotation->gross_premium }}"
+                                        sst-amount="{{ session('motor')->quotation->sst_amount }}"
+                                        stamp-duty="{{ session('motor')->quotation->stamp_duty }}"
+                                        total-payable="{{ session('motor')->quotation->total_payable }}"
                                     />
                                 </div>
                                 <div class="col-12 col-lg-8">
