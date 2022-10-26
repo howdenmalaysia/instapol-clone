@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Insurance;
 use App\DataTransferObjects\Motor\QuotationData;
 use App\DataTransferObjects\Motor\VehicleData;
 use App\Http\Controllers\Controller;
+use App\Models\InsurancePremium;
 use App\Models\Motor\Insurance;
 use App\Models\Motor\InsuranceAddress;
 use App\Models\Motor\InsuranceCompany;
@@ -371,6 +372,9 @@ class MotorController extends Controller
             $product = Product::with(['insurance_company'])
                 ->where('id', $insurance->product_id)
                 ->first();
+
+            $premium = InsurancePremium::where('insurance_id', $insurance->id)
+                ->first();
         } else if($insurance->insurance_status === Insurance::STATUS_PAYMENT_ACCEPTED || $insurance->insurance_status === Insurance::STATUS_POLICY_ISSUED) {
             return redirect()->route('motor.payment-success');
         } else {
@@ -382,7 +386,8 @@ class MotorController extends Controller
             'policy_holder' => $policy_holder,
             'motor' => $motor,
             'extra_cover' => $extra_cover,
-            'product' => $product
+            'product' => $product,
+            'premium' => $premium
         ]);
     }
 

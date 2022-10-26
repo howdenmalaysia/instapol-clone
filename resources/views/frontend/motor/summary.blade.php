@@ -12,7 +12,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col-12">
-                        <div class="card rounded text-center white-glow">
+                        <div id="summary" class="card rounded text-center white-glow">
                             <div class="card-body">
                                 <h2 class="card-title border-bottom border-5 pb-3">{{ __('frontend.motor.payment_summary_page.summary') }}</h2>
                                 <div class="row">
@@ -73,7 +73,19 @@
                     <div class="col-12">
                         <div class="card rounded white-glow p-4">
                             <div class="row">
-                                <div class="col-12 col-lg-4"></div>
+                                <div class="col-12 col-lg-4">
+                                    <x-pricing-card
+                                        insurer-logo='{{ asset("images/insurer/{$product->insurance_company->logo}") }}'
+                                        insurer-name="{!! $product->insurance_company->name !!}"
+                                        basic-premium="{{ $premium->basic_premium }}"
+                                        ncd-amount="{{ $motor->ncd_amount }}"
+                                        total-benefit-amount="{{ $premium->total_benefit_amount }}"
+                                        gross-premium="{{ $premium->gross_premium }}"
+                                        sst-amount="{{ $premium->service_tax_amount }}"
+                                        stamp-duty="{{ $premium->stamp_duty }}"
+                                        total-payable="{{ $premium->total_premium }}"
+                                    />
+                                </div>
                                 <div class="col-12 col-lg-8">
                                     <div id="vehicle-details-card" class="card bg-light rounded">
                                         <div class="card-body">
@@ -129,9 +141,9 @@
                                     <div id="add-ons" class="card bg-light rounded mt-4">
                                         <div class="card-body">
                                             <div class="row">
-                                                <div class="col-12 d-flex justify-content-between">
+                                                <div class="col-12 d-flex justify-content-between align-items-start">
                                                     <h4 class="card-title fw-bold border-bottom border-4 pb-3">{{ __('frontend.motor.add_ons_page.add_ons') }}</h4>
-                                                    <a href="{{ route('motor.add-ons') }}" class="btn btn-outline border text-uppercase">{{ __('frontend.button.edit') }}</a>
+                                                    <a href="{{ route('motor.add-ons') }}" class="btn btn-outline-secondary text-uppercase">{{ __('frontend.button.edit') }}</a>
                                                 </div>
                                             </div>
                                             @if (!empty($extra_cover))
@@ -162,9 +174,9 @@
                                     <div id="road-tax" class="card bg-light rounded mt-4">
                                         <div class="card-body">
                                             <div class="row">
-                                                <div class="col-12 d-flex justify-content-between">
+                                                <div class="col-12 d-flex justify-content-between align-items-start">
                                                     <h4 class="card-title fw-bold border-bottom border-4 pb-3">{{ __('frontend.motor.add_ons_page.road_tax_renewal') }}</h4>
-                                                    <a href="{{ route('motor.add-ons') }}" class="btn btn-outline border text-uppercase">{{ __('frontend.button.edit') }}</a>
+                                                    <a href="{{ route('motor.add-ons') }}" class="btn btn-outline-secondary text-uppercase">{{ __('frontend.button.edit') }}</a>
                                                 </div>
                                             </div>
                                             @if (!empty($motor->roadtax))
@@ -221,7 +233,7 @@
                                             <div class="row">
                                                 <div class="col-12 d-flex justify-content-between">
                                                     <h4 class="card-title fw-bold border-bottom border-4 pb-3">{{ __('frontend.motor.add_ons_page.additional_driver') }}</h4>
-                                                    <a href="{{ route('motor.add-ons') }}" class="btn btn-outline border text-uppercase">{{ __('frontend.button.edit') }}</a>
+                                                    <a href="{{ route('motor.add-ons') }}" class="btn btn-outline-secondary text-uppercase">{{ __('frontend.button.edit') }}</a>
                                                 </div>
                                             </div>
                                             @if (!empty($additional_driver))
@@ -249,9 +261,9 @@
                                     <div id="policy-holder-card" class="card bg-light rounded mt-4">
                                         <div class="card-body">
                                             <div class="row">
-                                                <div class="col-12 d-flex justify-content-between">
+                                                <div class="col-12 d-flex justify-content-between align-items-start">
                                                     <h4 class="card-title fw-bold border-bottom border-4 pb-3">{{ __('frontend.motor.payment_summary_page.policy_holder') }}</h4>
-                                                    <a href="{{ route('motor.policy-holder') }}" class="btn btn-outline border text-uppercase">{{ __('frontend.button.edit') }}</a>
+                                                    <a href="{{ route('motor.policy-holder') }}" class="btn btn-outline-secondary text-uppercase">{{ __('frontend.button.edit') }}</a>
                                                 </div>
                                             </div>
                                             <div class="row">
