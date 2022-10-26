@@ -499,6 +499,7 @@ return [
         'select' => 'Please Select',
         'no' => 'No',
         'yes' => 'Yes',
+        'to' => 'to',
     ],
     'motor' => [
         'compare' => 'Compare',

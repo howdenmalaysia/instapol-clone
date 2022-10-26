@@ -24,15 +24,15 @@
                                             </tr>
                                             <tr>
                                                 <th>{{ __('frontend.motor.vehicle_details.car_number') }}</th>
-                                                <td class="text-uppercase text-end">{{ $insurance->policy_holder->name }}</td>
+                                                <td class="text-uppercase text-end">{{ $policy_holder->name }}</td>
                                             </tr>
                                             <tr>
                                                 <th>{{ __('frontend.motor.payment_summary_page.insurer') }}</th>
-                                                <td class="text-uppercase text-end">{{ $insurance->product->insurance_company->name }}</td>
+                                                <td class="text-uppercase text-end">{{ $product->insurance_company->name }}</td>
                                             </tr>
                                             <tr>
                                                 <th>{{ __('frontend.motor.payment_summary_page.product') }}</th>
-                                                <td class="text-uppercase text-end">{{ $insurance->product->name }}</td>
+                                                <td class="text-uppercase text-end">{{ $product->name }}</td>
                                             </tr>
                                         </table>
                                     </div>
@@ -40,19 +40,19 @@
                                         <table class="table table-borderless">
                                             <tr>
                                                 <th>{{ __('frontend.motor.payment_summary_page.coverage_date') }}</th>
-                                                <td class="text-uppercase text-end"></td>
+                                                <td class="text-uppercase text-end">{{ implode(' ', [$insurance->inception_date, __('frontend.general.to'), $insurance->expiry_date]) }}</td>
                                             </tr>
                                             <tr>
                                                 <th>{{ __('frontend.motor.payment_summary_page.sum_insured') }}</th>
-                                                <td class="text-uppercase text-end"></td>
+                                                <td class="text-uppercase text-end">{{ $motor->market_value }}</td>
                                             </tr>
                                             <tr>
                                                 <th>{{ __('frontend.motor.payment_summary_page.next_ncd') }}</th>
-                                                <td class="text-uppercase text-end"></td>
+                                                <td class="text-uppercase text-end">{{ intval($motor->ncd_percentage) . '%' }} </td>
                                             </tr>
                                             <tr>
                                                 <th>{{ __('frontend.motor.payment_summary_page.road_tax_renewal') }}</th>
-                                                <td class="text-uppercase text-end"></td>
+                                                <td class="text-uppercase text-end">{{ !empty($motor->roadtax) ? __('frontend.general.yes') : __('frontend.general.no') }}</td>
                                             </tr>
                                         </table>
                                     </div>
@@ -62,7 +62,7 @@
                                 <div class="row">
                                     <div class="col-12 d-flex justify-content-between">
                                         <h4 class="fw-bold">{{ __('frontend.motor.payment_summary_page.total_payable') }}</h4>
-                                        <h4 class="fw-bold">RM </h4>
+                                        <h4 class="fw-bold">{{ 'RM ' . $insurance->amount }}</h4>
                                     </div>
                                 </div>
                             </div>
@@ -83,23 +83,23 @@
                                                     <table class="table table-borderless">
                                                         <tr>
                                                             <td>{{ __('frontend.motor.vehicle_details.make') }}</td>
-                                                            <td class="text-end"></td>
+                                                            <td class="text-end">{{ $motor->make }}</td>
                                                         </tr>
                                                         <tr>
                                                             <td>{{ __('frontend.motor.vehicle_details.model') }}</td>
-                                                            <td class="text-end"></td>
+                                                            <td class="text-end">{{ $motor->model }}</td>
                                                         </tr>
                                                         <tr>
                                                             <td>{{ __('frontend.motor.vehicle_details.variant') }}</td>
-                                                            <td class="text-end"></td>
+                                                            <td class="text-end">{{ $motor->variant }}</td>
                                                         </tr>
                                                         <tr>
                                                             <td>{{ __('frontend.motor.vehicle_details.chassis_number') }}</td>
-                                                            <td class="text-end"></td>
+                                                            <td class="text-end">{{ $motor->chassis_number }}</td>
                                                         </tr>
                                                         <tr>
                                                             <td>{{ __('frontend.motor.vehicle_details.engine_number') }}</td>
-                                                            <td class="text-end"></td>
+                                                            <td class="text-end">{{ $motor->engine_number }}</td>
                                                         </tr>
                                                     </table>
                                                 </div>
@@ -107,19 +107,19 @@
                                                     <table class="table table-borderless">
                                                         <tr>
                                                             <td>{{ __('frontend.motor.vehicle_details.engine_capacity') }}</td>
-                                                            <td class="text-end"></td>
+                                                            <td class="text-end">{{ $motor->engine_capacity }}</td>
                                                         </tr>
                                                         <tr>
                                                             <td>{{ __('frontend.motor.vehicle_details.seating_capacity') }}</td>
-                                                            <td class="text-end"></td>
+                                                            <td class="text-end">{{ $motor->seating_capacity }}</td>
                                                         </tr>
                                                         <tr>
                                                             <td>{{ __('frontend.motor.vehicle_details.year') }}</td>
-                                                            <td class="text-end"></td>
+                                                            <td class="text-end">{{ $motor->manufactured_year }}</td>
                                                         </tr>
                                                         <tr>
                                                             <td>{{ __('frontend.motor.vehicle_details.nvic') }}</td>
-                                                            <td class="text-end"></td>
+                                                            <td class="text-end">{{ $motor->nvic }}</td>
                                                         </tr>
                                                     </table>
                                                 </div>
@@ -129,19 +129,26 @@
                                     <div id="add-ons" class="card bg-light rounded mt-4">
                                         <div class="card-body">
                                             <div class="row">
-                                                <div class="col-12">
+                                                <div class="col-12 d-flex justify-content-between">
                                                     <h4 class="card-title fw-bold border-bottom border-4 pb-3">{{ __('frontend.motor.add_ons_page.add_ons') }}</h4>
                                                     <button type="button" class="btn btn-outline text-uppercase">{{ __('frontend.button.edit') }}</button>
                                                 </div>
                                             </div>
-                                            <div class="row">
-                                                <div class="col-12 d-flex justify-content-between">
-
+                                            @foreach ($extra_cover as $_extra_cover)
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <div class="row">
+                                                            <div class="col-12 col-lg-6">{{ $_extra_cover->description }}</div>
+                                                            <div class="col-12 col-lg-6 text-end">{{ 'RM ' . formatMoney($_extra_cover->amount) }}</div>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <div class="col-12">
-                                                    <p>{{ __('frontend.motor.payment_summary_page.sum_insured' . ' amount') }}</p>
+                                                <div class="row">
+                                                    <div class="col-12 col-lg-6">
+                                                        <p class="mb-0">{{ __('frontend.motor.payment_summary_page.sum_insured' . ' amount :' . formatMoney($_extra_cover->sum_insured)) }}</p>
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            @endforeach
                                         </div>
                                     </div>
                                     <div id="policy_holder-card" class="card bg-light rounded mt-4">
@@ -155,14 +162,14 @@
                                                             <td class="text-uppercase text-end">{{ $policy_holder->name }}</td>
                                                         </tr>
                                                         <tr>
-                                                            <td>{{ __('frontend.fields.name') }}</td>
-                                                            <td class="text-uppercase text-end"></td>
-                                                        </tr>
-                                                        <tr>
                                                             <td>{{ __('frontend.fields.id_type') }}</td>
                                                             <td class="text-uppercase text-end">
                                                                 {{ $policy_holder->id_type_id === config('setting.id_type.nric_no') ? __('frontend.motor.nric') : __('frontend.motor.company_resgistration') }}
                                                             </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>{{ __('frontend.fields.id_number') }}</td>
+                                                            <td class="text-uppercase text-end">{{ $policy_holder->id_number }}</td>
                                                         </tr>
                                                         <tr>
                                                             <td>{{ __('frontend.fields.email') }}</td>
@@ -186,7 +193,7 @@
                                                         </tr>
                                                         <tr>
                                                             <td>{{ __('frontend.fields.phone_number') }}</td>
-                                                            <td class="text-end">{{ '0' . $policy_holder->phone_number }}</td>
+                                                            <td class="text-end">{{ '+60' . $policy_holder->phone_number }}</td>
                                                         </tr>
                                                     </table>
                                                 </div>

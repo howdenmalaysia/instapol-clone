@@ -367,6 +367,10 @@ class MotorController extends Controller
 
             $extra_cover = InsuranceExtraCover::where('insurance_id', $insurance->id)
                 ->first();
+
+            $product = Product::with(['insurance_company'])
+                ->where('id', $insurance->product_id)
+                ->first();
         } else if($insurance->insurance_status === Insurance::STATUS_PAYMENT_ACCEPTED || $insurance->insurance_status === Insurance::STATUS_POLICY_ISSUED) {
             return redirect()->route('motor.payment-success');
         } else {
@@ -377,7 +381,8 @@ class MotorController extends Controller
             'insurance' => $insurance,
             'policy_holder' => $policy_holder,
             'motor' => $motor,
-            'extra_cover' => $extra_cover
+            'extra_cover' => $extra_cover,
+            'product' => $product
         ]);
     }
 
