@@ -233,7 +233,7 @@
 
                     if(shouldStop) {
                         controller.abort();
-                        swalAlert(error.response.data, () => {
+                        swalAlert(error.response.data.response, () => {
                             window.location = "{{ route('motor.index') }}"
                         });
                     }
