@@ -131,29 +131,125 @@
                                             <div class="row">
                                                 <div class="col-12 d-flex justify-content-between">
                                                     <h4 class="card-title fw-bold border-bottom border-4 pb-3">{{ __('frontend.motor.add_ons_page.add_ons') }}</h4>
-                                                    <button type="button" class="btn btn-outline text-uppercase">{{ __('frontend.button.edit') }}</button>
+                                                    <a href="{{ route('motor.add-ons') }}" class="btn btn-outline text-uppercase">{{ __('frontend.button.edit') }}</a>
                                                 </div>
                                             </div>
-                                            @foreach ($extra_cover as $_extra_cover)
+                                            @if (!empty($extra_cover))
+                                                @foreach ($extra_cover as $_extra_cover)
+                                                    <div class="row">
+                                                        <div class="col-12">
+                                                            <div class="row">
+                                                                <div class="col-12 col-lg-6">{{ $_extra_cover->description }}</div>
+                                                                <div class="col-12 col-lg-6 text-end">{{ 'RM ' . formatMoney($_extra_cover->amount) }}</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-12 col-lg-6">
+                                                            <p class="mb-0">{{ __('frontend.motor.payment_summary_page.sum_insured' . ' amount :' . formatMoney($_extra_cover->sum_insured)) }}</p>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            @else
                                                 <div class="row">
+                                                    <div class="col-12 text-center">
+                                                        <p class="mb-0">{{ __('frontend.motor.payment_summary_page.no_add_ons') }}</p>
+                                                    </div>
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <div id="road-tax" class="card bg-light rounded mt-4">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-12 d-flex justify-content-between">
+                                                    <h4 class="card-title fw-bold border-bottom border-4 pb-3">{{ __('frontend.motor.add_ons_page.road_tax_renewal') }}</h4>
+                                                    <a href="{{ route('motor.add-ons') }}" class="btn btn-outline text-uppercase">{{ __('frontend.button.edit') }}</a>
+                                                </div>
+                                            </div>
+                                            @if (!empty($motor->roadtax))
+                                                <div class="row border-bottom pb-3">
                                                     <div class="col-12">
                                                         <div class="row">
-                                                            <div class="col-12 col-lg-6">{{ $_extra_cover->description }}</div>
-                                                            <div class="col-12 col-lg-6 text-end">{{ 'RM ' . formatMoney($_extra_cover->amount) }}</div>
+                                                            <div class="col-12 col-lg-6">{{ __('frontend.motor.add_ons_page.road_tax_fee') }}</div>
+                                                            <div class="col-12 col-lg-6 text-end">{{ $motor->roadtax->roadtax_renewal_fee }}</div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-12 col-lg-6">{{ __('frontend.motor.add_ons_page.myeg_fee') }}</div>
+                                                            <div class="col-12 col-lg-6 text-end">{{ $motor->roadtax->myeg_fee }}</div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-12 col-lg-6">{{ __('frontend.motor.add_ons_page.eservice_fee') }}</div>
+                                                            <div class="col-12 col-lg-6 text-end">{{ $motor->roadtax->e_service_fee }}</div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-12 col-lg-6">{{ __('frontend.motor.add_ons_page.delivery_fee') }}</div>
+                                                            <div class="col-12 col-lg-6 text-end">{{ $motor->roadtax->delivery_fee }}</div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-12 col-lg-6">{{ __('frontend.price_card.service_tax') }}</div>
+                                                            <div class="col-12 col-lg-6 text-end">{{ $motor->roadtax->tax }}</div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="row">
-                                                    <div class="col-12 col-lg-6">
-                                                        <p class="mb-0">{{ __('frontend.motor.payment_summary_page.sum_insured' . ' amount :' . formatMoney($_extra_cover->sum_insured)) }}</p>
+                                                <div class="row mt-3">
+                                                    <h5 class="fw-bold">{{ __('frontend.motor.payment_summary_page.recipient_info') }}</h5>
+                                                    <div class="row">
+                                                        <div class="col-6 col-lg-3">{{ __('frontend.fields.recipient_name') }}</div>
+                                                        <div class="col-6 col-lg-3 text-end">{{ '' }}</div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-6 col-lg-3">{{ __('frontend.fields.phone_number') }}</div>
+                                                        <div class="col-6 col-lg-3 text-end">{{ '' }}</div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-6 col-lg-3">{{ __('frontend.fields.address') }}</div>
+                                                        <div class="col-6 col-lg-3 text-end">{{ '' }}</div>
                                                     </div>
                                                 </div>
-                                            @endforeach
+                                            @else
+                                                <div class="row">
+                                                    <div class="col-12 text-center">
+                                                        <p class="mb-0">{{ __('frontend.motor.payment_summary_page.no_roadtax') }}</p>
+                                                    </div>
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <div id="additional-driver" class="card bg-light rounded mt-4">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-12 d-flex justify-content-between">
+                                                    <h4 class="card-title fw-bold border-bottom border-4 pb-3">{{ __('frontend.motor.add_ons_page.additional_driver') }}</h4>
+                                                    <a href="{{ route('motor.add-ons') }}" class="btn btn-outline text-uppercase">{{ __('frontend.button.edit') }}</a>
+                                                </div>
+                                            </div>
+                                            @if (!empty($additional_driver))
+                                                <div class="row">
+                                                    <div class="col-4">{{ __('frontend.fields.name') }}</div>
+                                                    <div class="col-4">{{ __('frontend.fields.id_number') }}</div>
+                                                    <div class="col-4">{{ __('frontend.fields.relationship') }}</div>
+                                                </div>
+                                                @foreach ($additional_driver as $driver)
+                                                    <div class="row">
+                                                        <div class="col-4">{{ $driver->name }}</div>
+                                                        <div class="col-4">{{ $driver->id_number }}</div>
+                                                        <div class="col-4">{{ $driver->relationship }}</div>
+                                                    </div>
+                                                @endforeach
+                                            @else
+                                                <div class="row">
+                                                    <div class="col-12 text-center">
+                                                        <p class="mb-0">{{ __('frontend.motor.payment_summary_page.no_add_ons') }}</p>
+                                                    </div>
+                                                </div>
+                                            @endif
                                         </div>
                                     </div>
                                     <div id="policy_holder-card" class="card bg-light rounded mt-4">
                                         <div class="card-body">
                                             <h4 class="card-title fw-bold border-bottom border-4 pb-3">{{ __('frontend.motor.payment_summary_page.policy_holder') }}</h4>
+                                            <a href="{{ route('motor.policy-holder') }}" class="btn btn-outline text-uppercase">{{ __('frontend.button.edit') }}</a>
                                             <div class="row">
                                                 <div class="col-12 col-lg-6">
                                                     <table class="table table-borderless">

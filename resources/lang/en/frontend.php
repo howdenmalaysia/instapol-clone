@@ -642,8 +642,11 @@ return [
             'coverage_date' => 'Coverage Date',
             'sum_insured' => 'Sum Insured / Sum Covered',
             'next_ncd' => 'Next NCD',
-            'road_tax_renewal' => 'Road Tax Renewal',
             'total_payable' => 'Total Payable',
+            'no_add_ons' => 'No additional coverage selected',
+            'no_additional_driver' => 'No additional driver',
+            'no_roadtax' => 'No road tax renewal service',
+            'recipient_info' => 'Recipient Info'
         ],
     ],
     'products' => [
