@@ -233,7 +233,7 @@
                 motor.policy_holder.phone_number = $('#policy-holder-phone-number').val();
 
                 // Roadtax Details
-                if($('#use-same-address').is(':checked')) {
+                if(motor.roadtax && $('#use-same-address').is(':checked')) {
                     motor.roadtax.name = $('#policy-holder-name').val();
                     motor.roadtax.phone_number = $('#policy-holder-phone-number').val();
                     motor.roadtax.address_one = $('#policy-holder-address-1').val();
