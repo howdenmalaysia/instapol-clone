@@ -19,7 +19,7 @@
                                 <p>{{ __('frontend.motor.vehicle_details.car_number') }}</p>
                             </div>
                             <div class="col-6">
-                                <p id="vehicle-number" class="text-decoration-underline"></p>
+                                <p id="vehicle-number" class="text-decoration-underline">-</p>
                             </div>
                         </div>
                         <div class="row">
@@ -27,7 +27,7 @@
                                 <p>{{ __('frontend.motor.vehicle_details.make') }}</p>
                             </div>
                             <div class="col-6">
-                                <p id="make" class="text-decoration-underline"></p>
+                                <p id="make" class="text-decoration-underline">-</p>
                             </div>
                         </div>
                         <div class="row">
@@ -35,7 +35,7 @@
                                 <p>{{ __('frontend.motor.vehicle_details.model') }}</p>
                             </div>
                             <div class="col-6">
-                                <p id="model" class="text-decoration-underline"></p>
+                                <p id="model" class="text-decoration-underline">-</p>
                             </div>
                         </div>
                         <div class="row">
@@ -43,7 +43,7 @@
                                 <p>{{ __('frontend.motor.vehicle_details.engine_capacity') }}</p>
                             </div>
                             <div class="col-6">
-                                <p id="engine-capacity" class="text-decoration-underline"></p>
+                                <p id="engine-capacity" class="text-decoration-underline">-</p>
                             </div>
                         </div>
                         <div class="row">
@@ -51,7 +51,7 @@
                                 <p>{{ __('frontend.motor.vehicle_details.year') }}</p>
                             </div>
                             <div class="col-6">
-                                <p id="manufacture-year" class="text-decoration-underline"></p>
+                                <p id="manufacture-year" class="text-decoration-underline">-</p>
                             </div>
                         </div>
                         <div class="row">
@@ -91,7 +91,7 @@
                                 <p>{{ __('frontend.motor.vehicle_details.ncd') }}</p>
                             </div>
                             <div class="col-6">
-                                <p id="ncd-percentage" class="text-decoration-underline"></p>
+                                <p id="ncd-percentage" class="text-decoration-underline">-</p>
                             </div>
                         </div>
                         <div class="row">
@@ -108,9 +108,9 @@
                             </div>
                             <div class="col-6">
                                 <p>
-                                    <span id="inception-date" class="text-decoration-underline"></span>
+                                    <span id="inception-date" class="text-decoration-underline">-</span>
                                     to
-                                    <span id="expiry-date" class="text-decoration-underline"></span>
+                                    <span id="expiry-date" class="text-decoration-underline">-</span>
                                 </p>
                             </div>
                         </div>
@@ -144,7 +144,6 @@
         let motor = JSON.parse($('#motor').val());
 
         $(function() {
-            $('#vehicle-details-form').hide();
             fetchData();
 
             $('#variants').on('change', function() {
@@ -284,7 +283,6 @@
             motor.variants = data.variants;
 
             $('#motor').val(JSON.stringify(motor));
-            $('#vehicle-details-form').show();
         }
     </script>
 @endpush
