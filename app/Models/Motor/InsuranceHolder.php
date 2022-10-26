@@ -35,6 +35,6 @@ class InsuranceHolder extends Model
 
     public function id_type()
     {
-        return $this->hasOne(IDType::class, 'id_type_id', 'id');
+        return $this->hasOne(IDType::class, 'id', 'id_type_id');
     }
 }
