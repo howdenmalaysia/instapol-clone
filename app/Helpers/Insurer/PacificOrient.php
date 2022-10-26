@@ -112,8 +112,8 @@ class PacificOrient implements InsurerLibraryInterface
         return (object) [
             'status' => true,
             'response' => new VIXNCDResponse([
-                'body_type_code' => $details->body_type_code ?? '',
-                'body_type_description' => $details->body_type_description ?? '',
+                'body_type_code' => $details->body_type_code ?? null,
+                'body_type_description' => $details->body_type_description ?? null,
                 'chassis_number' => $vix->response->chassis_number,
                 'coverage' => 'Comprehensive',
                 'engine_capacity' => $vix->response->engine_capacity,
