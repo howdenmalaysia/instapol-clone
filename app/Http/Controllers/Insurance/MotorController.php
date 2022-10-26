@@ -330,7 +330,7 @@ class MotorController extends Controller
 
         $insurance = Insurance::findByInsuranceCode($session->insurance_code);
 
-        if(empty($insurance) || (!empty($insurance) && $insurance->isEmpty())) {
+        if(empty($insurance)) {
             return $this->abort(__('api.insurance_record_not_match'));
         }
 
