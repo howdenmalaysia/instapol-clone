@@ -312,6 +312,10 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="d-flex justify-content-between mt-3">
+                                        <button type="button" id="btn-back" class="btn btn-link text-dark fw-bold">{{ __('frontend.button.back') }}</button>
+                                        <button type="button" id="btn-pay" class="btn btn-primary text-white rounded">{{ __('frontend.button.pay') }}</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
