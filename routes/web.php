@@ -58,6 +58,7 @@ Route::middleware(['web'])->group(function() {
             Route::get('/policy-holder', [MotorController::class, 'policyHolder'])->name('motor.policy-holder');
             Route::post('/policy-holder', [MotorController::class, 'policyHolder_POST']);
             Route::get('/payment/summary', [MotorController::class, 'paymentSummary'])->name('motor.payment-summary');
+            Route::get('/payment/success', [MotorController::class, 'paymentSuccess'])->name('motor.payment-success');
         }
     );
 });

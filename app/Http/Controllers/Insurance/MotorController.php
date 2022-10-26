@@ -6,7 +6,11 @@ use App\DataTransferObjects\Motor\QuotationData;
 use App\DataTransferObjects\Motor\VehicleData;
 use App\Http\Controllers\Controller;
 use App\Models\Motor\Insurance;
+use App\Models\Motor\InsuranceAddress;
 use App\Models\Motor\InsuranceCompany;
+use App\Models\Motor\InsuranceExtraCover;
+use App\Models\Motor\InsuranceHolder;
+use App\Models\Motor\InsuranceMotor;
 use App\Models\Motor\Product;
 use App\Models\Motor\Quotation;
 use App\Models\Postcode;
@@ -326,21 +330,54 @@ class MotorController extends Controller
 
         $insurance = Insurance::findByInsuranceCode($session->insurance_code);
 
-        if(empty($insurance) || $insurance->isEmpty()) {
-
+        if(empty($insurance) || (!empty($insurance) && $insurance->isEmpty())) {
+            return $this->abort(__('api.insurance_record_not_match'));
         }
 
-
         if($insurance->insurance_status === Insurance::STATUS_NEW_QUOTATION || $insurance->insurance_status === Insurance::STATUS_PAYMENT_FAILURE) {
+            $policy_holder = InsuranceHolder::with(['id_type'])
+                ->where('insurance_id', $insurance->id)
+                ->first();
 
+            $address = InsuranceAddress::where('insurance_id', $insurance->id)
+                ->first();
+
+            $formatted_address = '';
+            $strings = [
+                $address->unit_no,
+                $address->building_name,
+                $address->address_one,
+                $address->address_two,
+                $address->city,
+                $address->postcode,
+                $address->state
+            ];
+
+            foreach($strings as $string) {
+                if(!empty($string)) {
+                    $formatted_address .= $string . ', ';
+                }
+            }
+
+            $policy_holder->address = $formatted_address;
+
+            $motor = InsuranceMotor::with(['driver', 'roadtax'])
+                ->where('insurance_id', $insurance->id)
+                ->first();
+
+            $extra_cover = InsuranceExtraCover::where('insurance_id', $insurance->id)
+                ->first();
         } else if($insurance->insurance_status === Insurance::STATUS_PAYMENT_ACCEPTED || $insurance->insurance_status === Insurance::STATUS_POLICY_ISSUED) {
-            return redirect()->route();
+            return redirect()->route('motor.payment-success');
         } else {
             return redirect()->route('motor.index');
         }
 
         return view('frontend.motor.summary')->with([
-            'insurance' => $insurance
+            'insurance' => $insurance,
+            'policy_holder' => $policy_holder,
+            'motor' => $motor,
+            'extra_cover' => $extra_cover
         ]);
     }
 
