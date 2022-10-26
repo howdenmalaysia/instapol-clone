@@ -9,7 +9,7 @@ class InsuranceMotorRoadtax extends Model
 {
     use HasFactory;
 
-    protected $table = 'insurnce_motor_roadtax';
+    protected $table = 'insurance_motor_roadtax';
 
     protected $fillable = [
         'insurance_motor_id',
