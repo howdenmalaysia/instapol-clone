@@ -19,19 +19,19 @@
                                     <div class="col-12 col-lg-6">
                                         <table class="table table-borderless">
                                             <tr>
-                                                <th>{{ __('frontend.motor.payment_summary_page.policy_holder') }}</th>
-                                                <td></td>
-                                            </tr>
-                                            <tr>
-                                                <th>{{ __('frontend.motor.vehicle_details.car_number') }}</th>
+                                                <th class="text-start">{{ __('frontend.motor.payment_summary_page.policy_holder') }}</th>
                                                 <td class="text-uppercase text-end">{{ $policy_holder->name }}</td>
                                             </tr>
                                             <tr>
-                                                <th>{{ __('frontend.motor.payment_summary_page.insurer') }}</th>
+                                                <th class="text-start">{{ __('frontend.motor.vehicle_details.car_number') }}</th>
+                                                <td class="text-uppercase text-end">{{ $motor->vehicle_number }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th class="text-start">{{ __('frontend.motor.payment_summary_page.insurer') }}</th>
                                                 <td class="text-uppercase text-end">{{ $product->insurance_company->name }}</td>
                                             </tr>
                                             <tr>
-                                                <th>{{ __('frontend.motor.payment_summary_page.product') }}</th>
+                                                <th class="text-start">{{ __('frontend.motor.payment_summary_page.product') }}</th>
                                                 <td class="text-uppercase text-end">{{ $product->name }}</td>
                                             </tr>
                                         </table>
@@ -39,19 +39,19 @@
                                     <div class="col-12 col-lg-6">
                                         <table class="table table-borderless">
                                             <tr>
-                                                <th>{{ __('frontend.motor.payment_summary_page.coverage_date') }}</th>
+                                                <th class="text-start">{{ __('frontend.motor.payment_summary_page.coverage_date') }}</th>
                                                 <td class="text-uppercase text-end">{{ implode(' ', [$insurance->inception_date, __('frontend.general.to'), $insurance->expiry_date]) }}</td>
                                             </tr>
                                             <tr>
-                                                <th>{{ __('frontend.motor.payment_summary_page.sum_insured') }}</th>
-                                                <td class="text-uppercase text-end">{{ $motor->market_value }}</td>
+                                                <th class="text-start">{{ __('frontend.motor.payment_summary_page.sum_insured') }}</th>
+                                                <td class="text-uppercase text-end">{{ 'RM ' . formatMoney($motor->market_value) }}</td>
                                             </tr>
                                             <tr>
-                                                <th>{{ __('frontend.motor.payment_summary_page.next_ncd') }}</th>
+                                                <th class="text-start">{{ __('frontend.motor.payment_summary_page.next_ncd') }}</th>
                                                 <td class="text-uppercase text-end">{{ intval($motor->ncd_percentage) . '%' }} </td>
                                             </tr>
                                             <tr>
-                                                <th>{{ __('frontend.motor.payment_summary_page.road_tax_renewal') }}</th>
+                                                <th class="text-start">{{ __('frontend.motor.add_ons_page.road_tax_renewal') }}</th>
                                                 <td class="text-uppercase text-end">{{ !empty($motor->roadtax) ? __('frontend.general.yes') : __('frontend.general.no') }}</td>
                                             </tr>
                                         </table>
@@ -131,7 +131,7 @@
                                             <div class="row">
                                                 <div class="col-12 d-flex justify-content-between">
                                                     <h4 class="card-title fw-bold border-bottom border-4 pb-3">{{ __('frontend.motor.add_ons_page.add_ons') }}</h4>
-                                                    <a href="{{ route('motor.add-ons') }}" class="btn btn-outline text-uppercase">{{ __('frontend.button.edit') }}</a>
+                                                    <a href="{{ route('motor.add-ons') }}" class="btn btn-outline border text-uppercase">{{ __('frontend.button.edit') }}</a>
                                                 </div>
                                             </div>
                                             @if (!empty($extra_cover))
@@ -164,7 +164,7 @@
                                             <div class="row">
                                                 <div class="col-12 d-flex justify-content-between">
                                                     <h4 class="card-title fw-bold border-bottom border-4 pb-3">{{ __('frontend.motor.add_ons_page.road_tax_renewal') }}</h4>
-                                                    <a href="{{ route('motor.add-ons') }}" class="btn btn-outline text-uppercase">{{ __('frontend.button.edit') }}</a>
+                                                    <a href="{{ route('motor.add-ons') }}" class="btn btn-outline border text-uppercase">{{ __('frontend.button.edit') }}</a>
                                                 </div>
                                             </div>
                                             @if (!empty($motor->roadtax))
@@ -221,7 +221,7 @@
                                             <div class="row">
                                                 <div class="col-12 d-flex justify-content-between">
                                                     <h4 class="card-title fw-bold border-bottom border-4 pb-3">{{ __('frontend.motor.add_ons_page.additional_driver') }}</h4>
-                                                    <a href="{{ route('motor.add-ons') }}" class="btn btn-outline text-uppercase">{{ __('frontend.button.edit') }}</a>
+                                                    <a href="{{ route('motor.add-ons') }}" class="btn btn-outline border text-uppercase">{{ __('frontend.button.edit') }}</a>
                                                 </div>
                                             </div>
                                             @if (!empty($additional_driver))
@@ -246,10 +246,14 @@
                                             @endif
                                         </div>
                                     </div>
-                                    <div id="policy_holder-card" class="card bg-light rounded mt-4">
+                                    <div id="policy-holder-card" class="card bg-light rounded mt-4">
                                         <div class="card-body">
-                                            <h4 class="card-title fw-bold border-bottom border-4 pb-3">{{ __('frontend.motor.payment_summary_page.policy_holder') }}</h4>
-                                            <a href="{{ route('motor.policy-holder') }}" class="btn btn-outline text-uppercase">{{ __('frontend.button.edit') }}</a>
+                                            <div class="row">
+                                                <div class="col-12 d-flex justify-content-between">
+                                                    <h4 class="card-title fw-bold border-bottom border-4 pb-3">{{ __('frontend.motor.payment_summary_page.policy_holder') }}</h4>
+                                                    <a href="{{ route('motor.policy-holder') }}" class="btn btn-outline border text-uppercase">{{ __('frontend.button.edit') }}</a>
+                                                </div>
+                                            </div>
                                             <div class="row">
                                                 <div class="col-12 col-lg-6">
                                                     <table class="table table-borderless">
@@ -269,7 +273,7 @@
                                                         </tr>
                                                         <tr>
                                                             <td>{{ __('frontend.fields.email') }}</td>
-                                                            <td class="text-uppercase text-end">{{ $policy_holder->email }}</td>
+                                                            <td class="text-uppercase text-end">{{ $policy_holder->email_address }}</td>
                                                         </tr>
                                                         <tr>
                                                             <td>{{ __('frontend.fields.address') }}</td>
