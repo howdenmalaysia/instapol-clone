@@ -214,7 +214,9 @@
         let motor = JSON.parse($('#motor').val());
 
         $(() => {
-            $('#btn-next').on('click', () => {
+            $('#btn-next').on('click', (e) => {
+                $(e.target).toggleClass('loadingButton');
+
                 let form = $('#policy-holder-form');
 
                 if(!form.parsley().validate()) {
@@ -240,7 +242,8 @@
                     motor.quotation = res.data.quotation;
 
                     $('#motor').val(JSON.stringify(motor));
-
+                    $(e.target).removeClass('loadingButton');
+                    
                     form.submit();
                 }).catch((err) => {
                     console.log(err);
