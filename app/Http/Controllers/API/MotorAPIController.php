@@ -354,7 +354,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             InsuranceHolder::updateOrCreate([
                 'insurance_id' => $insurance->id
             ], [
-                'name' => $input->name,
+                'name' => strtoupper($input->name),
                 'id_type_id' => $input->id_type,
                 'id_number' => $input->id_number,
                 'nationality' => 'MYS',
@@ -364,7 +364,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
                 'phone_code' => $input->phone_code,
                 'phone_number' => $input->phone_number,
                 'email_address' => $input->email,
-                'occupation' => $input->occupation,
+                'occupation' => strtoupper($input->occupation),
                 'created_by' => $user->id,
                 'updated_by' => $user->id,
             ]);
@@ -373,12 +373,12 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             InsuranceAddress::updateOrCreate([
                 'insurance_id' => $insurance->id
             ], [
-                'unit_no' => $input->unit_no ?? null,
-                'building_name' => $input->building_name ?? null,
-                'address_one' => $input->address_one,
-                'address_two' => $input->address_two,
-                'city' => $input->city,
-                'state' => $input->state,
+                'unit_no' => strtoupper($input->unit_no ?? null),
+                'building_name' => strtoupper($input->building_name ?? null),
+                'address_one' => strtoupper($input->address_one),
+                'address_two' => strtoupper($input->address_two),
+                'city' => strtoupper($input->city),
+                'state' => strtoupper($input->state),
                 'postcode' => $input->postcode,
                 'created_by' => $user->id,
                 'updated_by' => $user->id,
@@ -389,7 +389,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
                 'insurance_id' => $insurance->id
             ], [
                 'vehicle_state_id' => $postcode->state->id,
-                'vehicle_number' => $input->vehicle_number,
+                'vehicle_number' => strtoupper($input->vehicle_number),
                 'chassis_number' => $input->vehicle->extra_attribute->chassis_number,
                 'engine_number' => $input->vehicle->extra_attribute->engine_number,
                 'make' => $input->vehicle->make,
@@ -431,22 +431,37 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             }
 
             // 7. Update or Insert to Insurance Motor PA Table
-            // // 8. Update or Insert to Insurance Motor Roadtax Table
-            // if(!empty()) {
-            //     InsuranceMotorRoadtax::updateOrCreate([
-            //         'insurance_id' => $insurance->id
-            //     ], [
-            //         'roadtax_delivery_region_id',
-            //         'roadtax_renewal_fee',
-            //         'e_service_fee',
-            //         'tax',
-            //         'issued',
-            //         'tracking_code',
-            //         'admin_charge',
-            //         'success',
-            //         'active',
-            //     ]);
-            // }
+            // 8. Update or Insert to Insurance Motor Roadtax Table
+            if(!empty($motor->roadtax)) {
+                $region = Postcode::with(['state'])->findOrFail($request->postcode)->first()->state->region;
+
+                if($region === 'East') {
+                    $delivery_type = RoadtaxDeliveryType::where('description', RoadtaxDeliveryType::EM)->first();
+                } else {
+                    if((int) $request->postcode >= 40000 && (int) $request->postcode <= 68100) {
+                        $delivery_type = RoadtaxDeliveryType::where('description', RoadtaxDeliveryType::KV)->first();
+                    } else {
+                        $delivery_type = RoadtaxDeliveryType::where('description', RoadtaxDeliveryType::OTHERS)->first();
+                    }
+                }
+
+                InsuranceMotorRoadtax::updateOrCreate([
+                    'insurance_id' => $insurance->id
+                ], [
+                    'roadtax_delivery_type_id' => $delivery_type->id,
+                    'roadtax_renewal_fee' => $motor->roadtax->roadtax_price,
+                    'myeg_fee' => $motor->roadtax->myeg_fee,
+                    'e_service_fee' => $motor->roadtax->eservice_fee,
+                    'service_tax' => $motor->roadtax->sst,
+                    'recipient_name' => strtoupper($motor->roadtax->recipient_name),
+                    'recipient_phone_number' => $motor->roadtax->recipient_phone_number,
+                    'recipient_address_one' => strtoupper($motor->roadtax->address_one),
+                    'recipient_address_two' => strtoupper($motor->roadtax->address_two),
+                    'recipient_postcode' => $motor->roadtax->postcode,
+                    'recipient_city' => strtoupper($motor->roadtax->city),
+                    'recipient_state' => strtoupper($motor->roadtax->state),
+                ]);
+            }
 
             // 9. Delete Existing Records
             InsuranceMotorDriver::where('insurance_motor_id', $insurance_motor->id)->delete();
