@@ -63,9 +63,20 @@ body {
     
     // Home Page
     #landing-banner {
+        .modal-content {
+            display: contents;
+        }
+
         .btn-close {
-            right: 10px;
+            right: 210px;
             top: 10px;
+        }
+
+        @media (max-width: 991px) {
+            .btn-close {
+                right: 135px;
+                top: 10px;
+            }
         }
     }
 
