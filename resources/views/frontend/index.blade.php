@@ -3,10 +3,11 @@
 @section('title', implode(' | ', [config('app.name'), __('frontend.general.insurance_comparison'), __('frontend.general.get_quotes_for_insurance')]))
 
 @section('content')
-    <x-banner-modal image="{{ asset('images/banner/roadtax_2.png') }}" />
+    <x-banner-modal image="{{ asset('images/banner/main.png') }}" />
     <div class="container-fluid">
         <div class="row">
             <div class="col-12 px-0">
+                {{dd(File::glob(public_path('images\banner\*')))}}
                 <x-image-carousel id="promo-carousel" interval="7000" :images="File::glob(public_path('images\banner\*'))" />
                 <div class="products">
                     <div class="container product-wrapper mt-n5">

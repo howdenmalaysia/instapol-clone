@@ -21,7 +21,8 @@
 @push('after-scripts')
     <script>
         $(() => {
-            $('.step-btn').on('click', (e) => {
+            $('.step-trigger').on('click', (e) => {
+                console.log(e.target);
                 let step = $(e.target).data('index') + 1;
                 let url = '';
 
