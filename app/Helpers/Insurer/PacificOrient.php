@@ -48,8 +48,10 @@ class PacificOrient implements InsurerLibraryInterface
 
     private const SOAP_ACTION_DOMAIN = 'http://tempuri.org';
 
-    public function __construct()
+    public function __construct(string $company_id)
     {
+        $this->company_id = $company_id;
+        
         $this->agent_code = config('insurer.config.pno.agent_code');
         $this->user_id = config('insurer.config.pno.user_id');
         $this->host = config('insurer.config.pno.host');
@@ -716,7 +718,7 @@ class PacificOrient implements InsurerLibraryInterface
 
         // Log the Request to DB
         $log = APILogs::create([
-            'insurance_company_id' => config('insurer.config.pno.id'), // Hardcoded Insurance Company ID
+            'insurance_company_id' => $this->company_id,
             'method' => $method,
             'domain' => $this->host,
             'path' => $path,
