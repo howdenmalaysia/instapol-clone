@@ -46,8 +46,11 @@ class BerjayaSompo implements InsurerLibraryInterface
     private const CART_AMOUNT_LIST = [50, 100, 200];
     private const CART_DAY_LIST = [7, 14, 21];
 
-    public function __construct()
+    public function __construct(int $insurer_id, string $insurer_name)
     {
+        $this->company_id = $insurer_id;
+        $this->company_name = $insurer_name;
+        
         $this->agent_code = config('insurer.config.bsib.agent_code');
         $this->host = config('insurer.config.bsib.host');
         $this->client_key = config('insurer.config.bsib.client_id');
