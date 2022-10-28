@@ -31,6 +31,7 @@ use App\Models\Motor\VehicleBodyType;
 use App\Models\Postcode;
 use App\Models\RoadTaxMatrix;
 use App\Models\User;
+use BerjayaSompo;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -694,6 +695,11 @@ class MotorAPIController extends Controller implements MotorAPIInterface
         switch($product_id) {
             case 10: {
                 return new PacificOrient($insurer->id, $insurer->name);
+
+                break;
+            }
+            case 16: {
+                return new BerjayaSompo($insurer->id, $insurer->name);
 
                 break;
             }

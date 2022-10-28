@@ -23,6 +23,7 @@
         "milon/barcode": "^9.0",
         "spatie/data-transfer-object": "^2.8",
         "spatie/laravel-permission": "^5.5",
+        "web-token/jwt-framework": "^2.1",
         "wyrihaximus/react-guzzle-psr7": "^2.1"
     },
     "require-dev": {

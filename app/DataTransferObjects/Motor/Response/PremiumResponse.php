@@ -78,4 +78,10 @@ class PremiumResponse extends DataTransferObject
 
     /** @var float|null */
     public $tariff_premium;
+
+    /** @var string|null */
+    public $quotation_number;
+
+    /** @var object|null */
+    public $personal_accident;
 }

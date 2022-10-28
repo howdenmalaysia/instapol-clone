@@ -3,10 +3,11 @@
 return [
     // General Errors
     'api_error' => ':company Error [:message] (Fault Code: :code)',
-    'empty_response' => 'Unable to get :company response (empty response)',
+    'empty_response' => 'Unable to get :company response (Empty Response)',
     'xml_error' => 'Failed to load response data',
     'unsupported_id_type' => 'Unsupported ID Type.',
     'variant_not_match' => 'Variant combination does not match.',
+    'file_not_found' => 'Mapping file not found. (Mapping File Type: :type)',
 
     // Underwriting Related
     'gap_in_cover' => 'It seems like your car insurance has expired more than :days days. Please WhatsApp us for help.',
