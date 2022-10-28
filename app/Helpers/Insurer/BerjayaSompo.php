@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Helpers\Insurer;
+
 use AESKW\A256KW;
 use App\DataTransferObjects\Motor\CartList;
 use App\DataTransferObjects\Motor\ExtraCover;
