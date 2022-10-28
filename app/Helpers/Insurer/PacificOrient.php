@@ -21,10 +21,11 @@ use Illuminate\Support\Str;
 
 class PacificOrient implements InsurerLibraryInterface
 {
-    protected $token;
-    protected $agent_code;
-    protected $user_id;
-    protected $host;
+    private string $company_id;
+    private string $token;
+    private string $agent_code;
+    private string $user_id;
+    private string $host;
 
     // Settings
     private const PRODUCT = 'PC'; // Private Comprehensive
