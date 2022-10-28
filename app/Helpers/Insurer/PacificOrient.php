@@ -83,8 +83,6 @@ class PacificOrient implements InsurerLibraryInterface
             if($gap_in_cover > self::ALLOWED_GAP_IN_COVER) {
                 return $this->abort(__('api.gap_in_cover', ['days' => abs($gap_in_cover)]), config('setting.response_codes.gap_in_cover'));
             }
-
-            $inception_date = $today;
         } else if($today->addMonths(2)->lessThan($inception_date)) {
             return $this->abort(__('api.earlier_renewal'), config('setting.response_codes.earlier_renewal'));
         }
