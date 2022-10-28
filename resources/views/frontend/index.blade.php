@@ -3,7 +3,7 @@
 @section('title', implode(' | ', [config('app.name'), __('frontend.general.insurance_comparison'), __('frontend.general.get_quotes_for_insurance')]))
 
 @section('content')
-    <x-banner-modal image="{{ asset('images/banner/main.png') }}" />
+    <x-banner-modal image="{{ asset('images/banner/roadtax_2.png') }}" />
     <div class="container-fluid">
         <div class="row">
             <div class="col-12 px-0">
