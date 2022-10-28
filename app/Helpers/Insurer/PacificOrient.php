@@ -91,7 +91,7 @@ class PacificOrient implements InsurerLibraryInterface
 
         // 2. Check Sum Insured
         $sum_insured = formatNumber($vix->response->sum_insured, 0);
-        if($sum_insured < self::MIN_SUM_INSURED || $sum_insured > self::MAX_SUM_INSURED) {
+        if($sum_insured < self::MIN_SUM_INSURED || roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_UP, true) > self::MAX_SUM_INSURED) {
             return $this->abort(__('api.sum_insured_referred_between', [
                 'min_sum_insured' => self::MIN_SUM_INSURED,
                 'max_sum_insured' => self::MAX_SUM_INSURED
