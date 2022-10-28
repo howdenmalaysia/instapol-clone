@@ -50,7 +50,7 @@ class BerjayaSompo implements InsurerLibraryInterface
     {
         $this->company_id = $insurer_id;
         $this->company_name = $insurer_name;
-        
+
         $this->agent_code = config('insurer.config.bsib.agent_code');
         $this->host = config('insurer.config.bsib.host');
         $this->client_key = config('insurer.config.bsib.client_id');

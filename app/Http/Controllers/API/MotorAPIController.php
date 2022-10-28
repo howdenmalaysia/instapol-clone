@@ -53,7 +53,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
         $postcode = $this->getPostcodeDetails($request->postcode);
 
         $data = new APIData([
-            'id_type' => $request->id_type,
+            'id_type' => intval($request->id_type),
             'id_number' => $request->id_number,
             'vehicle_number' => strtoupper($request->vehicle_number),
             'postcode' => $postcode->postcode,
