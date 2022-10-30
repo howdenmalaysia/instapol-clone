@@ -447,7 +447,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
                 }
 
                 InsuranceMotorRoadtax::updateOrCreate([
-                    'insurance_id' => $insurance->id
+                    'insurance_motor_id' => $insurance_motor->id
                 ], [
                     'roadtax_delivery_type_id' => $delivery_type->id,
                     'roadtax_renewal_fee' => $motor->roadtax->roadtax_price,
