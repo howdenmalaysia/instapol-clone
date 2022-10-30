@@ -15,13 +15,21 @@ class InsuranceMotorRoadtax extends Model
         'insurance_motor_id',
         'roadtax_delivery_region_id',
         'roadtax_renewal_fee',
+        'myeg_fee',
         'e_service_fee',
-        'tax',
+        'service_tax',
         'issued',
         'tracking_code',
         'admin_charge',
         'success',
         'active',
+        'recipient_name',
+        'recipient_phone_number',
+        'recipient_address_one',
+        'recipient_address_two',
+        'recipient_postcode',
+        'recipient_city',
+        'recipient_state',
         'updated_at'
     ];
 
