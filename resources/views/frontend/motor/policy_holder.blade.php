@@ -263,7 +263,7 @@
                     console.log(res);
 
                     $('#insuance-quote').val(res.data.insurance_code);
-                    $('#quotation').val(JOSN.stringify(res.data.quotation));
+                    $('#quotation').val(JSON.stringify(res.data.quotation));
 
                     $(e.target).removeClass('loadingButton');
 
