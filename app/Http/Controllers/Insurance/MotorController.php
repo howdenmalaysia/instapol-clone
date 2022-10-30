@@ -14,6 +14,7 @@ use App\Models\Motor\InsuranceHolder;
 use App\Models\Motor\InsuranceMotor;
 use App\Models\Motor\Product;
 use App\Models\Motor\Quotation;
+use App\Models\Motor\RoadtaxDeliveryType;
 use App\Models\Postcode;
 use App\Models\Relationship;
 use App\Models\State;
@@ -339,10 +340,12 @@ class MotorController extends Controller
         }
 
         if($insurance->insurance_status === Insurance::STATUS_NEW_QUOTATION || $insurance->insurance_status === Insurance::STATUS_PAYMENT_FAILURE) {
+            // Get Policy Holder Details
             $policy_holder = InsuranceHolder::with(['id_type'])
                 ->where('insurance_id', $insurance->id)
                 ->first();
 
+            // Get POlicy Holder Address
             $address = InsuranceAddress::where('insurance_id', $insurance->id)
                 ->first();
 
@@ -365,16 +368,22 @@ class MotorController extends Controller
 
             $policy_holder->address = $formatted_address;
 
+            // Get Vehicle Details
             $motor = InsuranceMotor::with(['driver', 'roadtax'])
                 ->where('insurance_id', $insurance->id)
                 ->first();
 
+            // Get Selected Extra Covers Details
             $extra_cover = InsuranceExtraCover::where('insurance_id', $insurance->id)
                 ->first();
 
+            // Get Product Details
             $product = Product::with(['insurance_company', 'product_type'])
                 ->where('id', $insurance->product_id)
                 ->first();
+
+            // Get Roadtax Delivery Fee
+            $motor->roadtax->delivery_fee = RoadtaxDeliveryType::find($motor->roadtax->roadtax_delivery_region_id)->amount;
         } else if($insurance->insurance_status === Insurance::STATUS_PAYMENT_ACCEPTED || $insurance->insurance_status === Insurance::STATUS_POLICY_ISSUED) {
             return redirect()->route('motor.payment-success');
         } else {

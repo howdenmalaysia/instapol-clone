@@ -200,7 +200,7 @@
                                                         </div>
                                                         <div class="row">
                                                             <div class="col-12 col-lg-6">{{ __('frontend.price_card.service_tax') }}</div>
-                                                            <div class="col-12 col-lg-6 text-end">{{ $motor->roadtax->tax }}</div>
+                                                            <div class="col-12 col-lg-6 text-end">{{ $motor->roadtax->service_tax }}</div>
                                                         </div>
                                                     </div>
                                                 </div>
