@@ -196,6 +196,8 @@
                             </div>
                             <div class="hidden">
                                 <input type="hidden" id="motor" name="motor" value='@json(session('motor'))' />
+                                <input type="hidden" id="insurance-code" name="insurance_code" />
+                                <input type="hidden" id="quotation" name="quotation" />
                             </div>
                         </form>
                     </div>
@@ -260,10 +262,9 @@
                 }).then((res) => {
                     console.log(res);
 
-                    motor.insurance_code = res.data.insurance_code;
-                    motor.quotation = res.data.quotation;
+                    $('#insuance-quote').val(res.data.insurance_code);
+                    $('#quotation').val(JOSN.stringify(res.data.quotation));
 
-                    $('#motor').val(JSON.stringify(motor));
                     $(e.target).removeClass('loadingButton');
 
                     form.submit();
