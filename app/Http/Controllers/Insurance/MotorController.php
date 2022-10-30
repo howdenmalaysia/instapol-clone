@@ -254,7 +254,7 @@ class MotorController extends Controller
         }
 
         if(!empty($request->roadtax)) {
-            $session->roadtax = $request->roadtax;
+            $session->roadtax = json_decode($request->roadtax);
         }
 
         $request->session()->put('motor', $session);
