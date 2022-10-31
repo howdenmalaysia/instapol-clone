@@ -22,7 +22,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-12">
+                <div class="col-12 p-0">
                     <form action="{{ route('motor.index') }}" method="POST" id="motor-details-form" data-parsley-validate>
                         @csrf
                         <section id="motor-details" class="mb-4 nm-10">
