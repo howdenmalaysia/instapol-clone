@@ -6,6 +6,7 @@ use App\Http\Controllers\API\MotorAPIController;
 use App\Models\EGHLLog;
 use App\Models\InsuranceRemark;
 use App\Models\Motor\Insurance;
+use App\Models\Motor\Product;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -18,6 +19,11 @@ class PaymentController extends Controller
         Log::info("Received Payment Request: " . json_encode($request->input()));
 
         $insurance = Insurance::findByInsuranceCode($request->insurance_code);
+
+        // Get Product Details
+        $product = Product::with('product_type')
+            ->where('id', $insurance->product_id)
+            ->first();
 
         if(empty($insurance)) {
             return __('api.insurance_record_not_match');
@@ -51,6 +57,7 @@ class PaymentController extends Controller
             'customer_phone_number' => $insurance->holder->phone_number,
             'language' => 'en',
             'timeout' => 780,
+            'param6' => Str::snake(Str::lower(str_replace('-', '', $product->product_type->name))),
         ];
 
         $hash = [
@@ -199,6 +206,6 @@ class PaymentController extends Controller
             }
         }
 
-        return 'OK';
+        return redirect()->route($request->input('Param6') . '.payment-success');
     }
 }

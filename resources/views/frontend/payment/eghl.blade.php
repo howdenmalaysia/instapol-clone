@@ -31,6 +31,7 @@
             <input type="hidden" name="LanguageCode" value="{{ $language }}">
             <input type="hidden" name="PageTimeout" value="{{ $timeout }}">
             <input type="hidden" name="IssuingBank" value="{{ strtolower(session('referral_code')) === 'mcash' ? 'MCash' : '' }}">
+            <input type="hidden" name="Param6" value="{{ $param6 }}">
         </form>
     </body>
 
