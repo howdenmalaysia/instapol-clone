@@ -64,16 +64,6 @@ class Insurance extends Model
         return $this->hasOne(InsuranceAddress::class);
     }
 
-    public function driver()
-    {
-        return $this->hasMany(InsuranceMotorDriver::class);
-    }
-
-    public function roadtax()
-    {
-        return $this->hasOne(InsuranceMotorRoadtax::class);
-    }
-
     public function promo()
     {
         return $this->hasOne(InsurancePromo::class);
@@ -91,7 +81,6 @@ class Insurance extends Model
                 'extra_cover',
                 'holder',
                 'motor',
-                'roadtax',
             ])
             ->where('insurance_code', $insurance_code)
             ->first();
