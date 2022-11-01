@@ -46,9 +46,9 @@ class PaymentController extends Controller
             'amount' => number_format($insurance->amount, 2, '.', ''),
             'currency' => 'MYR',
             'ip' => route('frontend.index'),
-            'customer_name' => $insurance->policy_holder->name,
-            'customer_email' => $insurance->policy_holder->email,
-            'customer_phone_number' => $insurance->policy_holder->phone_number,
+            'customer_name' => $insurance->holder->name,
+            'customer_email' => $insurance->holder->email,
+            'customer_phone_number' => $insurance->holder->phone_number,
             'language' => 'en',
             'timeout' => 780,
         ];
@@ -163,7 +163,7 @@ class PaymentController extends Controller
                     // Policy Submission
                     $data = (object) [
                         'insurance_code' => $insurance->insurance_code,
-                        'id_number' => $insurance->policy_holder->ic_number,
+                        'id_number' => $insurance->holder->ic_number,
                         'payment_method' => $request->input('PymtMethod'),
                         'payment_amount' => $request->input('Amount'),
                         'payment_date' => Carbon::now()->toDateTimeString(),
