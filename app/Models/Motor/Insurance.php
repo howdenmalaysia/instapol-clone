@@ -86,16 +86,7 @@ class Insurance extends Model
 
     public static function findByInsuranceCode(string $insurance_code) : self
     {
-        return self::with([
-            'product',
-            'payment',
-            'policy_holder',
-            'motor',
-            'extra_cover',
-            'driver',
-            'roadtax',
-        ])
-            ->where('insurance_code', $insurance_code)
+        return self::where('insurance_code', $insurance_code)
             ->first();
     }
 }
