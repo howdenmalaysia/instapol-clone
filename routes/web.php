@@ -64,7 +64,7 @@ Route::middleware(['web'])->group(function() {
 });
 
 Route::group(['prefix' => 'payment'], function() {
-    Route::get('/insurance', [PaymentController::class, 'store'])->name('payment.store');
+    Route::post('/insurance', [PaymentController::class, 'store'])->name('payment.store');
     Route::match(['get', 'post'], '/callback', [PaymentController::class, 'callback'])->name('payment.callback');
 });
 
