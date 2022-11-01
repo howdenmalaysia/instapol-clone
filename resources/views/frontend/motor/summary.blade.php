@@ -324,10 +324,10 @@
                 <form action="{{ route('payment.store') }}" method="POST" id="payment-form">
                     @csrf
                     <div class="hidden">
-                        <input type="hidden" id="motor" name="motor" value='@json(session('motor'))' />
-                        <input type="hidden" id="description" name="description" value="{{ $product->product_type->description . ' : ' . $motor->vehicle_number }}" />
-                        <input type="hidden" id="total-payable" name="total_payable" value="{{ $insurance->amount }}" />
-                        <input type="hidden" id="insurance-code" name="insurance_code" value="{{ $insurance->insurance_code }}" />
+                        <input type="hidden" name="motor" value='@json(session('motor'))' />
+                        <input type="hidden" name="description" value="{{ $product->product_type->description . ' : ' . $motor->vehicle_number }}" />
+                        <input type="hidden" name="total_payable" value="{{ $insurance->amount }}" />
+                        <input type="hidden" name="insurance_code" value="{{ $insurance->insurance_code }}" />
                     </div>
                 </form>
                 <x-modal maxWidth="md" id="agree-modal" headerClass="bg-primary text-white">
@@ -336,7 +336,7 @@
                         <p>{{ str_replace(':insured_name', $policy_holder->name, __('frontend.motor.payment_summary_page.confirm_modal.line_1')) }}</p>
                         <p>{{ '- ' . __('frontend.motor.payment_summary_page.confirm_modal.line_2') }}</p>
                         <p>{!! '- ' . str_replace(':pds', '', __('frontend.motor.payment_summary_page.confirm_modal.line_3')) !!}</p>
-                        <div id="tnc-radio">
+                        <div id="tnc-radio" class="text-center my-4">
                             <div class="form-check form-check-inline">
                                 <input type="radio" id="agree" class="form-check-input" value="agree">
                                 <label for="agree" class="form-check-label">{{ __('frontend.general.agree') }}</label>
