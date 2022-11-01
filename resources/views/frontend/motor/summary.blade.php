@@ -3,7 +3,7 @@
 @section('title', implode(' | ', [config('app.name'), __()]))
     
 @section('content')
-    <section class="pt-0">
+    <section id="payment-summary" class="pt-0">
         <div class="container-fluid header d-flex flex-column justify-content-center">
             <x-steps current-step="5" />
         </div>
