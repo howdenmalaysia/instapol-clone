@@ -322,6 +322,7 @@
                     </div>
                 </div>
                 <form action="{{ route('payment.store') }}" method="POST" id="payment-form">
+                    @csrf
                     <div class="hidden">
                         <input type="hidden" id="motor" name="motor" value='@json(session('motor'))' />
                         <input type="hidden" id="description" name="description" value="{{ $product->product_type->name . ' : ' . $motor->vehicle_number }}" />
