@@ -47,15 +47,15 @@ class PaymentController extends Controller
             'currency' => 'MYR',
             'ip' => route('frontend.index'),
             'customer_name' => $insurance->holder->name,
-            'customer_email' => $insurance->holder->email,
+            'customer_email' => $insurance->holder->email_address,
             'customer_phone_number' => $insurance->holder->phone_number,
             'language' => 'en',
             'timeout' => 780,
         ];
 
         $hash = [
-            config('setting.payment.eghl.merchant_password'),
-            config('setting.payment.eghl.merchant_id'),
+            config('setting.payment.gateway.merchant_password'),
+            config('setting.payment.gateway.merchant_id'),
             $data['payment_id'],
             $data['return_url'],
             $data['callback_url'],
@@ -76,7 +76,7 @@ class PaymentController extends Controller
             'payment_description' => $payment_description,
             'amount' => $data['amount'],
             'currency_code' => $data['currency'],
-            'hash' => $hash,
+            'hash' => $data['hash'],
         ]);
 
         Log::info("Request Logged Successfully.");
@@ -102,9 +102,9 @@ class PaymentController extends Controller
 
         // verify hash value 2
         $return_hash = [
-            config('setting.payment.eghl.merchant_password'),
+            config('setting.payment.gateway.merchant_password'),
             $request->input('TxnID'),
-            config('setting.payment.eghl.merchant_id'),
+            config('setting.payment.gateway.merchant_id'),
             $request->input('PaymentID'),
             $request->input('TxnStatus'),
             $request->input('Amount'),
