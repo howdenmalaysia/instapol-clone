@@ -94,23 +94,23 @@
                                                 <div class="col-12 col-lg-6">
                                                     <table class="table table-borderless">
                                                         <tr>
-                                                            <td>{{ __('frontend.motor.vehicle_details.make') }}</td>
+                                                            <th>{{ __('frontend.motor.vehicle_details.make') }}</th>
                                                             <td class="text-end">{{ $motor->make }}</td>
                                                         </tr>
                                                         <tr>
-                                                            <td>{{ __('frontend.motor.vehicle_details.model') }}</td>
+                                                            <th>{{ __('frontend.motor.vehicle_details.model') }}</th>
                                                             <td class="text-end">{{ $motor->model }}</td>
                                                         </tr>
                                                         <tr>
-                                                            <td>{{ __('frontend.motor.vehicle_details.variant') }}</td>
+                                                            <th>{{ __('frontend.motor.vehicle_details.variant') }}</th>
                                                             <td class="text-end">{{ $motor->variant }}</td>
                                                         </tr>
                                                         <tr>
-                                                            <td>{{ __('frontend.motor.vehicle_details.chassis_number') }}</td>
+                                                            <th>{{ __('frontend.motor.vehicle_details.chassis_number') }}</th>
                                                             <td class="text-end">{{ $motor->chassis_number }}</td>
                                                         </tr>
                                                         <tr>
-                                                            <td>{{ __('frontend.motor.vehicle_details.engine_number') }}</td>
+                                                            <th>{{ __('frontend.motor.vehicle_details.engine_number') }}</th>
                                                             <td class="text-end">{{ $motor->engine_number }}</td>
                                                         </tr>
                                                     </table>
@@ -118,19 +118,19 @@
                                                 <div class="col-12 col-lg-6">
                                                     <table class="table table-borderless">
                                                         <tr>
-                                                            <td>{{ __('frontend.motor.vehicle_details.engine_capacity') }}</td>
+                                                            <th>{{ __('frontend.motor.vehicle_details.engine_capacity') }}</th>
                                                             <td class="text-end">{{ $motor->engine_capacity }}</td>
                                                         </tr>
                                                         <tr>
-                                                            <td>{{ __('frontend.motor.vehicle_details.seating_capacity') }}</td>
+                                                            <th>{{ __('frontend.motor.vehicle_details.seating_capacity') }}</th>
                                                             <td class="text-end">{{ $motor->seating_capacity }}</td>
                                                         </tr>
                                                         <tr>
-                                                            <td>{{ __('frontend.motor.vehicle_details.year') }}</td>
+                                                            <th>{{ __('frontend.motor.vehicle_details.year') }}</th>
                                                             <td class="text-end">{{ $motor->manufactured_year }}</td>
                                                         </tr>
                                                         <tr>
-                                                            <td>{{ __('frontend.motor.vehicle_details.nvic') }}</td>
+                                                            <th>{{ __('frontend.motor.vehicle_details.nvic') }}</th>
                                                             <td class="text-end">{{ $motor->nvic }}</td>
                                                         </tr>
                                                     </table>
@@ -151,7 +151,7 @@
                                                     <div class="row">
                                                         <div class="col-12">
                                                             <div class="row">
-                                                                <div class="col-12 col-lg-6">{{ $_extra_cover->description }}</div>
+                                                                <div class="col-12 col-lg-6 ">{{ $_extra_cover->description }}</div>
                                                                 <div class="col-12 col-lg-6 text-end">{{ 'RM ' . number_format($_extra_cover->amount, 2) }}</div>
                                                             </div>
                                                         </div>
@@ -171,7 +171,7 @@
                                             @endif
                                         </div>
                                     </div>
-                                    <div id="road-tax" class="card bg-light rounded mt-4">
+                                    <div id="road-tax" class="card bg-light rounded mt-4"> 
                                         <div class="card-body">
                                             <div class="row">
                                                 <div class="col-12 d-flex justify-content-between align-items-start">
@@ -183,23 +183,23 @@
                                                 <div class="row border-bottom pb-3">
                                                     <div class="col-12">
                                                         <div class="row">
-                                                            <div class="col-12 col-lg-6">{{ __('frontend.motor.add_ons_page.road_tax_fee') }}</div>
+                                                            <div class="col-12 col-lg-6 fw-bold">{{ __('frontend.motor.add_ons_page.road_tax_fee') }}</div>
                                                             <div class="col-12 col-lg-6 text-end">{{ $motor->roadtax->roadtax_renewal_fee }}</div>
                                                         </div>
                                                         <div class="row">
-                                                            <div class="col-12 col-lg-6">{{ __('frontend.motor.add_ons_page.myeg_fee') }}</div>
+                                                            <div class="col-12 col-lg-6 fw-bold">{{ __('frontend.motor.add_ons_page.myeg_fee') }}</div>
                                                             <div class="col-12 col-lg-6 text-end">{{ $motor->roadtax->myeg_fee }}</div>
                                                         </div>
                                                         <div class="row">
-                                                            <div class="col-12 col-lg-6">{{ __('frontend.motor.add_ons_page.eservice_fee') }}</div>
+                                                            <div class="col-12 col-lg-6 fw-bold">{{ __('frontend.motor.add_ons_page.eservice_fee') }}</div>
                                                             <div class="col-12 col-lg-6 text-end">{{ $motor->roadtax->e_service_fee }}</div>
                                                         </div>
                                                         <div class="row">
-                                                            <div class="col-12 col-lg-6">{{ __('frontend.motor.add_ons_page.delivery_fee') }}</div>
+                                                            <div class="col-12 col-lg-6 fw-bold">{{ __('frontend.motor.add_ons_page.delivery_fee') }}</div>
                                                             <div class="col-12 col-lg-6 text-end">{{ $motor->roadtax->delivery_fee }}</div>
                                                         </div>
                                                         <div class="row">
-                                                            <div class="col-12 col-lg-6">{{ __('frontend.price_card.service_tax') }}</div>
+                                                            <div class="col-12 col-lg-6 fw-bold">{{ __('frontend.price_card.service_tax') }}</div>
                                                             <div class="col-12 col-lg-6 text-end">{{ $motor->roadtax->service_tax }}</div>
                                                         </div>
                                                     </div>
@@ -207,15 +207,15 @@
                                                 <div class="row mt-3">
                                                     <h5 class="fw-bold">{{ __('frontend.motor.payment_summary_page.recipient_info') }}</h5>
                                                     <div class="row">
-                                                        <div class="col-6 col-lg-3">{{ __('frontend.fields.recipient_name') }}</div>
-                                                        <div class="col-6 col-lg-3 text-end">{{ '' }}</div>
+                                                        <div class="col-6 col-lg-3 fw-bold">{{ __('frontend.fields.recipient_name') }}</div>
+                                                        <div class="col-6 col-lg-3 text-end">{{ $motor->roadtax->recipient_name }}</div>
                                                     </div>
                                                     <div class="row">
-                                                        <div class="col-6 col-lg-3">{{ __('frontend.fields.phone_number') }}</div>
-                                                        <div class="col-6 col-lg-3 text-end">{{ '' }}</div>
+                                                        <div class="col-6 col-lg-3 fw-bold">{{ __('frontend.fields.phone_number') }}</div>
+                                                        <div class="col-6 col-lg-3 text-end">{{ $motor->roadtax->recipient_phone_number }}</div>
                                                     </div>
                                                     <div class="row">
-                                                        <div class="col-6 col-lg-3">{{ __('frontend.fields.address') }}</div>
+                                                        <div class="col-6 col-lg-3 fw-bold">{{ __('frontend.fields.address') }}</div>
                                                         <div class="col-6 col-lg-3 text-end">{{ '' }}</div>
                                                     </div>
                                                 </div>
@@ -238,9 +238,9 @@
                                             </div>
                                             @if (!empty($additional_driver))
                                                 <div class="row">
-                                                    <div class="col-4">{{ __('frontend.fields.name') }}</div>
-                                                    <div class="col-4">{{ __('frontend.fields.id_number') }}</div>
-                                                    <div class="col-4">{{ __('frontend.fields.relationship') }}</div>
+                                                    <div class="col-4 fw-bold">{{ __('frontend.fields.name') }}</div>
+                                                    <div class="col-4 fw-bold">{{ __('frontend.fields.id_number') }}</div>
+                                                    <div class="col-4 fw-bold">{{ __('frontend.fields.relationship') }}</div>
                                                 </div>
                                                 @foreach ($additional_driver as $driver)
                                                     <div class="row">
@@ -270,25 +270,25 @@
                                                 <div class="col-12 col-lg-6">
                                                     <table class="table table-borderless">
                                                         <tr>
-                                                            <td>{{ __('frontend.fields.name') }}</td>
+                                                            <th>{{ __('frontend.fields.name') }}</th>
                                                             <td class="text-uppercase text-end">{{ $policy_holder->name }}</td>
                                                         </tr>
                                                         <tr>
-                                                            <td>{{ __('frontend.fields.id_type') }}</td>
+                                                            <th>{{ __('frontend.fields.id_type') }}</th>
                                                             <td class="text-uppercase text-end">
                                                                 {{ $policy_holder->id_type_id === config('setting.id_type.nric_no') ? __('frontend.motor.nric') : __('frontend.motor.company_resgistration') }}
                                                             </td>
                                                         </tr>
                                                         <tr>
-                                                            <td>{{ __('frontend.fields.id_number') }}</td>
+                                                            <th>{{ __('frontend.fields.id_number') }}</th>
                                                             <td class="text-uppercase text-end">{{ $policy_holder->id_number }}</td>
                                                         </tr>
                                                         <tr>
-                                                            <td>{{ __('frontend.fields.email') }}</td>
+                                                            <th>{{ __('frontend.fields.email') }}</th>
                                                             <td class="text-uppercase text-end">{{ $policy_holder->email_address }}</td>
                                                         </tr>
                                                         <tr>
-                                                            <td>{{ __('frontend.fields.address') }}</td>
+                                                            <th>{{ __('frontend.fields.address') }}</th>
                                                             <td class="text-uppercase text-end">{{ $policy_holder->address }}</td>
                                                         </tr>
                                                     </table>
@@ -296,15 +296,15 @@
                                                 <div class="col-12 col-lg-6">
                                                     <table class="table table-borderless">
                                                         <tr>
-                                                            <td>{{ __('frontend.fields.dob') }}</td>
+                                                            <th>{{ __('frontend.fields.dob') }}</th>
                                                             <td class="text-end">{{ $policy_holder->date_of_birth }}</td>
                                                         </tr>
                                                         <tr>
-                                                            <td>{{ __('frontend.fields.gender') }}</td>
+                                                            <th>{{ __('frontend.fields.gender') }}</th>
                                                             <td class="text-end">{{ $policy_holder->gender }}</td>
                                                         </tr>
                                                         <tr>
-                                                            <td>{{ __('frontend.fields.phone_number') }}</td>
+                                                            <th>{{ __('frontend.fields.phone_number') }}</th>
                                                             <td class="text-end">{{ '+60' . $policy_holder->phone_number }}</td>
                                                         </tr>
                                                     </table>
@@ -329,7 +329,7 @@
                         <input type="hidden" id="insurance-code" name="insurance_code" value="{{ $insurance->insurance_code }}" />
                     </div>
                 </form>
-                <x-modal maxWidth="md" id="body-type-modal" headerClass="bg-primary text-white">
+                <x-modal maxWidth="md" id="agree-modal" headerClass="bg-primary text-white">
                     <x-slot name="title">{{ __('frontend.motor.payment_summary_page.confirm_modal.title') }}</x-slot>
                     <x-slot name="body">
                         <p>{{ str_replace(':insured_name', $policy_holder->name, __('frontend.motor.payment_summary_page.confirm_modal.line_1')) }}</p>
