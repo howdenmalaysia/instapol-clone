@@ -325,7 +325,7 @@
                     @csrf
                     <div class="hidden">
                         <input type="hidden" id="motor" name="motor" value='@json(session('motor'))' />
-                        <input type="hidden" id="description" name="description" value="{{ $product->product_type->name . ' : ' . $motor->vehicle_number }}" />
+                        <input type="hidden" id="description" name="description" value="{{ $product->product_type->description . ' : ' . $motor->vehicle_number }}" />
                         <input type="hidden" id="total-payable" name="total_payable" value="{{ $insurance->amount }}" />
                         <input type="hidden" id="insurance-code" name="insurance_code" value="{{ $insurance->insurance_code }}" />
                     </div>
