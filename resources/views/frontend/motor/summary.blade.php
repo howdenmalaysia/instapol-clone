@@ -363,6 +363,10 @@
 @push('after-scripts')
     <script>
         $(() => {
+            $('#btn-pay').on('click', () => {
+                $('#agree-modal').modal('show');
+            });
+
             $('#btn-pay-modal').on('click', () => {
                 $('#payment-form').submit();
             });
