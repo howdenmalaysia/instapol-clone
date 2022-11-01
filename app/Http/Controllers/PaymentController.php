@@ -45,7 +45,7 @@ class PaymentController extends Controller
             'callback_url' => route('payment.callback'),
             'amount' => number_format($insurance->amount, 2, '.', ''),
             'currency' => 'MYR',
-            'ip' => route('/'),
+            'ip' => route('frontend.index'),
             'customer_name' => $insurance->policy_holder->name,
             'customer_email' => $insurance->policy_holder->email,
             'customer_phone_number' => $insurance->policy_holder->phone_number,
