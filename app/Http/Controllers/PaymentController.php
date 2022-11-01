@@ -206,6 +206,8 @@ class PaymentController extends Controller
             }
         }
 
+        $request->session()->put($request->input('Param6'), $insurance->insurance_code);
+
         return redirect()->route($request->input('Param6') . '.payment-success');
     }
 }
