@@ -19,7 +19,7 @@ class PaymentController extends Controller
 
         $insurance = Insurance::findByInsuranceCode($request->insurance_code);
 
-        if(empty($insurance) || $insurance->isEmpty()) {
+        if(empty($insurance)) {
             return __('api.insurance_record_not_match');
         }
 
