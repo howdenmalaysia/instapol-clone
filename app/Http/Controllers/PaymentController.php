@@ -132,7 +132,7 @@ class PaymentController extends Controller
         switch ($request->input('TxnStatus')) {
             case '0': {
                 if ($insurance->insurance_status == Insurance::STATUS_NEW_QUOTATION || $insurance->insurance_status == Insurance::STATUS_PAYMENT_FAILURE) {
-                    if (floatval($insurance->total_payable) != floatval($request->input('Amount'))) {
+                    if (floatval($insurance->amount) != floatval($request->input('Amount'))) {
                         // Update Insurance Status
                         Insurance::find($insurance->id)
                             ->update([
