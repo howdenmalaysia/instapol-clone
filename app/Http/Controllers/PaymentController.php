@@ -41,7 +41,7 @@ class PaymentController extends Controller
             'payment_id' => $payment_id,
             'order_number' => 'Inv_' . $payment_id,
             'payment_description' => $payment_description,
-            'return_url' => route('motor.payment-summary'),
+            'return_url' => route('payment.callback'),
             'callback_url' => route('payment.callback'),
             'amount' => number_format($insurance->amount, 2, '.', ''),
             'currency' => 'MYR',
