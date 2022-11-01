@@ -23,7 +23,7 @@ class PaymentController extends Controller
             return __('api.insurance_record_not_match');
         }
 
-        if(round($insurance->amount, 2) !== round($request->total_payable)) {
+        if(round($insurance->amount, 2) !== round($request->total_payable, 2)) {
             return back()->with(['flash_danger' => __('api.total_payable_not_match') ]);
         }
 
