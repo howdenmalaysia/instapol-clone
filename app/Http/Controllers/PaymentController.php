@@ -27,7 +27,8 @@ class PaymentController extends Controller
             return back()->with(['flash_danger' => __('api.total_payable_not_match') ]);
         }
 
-        $payment_id = generatePaymentID(count($insurance->payment), $insurance->insurance_code);
+        $payment_attempts = EGHLLog::where('payment_id', 'LIKE', '%' . $insurance->insurance_code. '%')->count();
+        $payment_id = generatePaymentID($payment_attempts, $insurance->insurance_code);
         $payment_description = $insurance->product->insurance_company->name . ' - ' . $insurance->product->name;
 
         if(!empty($request->description)) {
