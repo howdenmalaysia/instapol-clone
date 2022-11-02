@@ -51,12 +51,12 @@ class Insurance extends Model
 
     public function holder()
     {
-        return $this->hasOne(InsuranceHolder::class, 'id', 'insurance_id');
+        return $this->hasOne(InsuranceHolder::class, 'insurance_id', 'id');
     }
 
     public function motor()
     {
-        return $this->hasOne(InsuranceMotor::class, 'id', 'insurance_id');
+        return $this->hasOne(InsuranceMotor::class, 'insurance_id', 'id');
     }
     
     public function address()
