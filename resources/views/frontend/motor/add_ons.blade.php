@@ -91,7 +91,7 @@
                                                         <small>{{ $_extra_cover->option_list->description . ':' }}</small>
                                                         <select id="{{ 'sum-insured-' . $_extra_cover->extra_cover_code }}" class="option-list" data-select data-extra-cover-code="{{ $_extra_cover->extra_cover_code }}">
                                                             @foreach ($_extra_cover->option_list->values as $option)
-                                                                <option value="{{ $option }}">{{ 'RM ' . $option }}</option>
+                                                                <option value="{{ $option }}" {{ $option === 1000 ? 'selected' : '' }}>{{ 'RM ' . $option }}</option>
                                                             @endforeach
                                                         </select>
                                                     </div>
