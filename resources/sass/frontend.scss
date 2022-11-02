@@ -68,15 +68,8 @@ body {
         }
 
         .btn-close {
-            right: 210px;
+            right: 10px;
             top: 10px;
-        }
-
-        @media (max-width: 991px) {
-            .btn-close {
-                right: 135px;
-                top: 10px;
-            }
         }
     }
 
@@ -199,6 +192,24 @@ body {
     }
 
     #compare {
+        #landing-banner {
+            .modal-content {
+                display: contents;
+            }
+    
+            .btn-close {
+                right: 210px;
+                top: 10px;
+            }
+    
+            @media (max-width: 991px) {
+                .btn-close {
+                    right: 135px;
+                    top: 10px;
+                }
+            }
+        }
+
         .insurer-card {
             .insurer-logo {
                 height: 110px;
