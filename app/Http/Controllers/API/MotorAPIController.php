@@ -327,22 +327,24 @@ class MotorAPIController extends Controller implements MotorAPIInterface
 
             $insurance_id = null;
             if(!empty($insurance_motor)) {
-                $insurance_id = $insurance_motor->insurance_id;
+                if(Insurance::find($insurance_motor->insurance_id)->exists()) {
+                    $insurance_id = $insurance_motor->insurance_id;
+                }
             }
 
             // 2a. Update or Insert to Insurance table
             $insurance = Insurance::updateOrCreate([
-                'id' => $insurance_id
+                'id' => $insurance_id,
+                'insurance_status' => Insurance::STATUS_NEW_QUOTATION,
+                'channel' => 'online',
             ], [
                 'product_id' => $product->id,
                 'customer_id' => $user->id,
-                'insurance_status' => Insurance::STATUS_NEW_QUOTATION,
                 'referrer' => $request->referrer,
                 'inception_date' => Carbon::parse($input->vehicle->inception_date) ->format('Y-m-d'),
                 'expiry_date' => Carbon::parse($input->vehicle->expiry_date) ->format('Y-m-d'),
                 'amount' => $quotation->total_payable,
                 'quotation_date' => Carbon::now()->format('Y-m-d'),
-                'channel' => 'online',
                 'created_by' => $user->id,
                 'updated_by' => $user->id,
             ]);
