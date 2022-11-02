@@ -501,7 +501,8 @@ return [
         'yes' => 'Yes',
         'to' => 'to',
         'agree' => 'Agree',
-        'disagree' => 'Disagree'
+        'disagree' => 'Disagree',
+        'hi' => 'Hi',
     ],
     'motor' => [
         'compare' => 'Compare',
@@ -653,10 +654,22 @@ return [
                 'title' => 'Confirmation',
                 'line_1' => 'I, :insured_name, confirm that:',
                 'line_2' => 'I understand that it is my duty to take reasonable care not to make a misrepresentation in answering the questions in this Application Form and I hereby declare that I have fully and accurately answered the questions above.',
-                'line_3' => 'I have read, understood and accepted that :pds and <a href="/privacy-policy">Privacy Policy</a> for this product.',
+                'line_3' => 'I have read, understood and accepted that :pds and <a href="/privacy-policy" target="_blank">Privacy Policy</a> for this product.',
                 'line_4' => 'Please make sure you review the order and personal details before go to payment page.',
                 'line_5' => 'Once you click \'Pay Now\', you cannot change these details.'
             ]
+        ],
+        'payment_success_page' => [
+            'messages' => [
+                'line_1' => 'Thank you for your payment. Your transaction has been successful subject to Anti Money Laundering Act and Sanction screening. The insurance coverage will only take effect upon approval from :insurer.',
+                'line_2' => 'Confirmation of coverage will be issued by :insurer to your email address after the approval process. Full premiums will be refunded by Howden if your application is not approved by :insurer.',
+                'line_3' => 'For any inquiries, please email us at <a href="mailto:instaPol@my.howdengroup.com">instaPol@my.howdengroup.com</a>.',
+            ],
+            'purchase_summary' => 'Purchase Summary',
+            'insurance_company' => 'Insurance Company',
+            'transaction_number' => 'Transaction Reference Number',
+            'total_premium' => 'Total Annual Premium',
+            'you_might_interested' => 'You might also be interested in',
         ],
     ],
     'products' => [

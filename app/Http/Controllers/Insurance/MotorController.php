@@ -399,6 +399,22 @@ class MotorController extends Controller
         ]);
     }
 
+    public function paymentSuccess(Request $request)
+    {
+        if(empty($request->session()->get('motor'))) {
+            return redirect()->route('motor.index');
+        }
+        
+        $session = $request->session()->get('motor');
+
+        $insurance = Insurance::findByInsuranceCode($session->insurance_code);
+        return view('frontend.motor.payment_success')
+            ->with([
+                'insurance' => $insurance,
+                'total_payable' => number_format($insurance->amount, 2)
+            ]);
+    }
+
     private function quotation(object $motor)
     {
         $inception_date = null;
