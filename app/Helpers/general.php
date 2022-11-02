@@ -181,3 +181,23 @@ if (!function_exists('generateExtraCoverSumInsured')) {
     }
 }
 
+if(!function_exists('formatAddress')) {
+    function formatAddress(array $strings, int $length = 0)
+    {
+        $formatted_address = [];
+
+        $address = '';
+        foreach($strings as $string) {
+            if(!empty($string)) {
+                if($length > 0 && strlen(implode(' ', [$address, trim($string)])) > $length) {
+                    array_push($formatted_address, $address);
+                    $address = trim($string);
+                } else {
+                    $address .= trim($string) . ', ';
+                }
+            }
+        }
+
+        return $formatted_address;
+    }
+}

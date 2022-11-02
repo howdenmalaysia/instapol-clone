@@ -345,7 +345,7 @@ class MotorController extends Controller
                 ->where('insurance_id', $insurance->id)
                 ->first();
 
-            // Get POlicy Holder Address
+            // Get Policy Holder Address
             $address = InsuranceAddress::where('insurance_id', $insurance->id)
                 ->first();
 
@@ -360,13 +360,7 @@ class MotorController extends Controller
                 $address->state
             ];
 
-            foreach($strings as $string) {
-                if(!empty($string)) {
-                    $formatted_address .= $string . ', ';
-                }
-            }
-
-            $policy_holder->address = $formatted_address;
+            $policy_holder->address = implode(', ', formatAddress($strings));
 
             // Get Vehicle Details
             $motor = InsuranceMotor::with(['driver', 'roadtax'])
