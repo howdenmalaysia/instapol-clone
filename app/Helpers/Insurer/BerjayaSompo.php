@@ -91,25 +91,25 @@ class BerjayaSompo implements InsurerLibraryInterface
             }
         }
 
-        $vehicle_vix = $this->getQuotation($data);
+        $vix = $this->getQuotation($data);
 
-        if (!$vehicle_vix->status) {
-            return $this->abort($vehicle_vix->response);
+        if (!$vix->status) {
+            return $this->abort($vix->response);
         }
 
         // If failed because no NVIC specified, default to first NVIC returned and try again
-        if($vehicle_vix->response->RESPONSE_STATUS === 'FAILURE' && Str::contains($vehicle_vix->response->ERROR[0]->ERROR_DESC, 'MULTIPLE NVIC RECEIVED')) {
-            $data->vehicle->nvic = explode('|', $vehicle_vix->response->NVIC_CODE)[0];
-            $vehicle_vix = $this->getQuotation($data);
+        if($vix->response->RESPONSE_STATUS === 'FAILURE' && Str::contains($vix->response->ERROR[0]->ERROR_DESC, 'MULTIPLE NVIC RECEIVED')) {
+            $data->vehicle->nvic = explode('|', $vix->response->NVIC_CODE)[0];
+            $vix = $this->getQuotation($data);
 
-            if (!$vehicle_vix->status) {
-                return $this->abort($vehicle_vix->response);
+            if (!$vix->status) {
+                return $this->abort($vix->response);
             }
         }
 
         // Get coverage dates
-        $inception_date = Carbon::parse($vehicle_vix->response->CNEXPIRYDATE)->subYear()->addDay();
-        $expiry_date = Carbon::parse($vehicle_vix->response->CNEXPIRYDATE)->format('Y-m-d');
+        $inception_date = Carbon::createFromFormat('d-m-Y', $vix->response->INCEPTIONDATE);
+        $expiry_date = Carbon::createFromFormat('d-m-Y', $vix->response->CNEXPIRYDATE)->format('Y-m-d');
         $today = Carbon::today()->format('Y-m-d');
 
         // Check Inception Date
@@ -126,7 +126,7 @@ class BerjayaSompo implements InsurerLibraryInterface
         }
 
         // Check Sum Insured
-        $sum_insured = formatNumber($vehicle_vix->response->SUM_INSURED, 0);
+        $sum_insured = formatNumber($vix->response->SUM_INSURED, 0);
         if ($sum_insured < self::MIN_SUM_INSURED || roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_UP, true) > self::MAX_SUM_INSURED) {
             return $this->abort(__('api.sum_insured_referred_between', [
                 'min_sum_insured' => self::MIN_SUM_INSURED,
@@ -136,33 +136,34 @@ class BerjayaSompo implements InsurerLibraryInterface
 
         $variants = [];
         array_push($variants, (object) [
-            'nvic' => (string) $vehicle_vix->response->NVIC_CODE,
-            'sum_insured' => $vehicle_vix->response->SUM_INSURED,
+            'nvic' => (string) $vix->response->NVIC_CODE,
+            'sum_insured' => $vix->response->SUM_INSURED,
             'variant' => '-',
         ]);
 
         return (object) [
             'status' => true,
             'response' => new VIXNCDResponse([
-                'chassis_number' => $vehicle_vix->response->CHASSIS_NO,
-                'class_code' => $vehicle_vix->response->VEHICLE_CLASS,
+                'chassis_number' => $vix->response->CHASSIS_NO,
+                'class_code' => $vix->response->VEHICLE_CLASS,
                 'coverage' => 'Comprehensive',
-                'cover_type' => $vehicle_vix->response->COVERAGE_TYPE,
-                'engine_capacity' => $vehicle_vix->response->CAPACITY,
-                'engine_number' => $vehicle_vix->response->ENGINE_NUMBER,
+                'cover_type' => $vix->response->COVERAGE_TYPE,
+                'engine_capacity' => $vix->response->CAPACITY,
+                'engine_number' => $vix->response->ENGINE_NUMBER,
                 'expiry_date' => $expiry_date,
                 'inception_date' => $inception_date,
-                'make' => $vehicle_vix->response->MAKE,
-                'manufacture_year' => $vehicle_vix->response->YEAR_OF_MANUFACTURING,
+                'make' => $vix->response->MAKE_DESC,
+                'manufacture_year' => $vix->response->YEAR_OF_MANUFACTURING,
                 'max_sum_insured' => roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_UP, true, self::MAX_SUM_INSURED),
                 'min_sum_insured' => roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_DOWN, false, self::MIN_SUM_INSURED),
-                'model' => str_replace($vehicle_vix->response->MAKE . ' ', '', $vehicle_vix->response->MODEL),
-                'ncd_percentage' => $vehicle_vix->response->NCD_PERCENT,
-                'seating_capacity' => $vehicle_vix->response->SEAT,
+                'model' => str_replace($vix->response->MAKE_DESC . ' ', '', $vix->response->MODEL_DESC),
+                'ncd_percentage' => $vix->response->NCD_PERCENT,
+                'seating_capacity' => $vix->response->SEAT,
                 'sum_insured' => roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_UP, true, self::MAX_SUM_INSURED),
-                'sum_insured_type' => $vehicle_vix->response->ENDT_CLAUSE_CODE === 113 ? 'Market Value' : 'Agreed Value',
+                'sum_insured_type' => $vix->response->ENDT_CLAUSE_CODE === 113 ? 'Market Value' : 'Agreed Value',
                 'variants' => $variants,
                 'vehicle_number' => $input->vehicle_number,
+                'vehicle_body_code' => $vix->response->VEHICLE_BODY
             ])];
     }
 
@@ -173,20 +174,20 @@ class BerjayaSompo implements InsurerLibraryInterface
         $pa = null;
 
         if ($full_quote) {
-            $vehicle_detail = $this->vehicleDetails($input);
+            $vehicle_vix = $this->vehicleDetails($input);
 
-            if (!$vehicle_detail->status) {
-                return $this->abort($vehicle_detail->response, $vehicle_detail->code);
+            if (!$vehicle_vix->status) {
+                return $this->abort($vehicle_vix->response, $vehicle_vix->code);
             }
 
             // Get Selected Variant
             $selected_variant = null;
             if ($input->nvic == '-') {
-                if (count($vehicle_detail->response->variants) == 1) {
-                    $selected_variant = $vehicle_detail->response->variants[0];
+                if (count($vehicle_vix->response->variants) == 1) {
+                    $selected_variant = $vehicle_vix->response->variants[0];
                 }
             } else {
-                foreach ($vehicle_detail->response->variants as $_variant) {
+                foreach ($vehicle_vix->response->variants as $_variant) {
                     if ($input->nvic == $_variant->nvic) {
                         $selected_variant = $_variant;
                         break;
@@ -200,25 +201,25 @@ class BerjayaSompo implements InsurerLibraryInterface
 
             // set vehicle
             $vehicle = new Vehicle([
-                'make' => $vehicle_detail->response->make,
-                'model' => $vehicle_detail->response->model,
+                'make' => $vehicle_vix->response->make,
+                'model' => $vehicle_vix->response->model,
                 'nvic' => $selected_variant->nvic,
                 'variant' => $selected_variant->variant,
-                'engine_capacity' => $vehicle_detail->response->engine_capacity,
-                'manufacture_year' => $vehicle_detail->response->manufacture_year,
-                'ncd_percentage' => $vehicle_detail->response->ncd_percentage,
-                'coverage' => $vehicle_detail->response->coverage,
-                'inception_date' => $vehicle_detail->response->inception_date,
-                'expiry_date' => $vehicle_detail->response->expiry_date,
-                'sum_insured_type' => $vehicle_detail->response->sum_insured_code == 113 ? 'Market Value' : 'Agreed Value',
-                'sum_insured' => $vehicle_detail->response->sum_insured,
-                'min_sum_insured' => $vehicle_detail->response->min_sum_insured,
-                'max_sum_insured' => $vehicle_detail->response->max_sum_insured,
+                'engine_capacity' => $vehicle_vix->response->engine_capacity,
+                'manufacture_year' => $vehicle_vix->response->manufacture_year,
+                'ncd_percentage' => $vehicle_vix->response->ncd_percentage,
+                'coverage' => $vehicle_vix->response->coverage,
+                'inception_date' => $vehicle_vix->response->inception_date,
+                'expiry_date' => $vehicle_vix->response->expiry_date,
+                'sum_insured_type' => $vehicle_vix->response->sum_insured_code == 113 ? 'Market Value' : 'Agreed Value',
+                'sum_insured' => $vehicle_vix->response->sum_insured,
+                'min_sum_insured' => $vehicle_vix->response->min_sum_insured,
+                'max_sum_insured' => $vehicle_vix->response->max_sum_insured,
                 'extra_attribute' => (object) [
-                    'chassis_number' => $vehicle_detail->response->chassis_number,
-                    'cover_type' => $vehicle_detail->response->cover_type,
-                    'engine_number' => $vehicle_detail->response->engine_number,
-                    'seating_capacity' => $vehicle_detail->response->seating_capacity,
+                    'chassis_number' => $vehicle_vix->response->chassis_number,
+                    'cover_type' => $vehicle_vix->response->cover_type,
+                    'engine_number' => $vehicle_vix->response->engine_number,
+                    'seating_capacity' => $vehicle_vix->response->seating_capacity,
                 ],
             ]);
 
@@ -858,21 +859,20 @@ class BerjayaSompo implements InsurerLibraryInterface
             }
 
             $result->response = $decrypted_response;
-            $response = json_decode($decrypted_response);
         }
 
         // Update the API log
         $log = APILogs::find($log->id)
             ->update([
                 'response_header' => json_encode($result->response_header),
-                'response' => $decrypted_response
+                'response' => json_encode($decrypted_response)
             ]);
 
         if($result->status) {
-            if($response->RESPONSE_STATUS === 'FAILURE' && !Str::contains($response->ERROR[0]->ERROR_DESC, 'MULTIPLE NVIC RECEIVED')) {
+            if($decrypted_response->RESPONSE_STATUS === 'FAILURE' && !Str::contains($decrypted_response->ERROR[0]->ERROR_DESC, 'MULTIPLE NVIC RECEIVED')) {
                 $messages = $codes = [];
 
-                foreach($response->ERROR as $error) {
+                foreach($decrypted_response->ERROR as $error) {
                     array_push($messages, $error->ERROR_DESC);
                     array_push($codes, $error->ERROR_CODE);
                 }
@@ -885,7 +885,7 @@ class BerjayaSompo implements InsurerLibraryInterface
 
         return new ResponseData([
             'status' => $result->status,
-            'response' => $response
+            'response' => $decrypted_response
         ]);
     }
 

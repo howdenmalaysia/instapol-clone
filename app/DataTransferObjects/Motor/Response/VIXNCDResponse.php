@@ -86,5 +86,8 @@ class VIXNCDResponse extends DataTransferObject
     
     /** @var string|null */
     public $vehicle_type_code;
+
+    /** @var string|null */
+    public $vehicle_body_code;
 }
 
