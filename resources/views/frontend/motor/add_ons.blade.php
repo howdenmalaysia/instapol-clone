@@ -25,9 +25,13 @@
                             @csrf
                             <div class="card-body">
                                 <h3 class="card-title fw-bold border-bottom pb-4 px-md-3 mt-3">{{ __('frontend.motor.add_ons_page.sum_insured_amount') }}</h3>
-                                <div class="py-4 px-md-3" data-bs-toggle="tooltip" data-bs-placement="top" title="RM 69,000">
-                                    <h5 class="card-text">{{ __('frontend.motor.add_ons_page.sum_insured') }}</h5>
-                                    <input type="range" id="sum-insured-slider" class="form-range" min="69000" max="75000" step="1000">
+                                <h5 class="card-text">{{ __('frontend.motor.add_ons_page.sum_insured') }}</h5>
+                                <div id="tolltip-wrapper" class="pb-4 px-md-3" data-bs-toggle="tooltip" data-bs-placement="top">
+                                    <label class="float-left text-primary fw-bold">{{ 'RM ' . number_format(session('motor')->vehicle->min_sum_insured) }}</label>
+                                    <label class="float-end text-primary fw-bold">{{ 'RM ' . number_format(session('motor')->vehicle->max_sum_insured) }}</label>
+                                    <div class="range">
+                                        <input type="range" id="sum-insured-slider" class="form-range" min="{{ session('motor')->vehicle->min_sum_insured }}" max="{{ session('motor')->vehicle->max_sum_insured }}" step="1000">
+                                    </div>
                                 </div>
                                 <div id="extra-coverages">
                                     <h3 class="card-title fw-bold border-bottom py-4 px-md-3">{{ __('frontend.motor.add_ons_page.additional_coverage') }}</h3>
@@ -256,6 +260,9 @@
     let motor = JSON.parse($('#motor').val());
 
     $(() => {
+        // Initialize
+        $('#sum-insured-slider').range('init');
+
         $('#show-more-add-ons').on('click', () => {
             $(this).text("{{ __('frontend.button.show_less') }}");
         });

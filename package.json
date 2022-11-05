@@ -34,6 +34,7 @@
         "imagemin-mozjpeg": "^9.0.0",
         "inputmask": "^5.0.7",
         "jquery": "^3.6.1",
+        "mdb-ui-kit": "^6.0.0",
         "moment": "^2.29.4",
         "parsleyjs": "^2.9.2",
         "select2": "^4.1.0-rc.0",
