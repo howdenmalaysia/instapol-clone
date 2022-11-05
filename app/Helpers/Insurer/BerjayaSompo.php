@@ -857,15 +857,15 @@ class BerjayaSompo implements InsurerLibraryInterface
                 return $this->abort($decrypted_response->response);
             }
 
-            $result->response = $decrypted_response->text;
-            $response = json_decode($decrypted_response->text);
+            $result->response = $decrypted_response;
+            $response = json_decode($decrypted_response);
         }
 
         // Update the API log
         $log = APILogs::find($log->id)
             ->update([
                 'response_header' => json_encode($result->response_header),
-                'response' => json_encode($decrypted_response)
+                'response' => $decrypted_response
             ]);
 
         if($result->status) {
@@ -880,7 +880,7 @@ class BerjayaSompo implements InsurerLibraryInterface
                 return $this->abort(__('api.api_error', ['company' => $this->company_name, 'code' => implode(', ', $codes) . '-' . implode(', ', $messages)]));
             }
         } else {
-            return $this->abort($decrypted_response->text);
+            return $this->abort($decrypted_response);
         }
 
         return new ResponseData([
