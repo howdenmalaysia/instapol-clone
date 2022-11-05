@@ -372,9 +372,7 @@
         });
 
         $('.option-list').on('change', (e) => {
-            if(!$(`#checkbox-${$(e.target).data('extra-cover-code')}`).is(':checked')) {
-                $(`#checkbox-${$(e.target).data('extra-cover-code')}`).attr('checked', true).trigger('change');
-            }
+            $(`#checkbox-${$(e.target).data('extra-cover-code')}`).attr('checked', true).trigger('change');
         });
     });
 
