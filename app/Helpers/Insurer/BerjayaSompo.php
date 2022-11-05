@@ -2,7 +2,6 @@
 
 namespace App\Helpers\Insurer;
 
-use AESKW\A256KW;
 use App\DataTransferObjects\Motor\CartList;
 use App\DataTransferObjects\Motor\ExtraCover;
 use App\DataTransferObjects\Motor\OptionList;
@@ -17,6 +16,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Jose\Component\Core\AlgorithmManager;
 use Jose\Component\Encryption\Algorithm\ContentEncryption\A256CBCHS512;
+use Jose\Component\Encryption\Algorithm\KeyEncryption\A256KW;
 use Jose\Component\Encryption\Compression\CompressionMethodManager;
 use Jose\Component\Encryption\JWEBuilder;
 use Jose\Component\Encryption\JWEDecrypter;
@@ -30,6 +30,7 @@ class BerjayaSompo implements InsurerLibraryInterface
 
     private string $agent_code;
     private string $host;
+    private string $client_id;
     private string $client_key;
     private string $token;
     private string $encryption_salt;
@@ -53,7 +54,8 @@ class BerjayaSompo implements InsurerLibraryInterface
 
         $this->agent_code = config('insurer.config.bsib.agent_code');
         $this->host = config('insurer.config.bsib.host');
-        $this->client_key = config('insurer.config.bsib.client_id');
+        $this->client_id = config('insurer.config.bsib.client_id');
+        $this->client_key = config('insurer.config.bsib.secret_key');
         $this->token = config('insurer.config.bsib.auth_token');
         $this->encryption_salt = Str::uuid()->toString();
     }
@@ -810,7 +812,7 @@ class BerjayaSompo implements InsurerLibraryInterface
         return json_decode($jwe->getPayload());
     }
 
-    private function cURL(array $form, string $path = '/nsure-prego/1.0.0/cnap', string $method = 'POST', int $timeout = 60) : ResponseData
+    private function cURL(array $form, string $path = '/nsure/1.0.0/cnap', string $method = 'POST', int $timeout = 60) : ResponseData
     {
         $payload = (object) [
             'encryptedPayload' => $this->encrypt($form),
