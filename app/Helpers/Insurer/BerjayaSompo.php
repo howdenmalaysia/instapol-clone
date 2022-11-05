@@ -8,6 +8,7 @@ use App\DataTransferObjects\Motor\OptionList;
 use App\DataTransferObjects\Motor\Response\PremiumResponse;
 use App\DataTransferObjects\Motor\Response\ResponseData;
 use App\DataTransferObjects\Motor\Response\VIXNCDResponse;
+use App\DataTransferObjects\Motor\VariantData;
 use App\DataTransferObjects\Motor\Vehicle;
 use App\Helpers\HttpClient;
 use App\Interfaces\InsurerLibraryInterface;
@@ -135,11 +136,11 @@ class BerjayaSompo implements InsurerLibraryInterface
         }
 
         $variants = [];
-        array_push($variants, (object) [
+        array_push($variants, new VariantData([
             'nvic' => (string) $vix->response->NVIC_CODE,
-            'sum_insured' => $vix->response->SUM_INSURED,
+            'sum_insured' => floatval($vix->response->SUM_INSURED),
             'variant' => '-',
-        ]);
+        ]));
 
         return (object) [
             'status' => true,
@@ -151,13 +152,13 @@ class BerjayaSompo implements InsurerLibraryInterface
                 'engine_capacity' => $vix->response->CAPACITY,
                 'engine_number' => $vix->response->ENGINE_NUMBER,
                 'expiry_date' => $expiry_date,
-                'inception_date' => $inception_date,
+                'inception_date' => $inception_date->format('Y-m-d'),
                 'make' => $vix->response->MAKE_DESC,
                 'manufacture_year' => $vix->response->YEAR_OF_MANUFACTURING,
                 'max_sum_insured' => roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_UP, true, self::MAX_SUM_INSURED),
                 'min_sum_insured' => roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_DOWN, false, self::MIN_SUM_INSURED),
                 'model' => str_replace($vix->response->MAKE_DESC . ' ', '', $vix->response->MODEL_DESC),
-                'ncd_percentage' => $vix->response->NCD_PERCENT,
+                'ncd_percentage' => floatval($vix->response->NCD_PERCENT),
                 'seating_capacity' => $vix->response->SEAT,
                 'sum_insured' => roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_UP, true, self::MAX_SUM_INSURED),
                 'sum_insured_type' => $vix->response->ENDT_CLAUSE_CODE === 113 ? 'Market Value' : 'Agreed Value',
