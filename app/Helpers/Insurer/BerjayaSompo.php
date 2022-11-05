@@ -844,7 +844,7 @@ class BerjayaSompo implements InsurerLibraryInterface
         $result = HttpClient::curl($method, $this->host . $path, $request_options);
 
         if(!empty(json_decode($result->response)->encryptedPayload)) {
-            $decrypted_response = $this->decrypt(json_decode($result->response)->encryptedPayload, $result->response_header['Encryption-Salt'][0]);
+            $decrypted_response = json_decode($this->decrypt(json_decode($result->response)->encryptedPayload, $result->response_header['Encryption-Salt'][0])->text);
 
             if(isset($decrypted_response->status) && !$decrypted_response->status) {
                 // Update the API log
