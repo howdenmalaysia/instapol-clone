@@ -212,7 +212,7 @@ class BerjayaSompo implements InsurerLibraryInterface
                 'coverage' => $vehicle_vix->response->coverage,
                 'inception_date' => $vehicle_vix->response->inception_date,
                 'expiry_date' => $vehicle_vix->response->expiry_date,
-                'sum_insured_type' => $vehicle_vix->response->sum_insured_code == 113 ? 'Market Value' : 'Agreed Value',
+                'sum_insured_type' => $vehicle_vix->response->sum_insured_type,
                 'sum_insured' => $vehicle_vix->response->sum_insured,
                 'min_sum_insured' => $vehicle_vix->response->min_sum_insured,
                 'max_sum_insured' => $vehicle_vix->response->max_sum_insured,
