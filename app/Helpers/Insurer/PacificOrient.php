@@ -745,7 +745,7 @@ class PacificOrient implements InsurerLibraryInterface
         } else {
             $message = '';
             if(empty($result->response)) {
-                $message = __('api.empty_response', ['company' => $this->company]);
+                $message = __('api.empty_response', ['company' => $this->company_name]);
             } else {
                 if(is_string($result->response)) {
                     $message = $result->response;
