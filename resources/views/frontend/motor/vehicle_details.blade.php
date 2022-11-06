@@ -132,6 +132,7 @@
                 <div class="hidden">
                     <input type="hidden" id="motor" name="motor" value='@json(session('motor'))'>
                     <input type="hidden" id="coverage-type" name="coverage_type">
+                    <input type="hidden" id="h-variant" name="variant" />
                 </div>
             </form>
         </x-slot>
@@ -205,6 +206,7 @@
                             populate(selectedVariant);
 
                             $('#variants').val(selectedVariant.variants[0].nvic).trigger('change');
+                            $('#h-variant').val(selectedVariant.variants[0].variant);
 
                             swalHide();
                         }
