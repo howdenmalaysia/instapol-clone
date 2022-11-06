@@ -982,7 +982,7 @@ class BerjayaSompo implements InsurerLibraryInterface
 
         if (empty($result)) {
             // Default to Executive
-            return collect($json[$type])->firstWhere('occupation', 'EXECUTIVE');
+            return collect($json[$type])->firstWhere('occupation', 'EXECUTIVE')['code'];
         }
 
         return $result['code'];
