@@ -237,7 +237,7 @@
                     </form> --}}
                 </div>
             </div>
-            <x-modal id="occupation-modal" headerClass="bg-primary text-white">
+            <x-modal id="occupation-modal" maxWidth="md" headerClass="bg-primary text-white">
                 <x-slot name="title">{{ __('frontend.motor.compare_page.need_occupation') }}</x-slot>
                 <x-slot name="body">
                     <div class="row">
