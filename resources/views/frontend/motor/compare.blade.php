@@ -71,7 +71,7 @@
                                                         </div>
                                                         <div class="col-7">
                                                             <div class="d-grid gap-0">
-                                                                <div class="btn-group" role="group">
+                                                                <div class="btn-group rounded" role="group">
                                                                     <input type="radio" id="male" class="btn-check" name="gender" value="M" {{ session('motor')->policy_holder->gender === 'M' ? 'checked' : ''}}>
                                                                     <label id="male-label" class="btn btn-primary text-white rounded-start border active" for="male">{{ __('frontend.motor.compare_page.male') }}</label>
                             
