@@ -237,6 +237,52 @@
                     </form> --}}
                 </div>
             </div>
+            <x-modal id="occupation-modal" headerClass="bg-primary text-white">
+                <x-slot name="title">{{ __('frontend.motor.compare_page.need_occupation') }}</x-slot>
+                <x-slot name="body">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="col-12">{{ __('frontend.motor.vehicle_details.car_number') }}</div>
+                                <div class="col-12">{{ session('motor')->vehicle_number }}</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">{{ __('frontend.motor.vehicle_details.make') }}</div>
+                                <div class="col-12">{{ session('motor')->vehicle->make }}</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">{{ __('frontend.motor.vehicle_details.year') }}</div>
+                                <div class="col-12">{{ session('motor')->vehicle->manufacture_year }}</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="col-12">{{ __('frontend.motor.vehicle_details.engine_capacity') }}</div>
+                                <div class="col-12">{{ session('motor')->vehicle->engine_capacity }}</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">{{ __('frontend.motor.vehicle_details.model') }}</div>
+                                <div class="col-12">{{ sesssion('motor')->vehicle->model }}</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">{{ __('frontend.motor.vehicle_details.variant') }}</div>
+                                <div class="col-12">{{ session('motor')->vehicle->variant }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <p>{{ __('frontend.motor.compare_page.select_occupation') }}</p>
+                            <select id="occupation" data-select>
+                                <option value="">{{ __('frontend.motor.compare_page.please_select') }}</option>
+                            </select>
+                        </div>
+                    </div>
+                </x-slot>
+                <x-slot name="footer">
+                    <button type="button" id="occupation-next" class="btn btn-primary text-white text-uppercase rounded">{{ __('frontend.button.get_quotation') }}</button>
+                </x-slot>
+            </x-modal>
         </x-slot>
     </x-motor-layout>
 @endsection
@@ -281,6 +327,10 @@
                 }
 
                 let product_id = $(e.target).data('product_id');
+                if(['{{ config('insurer.config.bsib.product_id') }}'].includes(product_id)) {
+
+                }
+
                 motor.insurance_company_id = product_id;
                 $('#motor').val(JSON.stringify(motor));
 

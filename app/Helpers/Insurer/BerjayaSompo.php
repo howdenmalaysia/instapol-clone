@@ -981,7 +981,8 @@ class BerjayaSompo implements InsurerLibraryInterface
         $result = collect($json[$type])->firstWhere('occupation', $occupation);
 
         if (empty($result)) {
-            return $this->abort('Occupation not found!');
+            // Default to Executive
+            return collect($json[$type])->firstWhere('occupation', 'EXECUTIVE');
         }
 
         return $result['code'];

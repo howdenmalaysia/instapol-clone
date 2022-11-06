@@ -572,7 +572,10 @@ return [
             'highest_price' => 'Highest Price',
             'offline' => 'Offline',
             'market_value' => 'Market Value',
-            'agreed_value' => 'Agreed Value'
+            'agreed_value' => 'Agreed Value',
+            'need_occupation' => 'We need more details about your occupation!',
+            'select_occupation' => 'Please select your occupation to obtain the recommended sum insured amount.',
+            'please_select' => 'Please Select Your Occupation'
         ],
         'add_ons_page' => [
             'add_ons' => 'Add Ons',
@@ -695,7 +698,8 @@ return [
         'show_less' => 'Show Less',
         'close' => 'Close',
         'yes_i_want' => 'Yes, I want',
-        'edit' => 'Edit'
+        'edit' => 'Edit',
+        'get_quotation' => 'Get Quotation'
     ],
     'fields' => [
         'name' => 'Name',
