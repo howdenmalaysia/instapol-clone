@@ -262,7 +262,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-12">{{ __('frontend.motor.vehicle_details.model') }}</div>
-                                <div class="col-12">{{ sesssion('motor')->vehicle->model }}</div>
+                                <div class="col-12">{{ session('motor')->vehicle->model }}</div>
                             </div>
                             <div class="row">
                                 <div class="col-12">{{ __('frontend.motor.vehicle_details.variant') }}</div>
