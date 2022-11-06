@@ -666,22 +666,22 @@ class BerjayaSompo implements InsurerLibraryInterface
 
         $extra_cover = [];
         if(!empty($input->extra_cover)) {
-            foreach($input->extra_cover as $extra_cover) {
+            foreach($input->extra_cover as $add_ons) {
                 $item = (object) [
-                    'ADD_ON_CODE' => $extra_cover->extra_cover_code,
-                    'ADD_ON_SUM_INS' => intval($extra_cover->sum_insured ?? 0),
+                    'ADD_ON_CODE' => $add_ons->extra_cover_code,
+                    'ADD_ON_SUM_INS' => intval($add_ons->sum_insured ?? 0),
                 ];
 
-                if(!empty($extra_cover->cart_amount)) {
-                    $item->CART_DAYS = intval($extra_cover->cart_day);
-                    $item->CART_AMOUNT = intval($extra_cover->cart_amount);
-                } else if($extra_cover->extra_cover_code == 'LOUP') {
-                    $item->EXT_PLAN_TYPE = $this->getLossOfUsePlanCode($extra_cover->sum_insured);
-                    $item->EXT_PLAN_SUM_INS = intval($extra_cover->sum_insured);
+                if(!empty($add_ons->cart_amount)) {
+                    $item->CART_DAYS = intval($add_ons->cart_day);
+                    $item->CART_AMOUNT = intval($add_ons->cart_amount);
+                } else if($add_ons->extra_cover_code == 'LOUP') {
+                    $item->EXT_PLAN_TYPE = $this->getLossOfUsePlanCode($add_ons->sum_insured);
+                    $item->EXT_PLAN_SUM_INS = intval($add_ons->sum_insured);
                     $item->ADD_ON_SUM_INS = 0;
-                } else if($extra_cover->extra_cover_code == 'PA*P') {
-                    $item->EXT_PLAN_TYPE = $this->getPAPlanCode($extra_cover->sum_insured);
-                    $item->EXT_PLAN_SUM_INS = intval($extra_cover->sum_insured);
+                } else if($add_ons->extra_cover_code == 'PA*P') {
+                    $item->EXT_PLAN_TYPE = $this->getPAPlanCode($add_ons->sum_insured);
+                    $item->EXT_PLAN_SUM_INS = intval($add_ons->sum_insured);
                     $item->ADD_ON_SUM_INS = 0;
                 }
 
