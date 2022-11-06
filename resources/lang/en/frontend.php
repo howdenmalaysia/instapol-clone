@@ -575,7 +575,16 @@ return [
             'agreed_value' => 'Agreed Value',
             'need_occupation' => 'We need more details about your occupation!',
             'select_occupation' => 'Please select your occupation to obtain the recommended sum insured amount.',
-            'please_select' => 'Please Select Your Occupation'
+            'please_select' => 'Please Select Your Occupation',
+            'compare_details' => [
+                'tabs' => [
+                    'basic_info' => 'Basic Information',
+                    'additional_coverage' => 'Additional Coverage',
+                    'loss_damage' => 'Loss & Damage Cover',
+                    'assistance_repairs' => 'Assistance & Repairs',
+                    'third_party' => 'Third Party Coverage'
+                ]
+            ]
         ],
         'add_ons_page' => [
             'add_ons' => 'Add Ons',
@@ -699,7 +708,8 @@ return [
         'close' => 'Close',
         'yes_i_want' => 'Yes, I want',
         'edit' => 'Edit',
-        'get_quotation' => 'Get Quotation'
+        'get_quotation' => 'Get Quotation',
+        'view_details' => 'View Details'
     ],
     'fields' => [
         'name' => 'Name',

@@ -144,6 +144,7 @@
                                             <div class="col-12 d-grid gap-2">
                                                 <button type="button" class="btn btn-outline-primary border border-primary border-2 fw-bold rounded btn-compare">{{ __('frontend.button.compare') }}</button>
                                                 <button type="button" class="btn btn-primary text-white text-uppercase rounded btn-buy" data-product_id="{{ $product->id }}">{{ __('frontend.button.buy') }}</button>
+                                                <button type="button" class="btn btn-outline-primary border border-primary border-2 fw-bold rounded btn-view-details" data-product_id="{{ $product->id }}">{{ __('frontend.button.view_details') }}</button>
                                             </div>
                                         </div>
                                     </div>
@@ -283,6 +284,157 @@
                     <button type="button" id="occupation-next" class="btn btn-primary text-white text-uppercase rounded">{{ __('frontend.button.get_quotation') }}</button>
                 </x-slot>
             </x-modal>
+            <x-modal id="compare-details-modal" maxWidth="xl">
+                <x-slot name="title"></x-slot>
+                <x-slot name="body">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="row">
+                                    <div class="col-6"></div>
+                                    <div class="col-6">
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <img src="" alt="" id="compare-detail-insurer-logo" class="img-fluid d-block p-2 mx-auto align-self-center">
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <p id="compare-details-valuation" class="text-primary fw-bold"></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="compare-details-accordion" class="accordion">
+                                    <div class="row text-center">
+                                            <div class="col-2 accordion-item">
+                                                <h2 class="accordion-header">
+                                                    <button
+                                                        type="button"
+                                                        class="accordion-button btn-block fw-bold"
+                                                        data-mdb-toggle="collapse"
+                                                        data-mdb-target="#basic-info-accordion"
+                                                    >
+                                                        {{ __('frontend.motor.compare_page.compare_details.tabs.basic_info') }}
+                                                    </button>
+                                                </h2>
+                                            </div>
+                                            <div class="col-2 accordion-item">
+                                                <h2 class="accordion-header">
+                                                    <button
+                                                        type="button"
+                                                        class="accordion-button fw-bold"
+                                                        data-mdb-toggle="collapse"
+                                                        data-mdb-target="#add-ons-accordion"
+                                                    >
+                                                        {{ __('frontend.motor.compare_page.compare_details.tabs.additional_coverage') }}
+                                                    </button>
+                                                </h2>
+                                            </div>
+                                            <div class="col-2 accordion-item">
+                                                <h2 class="accordion-header">
+                                                    <button
+                                                        type="button"
+                                                        class="accordion-button fw-bold"
+                                                        data-mdb-toggle="collapse"
+                                                        data-mdb-target="#loss-cover-accordion"
+                                                    >
+                                                        {{ __('frontend.motor.compare_page.compare_details.tabs.loss_damage') }}
+                                                    </button>
+                                                </h2>
+                                            </div>
+                                            <div class="col-2 accordion-item">
+                                                <h2 class="accordion-header">
+                                                    <button
+                                                        type="button"
+                                                        class="accordion-button fw-bold"
+                                                        data-mdb-toggle="collapse"
+                                                        data-mdb-target="#assistance-accordion"
+                                                    >
+                                                        {{ __('frontend.motor.compare_page.compare_details.tabs.assistance_repairs') }}
+                                                    </button>
+                                                </h2>
+                                            </div>
+                                            <div class="col-2 accordion-item">
+                                                <h2 class="accordion-header">
+                                                    <button
+                                                        type="button"
+                                                        class="accordion-button fw-bold"
+                                                        data-mdb-toggle="collapse"
+                                                        data-mdb-target="#third-party-accordion"
+                                                    >
+                                                        {{ __('frontend.motor.compare_page.compare_details.tabs.third_party') }}
+                                                    </button>
+                                                </h2>
+                                            </div>
+                                        </div>
+                                        <div
+                                            id="basic-info-accordion"
+                                            class="accordion-collapse collapse"
+                                            data-mdb-parent="#compare-details-accordion"
+                                        >
+                                            <table class="table compare-details-table">
+                                                <tr>
+                                                    <th></th>
+                                                    <td></td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <div
+                                            id="add-ons-accordion"
+                                            class="accordion-collapse collapse"
+                                            data-mdb-parent="#compare-details-accordion"
+                                        >
+                                            <table class="table compare-details-table">
+                                                <tr>
+                                                    <th></th>
+                                                    <td></td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <div
+                                            id="loss-cover-accordion"
+                                            class="accordion-collapse collapse"
+                                            data-mdb-parent="#compare-details-accordion"
+                                        >
+                                            <table class="table compare-details-table">
+                                                <tr>
+                                                    <th></th>
+                                                    <td></td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <div
+                                            id="assistance-accordion"
+                                            class="accordion-collapse collapse"
+                                            data-mdb-parent="#compare-details-accordion"
+                                        >
+                                            <table class="table compare-details-table">
+                                                <tr>
+                                                    <th></th>
+                                                    <td></td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <div
+                                            id="third-party-accordion"
+                                            class="accordion-collapse collapse"
+                                            data-mdb-parent="#compare-details-accordion"
+                                        >
+                                            <table class="table compare-details-table">
+                                                <tr>
+                                                    <th></th>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </x-slot>
+                <x-slot name="footer"></x-slot>
+            </x-modal>
         </x-slot>
     </x-motor-layout>
 @endsection
@@ -340,6 +492,12 @@
 
                 $('#product-form').submit();
             });
+
+            $('.btn-view-details').on('click', (e) => {
+                // Populate Compare Details Data
+                let product_id = $(e.target).data('product_id');
+                $('#compare-details-modal').modal('show');
+            });
         });
 
         function getPremium() {
@@ -378,9 +536,11 @@
 
                         $(`#insurer-${product.id} .btn-buy`).removeAttr('disabled');
                         $(`#insurer-${product.id} .btn-compare`).removeAttr('disabled');
+                        $(`#insurer-${product.id} .btn-view-details`).removeAttr('disabled');
                     } else {
                         $(`#insurer-${product.id} .btn-buy`).attr('disabled', true);
                         $(`#insurer-${product.id} .btn-compare`).attr('disabled', true);
+                        $(`#insurer-${product.id} .btn-view-details`).attr('disabled', true);
                         $(`#insurer-${product.id} .premium`).text("{{ __('frontend.motor.compare_page.offline') }}");
                     }
 
@@ -390,6 +550,7 @@
 
                     $(`#insurer-${product.id} .btn-buy`).attr('disabled', true);
                     $(`#insurer-${product.id} .btn-compare`).attr('disabled', true);
+                    $(`#insurer-${product.id} .btn-view-details`).attr('disabled', true);
                     
                     $(`#insurer-${product.id} .premium`).text("{{ __('frontend.motor.compare_page.offline') }}").data('premium', '0');
 
