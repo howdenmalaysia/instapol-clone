@@ -878,7 +878,7 @@ class BerjayaSompo implements InsurerLibraryInterface
                     array_push($codes, $error->ERROR_CODE);
                 }
 
-                return $this->abort(__('api.api_error', ['company' => $this->company_name, 'code' => implode(', ', $codes) . '-' . implode(', ', $messages)]));
+                return $this->abort(__('api.api_error', ['company' => $this->company_name, 'message' => implode(', ', $messages), 'code' => implode(', ', $codes) . '-' . implode(', ', $messages)]));
             }
         } else {
             return $this->abort($decrypted_response);
