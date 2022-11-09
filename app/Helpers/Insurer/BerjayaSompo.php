@@ -44,7 +44,7 @@ class BerjayaSompo implements InsurerLibraryInterface
     private const MAX_SUM_INSURED = 500000;
     private const ALLOWED_GAP_IN_COVER = 15;
 
-    private const EXTRA_COVERAGE_LIST = ['89', '97', '112', '25', '97A', '111', '101', 'PLC', '72', 'LOUP', 'PA*P', 'EHRP', 'SPTP', 'BTWP', 'TOWP'];
+    private const EXTRA_COVERAGE_LIST = ['89A', '97', '112', '25', '97A', '111', '101', 'PLC', '72', 'LOUP', 'PA*P', 'EHRP', 'SPTP', 'BTWP', 'TOWP'];
     private const CART_AMOUNT_LIST = [50, 100, 200];
     private const CART_DAY_LIST = [7, 14, 21];
 
