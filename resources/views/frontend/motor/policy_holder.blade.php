@@ -217,13 +217,13 @@
 
         $(() => {
             $('#btn-next').on('click', (e) => {
-                $(e.target).toggleClass('loadingButton');
-
                 let form = $('#policy-holder-form');
 
                 if(!form.parsley().validate()) {
                     return;
                 }
+
+                $(e.target).toggleClass('loadingButton');
 
                 // Policy Holder Details
                 motor.policy_holder.name = $('#policy-holder-name').val();
