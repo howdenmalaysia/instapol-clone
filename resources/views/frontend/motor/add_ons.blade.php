@@ -261,7 +261,7 @@
 
     $(() => {
         // Initialize
-        $('#sum-insured-slider').range('init');
+        // $('#sum-insured-slider').range('init');
 
         $('#show-more-add-ons').on('click', () => {
             $(this).text("{{ __('frontend.button.show_less') }}");
