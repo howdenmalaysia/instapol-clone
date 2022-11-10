@@ -1116,8 +1116,6 @@ class Liberty implements InsurerLibraryInterface
         if($result->status) {
             $response = simplexml_load_string($result->response);
 
-            dd($response);
-
             if($response === false) {
                 return $this->abort(__('api.xml_error'));
             }
@@ -1127,9 +1125,17 @@ class Liberty implements InsurerLibraryInterface
             $message = '';
             if(empty($result->response)) {
                 $message = __('api.empty_response', ['company' => $this->company_name]);
-            } else {}
+            } else {
+                $message = 'An Error Encountered. ' . json_encode($result->response);
+            }
+
+            return $this->abort($message);
         }
-        
+
+        return new ResponseData([
+            'status' => $result->status,
+            'response' => $response
+        ]);
     }
 
     public function abort(string $message, int $code = 490) : ResponseData
