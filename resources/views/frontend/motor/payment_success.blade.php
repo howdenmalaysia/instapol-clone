@@ -34,7 +34,7 @@
                             </tr>
                             <tr>
                                 <th class="text-center py-3">{{ __('frontend.motor.payment_success_page.total_premium') }}</th>
-                                <td class="text-center py-3">{{ 'RM ' . formatMoney($insurance->amount) }}</td>
+                                <td class="text-center py-3">{{ 'RM ' . number_format($insurance->amount, 2) }}</td>
                             </tr>
                         </table>
                     </div>
