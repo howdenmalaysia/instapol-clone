@@ -12,7 +12,7 @@ import $ from 'jquery';
 import * as moment from 'moment';
 import Swal from 'sweetalert2';
 import parsley from 'parsleyjs';
-import * as mdb from 'mdb-ui-kit';
+// import * as mdb from 'mdb-ui-kit';
 
 window.bootstrap = bootstrap;
 window.$ = window.jQuery = $;
