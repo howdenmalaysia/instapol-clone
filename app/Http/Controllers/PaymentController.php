@@ -142,7 +142,7 @@ class PaymentController extends Controller
                 if ($insurance->insurance_status == Insurance::STATUS_NEW_QUOTATION || $insurance->insurance_status == Insurance::STATUS_PAYMENT_FAILURE) {
                     if (floatval($insurance->amount) != floatval($request->Amount)) {
                         // Update Insurance Status
-                        Insurance::find($insurance->id)
+                        Insurance::where('id', $insurance->id)
                             ->update([
                                 'insurance_status' => Insurance::STATUS_PAYMENT_FAILURE
                             ]);
@@ -157,7 +157,7 @@ class PaymentController extends Controller
                     }
 
                     // Update Insurance Status
-                    Insurance::find($insurance->id)
+                    Insurance::where('id', $insurance->id)
                         ->update([
                             'insurance_status_id' => Insurance::STATUS_PAYMENT_ACCEPTED
                         ]);
