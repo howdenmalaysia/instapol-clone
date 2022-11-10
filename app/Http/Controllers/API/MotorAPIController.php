@@ -680,7 +680,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             $result->company = $product->insurance_company->name;
             $result->product_name = $product->name;
 
-            return new submitCoverNoteResponse([
+            return new SubmitCoverNoteResponse([
                 json_decode(json_encode($result), true)
             ]);
         } catch (Exception $ex) {
