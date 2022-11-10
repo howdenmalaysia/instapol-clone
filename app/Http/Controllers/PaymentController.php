@@ -58,7 +58,7 @@ class PaymentController extends Controller
             'customer_phone_number' => $insurance->holder->phone_number,
             'language' => 'en',
             'timeout' => 780,
-            'param6' => Str::snake(Str::lower(str_replace('-', '', $product->product_type->name))) . '-' . $product->name,
+            'param6' => Str::snake(Str::lower(str_replace('-', '', $product->product_type->description))) . '-' . $product->name,
         ];
 
         $hash = [
