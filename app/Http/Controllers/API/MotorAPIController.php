@@ -599,8 +599,6 @@ class MotorAPIController extends Controller implements MotorAPIInterface
                 'holder',
                 'motor',
                 'address',
-                'driver',
-                'roadtax',
                 'promo',
                 'remark'
             ])
