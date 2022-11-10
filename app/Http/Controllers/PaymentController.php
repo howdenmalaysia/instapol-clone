@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Submission;
 use App\Http\Controllers\API\MotorAPIController;
 use App\Models\EGHLLog;
 use App\Models\InsuranceRemark;
@@ -57,7 +58,7 @@ class PaymentController extends Controller
             'customer_phone_number' => $insurance->holder->phone_number,
             'language' => 'en',
             'timeout' => 780,
-            'param6' => Str::snake(Str::lower(str_replace('-', '', $product->product_type->name))),
+            'param6' => $product->id . '-' . Str::snake(Str::lower(str_replace('-', '', $product->product_type->name))),
         ];
 
         $hash = [
@@ -95,51 +96,51 @@ class PaymentController extends Controller
     {
         Log::info('Received Request from Payment Gateway: ' . json_encode($request->input()));
         
-        EGHLLog::where('payment_id', $request->input('PaymentID'))
+        EGHLLog::where('payment_id', $request->PaymentID)
             ->update([
-                'payment_method' => $request->input('PymtMethod'),
-                'txn_status'=> $request->input('TxnStatus'),
-                'txn_message' => $request->input('TxnMessage'),
-                'response_hash' => $request->input('HashValue2'),
-                'issuing_bank' => $request->input('IssuingBank'),
-                'bank_reference' => $request->input('TxnID'),
-                'auth_code' => $request->input('AuthCode'),
+                'payment_method' => $request->PymtMethod,
+                'txn_status'=> $request->TxnStatus,
+                'txn_message' => $request->TxnMessage,
+                'response_hash' => $request->HashValue2,
+                'issuing_bank' => $request->IssuingBank,
+                'bank_reference' => $request->TxnID,
+                'auth_code' => $request->AuthCode,
                 'updated_at' => Carbon::now()->format('Y-m-d H:i:s'),
             ]);
 
         // verify hash value 2
         $return_hash = [
             config('setting.payment.gateway.merchant_password'),
-            $request->input('TxnID'),
+            $request->TxnID,
             config('setting.payment.gateway.merchant_id'),
-            $request->input('PaymentID'),
-            $request->input('TxnStatus'),
-            $request->input('Amount'),
-            $request->input('CurrencyCode'),
-            $request->input('AuthCode'),
-            $request->input('OrderNumber'),
-            $request->input('Param6'),
-            $request->input('Param7'),
+            $request->PaymentID,
+            $request->TxnStatus,
+            $request->Amount,
+            $request->CurrencyCode,
+            $request->AuthCode,
+            $request->OrderNumber,
+            $request->Param6,
+            $request->Param7,
         ];
 
         $hash_value_2 = hash('sha256', implode('', $return_hash));
 
-        if ($hash_value_2 != $request->input('HashValue2')) {
+        if ($hash_value_2 != $request->HashValue2) {
             return  'Invalid Hash Value';
         }
 
         // get insurance record
-        $insurance_code = Str::beforeLast($request->input('PaymentID'), '-');
+        $insurance_code = Str::beforeLast($request->PaymentID, '-');
         $insurance = Insurance::findByInsuranceCode($insurance_code);
 
         // check transaction status
         // 0 - Transaction successful
         // 1 - Transaction failed
         // 2 - Transaction pending
-        switch ($request->input('TxnStatus')) {
+        switch ($request->TxnStatus) {
             case '0': {
                 if ($insurance->insurance_status == Insurance::STATUS_NEW_QUOTATION || $insurance->insurance_status == Insurance::STATUS_PAYMENT_FAILURE) {
-                    if (floatval($insurance->amount) != floatval($request->input('Amount'))) {
+                    if (floatval($insurance->amount) != floatval($request->Amount)) {
                         // Update Insurance Status
                         Insurance::find($insurance->id)
                             ->update([
@@ -149,7 +150,7 @@ class PaymentController extends Controller
                         // Create Remark
                         InsuranceRemark::create([
                             'insurance_id' => $insurance->id,
-                            'remark' => __('api.total_payable_not_match') . '. (Payment ID: ' . $request->input('PaymentID') . ')'
+                            'remark' => __('api.total_payable_not_match') . '. (Payment ID: ' . $request->PaymentID . ')'
                         ]);
 
                         return __('api.total_payable_not_match');
@@ -164,26 +165,22 @@ class PaymentController extends Controller
                     // Create Remark
                     InsuranceRemark::create([
                         'insurance_id' => $insurance->id,
-                        'remark' => 'Payment accepted. (Payment ID: ' . $request->input('PaymentID') . ')'
+                        'remark' => 'Payment accepted. (Payment ID: ' . $request->PaymentID . ')'
                     ]);
 
                     // Policy Submission
                     $data = (object) [
                         'insurance_code' => $insurance->insurance_code,
-                        'id_number' => $insurance->holder->ic_number,
-                        'payment_method' => $request->input('PymtMethod'),
-                        'payment_amount' => $request->input('Amount'),
-                        'payment_date' => Carbon::now()->toDateTimeString(),
-                        'transaction_reference' => $request->input('PaymentID'),
+                        'id_number' => $insurance->holder->id_number,
+                        'payment_method' => $request->PymtMethod,
+                        'payment_amount' => $request->Amount,
+                        'payment_date' => Carbon::now()->format('Y-m-d H:i:s'),
+                        'transaction_reference' => $request->PaymentID,
                         'vehicle_numnber' => $insurance->motor->vehicle_number
                     ];
 
-                    $controller = new MotorAPIController();
-                    $result = $controller->submitCoverNote($data);
-
-                    if (!$result->status) {
-                        return $result->response;
-                    }
+                    $helper = new Submission(Str::before($request->Param6, '-'), Str::after($request->Param6, '-'));
+                    $helper->submission($data);
                 }
 
                 break;
@@ -198,7 +195,7 @@ class PaymentController extends Controller
 
                     InsuranceRemark::create([
                         'insurance_id' => $insurance->id,
-                        'remark' => $request->input('TxnMessage') . '. (Payment ID: ' . $request->input('PaymentID') . ')'
+                        'remark' => $request->TxnMessage . '. (Payment ID: ' . $request->PaymentID . ')'
                     ]);
                 }
 
@@ -206,8 +203,8 @@ class PaymentController extends Controller
             }
         }
 
-        $request->session()->put($request->input('Param6'), $insurance->insurance_code);
+        $request->session()->put($request->Param6, $insurance->insurance_code);
 
-        return redirect()->route($request->input('Param6') . '.payment-success');
+        return redirect()->route($request->Param6 . '.payment-success');
     }
 }

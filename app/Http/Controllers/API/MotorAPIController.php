@@ -608,10 +608,10 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             ->get();
 
         // Get State Details with Postcode
-        $postcode = $this->getPostcodeDetails($request->postcode);
+        $postcode = $this->getPostcodeDetails($insurance->address->postcode);
 
         // Get Product Details
-        $product = $this->getProduct($request->product_id);
+        $product = $this->getProduct($insurance->product_id);
 
         // Check if Insurance Motor Record Exists
         $insurance_motor = InsuranceMotor::where('insurance_id', $insurance->id);
@@ -620,9 +620,9 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             'insurance_code' => $request->insurance_code,
             'company_id' => $product->insurance_company->id,
             'product_id' => $product->id,
-            'vehicle_number' => strtoupper($request->vehicle_number),
+            'vehicle_number' => strtoupper($insurance->motor->vehicle_number),
             'id_type' => $insurance->holder->id_type_id,
-            'id_number' => $request->id_number,
+            'id_number' => $insurance->holder->id_number,
             'payment_method' => $request->payment_method,
             'payment_amount' => formatNumber($request->payment_amount),
             'payment_date' => Carbon::parse($request->payment_date)->format('Y-m-d'),
@@ -674,7 +674,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             
             InsuranceRemark::create([
                 'insurance_id' => $input->insurance->id,
-                'remark' => "{$product->insurance_company->name} Policy successfully created. (Policy Number: {$policy_policy_number})",
+                'remark' => "{$product->insurance_company->name} Policy successfully created. (Policy Number: {$result->policy_number})",
             ]);
 
             DB::commit();
