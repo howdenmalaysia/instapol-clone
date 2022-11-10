@@ -11,6 +11,7 @@ use App\DataTransferObjects\Motor\Response\SubmitCoverNoteResponse;
 use App\DataTransferObjects\Motor\Vehicle;
 use App\DataTransferObjects\Motor\VehicleVariantData;
 use App\Helpers\Insurer\BerjayaSompo;
+use App\Helpers\Insurer\Liberty;
 use App\Helpers\Insurer\PacificOrient;
 use App\Http\Controllers\Controller;
 use App\Interfaces\MotorAPIInterface;
@@ -702,6 +703,11 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             }
             case 16: {
                 return new BerjayaSompo($insurer->id, $insurer->name);
+
+                break;
+            }
+            case 15: {
+                return new Liberty($insurer->id, $insurer->name);
 
                 break;
             }

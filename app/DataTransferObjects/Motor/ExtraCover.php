@@ -32,6 +32,9 @@ class ExtraCover extends DataTransferObject
 
     /** @var int|null */
     public $sequence;
+
+    /** @var int|null */
+    public $unit;
 }
 
 class CartList extends DataTransferObject

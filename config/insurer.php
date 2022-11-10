@@ -16,5 +16,11 @@ return [
             'secret_key' => env('SOMPO_MOTOR_SECRET_KEY'),
             'auth_token' => env('SOMPO_MOTOR_AUTH_TOKEN')
         ],
+        'liberty' => [
+            'product_id' => 15,
+            'agent_code' => env('LIBERTY_MOTOR_API_AGENT_CODE'),
+            'host' => env('LIBERTY_MOTOR_API_DOMAIN'),
+            'secret_key' => env('LIBERTY_MOTOR_API_PASSWORD')
+        ],
     ] 
 ];

@@ -341,7 +341,7 @@ body {
         font-size: 1.5rem;
     }
 
-    .btn:focus {
+    .btn:focus, label:hover {
         background-color: $primary;
     }
 }
