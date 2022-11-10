@@ -24,6 +24,9 @@ class PremiumResponse extends DataTransferObject
     /** @var float */
     public $ncd_amount;
 
+    /** @var float|int|null */
+    public $ncd_percentage;
+
      /** @var float */
      public $net_premium;
     
