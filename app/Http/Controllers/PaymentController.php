@@ -22,7 +22,7 @@ class PaymentController extends Controller
         $insurance = Insurance::findByInsuranceCode($request->insurance_code);
 
         // Get Product Details
-        $product = Product::with('product_type')
+        $product = Product::with(['product_type'])
             ->where('id', $insurance->product_id)
             ->first();
 
@@ -58,7 +58,7 @@ class PaymentController extends Controller
             'customer_phone_number' => $insurance->holder->phone_number,
             'language' => 'en',
             'timeout' => 780,
-            'param6' => Str::snake(Str::lower(str_replace('-', '', $product->product_type->name))),
+            'param6' => Str::snake(Str::lower(str_replace('-', '', $product->product_type->name))) . '-' . $product->name,
         ];
 
         $hash = [
@@ -179,7 +179,7 @@ class PaymentController extends Controller
                         'vehicle_number' => $insurance->motor->vehicle_number
                     ];
 
-                    $helper = new Submission('motor', $request->Param6);
+                    $helper = new Submission(Str::before($request->Param6, '-'), Str::after($request->Param6, '-'));
                     $helper->submission($data);
                 }
 
