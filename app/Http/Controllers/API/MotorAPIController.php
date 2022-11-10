@@ -603,7 +603,8 @@ class MotorAPIController extends Controller implements MotorAPIInterface
                 'remark'
             ])
             ->where('insurance_code', $request->insurance_code)
-            ->get();
+            ->where('insurance_status', Insurance::STATUS_PAYMENT_ACCEPTED)
+            ->first();
 
         // Get State Details with Postcode
         $postcode = $this->getPostcodeDetails($insurance->address->postcode);
