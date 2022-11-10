@@ -30,6 +30,9 @@ class Vehicle extends DataTransferObject
     /** @var string */
     public $coverage;
 
+    /** @var string|null */
+    public $coverage_type;
+
     /** @var string */
     public $inception_date;
 
