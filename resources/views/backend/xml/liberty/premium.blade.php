@@ -36,7 +36,7 @@
                             <drvmarital></drvmarital>
                             <drvoccup></drvoccup>
                             <drvrel></drvrel>
-                            <icnumber>{{ $driver->ic_number }}</icnumber>
+                            <icnumber>{{ $driver->id_number }}</icnumber>
                             <index>{{ $index + 1 }}</index>
                             <name>{{ $driver->name }}</name>
                             <oicnumber />

@@ -7,7 +7,7 @@
          <urn:arrExtraParam></urn:arrExtraParam>
          <urn:bizregno>{{ $company_registration_number }}</urn:bizregno>
          <urn:compcode>{{ $company_code }}</urn:compcode>
-         <urn:newic>{{ $ic_number }}</urn:newic>
+         <urn:newic>{{ $id_number }}</urn:newic>
          <urn:oldic></urn:oldic>
          <urn:passportno></urn:passportno>
          <urn:regno>{{ $vehicle_number }}</urn:regno>

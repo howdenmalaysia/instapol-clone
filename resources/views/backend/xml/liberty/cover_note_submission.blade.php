@@ -10,7 +10,7 @@
                         <drvage xmlns="urn:IssueCoverNote">{{ $driver->age }}</drvage>
                         <drvdob xmlns="urn:IssueCoverNote">{{ $driver->date_of_birth }}</drvdob>
                         <drvrel xmlns="urn:IssueCoverNote">{{ $driver->relationship }}</drvrel>
-                        <icnumber xmlns="urn:IssueCoverNote">{{ $driver->ic_number }}</icnumber>
+                        <icnumber xmlns="urn:IssueCoverNote">{{ $driver->id_number }}</icnumber>
                         <index xmlns="urn:IssueCoverNote">{{ $index + 1}}</index>
                         <name xmlns="urn:IssueCoverNote">{{ $driver->name }}</name>
                     </item>
