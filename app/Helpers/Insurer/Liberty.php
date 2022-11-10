@@ -1091,6 +1091,7 @@ class Liberty implements InsurerLibraryInterface
             'headers' => [
                 'Content-Type' => 'application/xml',
                 'Accept' => 'application/xml',
+                'soapAction' => ''
             ],
             'body' => $xml
         ];
