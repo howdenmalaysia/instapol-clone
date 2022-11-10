@@ -159,7 +159,7 @@ class PaymentController extends Controller
                     // Update Insurance Status
                     Insurance::where('id', $insurance->id)
                         ->update([
-                            'insurance_status_id' => Insurance::STATUS_PAYMENT_ACCEPTED
+                            'insurance_status' => Insurance::STATUS_PAYMENT_ACCEPTED
                         ]);
 
                     // Create Remark
