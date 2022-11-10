@@ -203,8 +203,8 @@ class PaymentController extends Controller
             }
         }
 
-        $request->session()->put($request->Param6, $insurance->insurance_code);
+        $request->session()->put(Str::before($request->Param6, '-'), $insurance->insurance_code);
 
-        return redirect()->route($request->Param6 . '.payment-success');
+        return redirect()->route(Str::before($request->Param6, '-') . '.payment-success');
     }
 }
