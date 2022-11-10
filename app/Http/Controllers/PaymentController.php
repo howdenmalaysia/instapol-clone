@@ -58,7 +58,7 @@ class PaymentController extends Controller
             'customer_phone_number' => $insurance->holder->phone_number,
             'language' => 'en',
             'timeout' => 780,
-            'param6' => $product->id . '-' . Str::snake(Str::lower(str_replace('-', '', $product->product_type->name))),
+            'param6' => Str::snake(Str::lower(str_replace('-', '', $product->product_type->name))),
         ];
 
         $hash = [
@@ -176,10 +176,10 @@ class PaymentController extends Controller
                         'payment_amount' => $request->Amount,
                         'payment_date' => Carbon::now()->format('Y-m-d H:i:s'),
                         'transaction_reference' => $request->PaymentID,
-                        'vehicle_numnber' => $insurance->motor->vehicle_number
+                        'vehicle_number' => $insurance->motor->vehicle_number
                     ];
 
-                    $helper = new Submission(Str::before($request->Param6, '-'), Str::after($request->Param6, '-'));
+                    $helper = new Submission('motor', $request->Param6);
                     $helper->submission($data);
                 }
 

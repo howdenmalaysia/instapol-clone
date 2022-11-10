@@ -6,9 +6,9 @@ use App\DataTransferObjects\Motor\Response\ResponseData;
 
 class Submission
 {
-    private string $insurer = '';
-    private string $domain = '';
-    private string $product_type = '';
+    private string $insurer;
+    private string $domain;
+    private string $product_type;
 
     public function __construct(string $product_type, string $insurer)
     {
@@ -30,8 +30,7 @@ class Submission
                     'insurance_code' => $data->insurance_code,
                     'payment_method' => $data->payment_method,
                     'payment_amount' => $data->payment_amount,
-                    'payment_date' => $data->payment_date,
-                    'product_id' => $data->product_id
+                    'payment_date' => $data->payment_date
                 ];
 
                 break;

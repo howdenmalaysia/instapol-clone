@@ -620,7 +620,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             'insurance_code' => $request->insurance_code,
             'company_id' => $product->insurance_company->id,
             'product_id' => $product->id,
-            'vehicle_number' => strtoupper($insurance->motor->vehicle_number),
+            'vehicle_number' => strtoupper($request->vehicle_number ?? $insurance->motor->vehicle_number),
             'id_type' => $insurance->holder->id_type_id,
             'id_number' => $insurance->holder->id_number,
             'payment_method' => $request->payment_method,
@@ -647,7 +647,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             abort(config('setting.response_codes.total_payable_not_match'), __('api.total_payable_not_match'));
         }
 
-        $insurer_class = $this->getInsurerClass($input->company_id);
+        $insurer_class = $this->getInsurerClass($input->product_id);
         $result = $insurer_class->submission($input);
 
         if(!$result->status) {
