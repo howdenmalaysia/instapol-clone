@@ -24,7 +24,7 @@ class Submission
 
         switch($this->product_type) {
             case 'motor': {
-                $path = '/motor/submit-cover-note';
+                $path = route('motor.api.submit-cover-note');
 
                 $param = (object) [
                     'insurance_code' => $data->insurance_code,
