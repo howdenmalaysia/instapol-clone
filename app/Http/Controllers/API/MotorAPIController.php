@@ -260,9 +260,9 @@ class MotorAPIController extends Controller implements MotorAPIInterface
         }
 
         // Get the Variant to Construct DTO
-        $motor->vehicle->variant = array_filter($motor->variants, function($variant) use($motor) {
+        $motor->vehicle->variant = array_values(array_filter($motor->variants, function($variant) use($motor) {
             return $variant->nvic === $motor->vehicle->nvic;
-        })[0]->variant;
+        }))[0]->variant;
 
 
         $input = new APIData([
