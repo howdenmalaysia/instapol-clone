@@ -402,9 +402,9 @@ class MotorController extends Controller
             return redirect()->route('motor.index');
         }
         
-        $session = $request->session()->get('motor');
+        $insurance_code = $request->session()->get('motor');
 
-        $insurance = Insurance::findByInsuranceCode($session->insurance_code);
+        $insurance = Insurance::findByInsuranceCode($insurance_code);
         return view('frontend.motor.payment_success')
             ->with([
                 'insurance' => $insurance,
