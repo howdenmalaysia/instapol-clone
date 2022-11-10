@@ -2,7 +2,8 @@
 
 namespace App\Models\Motor;
 
-use App\Models\InsuranceAddress;
+use App\Models\InsuranceRemark;
+use App\Models\Motor\InsuranceAddress;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
