@@ -298,7 +298,7 @@ class BerjayaSompo implements InsurerLibraryInterface
                 ]);
 
                 switch($extra_cover_code) {
-                    case '89': { // Windscreen Damage
+                    case '89A': { // Windscreen Damage
                         // Generate Options From 500 To 10,000
                         $option_list = new OptionList([
                             'name' => 'sum_insured',
