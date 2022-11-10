@@ -378,7 +378,9 @@ class MotorController extends Controller
                 ->first();
 
             // Get Roadtax Delivery Fee
-            $motor->roadtax->delivery_fee = RoadtaxDeliveryType::find($motor->roadtax->roadtax_delivery_region_id)->amount;
+            if(!empty($motor->roadtax)) {
+                $motor->roadtax->delivery_fee = RoadtaxDeliveryType::find($motor->roadtax->roadtax_delivery_region_id)->amount;
+            }
         } else if($insurance->insurance_status === Insurance::STATUS_PAYMENT_ACCEPTED || $insurance->insurance_status === Insurance::STATUS_POLICY_ISSUED) {
             return redirect()->route('motor.payment-success');
         } else {
