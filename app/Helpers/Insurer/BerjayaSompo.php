@@ -494,10 +494,10 @@ class BerjayaSompo implements InsurerLibraryInterface
             'extra_cover' => $input->extra_cover,
             'personal_accident' => $pa,
             'quotation_number' => $motor_premium->response->QUOTATION_NO,
-            'sum_insured' => $motor_premium->response->SUM_INSURED,
+            'sum_insured' => formatNumber($motor_premium->response->SUM_INSURED),
             'sum_insured_type' => $vehicle_vix->response->sum_insured_type,
-            'min_sum_insured' => $vehicle_vix->response->min_sum_insured,
-            'max_sum_insured' => $vehicle_vix->response->max_sum_insured,
+            'min_sum_insured' => formatNumber($vehicle_vix->response->min_sum_insured),
+            'max_sum_insured' => formatNumber($vehicle_vix->response->max_sum_insured),
             'named_drivers_needed' => false
         ]);
 
