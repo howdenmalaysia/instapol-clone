@@ -1111,17 +1111,18 @@ class Liberty implements InsurerLibraryInterface
         APILogs::find($log->id)
             ->update([
                 'response_header' => json_encode($result->response_header),
-                'resposne' => $result->response
+                'response' => $result->response
             ]);
 
         if($result->status) {
             $response = simplexml_load_string($result->response);
+            $response->registerXPathNamespace('res', 'http://schemas.xmlsoap.org/soap/envelope/');
 
             if($response === false) {
                 return $this->abort(__('api.xml_error'));
             }
 
-            $response = $response->xpath('Body')[0];
+            $response = $response->xpath('res:Body')[0];
         } else {
             $message = '';
             if(empty($result->response)) {
