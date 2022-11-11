@@ -939,10 +939,12 @@ class Liberty implements InsurerLibraryInterface
             'tariff_premium' => formatNumber((float) $result->response->reqdataReturn->tariffpremium),
         ];
 
-        return (object) ['status' => true, 'response' => $response];
+        return new ResponseData([
+            'response' => $response
+        ]);
     }
 
-    private function issueCoverNote(object $input)
+    private function issueCoverNote(object $input) : ResponseData
     {
         $path = '/IssueCoverNote';
 
@@ -1076,7 +1078,9 @@ class Liberty implements InsurerLibraryInterface
             'policy_number' => (string) $result->response->issueCoverNoteReqReturn->covernoteno
         ];
 
-        return (object) ['status' => true, 'response' => $response];
+        return new ResponseData([
+            'response' => $response
+        ]);
     }
 
     private function cURL(string $path, string $xml, string $method = 'POST') : ResponseData

@@ -201,3 +201,15 @@ if(!function_exists('formatAddress')) {
         return $formatted_address;
     }
 }
+
+if (!function_exists('getPreVehicleNCD')) {
+    function getPreVehicleNCD(float $ncd_percentage)
+    {
+        $ncd_percentage_list = [0, 25, 30, 38.33, 45, 55];
+
+        $key = array_search($ncd_percentage, $ncd_percentage_list);
+
+        return $ncd_percentage_list[$key - 1] ?? 0;
+    }
+}
+
