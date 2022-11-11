@@ -249,7 +249,8 @@ class Liberty implements InsurerLibraryInterface
                 'region' => $input->region,
                 'state' => $input->state,
                 'vehicle' => $vehicle,
-                'vehicle_number' => $input->vehicle_number
+                'vehicle_number' => $input->vehicle_number,
+                'ownership_type' => $ownership_type
             ];
 
             $motor_premium = $this->getPremium($data);
@@ -259,7 +260,7 @@ class Liberty implements InsurerLibraryInterface
             }
 
             $ncd_amount = $motor_premium->response->ncd_amount;
-            $basic_premium = formatNumber($motor_premium->response->gross_premium + $ncd);
+            $basic_premium = formatNumber($motor_premium->response->gross_premium + $ncd_amount);
             $ncd_percentage = $motor_premium->response->ncd_percentage;
             $total_benefit_amount = 0;
             $gross_premium = $motor_premium->response->gross_premium;
