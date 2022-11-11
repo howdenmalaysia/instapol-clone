@@ -13,7 +13,10 @@ use App\DataTransferObjects\Motor\Vehicle;
 use App\Helpers\HttpClient;
 use App\Interfaces\InsurerLibraryInterface;
 use App\Models\APILogs;
+use App\Models\Motor\VehicleBodyType;
 use Carbon\Carbon;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Jose\Component\Core\AlgorithmManager;
 use Jose\Component\Encryption\Algorithm\ContentEncryption\A256CBCHS512;
@@ -139,7 +142,7 @@ class BerjayaSompo implements InsurerLibraryInterface
         array_push($variants, new VariantData([
             'nvic' => (string) $vix->response->NVIC_CODE,
             'sum_insured' => floatval($vix->response->SUM_INSURED),
-            'variant' => '-',
+            'variant' => $this->getModelDetails($vix->response->NVIC_CODE)->variant,
         ]));
 
         return (object) [
@@ -991,5 +994,52 @@ class BerjayaSompo implements InsurerLibraryInterface
         }
 
         return $result['code'];
+    }
+
+    private function getMake(int $make_code)
+    {
+        try {
+            $json = File::get(storage_path('Motor/ism_make.json'));
+            $make_listing = json_decode($json, true);
+
+            foreach ($make_listing['makecode'] as $make) {
+                if (trim($make['VEHMAKEMAJOR']) == $make_code) {
+                    return trim($make['MAJORDESC']);
+                }
+            }
+        } catch (FileNotFoundException $ex) {
+            return $this->abort('Make mapping file not found!');
+        }
+
+        return '';
+    }
+
+    private function getModelDetails(string $nvic)
+    {
+        $model_details = null;
+
+        try {
+            $json = File::get(storage_path('Motor/ism_model.json'));
+            $model_listing = json_decode($json, true);
+
+            foreach ($model_listing['modelcode'] as $model) {
+                if (trim($model['NVIC']) == $nvic) {
+                    // Remove model from variant
+                    $variant = str_replace(trim($model['MINORDESC']) . ' ', '', trim($model['REDBOOKDESC']));
+
+                    $model_details = (object) [
+                        'make' => $this->getMake(trim($model['VEHMAKEMAJOR'])),
+                        'model' => trim($model['MINORDESC']),
+                        'variant' => $variant,
+                        'body_type_code' => VehicleBodyType::where('name', ucwords(strtolower(trim($model['BODYDESC']))))->pluck('id')->first(),
+                        'body_type_description' => trim($model['BODYDESC']),
+                    ];
+                }
+            }
+        } catch (FileNotFoundException $ex) {
+            return $this->abort('Model mapping file not found!');
+        }
+
+        return $model_details;
     }
 }
