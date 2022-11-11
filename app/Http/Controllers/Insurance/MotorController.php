@@ -123,8 +123,8 @@ class MotorController extends Controller
         $session = json_decode($request->motor);
 
         // Reformat Dates
-        $session->vehicle->inception_date = Carbon::createFromFormat('d M Y', $session->vehicle->inception_date)->format('Y-m-d');
-        $session->vehicle->expiry_date = Carbon::createFromFormat('d M Y', $session->vehicle->expiry_date)->format('Y-m-d');
+        $session->vehicle->inception_date = Carbon::parse($session->vehicle->inception_date)->format('Y-m-d');
+        $session->vehicle->expiry_date = Carbon::parse($session->vehicle->expiry_date)->format('Y-m-d');
         $session->vehicle->nvic = $request->nvic;
         $session->vehicle->variant = $request->variant;
         $session->vehicle->coverage_type = $request->coverage_type;
