@@ -242,7 +242,8 @@ class Liberty implements InsurerLibraryInterface
 
             $data = (object) [
                 'gender' => $input->gender,
-                'id_number' => $input->id_number,
+                'id_number' => $id_number,
+                'company_registration_number' => $company_registration_number,
                 'marital_status' => $input->marital_status,
                 'postcode' => $input->postcode,
                 'region' => $input->region,
