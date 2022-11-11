@@ -837,8 +837,8 @@ class Liberty implements InsurerLibraryInterface
         $data = [
             'additional_driver' => $input->additional_driver ?? [],
             'address_1' => ($input->address_one ?? '1 Jalan 1'),
-            'address_2' => empty($input->address_two) ? $input->city . ', ' . $input->state : $input->address_two,
-            'address_3' => empty($input->address_two) ? '' : $input->city . ', ' . $input->state,
+            'address_2' => isset($input->address_two) ? (empty($input->address_two) ? $input->city . ', ' . $input->state : $input->address_two) : '',
+            'address_3' => isset($input->address_two) ? (empty($input->address_two) ? '' : $input->city . ', ' . $input->state) : '',
             'agent_code' => $this->agent_code,
             'anti_theft' => self::ANTI_THEFT,
             'body_type_code' => $body_type->code,
