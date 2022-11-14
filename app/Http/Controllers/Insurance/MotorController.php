@@ -160,7 +160,7 @@ class MotorController extends Controller
             }
         }
 
-        $products = Product::with('insurance_company')->get();
+        $products = Product::with(['insurance_company', 'benefits'])->get();
 
         return view('frontend.motor.compare')->with(['products' => $products]);
     }
@@ -350,7 +350,6 @@ class MotorController extends Controller
             $address = InsuranceAddress::where('insurance_id', $insurance->id)
                 ->first();
 
-            $formatted_address = '';
             $strings = [
                 $address->unit_no,
                 $address->building_name,

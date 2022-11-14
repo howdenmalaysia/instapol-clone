@@ -33,4 +33,9 @@ class Product extends Model
     {
         return $this->belongsTo(InsuranceCompany::class, 'company_id', 'id');
     }
+
+    public function benefits()
+    {
+        return $this->hasOne(ProductBenefits::class, 'product_id', 'id');
+    }
 }
