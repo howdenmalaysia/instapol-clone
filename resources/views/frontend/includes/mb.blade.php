@@ -1,7 +1,7 @@
 @if(config('messagebird.widget-id'))
 <script>
     var MessageBirdChatWidgetSettings = {
-        widgetId: "{{ config('messagebird.widget-id') }}",
+        widgetId: "{{ config('setting.messagebird.widget_id') }}",
         initializeOnLoad: true,
     };
     ! function() {
