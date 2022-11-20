@@ -226,23 +226,23 @@
 
 @push('after-scripts')
 <script>
-    $(function() {
+    $(() {
         new Inputmask({mask: '999999-99-9999'}).mask('#id-number');
 
-        $('#vehicle-no-continue').on('click', function() {
+        $('#vehicle-no-continue').on('click', () {
             if($('#vehicle-no').val()) {
                 $('#owner-loacation-details').slideDown();
             }
         });
 
-        $('#company-reg, #private-reg').on('click', function() {
-            if(!$(this).hasClass('active')) {
-                $(this).removeClass('btn-light').toggleClass('active btn-primary border text-white');
-                $(this).siblings('label.btn').removeClass('active btn-primary border text-white').toggleClass('btn-light');
+        $('#company-reg, #private-reg').on('click', (e) {
+            if(!$(e.target).hasClass('active')) {
+                $(e.target).removeClass('btn-light').toggleClass('active btn-primary border text-white');
+                $(e.target).siblings('label.btn').removeClass('active btn-primary border text-white').toggleClass('btn-light');
             }
         });
 
-        $('input[name=id_type]').on('change', function() {
+        $('input[name=id_type]').on('change', () {
             if($('input[name=id_type]:checked').val() == 2) {
                 $('#id-number-label').text("{{ __('frontend.motor.company_resgistration') }}");
                 $('#id-number').removeAttr('pattern').attr('minlength', 9);
@@ -255,12 +255,12 @@
             }
         });
 
-        $('#btn-continue').on('click', function() {
+        $('#btn-continue').on('click', (e) {
             let form = $('#motor-details-form');
 
             if(form.parsley().validate()) {
                 $('input[name=id_type]').val($('input[name=id_type]:checked').val());
-                $(this).addClass('loadingButton');
+                $(e.target).addClass('loadingButton');
 
                 form.submit();
             } else {
