@@ -133,7 +133,7 @@
                                                     name="id_number"
                                                     minlength="12"
                                                     value="{{ old('id_number', $motor->policy_holder->id_number ?? '') }}"
-                                                    pattern="\d{2}([0][1-9]|[1][0-2])([0][1-9]|[1-2][0-9]|[3][0-1])-\d{2}-\d{4}"
+                                                    pattern="\\d{2}([0][1-9]|[1][0-2])([0][1-9]|[1-2][0-9]|[3][0-1])-\\d{2}-\\d{4}"
                                                     data-parsley-required-message="Please enter your ID number"
                                                     data-parsley-pattern-message="Please enter a valid ID number"
                                                     data-parsley-errors-container="#id-number-errors"
