@@ -32,7 +32,7 @@ class Liberty implements InsurerLibraryInterface
     private const TIMESTAMP_FORMAT = 'Y-m-d H:i:s.u';
     private const EXTRA_BENEFIT_LIST = [
         '101', '105', '111', '112', '25',
-        '40', '57', '72', '89', '97', '97A', 'EHD',
+        '40', '57', '72', '89', '97', '97A',
         'EZ100A', 'EZ103', 'EZ106', 'EZ109', 'WCX'
     ];
     private const CART_DAY_LIST = [7, 14];
