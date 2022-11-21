@@ -31,10 +31,21 @@
                                         <div class="card-body">
                                             <ul class="nav nav-pills nav-fill justify-content-around mb-3" role="tablist">
                                                 <li class="nav-item" role="presentation">
-                                                    <button type="button" class="nav-link" id="basic-info-link" data-bs-toggle="pill" data-bs-target="#basic-info" role="tab">{{ '1. ' . __('frontend.motor.compare_page.basic_info') }}</button>
+                                                    <button type="button" class="nav-link" id="basic-info-link" data-bs-toggle="pill" data-bs-target="#basic-info" role="tab">
+                                                        {{ '1. ' . __('frontend.motor.compare_page.basic_info') }}
+                                                    </button>
                                                 </li>
                                                 <li class="nav-item" role="presentation">
-                                                    <button type="button" class="nav-link active" id="driver-info-link" data-bs-toggle="pill" data-bs-target="#driver-info" role="tab">{{ '2. ' . __('frontend.motor.compare_page.driver_info') }}</button>
+                                                    <button
+                                                        type="button"
+                                                        id="driver-info-link"
+                                                        class="nav-link active"
+                                                        data-bs-toggle="pill"
+                                                        data-bs-target="#driver-info"
+                                                        role="tab"
+                                                    >
+                                                        {{ '2. ' . __('frontend.motor.compare_page.driver_info') }}
+                                                    </button>
                                                 </li>
                                             </ul>
                                             <div class="tab-content">
@@ -72,11 +83,29 @@
                                                         <div class="col-7">
                                                             <div class="d-grid gap-0">
                                                                 <div class="btn-group rounded" role="group">
-                                                                    <input type="radio" id="male" class="btn-check" name="gender" value="M" {{ session('motor')->policy_holder->gender === 'M' ? 'checked' : ''}}>
-                                                                    <label id="male-label" class="btn btn-primary text-white rounded-start border active" for="male">{{ __('frontend.motor.compare_page.male') }}</label>
+                                                                    <input
+                                                                        type="radio"
+                                                                        id="male"
+                                                                        class="btn-check"
+                                                                        name="gender"
+                                                                        value="M"
+                                                                        {{ session('motor')->policy_holder->gender === 'M' ? 'checked' : '' }}
+                                                                    >
+                                                                    <label id="male-label" class="btn btn-primary text-white rounded-start border active" for="male">
+                                                                        {{ __('frontend.motor.compare_page.male') }}
+                                                                    </label>
                             
-                                                                    <input type="radio" id="female" class="btn-check" name="gender" value="F" {{ session('motor')->policy_holder->gender === 'F' ? 'checked' : ''}}>
-                                                                    <label id="female-label" class="btn btn-light rounded-end" for="female">{{ __('frontend.motor.compare_page.female') }}</label>
+                                                                    <input
+                                                                        type="radio"
+                                                                        id="female"
+                                                                        class="btn-check"
+                                                                        name="gender"
+                                                                        value="F"
+                                                                        {{ session('motor')->policy_holder->gender === 'F' ? 'checked' : '' }}
+                                                                    >
+                                                                    <label id="female-label" class="btn btn-light rounded-end" for="female">
+                                                                        {{ __('frontend.motor.compare_page.female') }}
+                                                                    </label>
                                                                 </div>
                                                             </div>
                                                         </div>
