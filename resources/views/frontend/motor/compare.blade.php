@@ -117,10 +117,18 @@
                                                         <div class="col-7">
                                                             <select id="marital-status" class="form-select rounded bg-primary text-white">
                                                                 <option value="">{{ __('frontend.general.select') }}</option>
-                                                                <option value="S" {{ session('motor')->policy_holder->marital_status === 'S' ? 'selected' : 'selected'}}>{{ __('frontend.motor.compare_page.single') }}</option>
-                                                                <option value="M" {{ session('motor')->policy_holder->marital_status === 'M' ? 'selected' : ''}}>{{ __('frontend.motor.compare_page.married') }}</option>
-                                                                <option value="D" {{ session('motor')->policy_holder->marital_status === 'D' ? 'selected' : ''}}>{{ __('frontend.motor.compare_page.divorced') }}</option>
-                                                                <option value="O" {{ session('motor')->policy_holder->marital_status === 'O' ? 'selected' : ''}}>{{ __('frontend.motor.compare_page.others') }}</option>
+                                                                <option value="S" {{ session('motor')->policy_holder->marital_status === 'S' ? 'selected' : 'selected' }}>
+                                                                    {{ __('frontend.motor.compare_page.single') }}
+                                                                </option>
+                                                                <option value="M" {{ session('motor')->policy_holder->marital_status === 'M' ? 'selected' : '' }}>
+                                                                    {{ __('frontend.motor.compare_page.married') }}
+                                                                </option>
+                                                                <option value="D" {{ session('motor')->policy_holder->marital_status === 'D' ? 'selected' : '' }}>
+                                                                    {{ __('frontend.motor.compare_page.divorced') }}
+                                                                </option>
+                                                                <option value="O" {{ session('motor')->policy_holder->marital_status === 'O' ? 'selected' : '' }}>
+                                                                    {{ __('frontend.motor.compare_page.others') }}
+                                                                </option>
                                                             </select>
                                                         </div>
                                                     </div>
