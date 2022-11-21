@@ -55,7 +55,7 @@
                                                             <p>{{ __('frontend.motor.car_plate') }}</p>
                                                         </div>
                                                         <div class="col-7">
-                                                            <input type="text" id="vehicle-number" value="{{ session('motor')->vehicle_number }}" readonly>
+                                                            <input type="text" id="vehicle-number" class="form-control" value="{{ session('motor')->vehicle_number }}" readonly>
                                                         </div>
                                                     </div>
                                                     <div class="row mt-4">
@@ -63,7 +63,7 @@
                                                             <p>{{ __('frontend.motor.nric') }}</p>
                                                         </div>
                                                         <div class="col-7">
-                                                            <input type="text" id="id-number" value="{{ session('motor')->policy_holder->id_number }}" readonly>
+                                                            <input type="text" id="id-number" class="form-control" value="{{ session('motor')->policy_holder->id_number }}" readonly>
                                                         </div>
                                                     </div>
                                                     <div class="row mt-4">
@@ -71,7 +71,7 @@
                                                             <p>{{ __('frontend.motor.postcode') }}</p>
                                                         </div>
                                                         <div class="col-7">
-                                                            <input type="text" id="postcode" value="{{ session('motor')->postcode }}" readonly>
+                                                            <input type="text" id="postcode" class="form-control" value="{{ session('motor')->postcode }}" readonly>
                                                         </div>
                                                     </div>
                                                 </div>
