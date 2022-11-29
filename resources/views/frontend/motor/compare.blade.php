@@ -145,43 +145,175 @@
                             </div>
                         </div>
                         @foreach ($products as $product)
-                            <div class="col-12 col-md-4 mb-4 insurer-card" id={{ 'insurer-' . $product->id }} data-insurer-id="{{ $product->insurance_company->id }}">
-                                <div class="card border">
-                                    <div class="card-header text-center bg-transparent d-flex p-0 insurer-logo">
-                                        <img src="{{ asset('images/insurer/' . $product->insurance_company->logo) }}" alt="{{ $product->insurance_company->name }}" class="img-fluid d-block p-2 mx-auto align-self-center">
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-6">
-                                                <p class="text-primary fs-4 fw-bold mb-0">Price</p>
+                            <div class="col-11 border shadow rounded my-3 mx-auto insurer-card">
+                                <div class="row" id={{ 'insurer-' . $product->id }} data-insurer-id="{{ $product->insurance_company->id }}">
+                                    <div class="col-12">
+                                        <div class="row p-3">
+                                            <div class="col-12 col-sm-7 text-center align-self-center">
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <p class="text-primary">{{ $product->name }}</p>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div class="col-6 text-end">
-                                                <p class="text-primary fs-4 fw-bold mb-0 premium" data-premium="0.00">RM 0.00</p>
+                                            <div class="col-12 col-sm-5 text-center align-self-center">
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <img
+                                                            src="{{ asset("images/insurer/{$product->insurance_company->logo}") }}"
+                                                            alt="{{ $product->insurance_company->name }}"
+                                                            class="img-fluid d-block p-2 mx-auto align-self-center"
+                                                            width="200"
+                                                        >
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-6">
+                                                        <p class="text-primary fs-4 fw-bold mb-0">Price</p>
+                                                    </div>
+                                                    <div class="col-6 text-end">
+                                                        <p class="text-primary fs-4 fw-bold mb-0 premium" data-premium="0.00">RM 0.00</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-6">
+                                                        <p class="fw-bold mb-0 valuation">Market Value</p>
+                                                    </div>
+                                                    <div class="col-6 text-end">
+                                                        <p class="mb-0 fw-bold small sum-insured">RM 0.00</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row justify-content-end mt-3">
+                                                    <button type="button" class="col-6 btn btn-outline-primary border border-primary border-2 fw-bold rounded btn-compare">
+                                                        {{ __('frontend.button.compare') }}
+                                                    </button>
+                                                    <button type="button" class="col-6 btn btn-primary text-white text-uppercase rounded btn-buy" data-product_id="{{ $product->id }}">
+                                                        {{ __('frontend.button.buy') }}
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="row border-top mt-3 pt-3">
-                                            <div class="col-6">
-                                                <p class="fw-bold mb-0 valuation">Market Value</p>
-                                            </div>
-                                            <div class="col-6 text-end">
-                                                <p class="mb-0 fw-bold small sum-insured">RM 0.00</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="card-footer border-top">
-                                        <div class="row my-4">
-                                            <div class="col-4">
-                                                <img src="" alt="">
-                                            </div>
-                                            <div class="col-7">
-                                                <p class="fw-bold">Free Towing</p>
-                                            </div>
-                                        </div>
-                                        <div class="row mt-5">
-                                            <div class="col-12 d-grid gap-2">
-                                                <button type="button" class="btn btn-outline-primary border border-primary border-2 fw-bold rounded btn-compare">{{ __('frontend.button.compare') }}</button>
-                                                <button type="button" class="btn btn-primary text-white text-uppercase rounded btn-buy" data-product_id="{{ $product->id }}">{{ __('frontend.button.buy') }}</button>
-                                                <button type="button" class="btn btn-outline-primary border border-primary border-2 fw-bold rounded btn-view-details" data-product_id="{{ $product->id }}">{{ __('frontend.button.view_details') }}</button>
+                                        <div id="{{ "compare-details-accordion-{$product->id}" }}" class="accordion">
+                                            <div class="row justify-content-between">
+                                                <div class="col accordion-item px-0">
+                                                    <h2 class="accordion-header h-100">
+                                                        <button
+                                                            type="button"
+                                                            class="accordion-button fw-bold h-100 border"
+                                                            data-bs-toggle="collapse"
+                                                            data-bs-target="{{ "#basic-info-accordion-{$product->id}" }}"
+                                                        >
+                                                            {{ __('frontend.motor.compare_page.compare_details.tabs.basic_info') }}
+                                                        </button>
+                                                    </h2>
+                                                    <div
+                                                        id="{{ "basic-info-accordion-{$product->id}" }}"
+                                                        class="accordion-collapse collapse"
+                                                        data-bs-parent="{{ "#compare-details-accordion-{$product->id}" }}"
+                                                    >
+                                                        <table class="table compare-details-table">
+                                                            <tr>
+                                                                <th></th>
+                                                                <td></td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                                <div class="col accordion-item px-0">
+                                                    <h2 class="accordion-header h-100">
+                                                        <button
+                                                            type="button"
+                                                            class="accordion-button fw-bold h-100 border"
+                                                            data-bs-toggle="collapse"
+                                                            data-bs-target="{{ "#add-ons-accordion-{$product->id}" }}"
+                                                        >
+                                                            {{ __('frontend.motor.compare_page.compare_details.tabs.additional_coverage') }}
+                                                        </button>
+                                                    </h2>
+                                                    <div
+                                                        id="{{ "add-ons-accordion-{$product->id}" }}"
+                                                        class="accordion-collapse collapse"
+                                                        data-bs-parent="{{ "#compare-details-accordion-{$product->id}" }}"
+                                                    >
+                                                        <table class="table compare-details-table">
+                                                            <tr>
+                                                                <th></th>
+                                                                <td></td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                                <div class="col accordion-item px-0">
+                                                    <h2 class="accordion-header h-100">
+                                                        <button
+                                                            type="button"
+                                                            class="accordion-button fw-bold h-100 border"
+                                                            data-bs-toggle="collapse"
+                                                            data-bs-target="{{ "#loss-cover-accordion-{$product->id}" }}"
+                                                        >
+                                                            {{ __('frontend.motor.compare_page.compare_details.tabs.loss_damage') }}
+                                                        </button>
+                                                    </h2>
+                                                    <div
+                                                        id="{{ "loss-cover-accordion-{$product->id}" }}"
+                                                        class="accordion-collapse collapse"
+                                                        data-bs-parent="{{ "#compare-details-accordion-{$product->id}" }}"
+                                                    >
+                                                        <table class="table compare-details-table">
+                                                            <tr>
+                                                                <th></th>
+                                                                <td></td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                                <div class="col accordion-item px-0">
+                                                    <h2 class="accordion-header h-100">
+                                                        <button
+                                                            type="button"
+                                                            class="accordion-button fw-bold h-100 border"
+                                                            data-bs-toggle="collapse"
+                                                            data-bs-target="{{ "#assistance-accordion-{$product->id}" }}"
+                                                        >
+                                                            {{ __('frontend.motor.compare_page.compare_details.tabs.assistance_repairs') }}
+                                                        </button>
+                                                    </h2>
+                                                    <div
+                                                        id="{{ "assistance-accordion-{$product->id}" }}"
+                                                        class="accordion-collapse collapse"
+                                                        data-bs-parent="{{ "#compare-details-accordion-{$product->id}" }}"
+                                                    >
+                                                        <table class="table compare-details-table">
+                                                            <tr>
+                                                                <th></th>
+                                                                <td></td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                                <div class="col accordion-item px-0">
+                                                    <h2 class="accordion-header h-100">
+                                                        <button
+                                                            type="button"
+                                                            class="accordion-button fw-bold h-100 border"
+                                                            data-bs-toggle="collapse"
+                                                            data-bs-target="{{ "#third-party-accordion-{$product->id}" }}"
+                                                        >
+                                                            {{ __('frontend.motor.compare_page.compare_details.tabs.third_party') }}
+                                                        </button>
+                                                    </h2>
+                                                    <div
+                                                        id="{{ "third-party-accordion-{$product->id}" }}"
+                                                        class="accordion-collapse collapse"
+                                                        data-bs-parent="{{ "#compare-details-accordion-{$product->id}" }}"
+                                                    >
+                                                        <table class="table compare-details-table">
+                                                            <tr>
+                                                                <th></th>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -199,80 +331,6 @@
                         <input type="hidden" id="av-variant" name="av_code" />
                         <input type="hidden" id="h-marital-status" name="marital_status" />
                     </form>
-                    {{-- <form action="{{ route('motor.compare-detail') }}" method="POST" id="compare-details-form">
-                        @csrf
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="row" >
-                                    <div class="col-6 col-md-4 col-lg-2">
-                                        <div class="row">
-                                            <div class="col-10">
-                                                <img src="" alt="">
-                                            </div>
-                                            <div class="col-2">
-                                                <a href="#!" class="btn-delete" data-id="">
-                                                    <i class="fa-regular fa-xmark"></i>
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <p id="insurer-name"></p>
-                                        <p class="fw-bold" id="premium">RM 0.00</p>
-                                    </div>
-                                    <div class="col-6 col-md-4 col-lg-2">
-                                        <div class="row">
-                                            <div class="col-10">
-                                                <img src="" alt="">
-                                            </div>
-                                            <div class="col-2">
-                                                <a href="#!" class="btn-delete" data-id="">
-                                                    <i class="fa-regular fa-xmark"></i>
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <p id="insurer-name"></p>
-                                        <p class="fw-bold" id="premium">RM 0.00</p>
-                                    </div>
-                                    <div class="col-6 col-md-4 col-lg-2">
-                                        <div class="row">
-                                            <div class="col-10">
-                                                <img src="" alt="">
-                                            </div>
-                                            <div class="col-2">
-                                                <a href="#!" class="btn-delete" data-id="">
-                                                    <i class="fa-regular fa-xmark"></i>
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <p id="insurer-name"></p>
-                                        <p class="fw-bold" id="premium">RM 0.00</p>
-                                    </div>
-                                    <div class="col-6 col-md-4 col-lg-2">
-                                        <div class="row">
-                                            <div class="col-10">
-                                                <img src="" alt="">
-                                            </div>
-                                            <div class="col-2">
-                                                <a href="#!" class="btn-delete" data-id="">
-                                                    <i class="fa-regular fa-xmark"></i>
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <p id="insurer-name"></p>
-                                        <p class="fw-bold" id="premium">RM 0.00</p>
-                                    </div>
-                                    <div class="col-12 col-md-4 col-lg-2">
-                                        <div class="row">
-
-                                            <div class="col-12">
-                                                <button type="button" class="btn btn-success">{{ __('frontend.button.compare') }}</button>
-                                                <button type="button" class="btn btn-secondary">{{ __('frontend.button.clear') }}</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </form> --}}
                 </div>
             </div>
             <x-modal id="occupation-modal" maxWidth="md" headerClass="bg-primary text-white">
@@ -321,157 +379,6 @@
                     <button type="button" id="occupation-next" class="btn btn-primary text-white text-uppercase rounded">{{ __('frontend.button.get_quotation') }}</button>
                 </x-slot>
             </x-modal>
-            <x-modal id="compare-details-modal" maxWidth="xl">
-                <x-slot name="title"></x-slot>
-                <x-slot name="body">
-                    <div class="container-fluid">
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="row">
-                                    <div class="col-6"></div>
-                                    <div class="col-6">
-                                        <div class="row">
-                                            <div class="col-12">
-                                                <img src="" alt="" id="compare-detail-insurer-logo" class="img-fluid d-block p-2 mx-auto align-self-center">
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-12">
-                                                <p id="compare-details-valuation" class="text-primary fw-bold"></p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div id="compare-details-accordion" class="accordion">
-                                    <div class="row text-center">
-                                            <div class="col-2 accordion-item">
-                                                <h2 class="accordion-header">
-                                                    <button
-                                                        type="button"
-                                                        class="accordion-button btn-block fw-bold"
-                                                        data-mdb-toggle="collapse"
-                                                        data-mdb-target="#basic-info-accordion"
-                                                    >
-                                                        {{ __('frontend.motor.compare_page.compare_details.tabs.basic_info') }}
-                                                    </button>
-                                                </h2>
-                                            </div>
-                                            <div class="col-2 accordion-item">
-                                                <h2 class="accordion-header">
-                                                    <button
-                                                        type="button"
-                                                        class="accordion-button fw-bold"
-                                                        data-mdb-toggle="collapse"
-                                                        data-mdb-target="#add-ons-accordion"
-                                                    >
-                                                        {{ __('frontend.motor.compare_page.compare_details.tabs.additional_coverage') }}
-                                                    </button>
-                                                </h2>
-                                            </div>
-                                            <div class="col-2 accordion-item">
-                                                <h2 class="accordion-header">
-                                                    <button
-                                                        type="button"
-                                                        class="accordion-button fw-bold"
-                                                        data-mdb-toggle="collapse"
-                                                        data-mdb-target="#loss-cover-accordion"
-                                                    >
-                                                        {{ __('frontend.motor.compare_page.compare_details.tabs.loss_damage') }}
-                                                    </button>
-                                                </h2>
-                                            </div>
-                                            <div class="col-2 accordion-item">
-                                                <h2 class="accordion-header">
-                                                    <button
-                                                        type="button"
-                                                        class="accordion-button fw-bold"
-                                                        data-mdb-toggle="collapse"
-                                                        data-mdb-target="#assistance-accordion"
-                                                    >
-                                                        {{ __('frontend.motor.compare_page.compare_details.tabs.assistance_repairs') }}
-                                                    </button>
-                                                </h2>
-                                            </div>
-                                            <div class="col-2 accordion-item">
-                                                <h2 class="accordion-header">
-                                                    <button
-                                                        type="button"
-                                                        class="accordion-button fw-bold"
-                                                        data-mdb-toggle="collapse"
-                                                        data-mdb-target="#third-party-accordion"
-                                                    >
-                                                        {{ __('frontend.motor.compare_page.compare_details.tabs.third_party') }}
-                                                    </button>
-                                                </h2>
-                                            </div>
-                                        </div>
-                                        <div
-                                            id="basic-info-accordion"
-                                            class="accordion-collapse collapse"
-                                            data-mdb-parent="#compare-details-accordion"
-                                        >
-                                            <table class="table compare-details-table">
-                                                <tr>
-                                                    <th></th>
-                                                    <td></td>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                        <div
-                                            id="add-ons-accordion"
-                                            class="accordion-collapse collapse"
-                                            data-mdb-parent="#compare-details-accordion"
-                                        >
-                                            <table class="table compare-details-table">
-                                                <tr>
-                                                    <th></th>
-                                                    <td></td>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                        <div
-                                            id="loss-cover-accordion"
-                                            class="accordion-collapse collapse"
-                                            data-mdb-parent="#compare-details-accordion"
-                                        >
-                                            <table class="table compare-details-table">
-                                                <tr>
-                                                    <th></th>
-                                                    <td></td>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                        <div
-                                            id="assistance-accordion"
-                                            class="accordion-collapse collapse"
-                                            data-mdb-parent="#compare-details-accordion"
-                                        >
-                                            <table class="table compare-details-table">
-                                                <tr>
-                                                    <th></th>
-                                                    <td></td>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                        <div
-                                            id="third-party-accordion"
-                                            class="accordion-collapse collapse"
-                                            data-mdb-parent="#compare-details-accordion"
-                                        >
-                                            <table class="table compare-details-table">
-                                                <tr>
-                                                    <th></th>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </x-slot>
-                <x-slot name="footer"></x-slot>
-            </x-modal>
         </x-slot>
     </x-motor-layout>
 @endsection
@@ -481,7 +388,6 @@
         let motor = JSON.parse($('#motor').val());
         let products = JSON.parse($('#products').val());
         let premiums = [];
-        let compareItems = 4;
         let controller = null;
 
         $(() => {
@@ -516,9 +422,9 @@
                 }
 
                 let product_id = $(e.target).data('product_id');
-                if(['{{ config('insurer.config.bsib.product_id') }}'].includes(product_id)) {
+                // if(['{{ config('insurer.config.bsib.product_id') }}'].includes(product_id)) {
 
-                }
+                // }
 
                 motor.insurance_company_id = product_id;
                 $('#motor').val(JSON.stringify(motor));
