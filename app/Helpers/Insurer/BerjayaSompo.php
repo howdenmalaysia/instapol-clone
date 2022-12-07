@@ -858,7 +858,7 @@ class BerjayaSompo implements InsurerLibraryInterface
 
             if(isset($decrypted_response->status) && !$decrypted_response->status) {
                 // Update the API log
-                $log = APILogs::find($log->id)
+                APILogs::find($log->id)
                     ->update([
                         'response_header' => json_encode($result->response_header),
                         'response' => json_encode($decrypted_response)
@@ -868,14 +868,15 @@ class BerjayaSompo implements InsurerLibraryInterface
             }
 
             $result->response = $decrypted_response;
-        }
+        } else {
+            APILogs::find($log->id)
+                ->update([
+                    'response_header' => json_encode($result->response_header),
+                    'response' => $result->response
+                ]);
 
-        // Update the API log
-        $log = APILogs::find($log->id)
-            ->update([
-                'response_header' => json_encode($result->response_header),
-                'response' => json_encode($decrypted_response)
-            ]);
+            return $this->abort($result->response);
+        }
 
         if($result->status) {
             if($decrypted_response->RESPONSE_STATUS === 'FAILURE' && !Str::contains($decrypted_response->ERROR[0]->ERROR_DESC, 'MULTIPLE NVIC RECEIVED')) {
