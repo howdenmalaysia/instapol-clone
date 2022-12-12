@@ -217,7 +217,7 @@
                             <tr id="insurer-name-row" class="bg-primary text-center">
                                 <th></th>
                             </tr>
-                            <tr id="buy-now-btn-row">
+                            <tr id="buy-now-btn-row" class="bg-primary">
                                 <th></th>
                             </tr>
                             <tr id="valuation-row">
@@ -404,7 +404,7 @@
                     $('#buy-now-btn-row').append(`
                         <td class="bg-primary p-0 ${product_id}">
                             <div class="d-grid gap-1">
-                                <button type="button" class="btn btn-primary text-white text-uppercase rounded btn-buy" data-product_id="${product_id}">
+                                <button type="button" class="btn btn-primary text-white text-uppercase btn-buy" data-product_id="${product_id}">
                                     ${buy_now_text}
                                 </button>
                             </div>
