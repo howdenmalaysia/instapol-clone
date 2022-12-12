@@ -869,6 +869,7 @@ class BerjayaSompo implements InsurerLibraryInterface
 
             $result->response = $decrypted_response;
         } else {
+            // Update the API log
             APILogs::find($log->id)
                 ->update([
                     'response_header' => json_encode($result->response_header),
