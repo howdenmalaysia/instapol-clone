@@ -347,7 +347,7 @@
                 getPremium();
             });
 
-            $('.btn-buy').on('click', (e) => {
+            $('#compare').on('click', '.btn-buy', (e) => {
                 $(e.target).addClass('loadingButton');
 
                 if(controller) {
