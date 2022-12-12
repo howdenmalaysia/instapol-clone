@@ -402,9 +402,13 @@
 
                     /// 2. Buy Now Button
                     $('#buy-now-btn-row').append(`
-                        <button type="button" class="col-5 btn btn-primary text-white text-uppercase rounded btn-buy" data-product_id="${product_id}">
-                            ${buy_now_text}
-                        </button>
+                        <td class="bg-primary p-0 ${product_id}">
+                            <div class="d-grid gap-1">
+                                <button type="button" class="btn btn-primary text-white text-uppercase rounded btn-buy" data-product_id="${product_id}">
+                                    ${buy_now_text}
+                                </button>
+                            </div>
+                        </td>
                     `);
     
                     /// 3. Vehicle Sum Insured
