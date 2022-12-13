@@ -32,8 +32,8 @@ class Liberty implements InsurerLibraryInterface
     private const TIMESTAMP_FORMAT = 'Y-m-d H:i:s.u';
     private const EXTRA_BENEFIT_LIST = [
         '101', '105', '111', '112', '25',
-        '40', '57', '72', '89', '97', '97A', 'EHD',
-        'EZ100A', 'EZ103', 'EZ106', 'EZ109', 'WCX'
+        '40', '57', '72', '89', '97', '97A',
+        '10',
     ];
     private const CART_DAY_LIST = [7, 14];
     private const ANTI_THEFT = '03'; // Without M.Device - Factory Fitted Alarm
@@ -137,8 +137,8 @@ class Liberty implements InsurerLibraryInterface
                 'cover_type' => (string) $vehicle_vix->response->coverage_code,
                 'engine_capacity' => (int) $vehicle_vix->response->engine_capacity,
                 'engine_number' => (string) $vehicle_vix->response->engine_number,
-                'expiry_date' => $expiry_date,
-                'inception_date' => $inception_date->format('Y-m-d'),
+                'expiry_date' => Carbon::parse($expiry_date)->format('d M Y'),
+                'inception_date' => $inception_date->format('d M Y'),
                 'liberty_model_code' => $vehicle_vix->response->liberty_model_code,
                 'make' => $vehicle_vix->response->make,
                 'manufacture_year' => $vehicle_vix->response->manufacture_year,
@@ -209,7 +209,6 @@ class Liberty implements InsurerLibraryInterface
                 return $this->abort(__('api.variant_not_match'));
             }
 
-            // set vehicle
             $vehicle = new Vehicle([
                 'coverage' => $vehicle_detail->response->coverage,
                 'engine_capacity' => $vehicle_detail->response->engine_capacity,
@@ -275,8 +274,8 @@ class Liberty implements InsurerLibraryInterface
             $extra_cover_list = [];
             foreach (self::EXTRA_BENEFIT_LIST as $_extra_cover_code) {
                 $extra_cover = new ExtraCover([
-                    'selected' => in_array($_extra_cover_code, array('EZ100A', 'EZ103', 'EZ106', 'EZ109')),
-                    'readonly' => in_array($_extra_cover_code, array('EZ100A', 'EZ103', 'EZ106', 'EZ109')),
+                    'selected' => false,
+                    'readonly' => false,
                     'extra_cover_code' => $_extra_cover_code,
                     'extra_cover_description' => $this->getExtraBenefitDescription($_extra_cover_code),
                     'premium' => 0,
@@ -371,22 +370,6 @@ class Liberty implements InsurerLibraryInterface
                             $_sum_insured_amount = $vehicle->sum_insured;
                             break;
                         }
-                    case 'EZ100A': { // Personal Accident (Death Or Permanent Disablement)
-                            $_sum_insured_amount = 10000;
-                            break;
-                        }
-                    case 'EZ103': { // Medical Expenses Due To Accident
-                            $_sum_insured_amount = 1500;
-                            break;
-                        }
-                    case 'EZ106': { // Replacement Of Car Key / Transmitter Due To Theft
-                            $_sum_insured_amount = 500;
-                            break;
-                        }
-                    case 'EZ109': { // Child Seat Replacement Due To Theft
-                            $_sum_insured_amount = 300;
-                            break;
-                        }
                 }
 
                 if(!empty($_sum_insured_amount)) {
@@ -478,12 +461,16 @@ class Liberty implements InsurerLibraryInterface
             'excess_amount' => formatNumber($motor_premium->response->excess),
             'extra_cover' => $this->sortExtraCoverList($input->extra_cover),
             'gross_premium' => formatNumber($motor_premium->response->gross_premium),
+            'max_sum_insured' => $vehicle->max_sum_insured,
+            'min_sum_insured' => $vehicle->min_sum_insured,
             'ncd_amount' => formatNumber($motor_premium->response->ncd_amount),
             'ncd_percentage' => formatNumber($motor_premium->response->ncd_percentage),
             'net_premium' => formatNumber($motor_premium->response->net_premium + $motor_premium->response->sst_amount + $motor_premium->response->stamp_duty),
             'sst_amount' => formatNumber($motor_premium->response->sst_amount),
             'sst_percent' => formatNumber($motor_premium->response->sst_percentage),
             'stamp_duty' => formatNumber($motor_premium->response->stamp_duty),
+            'sum_insured_type' => $vehicle->sum_insured_type,
+            'sum_insured' => $vehicle->sum_insured,
             'total_benefit_amount' => formatNumber($total_benefit_amount),
             'total_payable' => formatNumber($motor_premium->response->gross_due),
             'fl_quote_number' => $motor_premium->response->fl_quote_number,
@@ -1435,31 +1422,12 @@ class Liberty implements InsurerLibraryInterface
                     $description = 'Gas Conversion Kit And Tank';
                     break;
                 }
-            case 'EHD': {
-                    $description = 'E-Hailing Drive';
-                    break;
-                }
-            case 'EZ100A': {
-                    $description = 'Personal Accident (Death Or Permanent Disablement)';
-                    break;
-                }
-            case 'EZ103': {
-                    $description = 'Medical Expenses Due To Accident';
-                    break;
-                }
-            case 'EZ106': {
-                    $description = 'Replacement Of Car Key / Transmitter Due To Theft';
-                    break;
-                }
-            case 'EZ109': {
-                    $description = 'Child Seat Replacement Due To Theft';
-                    break;
-                }
-            case 'WCX': {
-                    $description = 'Waiver Of Compulsory Excess For Unnamed Driver';
+            case '10': {
+                    $description = 'All Drivers';
                     break;
                 }
         }
+        
 
         return $description;
     }
@@ -1468,7 +1436,7 @@ class Liberty implements InsurerLibraryInterface
     {
         $code = '';
 
-        if($engine_capacity < 1400) {
+        if($engine_capacity <= 1400) {
             $code = 'A';
         } else if($engine_capacity > 1400 && $engine_capacity <= 1650) {
             $code = 'B';
@@ -1495,8 +1463,13 @@ class Liberty implements InsurerLibraryInterface
             $sequence = 99;
 
             switch ($_extra_cover->extra_cover_code) {
-                case '89': { // Windscreen
+                case '10': { // All Drivers
                         $sequence = 1;
+
+                        break;
+                    }
+                case '89': { // Windscreen
+                        $sequence = 2;
 
                         break;
                     }

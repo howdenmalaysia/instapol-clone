@@ -59,12 +59,11 @@
                                                             type="text"
                                                             autocomplete="off"
                                                             name="vehicle_number"
-                                                            value=""
                                                             placeholder="JRCxxxx"
                                                             minlength="2"
                                                             maxlength="15"
                                                             pattern="[a-zA-Z0-9]+"
-                                                            value="{{ old('vehicle_number', optional($motor)->vehicle_number ?? '') }}"
+                                                            value="{{ old('vehicle_number', $motor->vehicle_number ?? '') }}"
                                                             required
                                                             data-parsley-required-message="Please enter your vehicle number"
                                                             data-parsley-pattern-message="Please enter a valid vehicle number"
@@ -203,6 +202,9 @@
                                 </div>
                             </div>
                         </section>
+                        <div class="hidden">
+                            <input type="hidden" id="motor" value='@json(session('motor'))'>
+                        </div>
                     </form>
                     <div class="bg-light pt-4">
                         <x-make-easy-section />
@@ -225,48 +227,50 @@
 @endsection
 
 @push('after-scripts')
-<script>
-    $(function() {
-        new Inputmask({mask: '999999-99-9999'}).mask('#id-number');
+    <script>
+        let motor = JSON.parse($('input#motor').val());
 
-        $('#vehicle-no-continue').on('click', function() {
-            if($('#vehicle-no').val()) {
-                $('#owner-loacation-details').slideDown();
-            }
+        $(() => {
+            new Inputmask({mask: '999999-99-9999'}).mask('#id-number');
+
+            $('#vehicle-no-continue').on('click', () => {
+                if($('#vehicle-no').val()) {
+                    $('#owner-loacation-details').slideDown();
+                }
+            });
+
+            $('#company-reg, #private-reg').on('click', (e) => {
+                if(!$(e.target).hasClass('active')) {
+                    $(e.target).removeClass('btn-light').toggleClass('active btn-primary border text-white');
+                    $(e.target).siblings('label.btn').removeClass('active btn-primary border text-white').toggleClass('btn-light');
+                }
+            });
+
+            $('input[name=id_type]').on('change', () => {
+                if($('input[name=id_type]:checked').val() == 2) {
+                    $('#id-number-label').text("{{ __('frontend.motor.company_resgistration') }}");
+                    $('#id-number').removeAttr('pattern').attr('minlength', 9);
+
+                    Inputmask.remove('#id-number')
+                } else {
+                    $('#id-number-label').text("{{ __('frontend.motor.nric') }}");
+                    $('#id-number').attr('placeholder', '870312-12-1234').attr('pattern', '\d{2}([0][1-9]|[1][0-2])([0][1-9]|[1-2][0-9]|[3][0-1])-\d{2}-\d{4}')
+                    new Inputmask({mask: '999999-99-9999'}).mask('#id-number');
+                }
+            });
+
+            $('#btn-continue').on('click', (e) => {
+                let form = $('#motor-details-form');
+
+                if(form.parsley().validate()) {
+                    $('input[name=id_type]').val($('input[name=id_type]:checked').val());
+                    $(e.target).addClass('loadingButton');
+
+                    form.submit();
+                } else {
+                    console.log(form.parsley())
+                }
+            });
         });
-
-        $('#company-reg, #private-reg').on('click', function() {
-            if(!$(this).hasClass('active')) {
-                $(this).removeClass('btn-light').toggleClass('active btn-primary border text-white');
-                $(this).siblings('label.btn').removeClass('active btn-primary border text-white').toggleClass('btn-light');
-            }
-        });
-
-        $('input[name=id_type]').on('change', function() {
-            if($('input[name=id_type]:checked').val() == 2) {
-                $('#id-number-label').text("{{ __('frontend.motor.company_resgistration') }}");
-                $('#id-number').removeAttr('pattern').attr('minlength', 9);
-
-                Inputmask.remove('#id-number')
-            } else {
-                $('#id-number-label').text("{{ __('frontend.motor.nric') }}");
-                $('#id-number').attr('placeholder', '870312-12-1234').attr('pattern', '\d{2}([0][1-9]|[1][0-2])([0][1-9]|[1-2][0-9]|[3][0-1])-\d{2}-\d{4}')
-                new Inputmask({mask: '999999-99-9999'}).mask('#id-number');
-            }
-        });
-
-        $('#btn-continue').on('click', function() {
-            let form = $('#motor-details-form');
-
-            if(form.parsley().validate()) {
-                $('input[name=id_type]').val($('input[name=id_type]:checked').val());
-                $(this).addClass('loadingButton');
-
-                form.submit();
-            } else {
-                console.log(form.parsley())
-            }
-        });
-    });
-</script>
+    </script>
 @endpush
