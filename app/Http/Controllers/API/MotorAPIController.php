@@ -718,8 +718,20 @@ class MotorAPIController extends Controller implements MotorAPIInterface
 
                 break;
             }
-            case 12:{
+            case 2:{
+                return new AmGeneral($insurer->id, $insurer->name);
+
+                break;
+            }
+            case 11:{
                 return new Zurich($insurer->id, $insurer->name);
+
+                break;
+            }
+            case 13:{
+                return new ZurichTakaful($insurer->id, $insurer->name);
+
+                break;
             }
             default: {
                 throw new ModelNotFoundException(__('api.invalid_product'));

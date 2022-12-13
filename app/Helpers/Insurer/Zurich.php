@@ -2,6 +2,7 @@
 
 namespace App\Helpers\Insurer;
 
+use App\DataTransferObjects\Motor\ExtraCover;
 use App\DataTransferObjects\Motor\Response\ResponseData;
 use App\DataTransferObjects\Motor\Response\PremiumResponse;
 use App\Helpers\HttpClient;
@@ -30,6 +31,8 @@ class Zurich implements InsurerLibraryInterface
     private string $trx_ref_no = "020000008";
 
     private const SOAP_ACTION_DOMAIN = 'https://gtws2.zurich.com.my/ziapps/zurichinsurance/services';
+    private const EXTRA_COVERAGE_LIST = ['01','02','03','06','07','101','103','108','109','111',
+    '112','19','22','25','57','72','89','97','200','201','202','203'];
 
 	public function __construct(int $insurer_id, string $insurer_name)
     {
@@ -41,194 +44,121 @@ class Zurich implements InsurerLibraryInterface
 		$this->secret_key = config('insurer.config.zurich_config.secret_key');
 		$this->participant_code = config('insurer.config.zurich_config.participant_code');
 
-        $getVIXNCD = (object)[
-            'request_datetime' => "2017-Mar-17 11:00:00 PM",
-            'id' => "850321-07-5179",
-            'VehNo' => "WA823H", 
-        ];
-        $vehInputMake = (object)[
-            'request_datetime' => "2017-Mar-17 11:00:00 PM",        
-            'product_code' => "PZ01",
-        ];
-        $vehInputModel = (object)[
-            'request_datetime' => "2017-Mar-17 11:00:00 PM",        
-            'product_code' => "PZ01",
-            'make_year' => "2010",
-            'make' => "08",
-            'filter_key' => "CAYENNE",
-        ];
-        $quotation = (object)[
-            'request_datetime' => "2017-Mar-17 11:00:00 PM",        
-            'transaction_ref_no' => "020000008",
-            'id' => "850321-07-5179",
-            // 'VehNo' => "WA823H",
-            'VehNo' => "WCA1451qwe",
-            'getmail' => [
-                'support@zurich.com.my',
-                'noreply@zurich.com.my',
-            ],
-            'quotationNo' => '',
-            'trans_type' => 'B',
-            'pre_VehNo' => '',
-            'product_code' => 'PZ01',
-            'cover_type' => 'V-CO',
-            'ci_code' => 'MX1',
-            'eff_date' => '13/12/2022',
-            'exp_date' => '12/12/2023',
-            'new_owned_Veh_ind' => 'Y',
-            'VehReg_date' => '10/03/2016',
-            'ReconInd' => 'N',
-            'modcarInd' => 'Y',
-            'modperformanceaesthetic' => 'o',
-            'modfunctional' => '2,128',
-            'yearofmake' => '2010',
-            'make' => '11',
-            'model' => '11*1030',
-            'capacity' => '1497',
-            'uom' => 'CC',
-            'engine_no' => 'EWE323WS',
-            'chasis_no' => 'PM2L252S002107437',
-            'logbook_no' => 'ERTGRET253',
-            'reg_loc' => 'L',
-            'region_code' => 'W',
-            'no_of_passenger' => '5',
-            'no_of_drivers' => '1',
-            'ins_indicator' => 'P',
-            'name' => 'TAN AI LING',
-            'ins_nationality' => 'L',
-            'new_ic' => '530102-06-5226',
-            'other_id' ?? '',
-            'date_of_birth' => '22/12/1998',
-            'age' => '27',
-            'gender' => 'M',
-            'marital_sts' => 'M',
-            'occupation' => '99',
-            'mobile_no' => '012-3456789',
-            'off_ph_no' => '03-45678900',
-            'email' => 'zurich.api@gmail.com',
-            'address' => '20, Jalan PJU, Taman A, Petaling Jaya',
-            'postcode' => '50150',
-            'state' => '06',
-            'country' => 'MAS',
-            'sum_insured' => '30000.00',
-            'av_ind' => 'Y',
-            'vol_excess' => '01',
-            'pac_ind' => 'Y',
-            'pac_type' => 'TAGPLUS PAC',
-            'pac_unit' => '1',
-            'all_driver_ind' => 'Y',
-            'abisi' => '28000.00',
-            'chosen_si_type' => 'REC_SI',
-            'ext_cov_code' => '101',
-            'unit_day' => '7',
-            'unit_amount' => '50',
-            'ecd_eff_date' => '14/1/2017',
-            'ecd_exp_date' => '13/1/2018',
-            'ecd_sum_insured' => '3000',
-            'no_of_unit' => '1',
-            'ecd_pac_code' => 'R0075',
-            'ecd_pac_unit' => '1',
-        ];
-        $cover_note = (object)[
-            'request_datetime' => "2017-Mar-17 11:00:00 PM",        
-            'transaction_ref_no' => "020000008",
-            'id' => "850321-07-5179",
-            // 'VehNo' => "WA823H",
-            'VehNo' => "WCA1451qwe",
-            'quotationNo' => 'MQ220000107081',
-            'trans_type' => 'B',
-            'pre_VehNo' => '',
-            'product_code' => 'PZ01',
-            'cover_type' => 'V-CO',
-            'ci_code' => 'MX1',
-            'eff_date' => '13/12/2022',
-            'exp_date' => '12/12/2023',
-            'new_owned_Veh_ind' => 'Y',
-            'VehReg_date' => '10/03/2016',
-            'ReconInd' => 'N',
-            'modcarInd' => 'Y',
-            'modperformanceaesthetic' => 'O',
-            'modfunctional' => '2,128',
-            'yearofmake' => '2010',
-            'make' => '11',
-            'model' => '11*1030',
-            'capacity' => '1497',
-            'uom' => 'CC',
-            'engine_no' => 'EWE323WS',
-            'chasis_no' => 'PM2L252S002107437',
-            'logbook_no' => 'ERTGRET253',
-            'reg_loc' => 'L',
-            'region_code' => 'W',
-            'no_of_passenger' => '5',
-            'no_of_drivers' => '1',
-            'ins_indicator' => 'P',
-            'name' => 'TAN AI LING',
-            'ins_nationality' => 'L',
-            'new_ic' => '530102-06-5226',
-            'other_id' => '',
-            'date_of_birth' => '22/12/1998',
-            'age' => '27',
-            'gender' => 'M',
-            'marital_sts' => 'M',
-            'occupation' => '99',
-            'mobile_no' => '012-3456789',
-            'off_ph_no' => '03-45678900',
-            'email' => 'zurich.api@gmail.com',
-            'address' => '20, Jalan PJU, Taman A, Petaling Jaya',
-            'postcode' => '50150',
-            'state' => '06',
-            'country' => 'MAS',
-            'sum_insured' => '290000.00',
-            'av_ind' => 'N',
-            'vol_excess' => '01',
-            'pac_ind' => 'N',
-            'all_driver_ind' => 'Y',
-            'abisi' => '28000.00',
-            'chosen_si_type' => 'REC_SI',
-            'nationality' => 'MAS',
-            'ext_cov_code' => '101',
-            'unit_day' => '0',
-            'unit_amount' => '0',
-            'ecd_eff_date' => '14/1/2017',
-            'ecd_exp_date' => '13/1/2018',
-            'ecd_sum_insured' => '0',
-            'no_of_unit' => '1',
-            'ecd_pac_code' => 'R0075',
-            'ecd_pac_unit' => '1', 
-            'nd_name' => 'TAMMY TAN',
-            'nd_identity_no' => '981211-11-1111',
-            'nd_date_of_birth' => '11/12/1990',
-            'nd_gender' => 'F',
-            'nd_marital_sts' => 'S',
-            'nd_occupation' => '99',
-            'nd_relationship' => '5',
-            'nd_nationality' => 'MAS',
-            'pac_rider_no' => 'TAMMY TAN',
-            'pac_rider_name' => '981211-11-1111',
-            'pac_rider_new_ic' => '11/12/1990',
-            'pac_rider_old_ic' => 'F',
-            'pac_rider_dob' => 'S',
-            'default_ind' => '99',
-        ];
-        $issue_cover_note = (object)[
-            'request_datetime' => "2017-Mar-17 11:00:00 PM",
-            'transaction_ref_no' => '020000008',
-            'quotationNo' => 'MQ220000107081',
-        ];
-        $resend_cover_note = (object)[
-            'request_datetime' => "2017-Mar-17 11:00:00 PM",
-            'transaction_ref_no' => '020000008',
-            'VehNo' => '',
-            'cover_note_no' => 'D02940-20000037',
-            'email_to' => 'mrbigchiam@gmail.com',
-        ];
-        $jpj_status = (object)[
-            'request_datetime' => "2017-03-17T23:00:00.000",
-            'transaction_ref_no' => '020000008',
-            'cover_note_no' => 'D02940-20000037',
-        ];
-        $result = $this->getVIXNCD($getVIXNCD);
-        dd($result);
+        // $getVIXNCD = (object)[
+        //     'request_datetime' => "2017-Mar-17 11:00:00 PM",
+        //     'id' => "850321-07-5179",
+        //     'VehNo' => "WA823H", 
+        // ];
+        // $vehInputMake = (object)[
+        //     'request_datetime' => "2017-Mar-17 11:00:00 PM",        
+        //     'product_code' => "PZ01",
+        // ];
+        // $vehInputModel = (object)[
+        //     'request_datetime' => "2017-Mar-17 11:00:00 PM",        
+        //     'product_code' => "PZ01",
+        //     'make_year' => "2010",
+        //     'make' => "08",
+        //     'filter_key' => "CAYENNE",
+        // ];
+        // $cover_note = (object)[
+        //     'request_datetime' => "2017-Mar-17 11:00:00 PM",        
+        //     'transaction_ref_no' => "020000008",
+        //     'id' => "850321-07-5179",
+        //     // 'VehNo' => "WA823H",
+        //     'VehNo' => "WCA1451qwe",
+        //     'quotationNo' => 'MQ220000107081',
+        //     'trans_type' => 'B',
+        //     'pre_VehNo' => '',
+        //     'product_code' => 'PZ01',
+        //     'cover_type' => 'V-CO',
+        //     'ci_code' => 'MX1',
+        //     'eff_date' => '13/12/2022',
+        //     'exp_date' => '12/12/2023',
+        //     'new_owned_Veh_ind' => 'Y',
+        //     'VehReg_date' => '10/03/2016',
+        //     'ReconInd' => 'N',
+        //     'modcarInd' => 'Y',
+        //     'modperformanceaesthetic' => 'O',
+        //     'modfunctional' => '2,128',
+        //     'yearofmake' => '2010',
+        //     'make' => '11',
+        //     'model' => '11*1030',
+        //     'capacity' => '1497',
+        //     'uom' => 'CC',
+        //     'engine_no' => 'EWE323WS',
+        //     'chasis_no' => 'PM2L252S002107437',
+        //     'logbook_no' => 'ERTGRET253',
+        //     'reg_loc' => 'L',
+        //     'region_code' => 'W',
+        //     'no_of_passenger' => '5',
+        //     'no_of_drivers' => '1',
+        //     'ins_indicator' => 'P',
+        //     'name' => 'TAN AI LING',
+        //     'ins_nationality' => 'L',
+        //     'new_ic' => '530102-06-5226',
+        //     'other_id' => '',
+        //     'date_of_birth' => '22/12/1998',
+        //     'age' => '27',
+        //     'gender' => 'M',
+        //     'marital_sts' => 'M',
+        //     'occupation' => '99',
+        //     'mobile_no' => '012-3456789',
+        //     'off_ph_no' => '03-45678900',
+        //     'email' => 'zurich.api@gmail.com',
+        //     'address' => '20, Jalan PJU, Taman A, Petaling Jaya',
+        //     'postcode' => '50150',
+        //     'state' => '06',
+        //     'country' => 'MAS',
+        //     'sum_insured' => '290000.00',
+        //     'av_ind' => 'N',
+        //     'vol_excess' => '01',
+        //     'pac_ind' => 'N',
+        //     'all_driver_ind' => 'Y',
+        //     'abisi' => '28000.00',
+        //     'chosen_si_type' => 'REC_SI',
+        //     'nationality' => 'MAS',
+        //     'ext_cov_code' => '101',
+        //     'unit_day' => '0',
+        //     'unit_amount' => '0',
+        //     'ecd_eff_date' => '14/1/2017',
+        //     'ecd_exp_date' => '13/1/2018',
+        //     'ecd_sum_insured' => '0',
+        //     'no_of_unit' => '1',
+        //     'ecd_pac_code' => 'R0075',
+        //     'ecd_pac_unit' => '1', 
+        //     'nd_name' => 'TAMMY TAN',
+        //     'nd_identity_no' => '981211-11-1111',
+        //     'nd_date_of_birth' => '11/12/1990',
+        //     'nd_gender' => 'F',
+        //     'nd_marital_sts' => 'S',
+        //     'nd_occupation' => '99',
+        //     'nd_relationship' => '5',
+        //     'nd_nationality' => 'MAS',
+        //     'pac_rider_no' => 'TAMMY TAN',
+        //     'pac_rider_name' => '981211-11-1111',
+        //     'pac_rider_new_ic' => '11/12/1990',
+        //     'pac_rider_old_ic' => 'F',
+        //     'pac_rider_dob' => 'S',
+        //     'default_ind' => '99',
+        // ];
+        // $issue_cover_note = (object)[
+        //     'request_datetime' => "2017-Mar-17 11:00:00 PM",
+        //     'transaction_ref_no' => '020000008',
+        //     'quotationNo' => 'MQ220000107081',
+        // ];
+        // $resend_cover_note = (object)[
+        //     'request_datetime' => "2017-Mar-17 11:00:00 PM",
+        //     'transaction_ref_no' => '020000008',
+        //     'VehNo' => '',
+        //     'cover_note_no' => 'D02940-20000037',
+        //     'email_to' => 'mrbigchiam@gmail.com',
+        // ];
+        // $jpj_status = (object)[
+        //     'request_datetime' => "2017-03-17T23:00:00.000",
+        //     'transaction_ref_no' => '020000008',
+        //     'cover_note_no' => 'D02940-20000037',
+        // ];
+        // $result = $this->getVIXNCD($getVIXNCD);
 	}
 
     public function vehInputMake(object $input) : object
@@ -608,6 +538,7 @@ class Zurich implements InsurerLibraryInterface
             $response['MotorExtraCoverDetails'][$index]['ExtCoverPrem'] = (string)$value->ExtCoverPrem;
             $response['MotorExtraCoverDetails'][$index]['ExtCoverSumInsured'] = (string)$value->ExtCoverSumInsured;
             $response['MotorExtraCoverDetails'][$index]['Compulsory_Ind'] = (string)$value->Compulsory_Ind;
+            $response['MotorExtraCoverDetails'][$index]['sequence'] = '';
             $index++;
         }
         $response['ReferralDetails']['ReferralCode'] = $xml_data->ReferralData->Referral_Decline_Code;
@@ -936,7 +867,378 @@ class Zurich implements InsurerLibraryInterface
 
     public function premiumDetails(object $input, $full_quote = false) : object
     {
+        $quotation = (object)[
+            'request_datetime' => "2017-Mar-17 11:00:00 PM",        
+            'transaction_ref_no' => "020000008",
+            'id' => "850321-07-5179",
+            // 'VehNo' => "WA823H",
+            'VehNo' => "WCA1451qwe",
+            'getmail' => [
+                'support@zurich.com.my',
+                'noreply@zurich.com.my',
+            ],
+            'quotationNo' => '',
+            'trans_type' => 'B',
+            'pre_VehNo' => '',
+            'product_code' => 'PZ01',
+            'cover_type' => 'V-CO',
+            'ci_code' => 'MX1',
+            'eff_date' => '13/12/2022',
+            'exp_date' => '12/12/2023',
+            'new_owned_Veh_ind' => 'Y',
+            'VehReg_date' => '10/03/2016',
+            'ReconInd' => 'N',
+            'modcarInd' => 'Y',
+            'modperformanceaesthetic' => 'o',
+            'modfunctional' => '2,128',
+            'yearofmake' => '2010',
+            'make' => '11',
+            'model' => '11*1030',
+            'capacity' => '1497',
+            'uom' => 'CC',
+            'engine_no' => 'EWE323WS',
+            'chasis_no' => 'PM2L252S002107437',
+            'logbook_no' => 'ERTGRET253',
+            'reg_loc' => 'L',
+            'region_code' => 'W',
+            'no_of_passenger' => '5',
+            'no_of_drivers' => '1',
+            'ins_indicator' => 'P',
+            'name' => 'TAN AI LING',
+            'ins_nationality' => 'L',
+            'new_ic' => '530102-06-5226',
+            'other_id' ?? '',
+            'date_of_birth' => '22/12/1998',
+            'age' => '27',
+            'gender' => 'M',
+            'marital_sts' => 'M',
+            'occupation' => '99',
+            'mobile_no' => '012-3456789',
+            'off_ph_no' => '03-45678900',
+            'email' => 'zurich.api@gmail.com',
+            'address' => '20, Jalan PJU, Taman A, Petaling Jaya',
+            'postcode' => '50150',
+            'state' => '06',
+            'country' => 'MAS',
+            'sum_insured' => '30000.00',
+            'av_ind' => 'Y',
+            'vol_excess' => '01',
+            'pac_ind' => 'Y',
+            'pac_type' => 'TAGPLUS PAC',
+            'pac_unit' => '1',
+            'all_driver_ind' => 'Y',
+            'abisi' => '28000.00',
+            'chosen_si_type' => 'REC_SI',
+            'ext_cov_code' => '101',
+            'unit_day' => '7',
+            'unit_amount' => '50',
+            'ecd_eff_date' => '14/1/2017',
+            'ecd_exp_date' => '13/1/2018',
+            'ecd_sum_insured' => '3000',
+            'no_of_unit' => '1',
+            'ecd_pac_code' => 'R0075',
+            'ecd_pac_unit' => '1',
+        ];
+        $premium = $this->quotation($quotation);
+
+        $extra_cover_list = [];
+        foreach(self::EXTRA_COVERAGE_LIST as $_extra_cover_code) {
+            $extra_cover = new ExtraCover([
+                'selected' => false,
+                'readonly' => false,
+                'extra_cover_code' => $_extra_cover_code,
+                'extra_cover_description' => $this->getExtraCoverDescription($_extra_cover_code),
+                'premium' => 0,
+                'sum_insured' => 0
+            ]);
+            
+            $sum_insured_amount = 0;
+
+            switch($_extra_cover_code) {
+                case '01': 
+                case '02': 
+                case '03': 
+                case '06': 
+                case '07': 
+                case '101': 
+                case '103': 
+                case '108': 
+                case '109':
+                case '111': 
+                case '112':
+                case '19':  
+                case '22': 
+                case '25': 
+                case '57': 
+                case '72': 
+                case '89': 
+                case '97': 
+                case '200': 
+                case '201': 
+                case '202': 
+                case '203': 
+            }
+
+            if(!empty($sum_insured_amount)) {
+                $extra_cover->sum_insured = $sum_insured_amount;
+            }
+
+            array_push($extra_cover_list, $extra_cover);
+        }
+        // Include Extra Covers to Get Premium
+        $input->extra_cover = $extra_cover_list;
+        $total_benefit_amount = 0;
+
+        if(!empty($premium->response->extra_coverage)) {
+            foreach($input->extra_cover as $extra_cover) {
+                foreach($premium->response->extra_coverage as $extra) {
+                    if((string) $extra->ExtCoverCode === $extra_cover->extra_cover_code) {
+                        $extra_cover->premium = formatNumber((float) $extra->ExtCoverPrem);
+                        $total_benefit_amount += (float) $extra->ExtCoverPrem;
+    
+                        if(!empty($extra->ExtCoverSumInsured)) {
+                            $extra_cover->sum_insured = formatNumber((float) $extra->ExtCoverSumInsured);
+                        }
+                    }
+                }
+            }
+        }
+        $premium_data = $premium->response->PremiumDetails;
+        $response = new PremiumResponse([
+            'act_premium' => formatNumber($premium_data['ActPrem']),
+            'basic_premium' => formatNumber($premium_data['BasicPrem']),
+            // 'detariff' => $premium_data->detariff,
+            // 'detariff_premium' => formatNumber($premium_data->detariff_premium),
+            // 'discount' => formatNumber($premium_data->discount),
+            // 'discount_amount' => formatNumber($premium_data->discount_amount),
+            'excess_amount' => formatNumber($premium_data['ExcessAmt']),
+            'extra_cover' => $this->sortExtraCoverList($input->extra_cover),
+            'gross_premium' => formatNumber($premium_data['GrossPrem']),
+            'loading' => formatNumber($premium_data['LoadAmt']),
+            'ncd_amount' => formatNumber($premium_data['NCDAmt']),
+            'net_premium' => formatNumber($premium_data['NettPrem'] + $premium_data['GST_Amt'] + $premium_data['StampDutyAmt']),
+            'sum_insured' => formatNumber($premium_data['sum_insured'] ?? 0),
+            // 'min_sum_insured' => formatNumber($vehicle_vix->response->min_sum_insured ?? $vehicle->min_sum_insured),
+            // 'max_sum_insured' => formatNumber($vehicle_vix->response->max_sum_insured ?? $vehicle->max_sum_insured),
+            // 'sum_insured_type' => $vehicle->sum_insured_type,
+            'min_sum_insured' => formatNumber(0),
+            'max_sum_insured' => formatNumber(0),
+            'sum_insured_type' => '',
+            'sst_amount' => formatNumber($premium_data['GST_Amt']),
+            'sst_percent' => formatNumber(ceil(($premium_data['GST_Amt'] / $premium_data['GrossPrem']) * 100)),
+            'stamp_duty' => formatNumber($premium_data['StampDutyAmt']),
+            // 'tariff_premium' => formatNumber($premium_data->tariff_premium),
+            'total_benefit_amount' => formatNumber($total_benefit_amount),
+            'total_payable' => formatNumber($premium_data['TtlPayablePremium']),
+            'named_drivers_needed' => false,
+        ]);
         
+        return (object) [
+            'status' => true,
+            'response' => $response
+        ];
+    }
+
+    private function getExtraCoverDescription(string $extra_cover_code) : string
+    {
+        $extra_cover_name = '';
+
+        switch($extra_cover_code) {
+            case '01': { 
+                $extra_cover_name = 'All Drivers';
+                break;
+            }
+            case '02': { 
+                $extra_cover_name = 'Legal Liability to Passengers';
+                break;
+            }
+            case '03': { 
+                $extra_cover_name = 'All Riders';
+                break;
+            }
+            case '06': { 
+                $extra_cover_name = 'Tuition';
+                break;
+            }
+            case '07': { 
+                $extra_cover_name = 'Additional Drivers';
+                break;
+            }
+            case '101': { 
+                $extra_cover_name = 'Extension of Kindom of Thailand';
+                break;
+            }
+            case '103': { 
+                $extra_cover_name = 'Malicious Damage';
+                break;
+            }
+            case '108': { 
+                $extra_cover_name = 'Passenger Liability Cover';
+                break;
+            }
+            case '109': { 
+                $extra_cover_name = 'Ferry Transit To and/or Sabah And The Federal';
+                break;
+            }
+            case '111': { 
+                $extra_cover_name = 'Current Year NCD Relief (Comp Private Car)';
+                break;
+            }
+            case '112': { 
+                $extra_cover_name = 'Cart';
+                break;
+            }
+            case '19': { 
+                $extra_cover_name = 'Passenger Risk';
+                break;
+            }
+            case '22': { 
+                $extra_cover_name = 'Caravan / Luggage / Trailers (Private Car Only)';
+                break;
+            }
+            case '25': { 
+                $extra_cover_name = 'Strike Riot & Civil Commotion';
+                break;
+            }
+            case '57': { 
+                $extra_cover_name = 'Inclusion Of Special Perils';
+                break;
+            }
+            case '72': { 
+                $extra_cover_name = 'Legal Liability Of Passengers For Negligent Acts';
+                break;
+            }
+            case '89': { 
+                $extra_cover_name = 'Breakage Of Glass In WindScreen, Window Or Sunroof';
+                break;
+            }
+            case '97': { 
+                $extra_cover_name = 'Vehicle Accessories Endorsement';
+                break;
+            }
+            case '200': { 
+                $extra_cover_name = 'PA Basic';
+                break;
+            }
+            case '201': { 
+                $extra_cover_name = 'Temporary Courtesy Car';
+                break;
+            }
+            case '202': { 
+                $extra_cover_name = 'Towing And Cleaning Due To Water Damage';
+                break;
+            }
+            case '203': { 
+                $extra_cover_name = 'Key Replacement';
+                break;
+            }
+        }
+
+        return $extra_cover_name;
+    }
+
+    private function sortExtraCoverList(array $extra_cover_list) : array
+    {
+        foreach ($extra_cover_list as $_extra_cover) {
+            $sequence = 99;
+            switch ((array)$_extra_cover->extra_cover_code) {
+                case '01': { // All Drivers
+                    $sequence = 1;
+                    break;
+                }
+                case '02': { // Legal Liability to Passengers
+                    $sequence = 2;
+                    break;
+                }
+                case '03': { // All Riders
+                    $sequence = 3;
+                    break;
+                }
+                case '06': { // Tuition
+                    $sequence = 4;
+                    break;
+                }
+                case '07': { // Additional Drivers
+                    $sequence = 5;
+                    break;
+                }
+                case '101': { // Extension of Kindom of Thailand
+                    $sequence = 6;
+                    break;
+                }
+                case '103': { // Malicious Damage
+                    $sequence = 7;
+                    break;
+                }
+                case '108': { // Passenger Liability Cover
+                    $sequence = 8;
+                    break;
+                }
+                case '109': { // Ferry Transit To and/or Sabah And The Federal
+                    $sequence = 9;
+                    break;
+                }
+                case '111': { // Current Year NCD Relief (Comp Private Car)
+                    $sequence = 10;
+                    break;
+                }
+                case '112': { // Cart
+                    $sequence = 11;
+                    break;
+                }
+                case '19': { // Passenger Risk
+                    $sequence = 12;
+                    break;
+                }
+                case '22': { // Caravan / Luggage / Trailers (Private Car Only) 
+                    $sequence = 15;
+                    break;
+                }
+                case '25': { // Strike Riot & Civil Commotion
+                    $sequence = 16;
+                    break;
+                }
+                case '57': { // Inclusion Of Special Perils 
+                    $sequence = 19;
+                    break;
+                }
+                case '72': { // Legal Liability Of Passengers For Negligent Acts
+                    $sequence = 20;
+                    break;
+                }
+                case '89': { // Breakage Of Glass In WindScreen, Window Or Sunroof 
+                    $sequence = 21;
+                    break;
+                }
+                case '97': { // Vehicle Accessories Endorsement 
+                    $sequence = 23;
+                    break;
+                }
+                case '200': { // PA Basic 
+                    $sequence = 28;
+                    break;
+                }
+                case '201': { // Temporary Courtesy Car
+                    $sequence = 29;
+                    break;
+                }
+                case '202': { // Towing And Cleaning Due To Water Damage 
+                    $sequence = 30;
+                    break;
+                }
+                case '203': { // Key Replacement
+                    $sequence = 31;
+                    break;
+                }
+            }
+            
+            $_extra_cover->sequence = $sequence;
+        }
+        $sorted = array_values(Arr::sort($extra_cover_list, function ($value) {
+            return $value->sequence;
+        }));
+
+        return $sorted;
     }
 
     public function submission(object $input) : object

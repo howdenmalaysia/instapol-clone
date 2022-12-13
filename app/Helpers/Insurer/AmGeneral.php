@@ -62,18 +62,18 @@ class AmGeneral implements InsurerLibraryInterface
 		$this->encrypt_key_size = config('insurer.config.am_config.encrypt_key_size');
 		$this->channel_token = config('insurer.config.am_config.channel_token');
         
-        $b = array(
-            'newICNo' => 871102055170,
-            'vehicleNo' => "WD3436D",
-            'vehiclePostCode' => 51200,
-			"oldICNo" => "",
-			"busRegNo" => "",
-			"newBusRegNo" => "",
-			"vehicleClass" => "PC",
-			"brand" => "A",
-        );
+        // $b = array(
+        //     'newICNo' => 871102055170,
+        //     'vehicleNo' => "WD3436D",
+        //     'vehiclePostCode' => 51200,
+		// 	"oldICNo" => "",
+		// 	"busRegNo" => "",
+		// 	"newBusRegNo" => "",
+		// 	"vehicleClass" => "PC",
+		// 	"brand" => "A",
+        // );
 
-        $a = $this->Q_GetProductList($b);
+        // $a = $this->Q_GetProductList($b);
 	}
 
 	public function get_token(){
