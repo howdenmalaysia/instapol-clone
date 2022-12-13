@@ -577,13 +577,15 @@ return [
             'select_occupation' => 'Please select your occupation to obtain the recommended sum insured amount.',
             'please_select' => 'Please Select Your Occupation',
             'compare_details' => [
-                'tabs' => [
-                    'basic_info' => 'Basic Information',
-                    'additional_coverage' => 'Additional Coverage',
-                    'loss_damage' => 'Loss & Damage Cover',
-                    'assistance_repairs' => 'Assistance & Repairs',
-                    'third_party' => 'Third Party Coverage'
-                ]
+                'valuation' => 'Agreed / Market Value',
+                'basic_information' => 'Basic Information',
+                'where_covered' => 'Where you\'re covered',
+                'who_covered' => 'Who\'s covered',
+                'workshop_coverage' => 'Workshop Coverage',
+                'mobile_accident_response_service' => 'Mobile Accident Response Service',
+                'warranty_on_repairs' => 'Warranty on Repairs (by panel repairer)',
+                'young_driver' => 'Young & Inexperienced Driver (a driver below 21 years old or with a "P" / "L" license)',
+                'excess' => 'Excess'
             ]
         ],
         'add_ons_page' => [

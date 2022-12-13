@@ -5,7 +5,7 @@
 @section('content')
     <x-motor-layout id="compare" current-step="2">
         <x-slot name="content">
-            <x-banner-modal image="{{ asset('images/banner/trapo_thank_you.png') }}" class="d-block mx-auto w-50" />
+           
             <div class="row">
                 <div class="col-12 col-lg-8 mb-5">
                     <h4 class="fw-bold">{{ __('frontend.motor.compare_page.scroll_down') }}</h4>
@@ -31,10 +31,21 @@
                                         <div class="card-body">
                                             <ul class="nav nav-pills nav-fill justify-content-around mb-3" role="tablist">
                                                 <li class="nav-item" role="presentation">
-                                                    <button type="button" class="nav-link" id="basic-info-link" data-bs-toggle="pill" data-bs-target="#basic-info" role="tab">{{ '1. ' . __('frontend.motor.compare_page.basic_info') }}</button>
+                                                    <button type="button" class="nav-link" id="basic-info-link" data-bs-toggle="pill" data-bs-target="#basic-info" role="tab">
+                                                        {{ '1. ' . __('frontend.motor.compare_page.basic_info') }}
+                                                    </button>
                                                 </li>
                                                 <li class="nav-item" role="presentation">
-                                                    <button type="button" class="nav-link active" id="driver-info-link" data-bs-toggle="pill" data-bs-target="#driver-info" role="tab">{{ '2. ' . __('frontend.motor.compare_page.driver_info') }}</button>
+                                                    <button
+                                                        type="button"
+                                                        id="driver-info-link"
+                                                        class="nav-link active"
+                                                        data-bs-toggle="pill"
+                                                        data-bs-target="#driver-info"
+                                                        role="tab"
+                                                    >
+                                                        {{ '2. ' . __('frontend.motor.compare_page.driver_info') }}
+                                                    </button>
                                                 </li>
                                             </ul>
                                             <div class="tab-content">
@@ -44,7 +55,7 @@
                                                             <p>{{ __('frontend.motor.car_plate') }}</p>
                                                         </div>
                                                         <div class="col-7">
-                                                            <input type="text" id="vehicle-number" value="{{ session('motor')->vehicle_number }}" readonly>
+                                                            <input type="text" id="vehicle-number" class="form-control" value="{{ session('motor')->vehicle_number }}" readonly>
                                                         </div>
                                                     </div>
                                                     <div class="row mt-4">
@@ -52,7 +63,7 @@
                                                             <p>{{ __('frontend.motor.nric') }}</p>
                                                         </div>
                                                         <div class="col-7">
-                                                            <input type="text" id="id-number" value="{{ session('motor')->policy_holder->id_number }}" readonly>
+                                                            <input type="text" id="id-number" class="form-control" value="{{ session('motor')->policy_holder->id_number }}" readonly>
                                                         </div>
                                                     </div>
                                                     <div class="row mt-4">
@@ -60,7 +71,7 @@
                                                             <p>{{ __('frontend.motor.postcode') }}</p>
                                                         </div>
                                                         <div class="col-7">
-                                                            <input type="text" id="postcode" value="{{ session('motor')->postcode }}" readonly>
+                                                            <input type="text" id="postcode" class="form-control" value="{{ session('motor')->postcode }}" readonly>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -72,11 +83,29 @@
                                                         <div class="col-7">
                                                             <div class="d-grid gap-0">
                                                                 <div class="btn-group rounded" role="group">
-                                                                    <input type="radio" id="male" class="btn-check" name="gender" value="M" {{ session('motor')->policy_holder->gender === 'M' ? 'checked' : ''}}>
-                                                                    <label id="male-label" class="btn btn-primary text-white rounded-start border active" for="male">{{ __('frontend.motor.compare_page.male') }}</label>
+                                                                    <input
+                                                                        type="radio"
+                                                                        id="male"
+                                                                        class="btn-check"
+                                                                        name="gender"
+                                                                        value="M"
+                                                                        {{ session('motor')->policy_holder->gender === 'M' ? 'checked' : '' }}
+                                                                    >
+                                                                    <label id="male-label" class="btn btn-primary text-white rounded-start border active" for="male">
+                                                                        {{ __('frontend.motor.compare_page.male') }}
+                                                                    </label>
                             
-                                                                    <input type="radio" id="female" class="btn-check" name="gender" value="F" {{ session('motor')->policy_holder->gender === 'F' ? 'checked' : ''}}>
-                                                                    <label id="female-label" class="btn btn-light rounded-end" for="female">{{ __('frontend.motor.compare_page.female') }}</label>
+                                                                    <input
+                                                                        type="radio"
+                                                                        id="female"
+                                                                        class="btn-check"
+                                                                        name="gender"
+                                                                        value="F"
+                                                                        {{ session('motor')->policy_holder->gender === 'F' ? 'checked' : '' }}
+                                                                    >
+                                                                    <label id="female-label" class="btn btn-light rounded-end" for="female">
+                                                                        {{ __('frontend.motor.compare_page.female') }}
+                                                                    </label>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -88,10 +117,18 @@
                                                         <div class="col-7">
                                                             <select id="marital-status" class="form-select rounded bg-primary text-white">
                                                                 <option value="">{{ __('frontend.general.select') }}</option>
-                                                                <option value="S" {{ session('motor')->policy_holder->marital_status === 'S' ? 'selected' : 'selected'}}>{{ __('frontend.motor.compare_page.single') }}</option>
-                                                                <option value="M" {{ session('motor')->policy_holder->marital_status === 'M' ? 'selected' : ''}}>{{ __('frontend.motor.compare_page.married') }}</option>
-                                                                <option value="D" {{ session('motor')->policy_holder->marital_status === 'D' ? 'selected' : ''}}>{{ __('frontend.motor.compare_page.divorced') }}</option>
-                                                                <option value="O" {{ session('motor')->policy_holder->marital_status === 'O' ? 'selected' : ''}}>{{ __('frontend.motor.compare_page.others') }}</option>
+                                                                <option value="S" {{ session('motor')->policy_holder->marital_status === 'S' ? 'selected' : 'selected' }}>
+                                                                    {{ __('frontend.motor.compare_page.single') }}
+                                                                </option>
+                                                                <option value="M" {{ session('motor')->policy_holder->marital_status === 'M' ? 'selected' : '' }}>
+                                                                    {{ __('frontend.motor.compare_page.married') }}
+                                                                </option>
+                                                                <option value="D" {{ session('motor')->policy_holder->marital_status === 'D' ? 'selected' : '' }}>
+                                                                    {{ __('frontend.motor.compare_page.divorced') }}
+                                                                </option>
+                                                                <option value="O" {{ session('motor')->policy_holder->marital_status === 'O' ? 'selected' : '' }}>
+                                                                    {{ __('frontend.motor.compare_page.others') }}
+                                                                </option>
                                                             </select>
                                                         </div>
                                                     </div>
@@ -108,43 +145,46 @@
                             </div>
                         </div>
                         @foreach ($products as $product)
-                            <div class="col-12 col-md-4 mb-4 insurer-card" id={{ 'insurer-' . $product->id }} data-insurer-id="{{ $product->insurance_company->id }}">
-                                <div class="card border">
-                                    <div class="card-header text-center bg-transparent d-flex p-0 insurer-logo">
-                                        <img src="{{ asset('images/insurer/' . $product->insurance_company->logo) }}" alt="{{ $product->insurance_company->name }}" class="img-fluid d-block p-2 mx-auto align-self-center">
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-6">
-                                                <p class="text-primary fs-4 fw-bold mb-0">Price</p>
-                                            </div>
-                                            <div class="col-6 text-end">
-                                                <p class="text-primary fs-4 fw-bold mb-0 premium" data-premium="0.00">RM 0.00</p>
-                                            </div>
-                                        </div>
-                                        <div class="row border-top mt-3 pt-3">
-                                            <div class="col-6">
-                                                <p class="fw-bold mb-0 valuation">Market Value</p>
-                                            </div>
-                                            <div class="col-6 text-end">
-                                                <p class="mb-0 fw-bold small sum-insured">RM 0.00</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="card-footer border-top">
-                                        <div class="row my-4">
-                                            <div class="col-4">
-                                                <img src="" alt="">
-                                            </div>
-                                            <div class="col-7">
-                                                <p class="fw-bold">Free Towing</p>
-                                            </div>
-                                        </div>
-                                        <div class="row mt-5">
-                                            <div class="col-12 d-grid gap-2">
-                                                <button type="button" class="btn btn-outline-primary border border-primary border-2 fw-bold rounded btn-compare">{{ __('frontend.button.compare') }}</button>
-                                                <button type="button" class="btn btn-primary text-white text-uppercase rounded btn-buy" data-product_id="{{ $product->id }}">{{ __('frontend.button.buy') }}</button>
-                                                <button type="button" class="btn btn-outline-primary border border-primary border-2 fw-bold rounded btn-view-details" data-product_id="{{ $product->id }}">{{ __('frontend.button.view_details') }}</button>
+                            <div class="col-4 border shadow rounded my-3 mx-auto insurer-card">
+                                <div class="row" id={{ 'insurer-' . $product->id }} data-insurer-id="{{ $product->insurance_company->id }}">
+                                    <div class="col-12">
+                                        <div class="row p-3">
+                                   
+                                            <div class="col-12 col-sm-12 text-center align-self-center">
+                                                <div class="row">
+                                                    <div class="col-12"><p class="text-primary">{{ $product->name }}</p>
+                                                        <img
+                                                            src="{{ asset("images/insurer/{$product->insurance_company->logo}") }}"
+                                                            alt="{{ $product->insurance_company->name }}"
+                                                            class="img-fluid d-block p-2 mx-auto align-self-center"
+                                                            width="200"
+                                                        >
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-6">
+                                                        <p class="text-primary fs-4 fw-bold mb-0">Price</p>
+                                                    </div>
+                                                    <div class="col-6 text-end">
+                                                        <p class="text-primary fs-4 fw-bold mb-0 premium" data-premium="0.00">RM 0.00</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-6">
+                                                        <p class="fw-bold mb-0 valuation">Market Value</p>
+                                                    </div>
+                                                    <div class="col-6 text-end">
+                                                        <p class="mb-0 fw-bold small sum-insured">RM 0.00</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row justify-content-around mt-3">
+                                                    <button type="button" class="col-5 btn btn-outline-primary border border-primary border-2 fw-bold rounded btn-compare" data-product_id="{{ $product->id }}">
+                                                        {{ __('frontend.button.compare') }}
+                                                    </button>
+                                                    <button type="button" class="col-5 btn btn-primary text-white text-uppercase rounded btn-buy" data-product_id="{{ $product->id }}">
+                                                        {{ __('frontend.button.buy') }}
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -162,80 +202,50 @@
                         <input type="hidden" id="av-variant" name="av_code" />
                         <input type="hidden" id="h-marital-status" name="marital_status" />
                     </form>
-                    {{-- <form action="{{ route('motor.compare-detail') }}" method="POST" id="compare-details-form">
-                        @csrf
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="row" >
-                                    <div class="col-6 col-md-4 col-lg-2">
-                                        <div class="row">
-                                            <div class="col-10">
-                                                <img src="" alt="">
-                                            </div>
-                                            <div class="col-2">
-                                                <a href="#!" class="btn-delete" data-id="">
-                                                    <i class="fa-regular fa-xmark"></i>
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <p id="insurer-name"></p>
-                                        <p class="fw-bold" id="premium">RM 0.00</p>
-                                    </div>
-                                    <div class="col-6 col-md-4 col-lg-2">
-                                        <div class="row">
-                                            <div class="col-10">
-                                                <img src="" alt="">
-                                            </div>
-                                            <div class="col-2">
-                                                <a href="#!" class="btn-delete" data-id="">
-                                                    <i class="fa-regular fa-xmark"></i>
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <p id="insurer-name"></p>
-                                        <p class="fw-bold" id="premium">RM 0.00</p>
-                                    </div>
-                                    <div class="col-6 col-md-4 col-lg-2">
-                                        <div class="row">
-                                            <div class="col-10">
-                                                <img src="" alt="">
-                                            </div>
-                                            <div class="col-2">
-                                                <a href="#!" class="btn-delete" data-id="">
-                                                    <i class="fa-regular fa-xmark"></i>
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <p id="insurer-name"></p>
-                                        <p class="fw-bold" id="premium">RM 0.00</p>
-                                    </div>
-                                    <div class="col-6 col-md-4 col-lg-2">
-                                        <div class="row">
-                                            <div class="col-10">
-                                                <img src="" alt="">
-                                            </div>
-                                            <div class="col-2">
-                                                <a href="#!" class="btn-delete" data-id="">
-                                                    <i class="fa-regular fa-xmark"></i>
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <p id="insurer-name"></p>
-                                        <p class="fw-bold" id="premium">RM 0.00</p>
-                                    </div>
-                                    <div class="col-12 col-md-4 col-lg-2">
-                                        <div class="row">
-
-                                            <div class="col-12">
-                                                <button type="button" class="btn btn-success">{{ __('frontend.button.compare') }}</button>
-                                                <button type="button" class="btn btn-secondary">{{ __('frontend.button.clear') }}</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </form> --}}
+                </div>
+            </div>
+            <div class="row compare">
+                <div class="col-12">
+                    <table id="compare-table" class="table table-bordered table-striped table-hover">
+                        <tbody>
+                            <tr id="insurer-name-row" class="bg-primary text-center">
+                                <th></th>
+                            </tr>
+                            <tr id="buy-now-btn-row" class="bg-primary">
+                                <th></th>
+                            </tr>
+                            <tr id="valuation-row">
+                                <th class="bg-primary text-white">{{ __('frontend.motor.compare_page.compare_details.valuation') }}</th>
+                            </tr>
+                            <tr id="basic-info-row">
+                                <th class="bg-primary text-white">{{ __('frontend.motor.compare_page.compare_details.basic_information')}}</th>
+                            </tr>
+                            <tr id="where-covered-row">
+                                <th class="bg-primary text-white">{{ __('frontend.motor.compare_page.compare_details.where_covered') }}</th>
+                            </tr>
+                            <tr id="who-covered-row">
+                                <th class="bg-primary text-white">{{ __('frontend.motor.compare_page.compare_details.who_covered') }}</th>
+                            </tr>
+                            <tr id="workshop-coverage-row">
+                                <th class="bg-primary text-white">{{ __('frontend.motor.compare_page.compare_details.workshop_coverage') }}</th>
+                            </tr>
+                            <tr id="mobile-accident-response-row">
+                                <th class="bg-primary text-white">{{ __('frontend.motor.compare_page.compare_details.mobile_accident_response_service') }}</th>
+                            </tr>
+                            <tr id="repair-warranty-row">
+                                <th class="bg-primary text-white">{{ __('frontend.motor.compare_page.compare_details.warranty_on_repairs') }}</th>
+                            </tr>
+                            <tr id="young-driver-row">
+                                <th class="bg-primary text-white">{{ __('frontend.motor.compare_page.compare_details.young_driver') }}</th>
+                            </tr>
+                            <tr id="excess-row">
+                                <th class="bg-primary text-white">{{ __('frontend.motor.compare_page.compare_details.excess') }}</th>
+                            </tr>
+                            <tr id="view-add-ons-row">
+                                <th class="bg-primary"></th>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
             <x-modal id="occupation-modal" maxWidth="md" headerClass="bg-primary text-white">
@@ -284,157 +294,6 @@
                     <button type="button" id="occupation-next" class="btn btn-primary text-white text-uppercase rounded">{{ __('frontend.button.get_quotation') }}</button>
                 </x-slot>
             </x-modal>
-            <x-modal id="compare-details-modal" maxWidth="xl">
-                <x-slot name="title"></x-slot>
-                <x-slot name="body">
-                    <div class="container-fluid">
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="row">
-                                    <div class="col-6"></div>
-                                    <div class="col-6">
-                                        <div class="row">
-                                            <div class="col-12">
-                                                <img src="" alt="" id="compare-detail-insurer-logo" class="img-fluid d-block p-2 mx-auto align-self-center">
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-12">
-                                                <p id="compare-details-valuation" class="text-primary fw-bold"></p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div id="compare-details-accordion" class="accordion">
-                                    <div class="row text-center">
-                                            <div class="col-2 accordion-item">
-                                                <h2 class="accordion-header">
-                                                    <button
-                                                        type="button"
-                                                        class="accordion-button btn-block fw-bold"
-                                                        data-mdb-toggle="collapse"
-                                                        data-mdb-target="#basic-info-accordion"
-                                                    >
-                                                        {{ __('frontend.motor.compare_page.compare_details.tabs.basic_info') }}
-                                                    </button>
-                                                </h2>
-                                            </div>
-                                            <div class="col-2 accordion-item">
-                                                <h2 class="accordion-header">
-                                                    <button
-                                                        type="button"
-                                                        class="accordion-button fw-bold"
-                                                        data-mdb-toggle="collapse"
-                                                        data-mdb-target="#add-ons-accordion"
-                                                    >
-                                                        {{ __('frontend.motor.compare_page.compare_details.tabs.additional_coverage') }}
-                                                    </button>
-                                                </h2>
-                                            </div>
-                                            <div class="col-2 accordion-item">
-                                                <h2 class="accordion-header">
-                                                    <button
-                                                        type="button"
-                                                        class="accordion-button fw-bold"
-                                                        data-mdb-toggle="collapse"
-                                                        data-mdb-target="#loss-cover-accordion"
-                                                    >
-                                                        {{ __('frontend.motor.compare_page.compare_details.tabs.loss_damage') }}
-                                                    </button>
-                                                </h2>
-                                            </div>
-                                            <div class="col-2 accordion-item">
-                                                <h2 class="accordion-header">
-                                                    <button
-                                                        type="button"
-                                                        class="accordion-button fw-bold"
-                                                        data-mdb-toggle="collapse"
-                                                        data-mdb-target="#assistance-accordion"
-                                                    >
-                                                        {{ __('frontend.motor.compare_page.compare_details.tabs.assistance_repairs') }}
-                                                    </button>
-                                                </h2>
-                                            </div>
-                                            <div class="col-2 accordion-item">
-                                                <h2 class="accordion-header">
-                                                    <button
-                                                        type="button"
-                                                        class="accordion-button fw-bold"
-                                                        data-mdb-toggle="collapse"
-                                                        data-mdb-target="#third-party-accordion"
-                                                    >
-                                                        {{ __('frontend.motor.compare_page.compare_details.tabs.third_party') }}
-                                                    </button>
-                                                </h2>
-                                            </div>
-                                        </div>
-                                        <div
-                                            id="basic-info-accordion"
-                                            class="accordion-collapse collapse"
-                                            data-mdb-parent="#compare-details-accordion"
-                                        >
-                                            <table class="table compare-details-table">
-                                                <tr>
-                                                    <th></th>
-                                                    <td></td>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                        <div
-                                            id="add-ons-accordion"
-                                            class="accordion-collapse collapse"
-                                            data-mdb-parent="#compare-details-accordion"
-                                        >
-                                            <table class="table compare-details-table">
-                                                <tr>
-                                                    <th></th>
-                                                    <td></td>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                        <div
-                                            id="loss-cover-accordion"
-                                            class="accordion-collapse collapse"
-                                            data-mdb-parent="#compare-details-accordion"
-                                        >
-                                            <table class="table compare-details-table">
-                                                <tr>
-                                                    <th></th>
-                                                    <td></td>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                        <div
-                                            id="assistance-accordion"
-                                            class="accordion-collapse collapse"
-                                            data-mdb-parent="#compare-details-accordion"
-                                        >
-                                            <table class="table compare-details-table">
-                                                <tr>
-                                                    <th></th>
-                                                    <td></td>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                        <div
-                                            id="third-party-accordion"
-                                            class="accordion-collapse collapse"
-                                            data-mdb-parent="#compare-details-accordion"
-                                        >
-                                            <table class="table compare-details-table">
-                                                <tr>
-                                                    <th></th>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </x-slot>
-                <x-slot name="footer"></x-slot>
-            </x-modal>
         </x-slot>
     </x-motor-layout>
 @endsection
@@ -444,10 +303,21 @@
         let motor = JSON.parse($('#motor').val());
         let products = JSON.parse($('#products').val());
         let premiums = [];
-        let compareItems = 4;
         let controller = null;
+        let add_ons_available = {
+            'Windscreen': [],
+            'Accessories': [],
+            'Gas Conversion Kit & Tank': [],
+            'NCD Relief': [],
+            'CART': [],
+            'Strike, Riot, Civil Commotion': [],
+            'Legal Liability to Passengers': [],
+            'Legal Liability Of Passsengers': [],
+            'Special Perils': [],
+        };
 
         $(() => {
+            $('.row.compare').hide();
             $('#landing-banner').modal('show');
             getPremium();
 
@@ -471,7 +341,7 @@
                 getPremium();
             });
 
-            $('.btn-buy').on('click', (e) => {
+            $('#compare').on('click', '.btn-buy', (e) => {
                 $(e.target).addClass('loadingButton');
 
                 if(controller) {
@@ -479,9 +349,9 @@
                 }
 
                 let product_id = $(e.target).data('product_id');
-                if(['{{ config('insurer.config.bsib.product_id') }}'].includes(product_id)) {
+                // if(['{{ config('insurer.config.bsib.product_id') }}'].includes(product_id)) {
 
-                }
+                // }
 
                 motor.insurance_company_id = product_id;
                 $('#motor').val(JSON.stringify(motor));
@@ -497,6 +367,206 @@
                 // Populate Compare Details Data
                 let product_id = $(e.target).data('product_id');
                 $('#compare-details-modal').modal('show');
+            });
+
+            $('.btn-compare').on('click', (e) => {
+                let product_id = $(e.target).data('product_id');
+
+                if(!$(e.target).hasClass('btn-primary text-white')) {
+                    if($('.btn-compare.btn-primary').length === 3) {
+                        swalAlert('You may choose up to 3 insurers for comparison', null, false, 'warning', 'Okay');
+                        return;
+                    }
+    
+                    let premium = premiums[product_id];
+                    let product = products.filter((product) => {
+                        return product.id === product_id;
+                    })[0];
+                    let benefits = JSON.parse(product.benefits.benefits);
+                    let formatted_sum_insured = formatMoney(premium.sum_insured);
+                    let buy_now_text = "{{ __('frontend.button.buy') }}";
+    
+                    // Populate
+                    /// 1. Insurer Name
+                    $('#insurer-name-row').append(`
+                        <th class="text-white ${product_id}">
+                            <p class="mb-0">${product.insurance_company.name}</p>
+                        </th>
+                    `);
+
+                    /// 2. Buy Now Button
+                    $('#buy-now-btn-row').append(`
+                        <td class="bg-primary p-0 ${product_id}">
+                            <div class="d-grid gap-1">
+                                <button type="button" class="btn btn-primary text-white text-uppercase btn-buy" data-product_id="${product_id}">
+                                    ${buy_now_text}
+                                </button>
+                            </div>
+                        </td>
+                    `);
+    
+                    /// 3. Vehicle Sum Insured
+                    $('#valuation-row').append(`
+                        <td class="${product_id}">
+                            <p class="fw-bold">${premium.sum_insured_type}</p>
+                            <p>RM ${formatted_sum_insured}</p>
+                        </td>
+                    `);
+    
+                    /// 4. Product Features
+                    $('#basic-info-row').append(`
+                        <th class="bg-primary text-white ${product_id}">
+                            <p class="mb-0">Key Features</p>
+                        </th>
+                    `);
+                    $('#where-covered-row').append(`
+                        <td class="${product_id}">
+                            <p>${benefits.where}</p>
+                        </td>
+                    `);
+                    $('#who-covered-row').append(`
+                        <td class="${product_id}">
+                            <p>${benefits.who}</p>
+                        </td>
+                    `);
+                    $('#workshop-coverage-row').append(`
+                        <td class="${product_id}">
+                            <p>${benefits.workshops}</p>
+                        </td>
+                    `);
+    
+                    let html = '';
+                    benefits.mobile_accident_response.forEach((item) => {
+                        html += `<p><i class="fa-regular fa-check text-primary"></i> ${item}</p>`;
+                    });
+                    $('#mobile-accident-response-row').append(`<td class="${product_id}">${html}</td>`);
+    
+                    $('#repair-warranty-row').append(`
+                        <td class="${product_id}">
+                            <p>${benefits.repair_warranty}</p>
+                        </td>
+                    `);
+                    $('#young-driver-row').append(`
+                        <td class="${product_id}">
+                            <p>${benefits.young_driver_excess}</p>
+                        </td>
+                    `);
+                    $('#excess-row').append(`
+                        <td class="${product_id}">
+                            <p>${benefits.excess}</p>
+                        </td>
+                    `);
+    
+                    /// 5. Add Ons
+                    //// i. Populate a Button
+                    $('#view-add-ons-row').append(`
+                        <td class="bg-primary p-0 ${product_id}">
+                            <div class="d-grid gap-1">
+                                <button id="btn-view-add-ons" class="btn btn-primary text-white fw-bold py-2">View Available Add-Ons</button>
+                            </div>
+                        </td>
+                    `);
+    
+                    //// ii. Store all available Add Ons to an array [Group by Extra Cover Code]
+                    premium.extra_cover.forEach((add_ons) => {
+                        switch(add_ons.extra_cover_code) {
+                            case '89':
+                            case '89A':
+                            case 'M02': { // Windscreen
+                                add_ons_available['Windscreen'].push(product_id);
+                                break;
+                            }
+                            case '97': { // Accessories
+                                add_ons_available['Accessories'].push(product_id);
+                                break;
+                            }
+                            case '97A': { // Gas Conversion Kit & Tank 
+                                add_ons_available['Gas Conversion Kit & Tank'].push(product_id);
+                                break;
+                            }
+                            case '111': { // NCD Relief
+                                add_ons_available['NCD Relief'].push(product_id);
+                                break;
+                            }
+                            case '112':
+                            case 'M51' : { // CART
+                                add_ons_available['CART'].push(product_id);
+                                break;
+                            }
+                            case '25':
+                            case 'M03': { // Strike, Riot, Civil Commotion
+                                add_ons_available['Strike, Riot, Civil Commotion'].push(product_id);
+                                break;
+                            }
+                            case '04':
+                            case 'M01':
+                            case '02': { // Legal Liability to Passengers
+                                add_ons_available['Legal Liability to Passengers'].push(product_id);
+                                break;
+                            }
+                            case '72': { // Legal Liability Of Passengers
+                                add_ons_available['Legal Liability Of Passsengers'].push(product_id);
+                                break;
+                            }
+                            case '57':
+                            case 'M17': { // Special Perils
+                                add_ons_available['Special Perils'].push(product_id);
+                                break;
+                            }
+                            default: {
+                                if(!(add_ons.name in add_ons_available)) {
+                                    add_ons_available[add_ons.name] = [product_id];
+                                }
+                            }
+                        }
+                    });
+
+                    //// iii. Remove Rendered Add Ons for Other Insurer
+                    if($('#compare-table tbody .add-ons-row').length > 0) {
+                        $('#compare-table tbody .add-ons-row').each((index, element) => {
+                            $(element).remove();
+                        });
+                    }
+
+                    //// iv. Render
+                    renderAddOns();
+    
+                    /// 6. Update the Button Text after comparison
+                    if($(e.target).hasClass('btn-outline-primary')) {
+                        $(e.target).addClass('btn-primary text-white').removeClass('btn-outline-primary').text('Remove');
+    
+                        if(!$('.row.compare').is(':visible')) {
+                            $('.row.compare').show();
+                        }
+                    } else {
+                        $(e.target).removeClass('btn-primary text-white').addClass('btn-outline-primary').text('Compare');
+    
+                        if($('.btn-compare.btn-primary').length === 0) {
+                            $('.row.compare').hide();
+                        }
+                    }
+                } else {
+                    // Remove Add Ons
+                    Object.keys(add_ons_available).forEach((name) => {
+                       if(add_ons_available[name].includes(product_id))  {
+                        add_ons_available[name].splice(add_ons_available[name].indexOf(product_id), 1);
+                       }
+                    });
+
+                    const to_remove = $('#compare-table tbody .add-ons-row').concat($('.compare .' + product_id));
+                    to_remove.each((index, element) => {
+                        $(element).remove();
+                    });
+
+                    // Re-render Add Ons
+                    renderAddOns();
+                }
+            });
+
+            $('#compare-table').on('click', '#btn-view-add-ons', (e) => {
+                $(e.target).parents('#view-add-ons-row').siblings('.add-ons-row').each((index, element) => {
+                    $(element).removeClass('d-none');
+                });
             });
         });
 
@@ -619,6 +689,44 @@
             } else {
                 return value.toString();
             }
+        }
+
+        function renderAddOns() {
+            let html = '';
+            let should_hide = true;
+
+            if($('#compare-table tbody .add-ons-row').length > 0) {
+                if($($('#compare-table tbody .add-ons-row')[0]).hasClass('d-none')) {
+                    should_hide = false;
+                }
+            }
+
+            Object.keys(add_ons_available).forEach((name) => {
+                html += `
+                    <tr id="${name}" class="${should_hide ? 'd-none' : ''} add-ons-row">
+                        <th class="bg-primary text-white">${name}</th>
+                `;
+
+                $('#insurer-name-row th').each((index, element) => {
+                    if($(element).attr('class')) {
+                        let product_id = $(element).attr('class').split(' ')[1];
+
+                        if(add_ons_available[name].includes(parseInt(product_id))) {
+                            html += `<td class="text-center">
+                                <i class="fa-solid fa-circle-check fa-2x text-success"></i>
+                            </td>`;
+                        } else {
+                            html += `<td class="text-center">
+                                <i class="fa-solid fa-circle-xmark fa-2x text-danger"></i>
+                            </td>`;
+                        }
+                    }
+                });
+
+                html += '</tr>';
+            });
+
+            $('#compare-table tbody').append(html);
         }
     </script>
 @endpush

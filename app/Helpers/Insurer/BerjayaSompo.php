@@ -154,8 +154,8 @@ class BerjayaSompo implements InsurerLibraryInterface
                 'cover_type' => $vix->response->COVERAGE_TYPE,
                 'engine_capacity' => $vix->response->CAPACITY,
                 'engine_number' => $vix->response->ENGINE_NUMBER,
-                'expiry_date' => $expiry_date,
-                'inception_date' => $inception_date->format('Y-m-d'),
+                'expiry_date' => Carbon::parse($expiry_date)->format('d M Y'),
+                'inception_date' => $inception_date->format('d M Y'),
                 'make' => $vix->response->MAKE_DESC,
                 'manufacture_year' => $vix->response->YEAR_OF_MANUFACTURING,
                 'max_sum_insured' => roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_UP, true, self::MAX_SUM_INSURED),
@@ -822,7 +822,7 @@ class BerjayaSompo implements InsurerLibraryInterface
         return json_decode($jwe->getPayload());
     }
 
-    private function cURL(array $form, string $path = '/nsure/1.0.0/cnap', string $method = 'POST', int $timeout = 60) : ResponseData
+    private function cURL(array $form, string $path = '/nsure/1.0.0/cnap', string $method = 'POST', int $timeout = 120) : ResponseData
     {
         $payload = (object) [
             'encryptedPayload' => $this->encrypt($form),
@@ -858,7 +858,7 @@ class BerjayaSompo implements InsurerLibraryInterface
 
             if(isset($decrypted_response->status) && !$decrypted_response->status) {
                 // Update the API log
-                $log = APILogs::find($log->id)
+                APILogs::find($log->id)
                     ->update([
                         'response_header' => json_encode($result->response_header),
                         'response' => json_encode($decrypted_response)
@@ -868,14 +868,16 @@ class BerjayaSompo implements InsurerLibraryInterface
             }
 
             $result->response = $decrypted_response;
-        }
+        } else {
+            // Update the API log
+            APILogs::find($log->id)
+                ->update([
+                    'response_header' => json_encode($result->response_header),
+                    'response' => $result->response
+                ]);
 
-        // Update the API log
-        $log = APILogs::find($log->id)
-            ->update([
-                'response_header' => json_encode($result->response_header),
-                'response' => json_encode($decrypted_response)
-            ]);
+            return $this->abort($result->response);
+        }
 
         if($result->status) {
             if($decrypted_response->RESPONSE_STATUS === 'FAILURE' && !Str::contains($decrypted_response->ERROR[0]->ERROR_DESC, 'MULTIPLE NVIC RECEIVED')) {

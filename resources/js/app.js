@@ -94,5 +94,5 @@ $(function() {
 
     $('[data-bs-toggle=tooltip]').each((index, element) => {
         new bootstrap.Tooltip(element);
-    })
+    });
 });
