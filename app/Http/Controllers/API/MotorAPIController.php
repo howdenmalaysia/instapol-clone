@@ -13,6 +13,12 @@ use App\DataTransferObjects\Motor\VehicleVariantData;
 use App\Helpers\Insurer\BerjayaSompo;
 use App\Helpers\Insurer\Liberty;
 use App\Helpers\Insurer\PacificOrient;
+use App\Helpers\Insurer\Allianz;
+use App\Helpers\Insurer\AmGeneral;
+use App\Helpers\Insurer\Zurich;
+use App\Helpers\Insurer\ZurichTakaful;
+use App\Helpers\Aes256Encryption;
+use App\Helpers\HttpClient;
 use App\Http\Controllers\Controller;
 use App\Interfaces\MotorAPIInterface;
 use App\Models\InsuranceAddress;
@@ -39,8 +45,10 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use GuzzleHttp\Client;
 
 class MotorAPIController extends Controller implements MotorAPIInterface
 {
@@ -709,6 +717,9 @@ class MotorAPIController extends Controller implements MotorAPIInterface
                 return new Liberty($insurer->id, $insurer->name);
 
                 break;
+            }
+            case 12:{
+                return new Zurich($insurer->id, $insurer->name);
             }
             default: {
                 throw new ModelNotFoundException(__('api.invalid_product'));
