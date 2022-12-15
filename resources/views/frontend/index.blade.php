@@ -30,10 +30,6 @@
                                         <a href="/doc-pro" class="col d-flex align-items-center text-decoration-none">
                                             <x-product :image-path="asset('images/icons/doc-pro.png')" :alt="__('frontend.products.doc_pro')" :name="__('frontend.products.doc_pro')" />
                                         </a>
-
-                                        <div class="col-4 p-0">
-                                            <img src="{{ asset('images/MyTenang.jpg') }}" alt="MyTenang" class="img rounded-end tenang">
-                                        </div>
                                     </div>
                                 </div>
                             </div>
