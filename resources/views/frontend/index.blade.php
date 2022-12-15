@@ -17,18 +17,28 @@
                                         <div class="col d-flex align-items-center">
                                             <x-product url="{{ route('motor.index') }}" :image-path="asset('images/icons/motor.png')" :alt="__('frontend.products.motor')" :name="__('frontend.products.motor')" />
                                         </div>
-                                        <div class="col d-flex align-items-center">
-                                            <x-product url="/motor-extended" :image-path="asset('images/icons/extended-motor.png')" :alt="__('frontend.products.motor_extended')" :name="__('frontend.products.motor_extended')" />
-                                        </div>
-                                        <div class="col d-flex align-items-center">
-                                            <x-product url="/bike" :image-path="asset('images/icons/bicycle.png')" :alt="__('frontend.products.bicycle')" :name="__('frontend.products.bicycle')" />
-                                        </div>
-                                        <div class="col d-flex align-items-center">
-                                            <x-product url="/travel" :image-path="asset('images/icons/travel.png')" :alt="__('frontend.products.travel')" :name="__('frontend.products.travel')" />
-                                        </div>
-                                        <div class="col d-flex align-items-center">
-                                            <x-product url="/doc-pro" :image-path="asset('images/icons/doc-pro.png')" :alt="__('frontend.products.doc_pro')" :name="__('frontend.products.doc_pro')" />
-                                        </div>
+                                        
+                                        <a href="/motor-extended" class="text-decoration-none">
+                                            <div class="col d-flex align-items-center">
+                                                <x-product :image-path="asset('images/icons/extended-motor.png')" :alt="__('frontend.products.motor_extended')" :name="__('frontend.products.motor_extended')" />
+                                            </div>
+                                        </a>
+                                        <a href="/bike" class="text-decoration-none">
+                                            <div class="col d-flex align-items-center">
+                                                <x-product :image-path="asset('images/icons/bicycle.png')" :alt="__('frontend.products.bicycle')" :name="__('frontend.products.bicycle')" />
+                                            </div>
+                                        </a>
+                                        <a href="/travel" class="text-decoration-none">
+                                            <div class="col d-flex align-items-center">
+                                                <x-product :image-path="asset('images/icons/travel.png')" :alt="__('frontend.products.travel')" :name="__('frontend.products.travel')" />
+                                            </div>
+                                        </a>
+                                        <a href="/doc-pro" class="text-decoration-none">
+                                            <div class="col d-flex align-items-center">
+                                                <x-product :image-path="asset('images/icons/doc-pro.png')" :alt="__('frontend.products.doc_pro')" :name="__('frontend.products.doc_pro')" />
+                                            </div>
+                                        </a>
+                                        
                                         <div class="col-4 p-0">
                                             <img src="{{ asset('images/MyTenang.jpg') }}" alt="MyTenang" class="img rounded-end tenang">
                                         </div>
