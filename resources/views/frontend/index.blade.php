@@ -18,16 +18,16 @@
                                             <x-product url="{{ route('motor.index') }}" :image-path="asset('images/icons/motor.png')" :alt="__('frontend.products.motor')" :name="__('frontend.products.motor')" />
                                         </div>
                                         <div class="col d-flex align-items-center">
-                                            <x-product url="{{ route('redirect.motor_extended') }}" :image-path="asset('images/icons/extended-motor.png')" :alt="__('frontend.products.motor_extended')" :name="__('frontend.products.motor_extended')" />
+                                            <x-product url="/motor-extended" :image-path="asset('images/icons/extended-motor.png')" :alt="__('frontend.products.motor_extended')" :name="__('frontend.products.motor_extended')" />
                                         </div>
                                         <div class="col d-flex align-items-center">
-                                            <x-product url="{{ route('redirect.bike') }}" :image-path="asset('images/icons/bicycle.png')" :alt="__('frontend.products.bicycle')" :name="__('frontend.products.bicycle')" />
+                                            <x-product url="/bike" :image-path="asset('images/icons/bicycle.png')" :alt="__('frontend.products.bicycle')" :name="__('frontend.products.bicycle')" />
                                         </div>
                                         <div class="col d-flex align-items-center">
-                                            <x-product url="{{ route('redirect.travel') }}" :image-path="asset('images/icons/travel.png')" :alt="__('frontend.products.travel')" :name="__('frontend.products.travel')" />
+                                            <x-product url="/travel" :image-path="asset('images/icons/travel.png')" :alt="__('frontend.products.travel')" :name="__('frontend.products.travel')" />
                                         </div>
                                         <div class="col d-flex align-items-center">
-                                            <x-product url="{{ route('redirect.doc_pro') }}" :image-path="asset('images/icons/doc-pro.png')" :alt="__('frontend.products.doc_pro')" :name="__('frontend.products.doc_pro')" />
+                                            <x-product url="/doc-pro" :image-path="asset('images/icons/doc-pro.png')" :alt="__('frontend.products.doc_pro')" :name="__('frontend.products.doc_pro')" />
                                         </div>
                                         <div class="col-4 p-0">
                                             <img src="{{ asset('images/MyTenang.jpg') }}" alt="MyTenang" class="img rounded-end tenang">

@@ -63,8 +63,8 @@ Route::middleware(['web'])->group(function() {
     Route::redirect('/howden', 'https://www.howdengroup.com/my-en')->name('howden_website');
     Route::redirect('/blog', 'https://blog.instapol.my/')->name('instapol_blog');
     Route::redirect('/login', 'https://howden-account-dev.instapol.my')->name('dashboard');
-    Route::redirect('/motor-extended', config('setting.redirects.motor_extended'))->name('redirect.motor_extended');
-    Route::redirect('/bike', config('setting.redirects.bicycle'))->name('redirect.bike');
-    Route::redirect('/travel', config('setting.redirects.travel'))->name('redirect.travel');
-    Route::redirect('/doc-pro', config('setting.redirects.doc_pro'))->name('redirect.doc_pro');
+    Route::redirect('/motor-extended', config('setting.redirects.motor_extended'));
+    Route::redirect('/bike', config('setting.redirects.bicycle'));
+    Route::redirect('/travel', config('setting.redirects.travel'));
+    Route::redirect('/doc-pro', config('setting.redirects.doc_pro'));
 });
