@@ -12,7 +12,7 @@
                     <div class="container product-wrapper mt-n5">
                         <div class="row justify-content-center">
                             <div class="col-xl-11 col-12">
-                                <div class="card ps-3 text-center shadow rounded">
+                                <div class="card text-center ps-4 pe-3 py-5 shadow rounded">
                                     <div class="row">
                                         <a href="{{ route('motor.index') }}" class="col d-flex align-items-center text-decoration-none">
                                             <x-product :image-path="asset('images/icons/motor.png')" :alt="__('frontend.products.motor')" :name="__('frontend.products.motor')" />
