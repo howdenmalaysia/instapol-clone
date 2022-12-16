@@ -703,17 +703,17 @@ class MotorAPIController extends Controller implements MotorAPIInterface
         $insurer = Product::findOrFail($product_id)->insurance_company;
 
         switch($product_id) {
-            case 10: {
+            case 9: {
                 return new PacificOrient($insurer->id, $insurer->name);
 
                 break;
             }
-            case 16: {
+            case 15: {
                 return new BerjayaSompo($insurer->id, $insurer->name);
 
                 break;
             }
-            case 15: {
+            case 14: {
                 return new Liberty($insurer->id, $insurer->name);
 
                 break;
@@ -723,12 +723,17 @@ class MotorAPIController extends Controller implements MotorAPIInterface
 
                 break;
             }
-            case 11:{
+            case 3:{
+                return new Allianz($insurer->id, $insurer->name);
+
+                break;
+            }
+            case 10:{
                 return new Zurich($insurer->id, $insurer->name);
 
                 break;
             }
-            case 13:{
+            case 12:{
                 return new ZurichTakaful($insurer->id, $insurer->name);
 
                 break;

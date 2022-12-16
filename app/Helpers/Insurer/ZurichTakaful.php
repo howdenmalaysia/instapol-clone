@@ -3,8 +3,10 @@
 namespace App\Helpers\Insurer;
 
 use App\DataTransferObjects\Motor\ExtraCover;
+use App\DataTransferObjects\Motor\VariantData;
 use App\DataTransferObjects\Motor\Response\ResponseData;
 use App\DataTransferObjects\Motor\Response\PremiumResponse;
+use App\DataTransferObjects\Motor\Response\VIXNCDResponse;
 use App\Helpers\HttpClient;
 use App\Interfaces\InsurerLibraryInterface;
 use App\Models\APILogs;
@@ -19,20 +21,18 @@ class ZurichTakaful implements InsurerLibraryInterface
     private string $host;
     private string $host_vix;
     private string $transaction_ref_no;
-    private string $request_datetime;//2017-03-17T23:00:00.000
+    private string $request_datetime;
     private string $participant_code;
-    // private string $participant_code = "02";
     private string $agent_code;
-    // private string $agent_code = "D12345-123";//"D02940-000";
     private string $password;
-    // private string $password = "U2FsdGVkX18hgpr790ocAAPWOf/BrXc+b/MkPaGsGbs=";
     private string $secret_key;
-    // private string $secret_key = "M9R5YK*?3uuM!9wu";
-    private string $trx_ref_no = "020000008";
 
     private const SOAP_ACTION_DOMAIN = 'https://gtws2.zurich.com.my/zurichtakaful/services';
     private const EXTRA_COVERAGE_LIST = ['01','02','03','06','07','101','103','108','109','111',
     '112','19','22','25','57','72','89','97','200','201','202','203'];
+    private const MIN_SUM_INSURED = 10000;
+    private const MAX_SUM_INSURED = 500000;
+    private const OCCUPATION = '99';
     
 	public function __construct(int $insurer_id, string $insurer_name)
     {
@@ -43,132 +43,12 @@ class ZurichTakaful implements InsurerLibraryInterface
 		$this->agent_code = config('insurer.config.zurich_takaful_config.agent_code');
 		$this->secret_key = config('insurer.config.zurich_takaful_config.secret_key');
 		$this->participant_code = config('insurer.config.zurich_takaful_config.participant_code');
-
-        // $getVIXNCD = (object)[
-        //     'request_datetime' => "2017-Mar-17 11:00:00 PM",
-        //     'id' => "850321-07-5179",
-        //     'VehNo' => "WA823H", 
-        // ];
-        // $vehInputMake = (object)[
-        //     'request_datetime' => "2017-Mar-17 11:00:00 PM",        
-        //     'product_code' => "PZ01",
-        // ];
-        // $vehInputModel = (object)[
-        //     'request_datetime' => "2017-Mar-17 11:00:00 PM",        
-        //     'product_code' => "PZ01",
-        //     'make_year' => "2010",
-        //     'make' => "08",
-        //     'filter_key' => "CAYENNE",
-        // ];
-        // $cover_note = (object)[
-        //     'request_datetime' => "2017-Mar-17 11:00:00 PM",        
-        //     'transaction_ref_no' => "020000008",
-        //     'id' => "850321-07-5179",
-        //     // 'VehNo' => "WA823H",
-        //     'VehNo' => "WCA1451qwe",
-        //     'getmail' => [
-        //         'support@zurich.com.my',
-        //         'noreply@zurich.com.my',
-        //     ],
-        //     'quotationNo' => 'MQ220000038991',
-        //     'trans_type' => 'B',
-        //     'pre_VehNo' => '',
-        //     'product_code' => 'PZ01',
-        //     'cover_type' => 'V-CO',
-        //     'ci_code' => 'MX1',
-        //     'eff_date' => '13/12/2022',
-        //     'exp_date' => '12/12/2023',
-        //     'new_owned_Veh_ind' => 'Y',
-        //     'VehReg_date' => '10/03/2016',
-        //     'ReconInd' => 'N',
-        //     'modcarInd' => 'Y',
-        //     'modperformanceaesthetic' => 'O',
-        //     'modfunctional' => '2,128',
-        //     'yearofmake' => '2010',
-        //     'make' => '11',
-        //     'model' => '11*1030',
-        //     'capacity' => '1497',
-        //     'uom' => 'CC',
-        //     'engine_no' => 'EWE323WS',
-        //     'chasis_no' => 'PM2L252S002107437',
-        //     'logbook_no' => 'ERTGRET253',
-        //     'reg_loc' => 'L',
-        //     'region_code' => 'W',
-        //     'no_of_passenger' => '5',
-        //     'no_of_drivers' => '1',
-        //     'ins_indicator' => 'P',
-        //     'name' => 'TAN AI LING',
-        //     'ins_nationality' => 'L',
-        //     'new_ic' => '530102-06-5226',
-        //     'other_id' => '',
-        //     'date_of_birth' => '22/12/1998',
-        //     'age' => '27',
-        //     'gender' => 'M',
-        //     'marital_sts' => 'M',
-        //     'occupation' => '99',
-        //     'mobile_no' => '012-3456789',
-        //     'off_ph_no' => '03-45678900',
-        //     'email' => 'zurich.api@gmail.com',
-        //     'address' => '20, Jalan PJU, Taman A, Petaling Jaya',
-        //     'postcode' => '50150',
-        //     'state' => '06',
-        //     'country' => 'MAS',
-        //     'sum_insured' => '290000.00',
-        //     'av_ind' => 'N',
-        //     'vol_excess' => '01',
-        //     'pac_ind' => 'N',
-        //     'all_driver_ind' => 'Y',
-        //     'abisi' => '28000.00',
-        //     'chosen_si_type' => 'REC_SI',
-        //     'nationality' => 'MAS',
-        //     'ext_cov_code' => '101',
-        //     'unit_day' => '0',
-        //     'unit_amount' => '0',
-        //     'ecd_eff_date' => '14/1/2017',
-        //     'ecd_exp_date' => '13/1/2018',
-        //     'ecd_sum_insured' => '0',
-        //     'no_of_unit' => '1',
-        //     'ecd_pac_code' => 'R0075',
-        //     'ecd_pac_unit' => '1', 
-        //     'nd_name' => 'TAMMY TAN',
-        //     'nd_identity_no' => '981211-11-1111',
-        //     'nd_date_of_birth' => '11/12/1990',
-        //     'nd_gender' => 'F',
-        //     'nd_marital_sts' => 'S',
-        //     'nd_occupation' => '99',
-        //     'nd_relationship' => '5',
-        //     'nd_nationality' => 'MAS',
-        //     'pac_rider_no' => 'TAMMY TAN',
-        //     'pac_rider_name' => '981211-11-1111',
-        //     'pac_rider_new_ic' => '11/12/1990',
-        //     'pac_rider_old_ic' => 'F',
-        //     'pac_rider_dob' => 'S',
-        //     'default_ind' => '99',
-        // ];
-        // $issue_cover_note = (object)[
-        //     'request_datetime' => "2017-Mar-17 11:00:00 PM",
-        //     'transaction_ref_no' => '020000008',
-        //     'quotationNo' => 'MQ220000038991',
-        // ];
-        // $resend_cover_note = (object)[
-        //     'request_datetime' => "2017-Mar-17 11:00:00 PM",
-        //     'transaction_ref_no' => '020000008',
-        //     'VehNo' => '',
-        //     'cover_note_no' => 'D99999D-21000339',
-        //     'email_to' => 'mrbigchiam@gmail.com',
-        // ];
-        // $jpj_status = (object)[
-        //     'request_datetime' => "2017-Mar-17 11:00:00 PM",
-        //     'transaction_ref_no' => '020000008',
-        //     'cover_note_no' => 'D02940-18000169',
-        // ];
-        // $result = $this->jpj_status($jpj_status);
 	}
 
     private function vehInputMake(object $input) : object
     {
         $path = 'GetVehicleMake';
-        $request_datetime = $input->request_datetime;
+        $request_datetime = Carbon::now()->format('Y-M-d h:i:s A');
         $product_code = $input->product_code;
         $signature = array(
             'request_datetime' => $request_datetime,
@@ -212,10 +92,10 @@ class ZurichTakaful implements InsurerLibraryInterface
         ]);  
     }
 
-    private function vehInputModel(object $input) : object
+    private function getModelDetails(object $input) : object
     {
         $path = 'GetVehicleModel';
-        $request_datetime = $input->request_datetime;
+        $request_datetime = Carbon::now()->format('Y-M-d h:i:s A');
         $product_code = $input->product_code;
         $make_year = $input->make_year;
         $make = $input->make;
@@ -303,7 +183,94 @@ class ZurichTakaful implements InsurerLibraryInterface
     
     public function vehicleDetails(object $input) : object
     {
+        $data = [
+            'id_number' => $input->id_number,
+            'vehicle_number' => $input->vehicle_number
+        ];
 
+        $vix = $this->getVIXNCD($data);
+        if(!$vix->status && is_string($vix->response)) {
+            return $this->abort($vix->response);
+        }
+        
+        $get_inception = str_split($vix->response->NxtPolEffDate, 2);
+        $inception_date =  $get_inception[2] . $get_inception[3] . "-" . $get_inception[1] .  "-" . $get_inception[0];
+        $get_expiry = str_split($vix->response->NxtPolExpDate, 2);
+        $expiry_date =  $get_expiry[2] . $get_expiry[3] . "-" . $get_expiry[1] .  "-" . $get_expiry[0];
+        
+        $today = Carbon::today()->format('Y-m-d');
+        // 1. Check inception date
+        if($inception_date < $today) {
+            return $this->abort('inception date expired');
+        }
+
+        // 2. Check Sum Insured -> market price
+        $sum_insured = formatNumber($vix->response->MarketValue, 0);
+        $sum_insured_type = "Makert Value";
+        if ($sum_insured < self::MIN_SUM_INSURED || $sum_insured > self::MAX_SUM_INSURED) {
+            return $this->abort(
+                __('api.sum_insured_referred_between', ['min_sum_insured' => self::MIN_SUM_INSURED, 'max_sum_insured' => self::MAX_SUM_INSURED]),
+                config('setting.response_codes.sum_insured_referred')
+            );
+        }
+
+        $nvic = explode('|', (string) $vix->response->NVIC);
+        //getting model
+        $vehInputModel = (object)[      
+            'product_code' => "PZ01",
+            'make_year' => $vix->response->VehMakeYear,
+            'make' => $vix->response->VehMake,
+            'filter_key' => '',
+        ];
+        $variants = [];
+        $BodyType = '';
+        $uom = '';
+        foreach($nvic as $_nvic) {
+            // Get Vehicle Details
+            $details = $this->getModelDetails($vehInputModel);
+            $get_variant = $vix->response->VehTransType;
+            foreach($details->response->Model as $model_details){
+                if($model_details['sdfVehModelID'] == $vix->response->VehModelCode){
+                    $get_variant = $model_details['Description'];
+                    $BodyType = $model_details['BodyType'];
+                    $uom = $model_details['UOM'];
+                }
+            }
+            
+            array_push($variants, new VariantData([
+                'nvic' => $_nvic,
+                'sum_insured' => floatval($sum_insured),
+                'variant' => $get_variant,
+            ]));
+        }
+        return (object) [
+            'status' => true,
+            'veh_model_code' => $vix->response->VehModelCode,
+            'uom' => $uom,
+            'response' => new VIXNCDResponse([
+                'body_type_code' => intval($this->body_type_code($BodyType)) ?? null,
+                'body_type_description' => $BodyType ?? null,
+                'chassis_number' => $input->vehicle->extra_attribute->chassis_number,
+                'coverage' => $input->vehicle->coverage,
+                'engine_capacity' => intval($vix->response->VehCC),
+                'engine_number' => $vix->response->VehEngineNo,
+                'expiry_date' => Carbon::parse($expiry_date)->format('d M Y'),
+                'inception_date' => Carbon::parse($inception_date)->format('d M Y'),
+                'make' => $input->vehicle->make ?? '',
+                'make_code' => intval($vix->response->VehMake),
+                'model' => $input->vehicle->model ?? '',
+                'model_code' => $input->vehicle->extra_attribute->model_code,
+                'manufacture_year' => intval($vix->response->VehMakeYear),
+                'max_sum_insured' => doubleval(self::MAX_SUM_INSURED),
+                'min_sum_insured' => doubleval(self::MIN_SUM_INSURED),
+                'sum_insured' => $sum_insured,
+                'sum_insured_type' => 'Market Value',
+                'ncd_percentage' => floatval($vix->response->NCDPct),
+                'seating_capacity' => intval($vix->response->VehSeat),
+                'variants' => $variants,
+                'vehicle_number' => $vix->response->VehRegNo,
+            ])
+        ];
     }
 
     public function quotation(object $input) : object
@@ -312,8 +279,6 @@ class ZurichTakaful implements InsurerLibraryInterface
         $participant_code = $this->participant_code;
         $transaction_ref_no = $input->transaction_ref_no;
         $request_datetime = $input->request_datetime;
-        $id = $input->id;
-        $VehNo = $input->VehNo;
         $signature = array(
             'request_datetime' => $request_datetime,
             'transaction_ref_no' => $transaction_ref_no,
@@ -336,62 +301,62 @@ class ZurichTakaful implements InsurerLibraryInterface
         //basic details
         $quotationNo = $input->quotationNo ?? '';
         $agent_code = $this->agent_code;
-        $trans_type = $input->trans_type;//'B';
-        $VehNo = $input->VehNo;//'WCA1451qwe';
-        $pre_VehNo = $input->pre_VehNo;//'';
-        $product_code = $input->product_code;//'PZ01';
-        $cover_type = $input->cover_type;//'V-CO';
-        $ci_code = $input->ci_code;//'MX1';
-        $eff_date = $input->eff_date;//'12/12/2022';
-        $exp_date = $input->exp_date;//'11/12/2023';
-        $new_owned_Veh_ind = $input->new_owned_Veh_ind;//'Y';
-        $VehReg_date = $input->VehReg_date;//'10/03/2016';
-        $ReconInd = $input->ReconInd;//'N';
-        $modcarInd = $input->modcarInd;//'Y';
-        $modperformanceaesthetic = $input->modperformanceaesthetic;//'0;2';
-        $modfunctional = $input->modfunctional;//'2;128';
-        $yearofmake = $input->yearofmake;//'2010';
-        $make = $input->make;//'11';
-        $model = $input->model;//'11*1030';
-        $capacity = $input->capacity;//'1497';
-        $uom = $input->uom;//'CC';
-        $engine_no = $input->engine_no;//'EWE323WS';
-        $chasis_no = $input->chasis_no;//'PM2L252S002107437';
-        $logbook_no = $input->logbook_no;//'ERTGRET253';
-        $reg_loc = $input->reg_loc;//'L';
-        $region_code = $input->region_code;//'W';
-        $no_of_passenger = $input->no_of_passenger;//'5';
-        $no_of_drivers = $input->no_of_drivers;//'1';
-        $ins_indicator = $input->ins_indicator;//'P';
-        $name = $input->name;//'TAN AI LING';
-        $ins_nationality = $input->ins_nationality;//'L';
-        $new_ic = $input->new_ic;//'530102-06-5226';
+        $trans_type = $input->trans_type;
+        $VehNo = $input->VehNo;
+        $pre_VehNo = $input->pre_VehNo;
+        $product_code = $input->product_code;
+        $cover_type = $input->cover_type;
+        $ci_code = $input->ci_code;
+        $eff_date = $input->eff_date;
+        $exp_date = $input->exp_date;
+        $new_owned_Veh_ind = $input->new_owned_Veh_ind;
+        $VehReg_date = $input->VehReg_date;
+        $ReconInd = $input->ReconInd;
+        $modcarInd = $input->modcarInd;
+        $modperformanceaesthetic = $input->modperformanceaesthetic;
+        $modfunctional = $input->modfunctional;
+        $yearofmake = $input->yearofmake;
+        $make = $input->make;
+        $model = $input->model;
+        $capacity = $input->capacity;
+        $uom = $input->uom;
+        $engine_no = $input->engine_no;
+        $chasis_no = $input->chasis_no;
+        $logbook_no = $input->logbook_no;
+        $reg_loc = $input->reg_loc;
+        $region_code = $input->region_code;
+        $no_of_passenger = $input->no_of_passenger;
+        $no_of_drivers = $input->no_of_drivers;
+        $ins_indicator = $input->ins_indicator;
+        $name = $input->name;
+        $ins_nationality = $input->ins_nationality;
+        $new_ic = $input->new_ic;
         $other_id = $input->other_id ?? '';
         if($new_ic == ''){
             if($other_id == ''){
                 return 'Others ID cannot be blank if New IC Number is blank';
             }
         }
-        $date_of_birth = $input->date_of_birth;//'22/12/1998';
-        $age = $input->age;//'27';
-        $gender = $input->gender;//'M';
-        $marital_sts = $input->marital_sts;//'M';
-        $occupation = $input->occupation;//'99';
-        $mobile_no = $input->mobile_no;//'012-3456789';
-        $off_ph_no = $input->off_ph_no;//'03-45678900';
-        $email = $input->email;//'zurich.api@gmail.com';
-        $address = $input->address;//'20, Jalan PJU, Taman A, Petaling Jaya';
-        $postcode = $input->postcode;//'50150';
-        $state = $input->state;//'06';
-        $country = $input->country;//'MAS';
-        $sum_insured = $input->sum_insured;//'290000.00';
-        $av_ind = $input->av_ind;//'N';
-        $vol_excess = $input->vol_excess;//'01';
-        $pac_ind = $input->pac_ind;//'N';
-        $all_driver_ind = $input->all_driver_ind;//'Y';
-        $abisi = $input->abisi;//'28000.00';
-        $chosen_si_type = $input->chosen_si_type;//'REC_SI';
-        $nationality = $input->nationality;//'MAS';
+        $date_of_birth = $input->date_of_birth;
+        $age = $input->age;
+        $gender = $input->gender;
+        $marital_sts = $input->marital_sts;
+        $occupation = $input->occupation;
+        $mobile_no = $input->mobile_no;
+        $off_ph_no = $input->off_ph_no;
+        $email = $input->email;
+        $address = $input->address;
+        $postcode = $input->postcode;
+        $state = $input->state;
+        $country = $input->country;
+        $sum_insured = $input->sum_insured;
+        $av_ind = $input->av_ind;
+        $vol_excess = $input->vol_excess;
+        $pac_ind = $input->pac_ind;
+        $all_driver_ind = $input->all_driver_ind;
+        $abisi = $input->abisi;
+        $chosen_si_type = $input->chosen_si_type;
+        $nationality = $input->nationality;
 
         $data["quotation_no"] = $quotationNo;
         $data["agent_code"] = $agent_code;
@@ -448,13 +413,13 @@ class ZurichTakaful implements InsurerLibraryInterface
         $data["nationality"] = $nationality;
 
         //motor extra cover details
-        $ext_cov_code = $input->ext_cov_code;//'101';
-        $unit_day = $input->unit_day;//'0';
-        $unit_amount = $input->unit_amount;//'0';
-        $ecd_eff_date = $input->ecd_eff_date;//'14/1/2017';
-        $ecd_exp_date = $input->ecd_exp_date;//'13/1/2018';
-        $ecd_sum_insured = $input->ecd_sum_insured;//'0';
-        $no_of_unit = $input->no_of_unit;//'1';
+        $ext_cov_code = $input->ext_cov_code;
+        $unit_day = $input->unit_day;
+        $unit_amount = $input->unit_amount;
+        $ecd_eff_date = $input->ecd_eff_date;
+        $ecd_exp_date = $input->ecd_exp_date;
+        $ecd_sum_insured = $input->ecd_sum_insured;
+        $no_of_unit = $input->no_of_unit;
 
         $data["ext_cov_code"] = $ext_cov_code;
         $data["unit_day"] = $unit_day;
@@ -465,8 +430,8 @@ class ZurichTakaful implements InsurerLibraryInterface
         $data["no_of_unit"] = $no_of_unit;
 
         //PAC extra cover details
-        $ecd_pac_code = $input->ecd_pac_code;//'R0075';
-        $ecd_pac_unit = $input->ecd_pac_unit;//'1';
+        $ecd_pac_code = $input->ecd_pac_code;
+        $ecd_pac_unit = $input->ecd_pac_unit;
 
         $data["ecd_pac_code"] = $ecd_pac_code;
         $data["ecd_pac_unit"] = $ecd_pac_unit;
@@ -477,80 +442,92 @@ class ZurichTakaful implements InsurerLibraryInterface
         $result = $this->cURL($path, $xml);
         if (!$result->status) {
             return $this->abort($result->response, $result->code);
-        }     
+        }
+
         $result_data = $result->response->CalculatePremiumResponse->XmlResult;
         $xml_data = simplexml_load_string($result_data);
         //respone
         $index = 0;
-        $response = [];
-        $response['PremiumDetails']['BasicPrem'] = $xml_data->PremiumDetails->BasicPrem;
-        $response['PremiumDetails']['LoadPct'] = $xml_data->PremiumDetails->LoadPct;
-        $response['PremiumDetails']['LoadAmt'] = $xml_data->PremiumDetails->LoadAmt;
-        $response['PremiumDetails']['TuitionLoadPct'] = $xml_data->PremiumDetails->TuitionLoadPct;
-        $response['PremiumDetails']['TuitionLoadAmt'] = $xml_data->PremiumDetails->TuitionLoadAmt;
-        $response['PremiumDetails']['AllRiderAmt'] = $xml_data->PremiumDetails->AllRiderAmt;
-        $response['PremiumDetails']['NCDAmt'] = $xml_data->PremiumDetails->NCDAmt;
-        $response['PremiumDetails']['VolExcessDiscPct'] = $xml_data->PremiumDetails->VolExcessDiscPct;
-        $response['PremiumDetails']['VolExcessDiscAmt'] = $xml_data->PremiumDetails->VolExcessDiscAmt;
-        $response['PremiumDetails']['TotBasicNetAmt'] = $xml_data->PremiumDetails->TotBasicNetAmt;
-        $response['PremiumDetails']['TotExtCoverPrem'] = $xml_data->PremiumDetails->TotExtCoverPrem;
-        $response['PremiumDetails']['RnwBonusPct'] = $xml_data->PremiumDetails->RnwBonusPct;
-        $response['PremiumDetails']['RnwBonusAmt'] = $xml_data->PremiumDetails->RnwBonusAmt;
-        $response['PremiumDetails']['GrossPrem'] = $xml_data->PremiumDetails->GrossPrem;
-        $response['PremiumDetails']['CommPct'] = $xml_data->PremiumDetails->CommPct;
-        $response['PremiumDetails']['CommAmt'] = $xml_data->PremiumDetails->CommAmt;
-        $response['PremiumDetails']['RebatePct'] = $xml_data->PremiumDetails->RebatePct;
-        $response['PremiumDetails']['RebateAmt'] = $xml_data->PremiumDetails->RebateAmt;
-        $response['PremiumDetails']['GST_Pct'] = $xml_data->PremiumDetails->GST_Pct;
-        $response['PremiumDetails']['GST_Amt'] = $xml_data->PremiumDetails->GST_Amt;
-        $response['PremiumDetails']['StampDutyAmt'] = $xml_data->PremiumDetails->StampDutyAmt;
-        $response['PremiumDetails']['TotMtrPrem'] = $xml_data->PremiumDetails->TotMtrPrem;
-        $response['PremiumDetails']['NettPrem'] = $xml_data->PremiumDetails->NettPrem;
-        $response['PremiumDetails']['BasicAnnualPrem'] = $xml_data->PremiumDetails->BasicAnnualPrem;
-        $response['PremiumDetails']['ActPrem'] = $xml_data->PremiumDetails->ActPrem;
-        $response['PremiumDetails']['NonActPrem'] = $xml_data->PremiumDetails->NonActPrem;
-        $response['PremiumDetails']['ExcessType'] = $xml_data->PremiumDetails->ExcessType;
-        $response['PremiumDetails']['ExcessAmt'] = $xml_data->PremiumDetails->ExcessAmt;
-        $response['PremiumDetails']['TotExcessAmt'] = $xml_data->PremiumDetails->TotExcessAmt;
-        $response['PremiumDetails']['PAC_SumInsured'] = $xml_data->PremiumDetails->PAC_SumInsured;
-        $response['PremiumDetails']['PAC_Prem'] = $xml_data->PremiumDetails->PAC_Prem;
-        $response['PremiumDetails']['PAC_AddPrem'] = $xml_data->PremiumDetails->PAC_AddPrem;
-        $response['PremiumDetails']['PAC_GrossPrem'] = $xml_data->PremiumDetails->PAC_GrossPrem;
-        $response['PremiumDetails']['PAC_GSTPct'] = $xml_data->PremiumDetails->PAC_GSTPct;
-        $response['PremiumDetails']['PAC_GSTAmt'] = $xml_data->PremiumDetails->PAC_GSTAmt;
-        $response['PremiumDetails']['PAC_StampDuty'] = $xml_data->PremiumDetails->PAC_StampDuty;
-        $response['PremiumDetails']['PAC_CommPct'] = $xml_data->PremiumDetails->PAC_CommPct;
-        $response['PremiumDetails']['PAC_CommAmt'] = $xml_data->PremiumDetails->PAC_CommAmt;
-        $response['PremiumDetails']['PAC_RebatePct'] = $xml_data->PremiumDetails->PAC_RebatePct;
-        $response['PremiumDetails']['PAC_RebateAmt'] = $xml_data->PremiumDetails->PAC_RebateAmt;
-        $response['PremiumDetails']['PAC_TotPrem'] = $xml_data->PremiumDetails->PAC_TotPrem;
-        $response['PremiumDetails']['PAC_NettPrem'] = $xml_data->PremiumDetails->PAC_NettPrem;
-        $response['PremiumDetails']['TtlPayablePremium'] = $xml_data->PremiumDetails->TtlPayablePremium;
-        $response['PremiumDetails']['GstOnCommAmt'] = $xml_data->PremiumDetails->GstOnCommAmt;
-        $response['PremiumDetails']['PAC_GstOnCommAmt'] = $xml_data->PremiumDetails->PAC_GstOnCommAmt;
-        $response['PremiumDetails']['Quote_Exp_Date'] = $xml_data->PremiumDetails->Quote_Exp_Date;
-        $response['PremiumDetails']['Chosen_Vehicle_SI_Lower_Bound'] = $xml_data->PremiumDetails->Chosen_Vehicle_SI_Lower_Bound;
-        $response['PremiumDetails']['Chosen_Vehicle_SI_Upper_Bound'] = $xml_data->PremiumDetails->Chosen_Vehicle_SI_Upper_Bound;
-        $response['PremiumDetails']['AV_SI_Value'] = $xml_data->PremiumDetails->AV_SI_Value;
-        $response['PremiumDetails']['Rec_SI_Value'] = $xml_data->PremiumDetails->Rec_SI_Value;
-        $response['PremiumDetails']['NCD_Pct'] = $xml_data->QuotationInfo->NCDPct;
+        $MotorExtraCoverDetails = [];
         foreach($xml_data->ExtraCoverData as $value){
-            $response['MotorExtraCoverDetails'][$index]['ExtCoverCode'] = (string)$value->ExtCoverCode;
-            $response['MotorExtraCoverDetails'][$index]['ExtCoverPrem'] = (string)$value->ExtCoverPrem;
-            $response['MotorExtraCoverDetails'][$index]['ExtCoverSumInsured'] = (string)$value->ExtCoverSumInsured;
-            $response['MotorExtraCoverDetails'][$index]['Compulsory_Ind'] = (string)$value->Compulsory_Ind;
-            $response['MotorExtraCoverDetails'][$index]['sequence'] = '';
+            $MotorExtraCoverDetails[$index]['ExtCoverCode'] = (string)$value->ExtCoverCode;
+            $MotorExtraCoverDetails[$index]['ExtCoverPrem'] = (string)$value->ExtCoverPrem;
+            $MotorExtraCoverDetails[$index]['ExtCoverSumInsured'] = (string)$value->ExtCoverSumInsured;
+            $MotorExtraCoverDetails[$index]['Compulsory_Ind'] = (string)$value->Compulsory_Ind;
+            $MotorExtraCoverDetails[$index]['sequence'] = '';
             $index++;
         }
-        $response['ReferralDetails']['ReferralCode'] = $xml_data->ReferralData->Referral_Decline_Code;
-        $response['ReferralDetails']['ReferralMessage'] = $xml_data->ReferralData->Referral_Message;
-        $response['ErrorDetails']['ErrorCode'] = $xml_data->Error_Display->Error_Code;
-        $response['ErrorDetails']['ErrorDesc'] = $xml_data->Error_Display->Error_Desc;
-        $response['ErrorDetails']['Remarks'] = $xml_data->Error_Display->Remarks;
-        $response['ErrorDetails']['WarningInd'] = $xml_data->Error_Display->Warning_Ind;
-        $response['QuotationInfo']['QuotationNo'] = $xml_data->QuotationInfo->QuotationNo;
-        $response['QuotationInfo']['NCDMsg'] = $xml_data->QuotationInfo->NCDMsg;
-        $response['QuotationInfo']['NCDPct'] = $xml_data->QuotationInfo->NCDPct;
+        $response = (object)[
+            'PremiumDetails' => [
+                'BasicPrem' => $xml_data->PremiumDetails->BasicPrem,
+                'LoadPct' => $xml_data->PremiumDetails->LoadPct,
+                'LoadAmt' => $xml_data->PremiumDetails->LoadAmt,
+                'TuitionLoadPct' => $xml_data->PremiumDetails->TuitionLoadPct,
+                'TuitionLoadAmt' => $xml_data->PremiumDetails->TuitionLoadAmt,
+                'AllRiderAmt' => $xml_data->PremiumDetails->AllRiderAmt,
+                'NCDAmt' => $xml_data->PremiumDetails->NCDAmt,
+                'VolExcessDiscPct' => $xml_data->PremiumDetails->VolExcessDiscPct,
+                'VolExcessDiscAmt' => $xml_data->PremiumDetails->VolExcessDiscAmt,
+                'TotBasicNetAmt' => $xml_data->PremiumDetails->TotBasicNetAmt,
+                'TotExtCoverPrem' => $xml_data->PremiumDetails->TotExtCoverPrem,
+                'RnwBonusPct' => $xml_data->PremiumDetails->RnwBonusPct,
+                'RnwBonusAmt' => $xml_data->PremiumDetails->RnwBonusAmt,
+                'GrossPrem' => $xml_data->PremiumDetails->GrossPrem,
+                'CommPct' => $xml_data->PremiumDetails->CommPct,
+                'CommAmt' => $xml_data->PremiumDetails->CommAmt,
+                'RebatePct' => $xml_data->PremiumDetails->RebatePct,
+                'RebateAmt' => $xml_data->PremiumDetails->RebateAmt,
+                'GST_Pct' => $xml_data->PremiumDetails->GST_Pct,
+                'GST_Amt' => $xml_data->PremiumDetails->GST_Amt,
+                'StampDutyAmt' => $xml_data->PremiumDetails->StampDutyAmt,
+                'TotMtrPrem' => $xml_data->PremiumDetails->TotMtrPrem,
+                'NettPrem' => $xml_data->PremiumDetails->NettPrem,
+                'BasicAnnualPrem' => $xml_data->PremiumDetails->BasicAnnualPrem,
+                'ActPrem' => $xml_data->PremiumDetails->ActPrem,
+                'NonActPrem' => $xml_data->PremiumDetails->NonActPrem,
+                'ExcessType' => $xml_data->PremiumDetails->ExcessType,
+                'ExcessAmt' => $xml_data->PremiumDetails->ExcessAmt,
+                'TotExcessAmt' => $xml_data->PremiumDetails->TotExcessAmt,
+                'PAC_SumInsured' => $xml_data->PremiumDetails->PAC_SumInsured,
+                'PAC_Prem' => $xml_data->PremiumDetails->PAC_Prem,
+                'PAC_AddPrem' => $xml_data->PremiumDetails->PAC_AddPrem,
+                'PAC_GrossPrem' => $xml_data->PremiumDetails->PAC_GrossPrem,
+                'PAC_GSTPct' => $xml_data->PremiumDetails->PAC_GSTPct,
+                'PAC_GSTAmt' => $xml_data->PremiumDetails->PAC_GSTAmt,
+                'PAC_StampDuty' => $xml_data->PremiumDetails->PAC_StampDuty,
+                'PAC_CommPct' => $xml_data->PremiumDetails->PAC_CommPct,
+                'PAC_CommAmt' => $xml_data->PremiumDetails->PAC_CommAmt,
+                'PAC_RebatePct' => $xml_data->PremiumDetails->PAC_RebatePct,
+                'PAC_RebateAmt' => $xml_data->PremiumDetails->PAC_RebateAmt,
+                'PAC_TotPrem' => $xml_data->PremiumDetails->PAC_TotPrem,
+                'PAC_NettPrem' => $xml_data->PremiumDetails->PAC_NettPrem,
+                'TtlPayablePremium' => $xml_data->PremiumDetails->TtlPayablePremium,
+                'GstOnCommAmt' => $xml_data->PremiumDetails->GstOnCommAmt,
+                'PAC_GstOnCommAmt' => $xml_data->PremiumDetails->PAC_GstOnCommAmt,
+                'Quote_Exp_Date' => $xml_data->PremiumDetails->Quote_Exp_Date,
+                'Chosen_Vehicle_SI_Lower_Bound' => $xml_data->PremiumDetails->Chosen_Vehicle_SI_Lower_Bound,
+                'Chosen_Vehicle_SI_Upper_Bound' => $xml_data->PremiumDetails->Chosen_Vehicle_SI_Upper_Bound,
+                'AV_SI_Value' => $xml_data->PremiumDetails->AV_SI_Value,
+                'Rec_SI_Value' => $xml_data->PremiumDetails->Rec_SI_Value,
+                'NCD_Pct' => $xml_data->QuotationInfo->NCDPct,
+            ],
+            'MotorExtraCoverDetails' => $MotorExtraCoverDetails,
+            'ReferralDetails' => [
+                'ReferralCode' => $xml_data->ReferralData->Referral_Decline_Code,
+                'ReferralMessage' => $xml_data->ReferralData->Referral_Message,
+            ],
+            'ErrorDetails' => [
+                'ErrorCode' => $xml_data->Error_Display->Error_Code,
+                'ErrorDesc' => $xml_data->Error_Display->Error_Desc,
+                'Remarks' => $xml_data->Error_Display->Remarks,
+                'WarningInd' => $xml_data->Error_Display->Warning_Ind,
+            ],
+            'QuotationInfo' => [
+                'QuotationNo' => $xml_data->QuotationInfo->QuotationNo,
+                'NCDMsg' => $xml_data->QuotationInfo->NCDMsg,
+                'NCDPct' => $xml_data->QuotationInfo->NCDPct,
+            ]
+        ];
         
         return new ResponseData([
             'response' => (object)$response
@@ -877,79 +854,92 @@ class ZurichTakaful implements InsurerLibraryInterface
 
     public function premiumDetails(object $input, $full_quote = false) : object
     {
-        // dd($input);
+        $vehicle_vix = $this->vehicleDetails($input);
+        $dobs = str_split($input->id_number, 2);
+        $id_number = $dobs[0] . $dobs[1] . $dobs[2] . "-" . $dobs[3] .  "-" . $dobs[4] . $dobs[5];
+        $year = intval($dobs[0]);
+		if ($year >= 10) {
+			$year += 1900;
+		} else {
+			$year += 2000;
+		}
+		$dob = $dobs[2] . "-" . $dobs[1] . "-" . strval($year);
+        $region = '';
+        if($input->region == 'West'){
+            $region = 'W';
+        }
+        else if($input->region == 'East'){
+            $region = 'E';
+        }
         $quotation = (object)[
-            'request_datetime' => "2017-Mar-17 11:00:00 PM",        
-            'transaction_ref_no' => "020000008",
-            'id' => "850321-07-5179",
-            // 'VehNo' => "WA823H",
-            'VehNo' => "WCA1451qwe",
+            'request_datetime' => Carbon::now()->format('Y/M/d h:i:s A'),
+            'transaction_ref_no' => $this->participant_code."0000008",//
+            'VehNo' => $input->vehicle_number,
             'getmail' => [
                 'support@zurich.com.my',
                 'noreply@zurich.com.my',
             ],
             'quotationNo' => '',
             'trans_type' => 'B',
-            'pre_VehNo' => '',
+            'pre_VehNo' => $vehicle_vix->response->vehicle_number,
             'product_code' => 'PZ01',
             'cover_type' => 'V-CO',
             'ci_code' => 'MX1',
-            'eff_date' => '13/12/2022',
-            'exp_date' => '12/12/2023',
-            'new_owned_Veh_ind' => 'Y',
+            'eff_date' => Carbon::parse($vehicle_vix->response->inception_date)->format('d/m/Y') ?? Carbon::now()->format('d/m/Y'),
+            'exp_date' => Carbon::parse($vehicle_vix->response->expiry_date)->format('d/m/Y') ?? Carbon::now()->addYear()->subDay()->format('d/m/Y'),
+            'new_owned_Veh_ind' => '',
             'VehReg_date' => '10/03/2016',
-            'ReconInd' => 'N',
+            'ReconInd' => '',
             'modcarInd' => 'Y',
-            'modperformanceaesthetic' => '0,2',
-            'modfunctional' => '2,128',
-            'yearofmake' => '2010',
-            'make' => '11',
-            'model' => '11*1030',
-            'capacity' => '1497',
-            'uom' => 'CC',
-            'engine_no' => 'EWE323WS',
-            'chasis_no' => 'PM2L252S002107437',
-            'logbook_no' => 'ERTGRET253',
+            'modperformanceaesthetic' => '0;2',
+            'modfunctional' => '2;128',
+            'yearofmake' => $vehicle_vix->response->manufacture_year,
+            'make' => $vehicle_vix->response->make_code,
+            'model' => $vehicle_vix->veh_model_code,
+            'capacity' => $vehicle_vix->response->engine_capacity,
+            'uom' => $vehicle_vix->veh_model_code,
+            'engine_no' => $vehicle_vix->response->engine_number,
+            'chasis_no' => $vehicle_vix->response->chassis_number,
+            'logbook_no' => '',
             'reg_loc' => 'L',
-            'region_code' => 'W',
-            'no_of_passenger' => '5',
+            'region_code' => $region,
+            'no_of_passenger' => $vehicle_vix->response->seating_capacity,
             'no_of_drivers' => '1',
             'ins_indicator' => 'P',
-            'name' => 'TAN AI LING',
+            'name' => $input->name ?? 'TAN AI LING',
             'ins_nationality' => 'L',
-            'new_ic' => '530102-06-5226',
-            'other_id' ?? '',
-            'date_of_birth' => '22/12/1998',
-            'age' => '27',
-            'gender' => 'M',
-            'marital_sts' => 'M',
-            'occupation' => '99',
-            'mobile_no' => '012-3456789',
-            'off_ph_no' => '03-45678900',
-            'email' => 'zurich.api@gmail.com',
-            'address' => '20, Jalan PJU, Taman A, Petaling Jaya',
-            'postcode' => '50150',
-            'state' => '06',
+            'new_ic' => $id_number,
+            'other_id' => '',
+            'date_of_birth' => $dob,
+            'age' => $input->age,
+            'gender' => $input->gender,
+            'marital_sts' => $input->marital_status,
+            'occupation' => self::OCCUPATION,
+            'mobile_no' => $input->phone_number,
+            'off_ph_no' => '',
+            'email' => $input->email,
+            'address' => $input->address_one . $input->address_two,
+            'postcode' => $input->postcode,
+            'state' => $this->getStateCode($input->state),
             'country' => 'MAS',
-            'sum_insured' => '290000.00',
+            'sum_insured' => $vehicle_vix->response->sum_insured,
             'av_ind' => 'N',
-            'vol_excess' => '01',
+            'vol_excess' => '',
             'pac_ind' => 'N',
             'all_driver_ind' => 'Y',
-            'abisi' => '28000.00',
+            'abisi' => '25000.00',
             'chosen_si_type' => 'REC_SI',
             'nationality' => 'MAS',
             'ext_cov_code' => '101',
-            'unit_day' => '0',
-            'unit_amount' => '0',
-            'ecd_eff_date' => '14/1/2017',
+            'unit_day' => '7',
+            'unit_amount' => '50',
+            'ecd_eff_date' => '14/1/2017 ',
             'ecd_exp_date' => '13/1/2018',
-            'ecd_sum_insured' => '0',
+            'ecd_sum_insured' => '3000',
             'no_of_unit' => '1',
             'ecd_pac_code' => 'R0075',
             'ecd_pac_unit' => '1',
         ];
-        
         $premium = $this->quotation($quotation);
 
         $extra_cover_list = [];
@@ -971,7 +961,10 @@ class ZurichTakaful implements InsurerLibraryInterface
                 case '03': 
                 case '06': 
                 case '07': 
-                case '101': 
+                case '101': {
+                    $sum_insured_amount = $vehicle_vix->response->sum_insured;
+                    break;
+                }
                 case '103': 
                 case '108': 
                 case '109':
@@ -1000,15 +993,15 @@ class ZurichTakaful implements InsurerLibraryInterface
         $input->extra_cover = $extra_cover_list;
         $total_benefit_amount = 0;
 
-        if(!empty($premium->response->extra_coverage)) {
+        if(!empty($premium->response->MotorExtraCoverDetails)) {
             foreach($input->extra_cover as $extra_cover) {
-                foreach($premium->response->extra_coverage as $extra) {
-                    if((string) $extra->ExtCoverCode === $extra_cover->extra_cover_code) {
-                        $extra_cover->premium = formatNumber((float) $extra->ExtCoverPrem);
-                        $total_benefit_amount += (float) $extra->ExtCoverPrem;
+                foreach($premium->response->MotorExtraCoverDetails as $extra) {
+                    if((string) $extra['ExtCoverCode'] === $extra_cover->extra_cover_code) {
+                        $extra_cover->ExtCoverPrem = formatNumber((float) $extra['ExtCoverPrem']);
+                        $total_benefit_amount += (float) $extra['ExtCoverPrem'];
     
-                        if(!empty($extra->ExtCoverSumInsured)) {
-                            $extra_cover->sum_insured = formatNumber((float) $extra->ExtCoverSumInsured);
+                        if(!empty($extra['ExtCoverSumInsured'])) {
+                            $extra_cover->sum_insured = formatNumber((float) $extra['ExtCoverSumInsured']);
                         }
                     }
                 }
@@ -1020,21 +1013,18 @@ class ZurichTakaful implements InsurerLibraryInterface
             'basic_premium' => formatNumber($premium_data['BasicPrem']),
             // 'detariff' => $premium_data->detariff,
             // 'detariff_premium' => formatNumber($premium_data->detariff_premium),
-            // 'discount' => formatNumber($premium_data->discount),
-            // 'discount_amount' => formatNumber($premium_data->discount_amount),
+            'discount' => formatNumber($premium_data['VolExcessDiscPct']),
+            'discount_amount' => formatNumber($premium_data['VolExcessDiscAmt']),
             'excess_amount' => formatNumber($premium_data['ExcessAmt']),
             'extra_cover' => $this->sortExtraCoverList($input->extra_cover),
             'gross_premium' => formatNumber($premium_data['GrossPrem']),
             'loading' => formatNumber($premium_data['LoadAmt']),
             'ncd_amount' => formatNumber($premium_data['NCDAmt']),
             'net_premium' => formatNumber($premium_data['NettPrem'] + $premium_data['GST_Amt'] + $premium_data['StampDutyAmt']),
-            'sum_insured' => formatNumber($premium_data['sum_insured'] ?? 0),
-            // 'min_sum_insured' => formatNumber($vehicle_vix->response->min_sum_insured ?? $vehicle->min_sum_insured),
-            // 'max_sum_insured' => formatNumber($vehicle_vix->response->max_sum_insured ?? $vehicle->max_sum_insured),
-            // 'sum_insured_type' => $vehicle->sum_insured_type,
-            'min_sum_insured' => formatNumber(0),
-            'max_sum_insured' => formatNumber(0),
-            'sum_insured_type' => '',
+            'sum_insured' => formatNumber($vehicle_vix->response->sum_insured ?? 0),
+            'min_sum_insured' => formatNumber($vehicle_vix->response->min_sum_insured),
+            'max_sum_insured' => formatNumber($vehicle_vix->response->max_sum_insured),
+            'sum_insured_type' => $vehicle_vix->response->sum_insured_type,
             'sst_amount' => formatNumber($premium_data['GST_Amt']),
             'sst_percent' => formatNumber(ceil(($premium_data['GST_Amt'] / $premium_data['GrossPrem']) * 100)),
             'stamp_duty' => formatNumber($premium_data['StampDutyAmt']),
@@ -1252,6 +1242,487 @@ class ZurichTakaful implements InsurerLibraryInterface
         return $sorted;
     }
 
+    private function getStateCode(string $state)
+    {
+        $code = '';
+
+        switch($state) {
+            case 'Perlis':{
+                $code = '01';
+                break;
+            }
+            case 'Kedah':{
+                $code = '02';
+                break;
+            }
+            case 'Pulau Pinang': {
+                $code = '03';
+                break;
+            }
+            case 'Perak':{
+                $code = '04';
+                break;
+            }
+            case 'Selangor':{
+                $code = '05';
+                break;
+            }
+            case 'Wilayah Persekutuan Kuala Lumpur': {
+                $code = '06';
+                break;
+            }
+            case 'Johor':{
+                $code = '07';
+                break;
+            }
+            case 'Melaka':{
+                $code = '08';
+                break;
+            }
+            case 'Negeri Sembilan': {
+                $code = '09';
+                break;
+            }
+            case 'Pahang':{
+                $code = '10';
+                break;
+            }
+            case 'Terengganu': {
+                $code = '11';
+                break;
+            }
+            case 'Kelantan':{
+                $code = '12';
+                break;
+            }
+            case 'Sabah':{
+                $code = '13';
+                break;
+            }
+            case 'Sarawak':{
+                $code = '14';
+                break;
+            }
+            case 'Wilayah Persekutuan Labuan': {
+                $code = '15';
+                break;
+            }
+            case 'Wilayah Persekutuan Putrajaya': {
+                $code = '16';
+                break;
+            }
+        }
+        return $code;
+    }
+
+    private function body_type_code(string $body_type)
+    {
+        $code = '';
+        switch($body_type) {
+            case 'FOUR WHEEL DRIVE':{
+                $code = '1';
+                break;
+            }
+            case 'AEROBACK':{
+                $code = '2';
+                break;
+            }
+            case 'AGRICULTURAL':{
+                $code = '3';
+                break;
+            }
+            case 'AMBULANCE':{
+                $code = '4';
+                break;
+            }
+            case 'ALUMINIUM WITH ALUMINIUM ROOF':{
+                $code = '5';
+                break;
+            }
+            case 'BULLDOZER':{
+                $code = '6';
+                break;
+            }
+            case 'BACKHOE LOADER':{
+                $code = '7';
+                break;
+            }
+            case 'BUS':{
+                $code = '8';
+                break;
+            }
+            case 'BOX VAN':{
+                $code = '9';
+                break;
+            }
+            case 'CREW/DCAB PICKUP':{
+                $code = '10';
+                break;
+            }
+            case 'CASE':{
+                $code = '11';
+                break;
+            }
+            case 'CABRIOLET':{
+                $code = '12';
+                break;
+            }
+            case 'C/CHAS':{
+                $code = '13';
+                break;
+            }
+            case 'CONCRETE MIXER':{
+                $code = '14';
+                break;
+            }
+            case 'COMEL':{
+                $code = '15';
+                break;
+            }
+            case 'COUPE':{
+                $code = '16';
+                break;
+            }
+            case 'COMPACTOR':{
+                $code = '17';
+                break;
+            }
+            case 'CARGO':{
+                $code = '18';
+                break;
+            }
+            case 'MOBILE CRANE':{
+                $code = '19';
+                break;
+            }
+            case 'CARAVAN':{
+                $code = '20';
+                break;
+            }
+            case 'CATERPILLAR':{
+                $code = '21';
+                break;
+            }
+            case '2D CONVERTIBLE':{
+                $code = '22';
+                break;
+            }
+            case 'CANVAS TOP':{
+                $code = '23';
+                break;
+            }
+            case 'MOTORCYCLE':{
+                $code = '24';
+                break;
+            }
+            case 'DUAL CAB PICKUP':{
+                $code = '25';
+                break;
+            }
+            case '4D DOUBLE CAB PICK UP':{
+                $code = '26';
+                break;
+            }
+            case '3D HATCHBACK':{
+                $code = '27';
+                break;
+            }
+            case 'DUMPER TIPPER':{
+                $code = '28';
+                break;
+            }
+            case 'EXCAVATOR':{
+                $code = '29';
+                break;
+            }
+            case '4D CONVERTIBLE':{
+                $code = '30';
+                break;
+            }
+            case '4D HATCHBACK':{
+                $code = '31';
+                break;
+            }
+            case '4D COUPE':{
+                $code = '32';
+                break;
+            }
+            case '4D 4D SEDAN':{
+                $code = '33';
+                break;
+            }
+            case '5D HATCHBACK':{
+                $code = '34';
+                break;
+            }
+            case '4D VAN':{
+                $code = '35';
+                break;
+            }
+            case '4D 4D WAGON':{
+                $code = '36';
+                break;
+            }
+            case 'FORKLIFT':{
+                $code = '37';
+                break;
+            }
+            case 'FIRE BRIGADE':{
+                $code = '38';
+                break;
+            }
+            case 'GRAB LOADER':{
+                $code = '39';
+                break;
+            }
+            case 'HARD TOP':{
+                $code = '40';
+                break;
+            }
+            case 'HEARSES':{
+                $code = '41';
+                break;
+            }
+            case 'HATCHBACK':{
+                $code = '42';
+                break;
+            }
+            case 'HYDRAULIC':{
+                $code = '43';
+                break;
+            }
+            case 'JEEP':{
+                $code = '44';
+                break;
+            }
+            case 'LIFTBACK':{
+                $code = '45';
+                break;
+            }
+            case 'LIMOUSINE':{
+                $code = '46';
+                break;
+            }
+            case 'LORRY':{
+                $code = '47';
+                break;
+            }
+            case 'LUTON VAN':{
+                $code = '48';
+                break;
+            }
+            case 'LORRY WITH CRANE':{
+                $code = '49';
+                break;
+            }
+            case 'MOBILE AERIAL PLATFORM':{
+                $code = '50';
+                break;
+            }
+            case 'MOBILE SHOPS AND CANTEENS':{
+                $code = '51';
+                break;
+            }
+            case 'MOBILE PLANT':{
+                $code = '52';
+                break;
+            }
+            case 'MOBILE CONCRETE PUMP':{
+                $code = '53';
+                break;
+            }
+            case 'MPV':{
+                $code = '54';
+                break;
+            }
+            case 'MOTORCYCLE SIDE CAR':{
+                $code = '55';
+                break;
+            }
+            case 'MOTOR GRADER':{
+                $code = '56';
+                break;
+            }
+            case 'MOTOR TRADE':{
+                $code = '57';
+                break;
+            }
+            case 'JEEP':{
+                $code = '58';
+                break;
+            }
+            case 'NAKED':{
+                $code = '59';
+                break;
+            }
+            case 'PICK-UP':{
+                $code = '60';
+                break;
+            }
+            case 'PANEL VAN':{
+                $code = '61';
+                break;
+            }
+            case 'PRIME MOVER':{
+                $code = '62';
+                break;
+            }
+            case 'REFRIGERATOR':{
+                $code = '63';
+                break;
+            }
+            case 'REFRIGERATED BOX':{
+                $code = '64';
+                break;
+            }
+            case 'ROAD PAVER':{
+                $code = '65';
+                break;
+            }
+            case 'ROAD ROLLER':{
+                $code = '66';
+                break;
+            }
+            case 'ROAD SWEEPER':{
+                $code = '67';
+                break;
+            }
+            case 'STEEL WITH ALUMINIUM ROOF':{
+                $code = '68';
+                break;
+            }
+            case '4D SINGLE CAB PICK-UP':{
+                $code = '69';
+                break;
+            }
+            case 'MOTORCYCLE SIDE-CAR':{
+                $code = '70';
+                break;
+            }
+            case 'SEDAN':{
+                $code = '71';
+                break;
+            }
+            case 'SOFTTOP':{
+                $code = '72';
+                break;
+            }
+            case '2D SINGLE CAB PICK UP':{
+                $code = '73';
+                break;
+            }
+            case 'SKY MASTER / SKYLIFT':{
+                $code = '74';
+                break;
+            }
+            case 'SALOON':{
+                $code = '75';
+                break;
+            }
+            case 'SEMI TRAILER LOW LOADER':{
+                $code = '76';
+                break;
+            }
+            case 'SPORT':{
+                $code = '77';
+                break;
+            }
+            case 'SEMI PANEL VAN':{
+                $code = '78';
+                break;
+            }
+            case 'STEEL TIPPER':{
+                $code = '79';
+                break;
+            }
+            case 'STEEL TRAY':{
+                $code = '80';
+                break;
+            }
+            case 'STATIONWAGON':{
+                $code = '81';
+                break;
+            }
+            case 'SPORT UTILITY VEHICLE':{
+                $code = '82';
+                break;
+            }
+            case 'SHOVEL':{
+                $code = '83';
+                break;
+            }
+            case 'STATIONWAGON':{
+                $code = '84';
+                break;
+            }
+            case 'TAXI':{
+                $code = '85';
+                break;
+            }
+            case '2D ROADSTER':{
+                $code = '86';
+                break;
+            }
+            case '3D VAN':{
+                $code = '87';
+                break;
+            }
+            case 'TANKER':{
+                $code = '88';
+                break;
+            }
+            case 'TRUCK':{
+                $code = '89';
+                break;
+            }
+            case 'TRAILER':{
+                $code = '90';
+                break;
+            }
+            case 'TRACTOR':{
+                $code = '91';
+                break;
+            }
+            case 'TOWING TRUCK':{
+                $code = '92';
+                break;
+            }
+            case 'VAN':{
+                $code = '93';
+                break;
+            }
+            case 'WOODEN CARGO':{
+                $code = '94';
+                break;
+            }
+            case 'WOODEN TIPPER':{
+                $code = '95';
+                break;
+            }
+            case 'WOOD TRAY':{
+                $code = '96';
+                break;
+            }
+            case 'WINDOW VAN':{
+                $code = '97';
+                break;
+            }
+            case 'WAGON':{
+                $code = '98';
+                break;
+            }
+            case 'WHEEL / CRAWLER':{
+                $code = '99';
+                break;
+            }
+            case 'WOOD WITH ALUMINIUM ROOF':{
+                $code = '100';
+                break;
+            }
+        }
+        return $code;
+    }
+
     public function submission(object $input) : object
     {
 
@@ -1266,12 +1737,13 @@ class ZurichTakaful implements InsurerLibraryInterface
         ]);
     }
 
-    private function getVIXNCD(object $input) : ResponseData
+    private function getVIXNCD(array $input) : ResponseData
     {
         $path = 'GetVehicleInfo';
-        $request_datetime = $input->request_datetime;
-        $id = $input->id;
-        $VehNo = $input->VehNo;
+        $request_datetime = Carbon::now()->format('Y-M-d h:i:s A');
+        $dobs = str_split($input['id_number'], 2);
+        $id = $dobs[0] . $dobs[1] . $dobs[2] . "-" . $dobs[3] .  "-" . $dobs[4] . $dobs[5];
+        $VehNo = $input['vehicle_number'];
         $signature = array(
             'request_datetime' => $request_datetime,
             'id' => $id,
@@ -1328,7 +1800,10 @@ class ZurichTakaful implements InsurerLibraryInterface
             'NCDStatus' => (string) $result_data->NCDStatus,
             'RespCode' => (string) $result_data->RespCode,
             'Error' => $error,
-            'ISMNCDRespCode' => (string) $result_data->ISMNCDRespCode
+            'ISMNCDRespCode' => (string) $result_data->ISMNCDRespCode,
+            'ISMVIXRespCode' => (string) $result_data->ISMVIXRespCode,
+            'NxtPolEffDate' => (string) $result_data->NxtPolEffDate,
+            'NxtPolExpDate' => (string) $result_data->NxtPolExpDate,
         ];
 
         return new ResponseData([
