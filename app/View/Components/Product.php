@@ -6,7 +6,6 @@ use Illuminate\View\Component;
 
 class Product extends Component
 {
-    public $url;
     public $imagePath;
     public $name;
     public $alt;
@@ -17,9 +16,8 @@ class Product extends Component
      *
      * @return void
      */
-    public function __construct(string $url, string $imagePath, string $name, string $alt = null, int $height = 50)
+    public function __construct(string $imagePath, string $name, string $alt = null, int $height = 50)
     {
-        $this->url = $url;
         $this->imagePath = $imagePath;
         $this->name = $name;
         $this->alt = $alt ?? $name;

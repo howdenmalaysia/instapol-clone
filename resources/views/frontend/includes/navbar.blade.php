@@ -41,7 +41,7 @@
                     <a href="{{ route('instapol_blog') }}" class="nav-link">{{ __('frontend.navbar.blog') }}</a>
                 </li>
                 <li class="nav-item">
-                    <a href="" class="nav-link">{{ __('frontend.navbar.login') }}</a>
+                    <a href="{{ route('dashboard') }}" class="nav-link">{{ __('frontend.navbar.login') }}</a>
                 </li>
             </ul>
         </div>

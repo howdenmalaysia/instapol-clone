@@ -16,20 +16,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
-Route::middleware([
-    'auth:sanctum',
-    config('jetstream.auth_session'),
-    'verified'
-])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
-});
-
 Route::middleware(['web'])->group(function() {
     // General Routes
     Route::get('/', [HomeController::class, 'index'])->name('frontend.index');
@@ -76,4 +62,9 @@ Route::get('/test', function () {
 Route::middleware(['web'])->group(function() {
     Route::redirect('/howden', 'https://www.howdengroup.com/my-en')->name('howden_website');
     Route::redirect('/blog', 'https://blog.instapol.my/')->name('instapol_blog');
+    Route::redirect('/login', 'https://howden-account-dev.instapol.my')->name('dashboard');
+    Route::redirect('/motor-extended', config('setting.redirects.motor_extended'));
+    Route::redirect('/bike', config('setting.redirects.bicycle'));
+    Route::redirect('/travel', config('setting.redirects.travel'));
+    Route::redirect('/doc-pro', config('setting.redirects.doc_pro'));
 });

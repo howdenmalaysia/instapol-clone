@@ -14,21 +14,23 @@
                             <div class="col-xl-11 col-12">
                                 <div class="card ps-3 text-center shadow rounded">
                                     <div class="row">
-                                        <div class="col d-flex align-items-center">
-                                            <x-product url="{{ route('motor.index') }}" :image-path="asset('images/icons/motor.png')" :alt="__('frontend.products.motor')" :name="__('frontend.products.motor')" />
-                                        </div>
-                                        <div class="col d-flex align-items-center">
-                                            <x-product url="{{ config('setting.redirects.motor_extended') }}" :image-path="asset('images/icons/extended-motor.png')" :alt="__('frontend.products.motor_extended')" :name="__('frontend.products.motor_extended')" />
-                                        </div>
-                                        <div class="col d-flex align-items-center">
-                                            <x-product url="{{ config('setting.redirects.bicycle') }}" :image-path="asset('images/icons/bicycle.png')" :alt="__('frontend.products.bicycle')" :name="__('frontend.products.bicycle')" />
-                                        </div>
-                                        <div class="col d-flex align-items-center">
-                                            <x-product url="{{ config('setting.redirects.travel') }}" :image-path="asset('images/icons/travel.png')" :alt="__('frontend.products.travel')" :name="__('frontend.products.travel')" />
-                                        </div>
-                                        <div class="col d-flex align-items-center">
-                                            <x-product url="{{ config('setting.redirects.doc_pro') }}" :image-path="asset('images/icons/doc-pro.png')" :alt="__('frontend.products.doc_pro')" :name="__('frontend.products.doc_pro')" />
-                                        </div>
+                                        <a href="{{ route('motor.index') }}" class="col d-flex align-items-center text-decoration-none">
+                                            <x-product :image-path="asset('images/icons/motor.png')" :alt="__('frontend.products.motor')" :name="__('frontend.products.motor')" />
+                                        </a>
+                                        
+                                        <a href="/motor-extended" class="col d-flex align-items-center text-decoration-none">
+                                            <x-product :image-path="asset('images/icons/extended-motor.png')" :alt="__('frontend.products.motor_extended')" :name="__('frontend.products.motor_extended')" />
+                                        </a>
+                                        <a href="/bike" class="col d-flex align-items-center text-decoration-none">
+                                            <x-product :image-path="asset('images/icons/bicycle.png')" :alt="__('frontend.products.bicycle')" :name="__('frontend.products.bicycle')" />
+                                        </a>
+                                        <a href="/travel" class="col d-flex align-items-center text-decoration-none">
+                                            <x-product :image-path="asset('images/icons/travel.png')" :alt="__('frontend.products.travel')" :name="__('frontend.products.travel')" />
+                                        </a>
+                                        <a href="/doc-pro" class="col d-flex align-items-center text-decoration-none">
+                                            <x-product :image-path="asset('images/icons/doc-pro.png')" :alt="__('frontend.products.doc_pro')" :name="__('frontend.products.doc_pro')" />
+                                        </a>
+
                                         <div class="col-4 p-0">
                                             <img src="{{ asset('images/MyTenang.jpg') }}" alt="MyTenang" class="img rounded-end tenang">
                                         </div>
