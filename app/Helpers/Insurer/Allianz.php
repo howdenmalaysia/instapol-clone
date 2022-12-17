@@ -2,7 +2,11 @@
 
 namespace App\Helpers\Insurer;
 
+use App\DataTransferObjects\Motor\ExtraCover;
+use App\DataTransferObjects\Motor\VariantData;
 use App\DataTransferObjects\Motor\Response\ResponseData;
+use App\DataTransferObjects\Motor\Response\PremiumResponse;
+use App\DataTransferObjects\Motor\Response\VIXNCDResponse;
 use App\Helpers\HttpClient;
 use App\Interfaces\InsurerLibraryInterface;
 use App\Models\APILogs;
@@ -24,6 +28,9 @@ class Allianz implements InsurerLibraryInterface
 
 	private string $username;
 	private string $password;
+    private const MIN_SUM_INSURED = 10000;
+    private const MAX_SUM_INSURED = 500000;
+    private const OCCUPATION = '99';
 
 	public function __construct(int $insurer_id, string $insurer_name)
     {
@@ -57,29 +64,92 @@ class Allianz implements InsurerLibraryInterface
 
     public function vehicleDetails(object $input) : object
     {
-		$source_system = $input->source_system;
-		$vehicle_license_id = $input->vehicle_license_id;
-		$identity_type = $input->identity_type;
-		$identity_number = $input->identity_number;
-		$check_ubb_ind = intval($input->check_ubb_ind);
-		$postal_code = $input->postal_code;
-        $text = '{
-            "sourceSystem": "'.$source_system.'",
-            "vehicleLicenseId": "'.$vehicle_license_id.'",
-            "identityType": "'.$identity_type.'",
-            "identityNumber": "'.$identity_number.'",
-            "checkUbbInd": '.$check_ubb_ind.',
-            "postalCode": "'.$postal_code.'"
-        }';
-        $result = $this->cURL("getData", "/vehicleDetails", $text);
+        $data = (object)[
+            'id_type' => $input->id_type,
+            'id_number' => $input->id_number,
+            'vehicle_number' => $input->vehicle_number,
+            'postcode' => $input->postcode
+        ];
 
-        if(!$result->status) {
-            return $this->abort($result->response);
+        $vix = $this->getVIXNCD($data);
+        if(!$vix->status && is_string($vix->response)) {
+            return $this->abort($vix->response);
         }
-        return new ResponseData([
-            'status' => $result->status,
-            'response' => $result->response
-        ]);
+        
+        $inception_date = $vix->response->polEffectiveDate;
+        $expiry_date = $vix->response->polExpiryDate;
+        
+        $today = Carbon::today()->format('Y-m-d');
+        // 1. Check inception date
+        if($inception_date < $today) {
+            return $this->abort('inception date expired');
+        }
+
+        // 2. Check Sum Insured -> market price
+        $sum_insured = formatNumber($vix->response->nvicList[0]->vehicleMarketValue, 0);
+        $sum_insured_type = "Makert Value";
+        if ($sum_insured < self::MIN_SUM_INSURED || $sum_insured > self::MAX_SUM_INSURED) {
+            return $this->abort(
+                __('api.sum_insured_referred_between', ['min_sum_insured' => self::MIN_SUM_INSURED, 'max_sum_insured' => self::MAX_SUM_INSURED]),
+                config('setting.response_codes.sum_insured_referred')
+            );
+        }
+
+        $nvic = explode('|', (string) $vix->response->nvicList[0]->nvic);
+        //getting model
+        $vehInputModel = (object)[      
+            'makeCode' => $vix->response->makeCode,
+            'modelCode' => $vix->response->modelCode,
+        ];
+        $variants = [];
+        $BodyType = '';
+        $uom = '';
+        $VehModelCode = '';
+        foreach($nvic as $_nvic) {
+            // Get Vehicle Details
+            $details = $this->allianzVariant($vehInputModel);
+            $get_variant = $vix->response->nvicList[0]->vehicleVariant;
+            foreach($details->response->VehicleList as $model_details){
+                if(str_contains($model_details->Descp, $vix->response->nvicList[0]->vehicleVariant)){
+                    $get_variant = $model_details->Descp;
+                    $uom = $model_details->UOM;
+                    $VehModelCode = $model_details->ModelCode;
+                }
+            }
+            array_push($variants, new VariantData([
+                'nvic' => $_nvic,
+                'sum_insured' => floatval($sum_insured),
+                'variant' => $get_variant,
+            ]));
+        }
+        return (object) [
+            'status' => true,
+            'veh_model_code' => $VehModelCode,
+            'uom' => $uom,
+            'response' => new VIXNCDResponse([
+                'body_type_code' => null,
+                'body_type_description' => null,
+                'chassis_number' => $vix->response->vehicleChassis,
+                'coverage' => $vix->response->coverType,
+                'engine_capacity' => intval($vix->response->vehicleEngineCC),
+                'engine_number' => $vix->response->vehicleEngine,
+                'expiry_date' => Carbon::parse($expiry_date)->format('d M Y'),
+                'inception_date' => Carbon::parse($inception_date)->format('d M Y'),
+                'make' => $input->vehicle->make ?? '',
+                'make_code' => intval($vix->response->makeCode),
+                'model' => $input->vehicle->model ?? '',
+                'model_code' => intval($vix->response->modelCode),
+                'manufacture_year' => intval($vix->response->yearOfManufacture),
+                'max_sum_insured' => doubleval(self::MAX_SUM_INSURED),
+                'min_sum_insured' => doubleval(self::MIN_SUM_INSURED),
+                'sum_insured' => $sum_insured,
+                'sum_insured_type' => 'Market Value',
+                'ncd_percentage' => floatval($vix->response->ncdPercentage),
+                'seating_capacity' => intval($vix->response->seatingCapacity),
+                'variants' => $variants,
+                'vehicle_number' => $vix->response->vehicleLicenseId,
+            ])
+        ];
     }
 
     public function checkUBB(object $input) : object
@@ -100,81 +170,77 @@ class Allianz implements InsurerLibraryInterface
             'modelCode' => $vix->vehicleModel,
             'makeYear' => $vix->yearOfManufacture,
         ];
-        $avvariant = $this->avVariant($get_avvariant);
+        $avvariant = $this->avVariant($get_avvariant)->response;
         $get_quotation = (object)[
             'input'=>$input,
             'vix'=>$vix,
             'avvariant'=>$avvariant,
         ];
-        dd($avvariant);
-        $quotation = $this->quotation($get_quotation);
-        dd($quotation);
+        $quotation = $this->quotation($get_quotation)->response;
         $text = '{
-            "ReferenceNo": "CNAZ00000003637",
+            "ReferenceNo": "'.$quotation->contract->contractNumber.'",
             "ProductCat": "MT",
             "SourceSystem": "PARTNER_ID",
             "ClaimsExp": "0",
             "ReconInd": "N",
-            "ExcessWaiveInd": false,
-            "CheckUbbInd": 2,
+            "ExcessWaiveInd": "'.$quotation->contract->excessWaiveInd.'",
+            "CheckUbbInd": 1,
             "Policy": {
-              "PolicyEffectiveDate": "2018-11-12",
-              "PolicyExpiryDate": "2019-11-11",
-              "Client": {
-                "IdentificationNumber": "810323145146",
-                "IdType": "NRIC",
-                "Age": "41"
-              },
-              "RiskList": [
-                {
-                  "RiskId": "1",
-                  "InsuredPerson": {
-                    "IdentificationNumber": "841103011116",
-                    "IdType": "NRIC"
-                  },
-                  "Vehicle": {
-                    "AvCode": "HONDA",
-                    "Capacity": "1497",
-                    "MakeCode": "11",
-                    "Model": "CITY",
-                    "PiamModel": "28",
-                    "Seat": 5,
-                    "VehicleNo": "vj8152",
-                    "YearOfManufacture": "2015",
-                    "NamedDriverList": [
-                      {
-                        "Age": "34",
-                        "IdentificationNumber": "841103011116"
-                      }
-                    ],
-                    "HighPerformanceInd": false,
-                    "HrtvInd": false
-                  },
-                  "CoverList": [
-                    {
-                      "CoverPremium": {
-                        "SumInsured": "61000.00"
-                      }
-                    }
-                  ]
-                }
-              ]
+                "PolicyEffectiveDate": "'.$vix->polEffectiveDate.'",
+                "PolicyExpiryDate": "'.$vix->polExpiryDate.'",
+                "Client": {
+                    "IdentificationNumber": "'.$input->id_number.'",
+                    "IdType": "NRIC",
+                    "Age": "'.$input->age.'"
+                },
+                "RiskList": [{
+                    "RiskId": "1",
+                    "InsuredPerson": {
+                        "IdentificationNumber": "'.$input->id_number.'",
+                        "IdType": "NRIC"
+                    },
+                    "Vehicle": {
+                        "AvCode": "'.$avvariant->VariantGrp[0]->AvCode.'",
+                        "Capacity": "'.$vix->vehicleEngineCC.'",
+                        "MakeCode": "'.$vix->makeCode.'",
+                        "Model": "'.$vix->vehicleModel.'",
+                        "PiamModel": "28",
+                        "Seat": '.$vix->seatingCapacity.',
+                        "VehicleNo": "'.$vix->vehicleLicenseId.'",
+                        "YearOfManufacture": "'.$vix->yearOfManufacture.'",
+                        "NamedDriverList": [{
+                            "Age": "'.$input->age.'",
+                            "IdentificationNumber": "'.$input->id_number.'"
+                        }],
+                        "HighPerformanceInd": "'.$quotation->contract->highPerformanceInd.'",
+                        "HrtvInd": "'.$quotation->contract->hrtvInd.'"
+                    },
+                    "CoverList": [{
+                        "CoverPremium": {
+                            "SumInsured": "'.$vix->nvicList[0]->vehicleMarketValue.'"
+                        }
+                    }]
+                }]
             }
-          }
-        ';
-        $json = json_encode($text);
-		$data = array(
-			'requestData' => $json
-		);
-		$ubb = $this->cURL("getData", "/checkUBB", $data);
-        $response = (object)[
-            'ReferRiskList' => '',
-            'CoverId' => '',
-            'ReferCode' => '',
-            'ReferLevel' => '',
-            'RiskId' => '',
-            'RoutingCode' => '',
-        ];
+        }';
+		$result = $this->cURL("getData", "/checkUBB", $text);
+        
+        if(!$result->status) {
+            return $this->abort($result->response);
+        }
+        if(count($result->response->ReferRiskList) > 0){
+            dd(123);
+            return new ResponseData([
+                'status' => $result->status,
+                'response' => $result->response// customer is eligible to purchase the insurance and can proceed with the subsequent quotation
+            ]);
+        }
+        else{
+            return new ResponseData([
+                'status' => $result->status,
+                'response' => $result->response
+            ]);
+        }
     }
 
     public function allianzMake(object $input) : object
@@ -329,7 +395,7 @@ class Allianz implements InsurerLibraryInterface
             'check_ubb_ind'=> '1',
             'postal_code'=> '50000',
         ];
-        dd($this->checkUBB($input));
+        dd($this->update_quotation($input));
     }
 
     public function submission(object $input) : object
@@ -356,12 +422,12 @@ class Allianz implements InsurerLibraryInterface
 		} else {
 			$year += 2000;
 		}
-		$dob = $dobs[2] . "-" . $dobs[1] . "-" . strval($year);
+		$dob = strval($year) . "-" . $dobs[1] . "-" . $dobs[2];
         $text = '{
             "partnerId": "PARTNERID",
             "contractNumber": "'.$qParams->vix->contractNumber.'",
-            "effectiveDate": "'.Carbon::now()->format('Y-m-d').'",
-            "expirationDate": "'.Carbon::now()->addYear()->subDay()->format('Y-m-d').'",
+            "effectiveDate": "'.$qParams->vix->polEffectiveDate.'",
+            "expirationDate": "'.$qParams->vix->polExpiryDate.'",
             "person": {
                 "identityType": "NRIC",
                 "identityNumber": "'.$qParams->input->id_number.'",
@@ -382,17 +448,100 @@ class Allianz implements InsurerLibraryInterface
                 "yearOfManufacture": "'.$qParams->vix->yearOfManufacture.'",
                 "occupantsNumber": '.$qParams->vix->seatingCapacity.',
                 "ncdPercentage": '.$qParams->vix->ncdPercentage.',
-                "sumInsured": "'.$qParams->avvariant->SumInsured.'",
-                "avCode": "'.$qParams->avvariant->AvCode.'",
+                "sumInsured": "'.$qParams->avvariant->VariantGrp[0]->SumInsured.'",
+                "avCode": "'.$qParams->avvariant->VariantGrp[0]->AvCode.'",
                 "mvInd": "Y"
             }
         }';
-		$ubb = $this->cURL("getData", "/quote", $text);
+		$result = $this->cURL("getData", "/quote", $text);
         
-        if(!$ubb->status) {
+        if(!$result->status) {
             return $this->abort($result->response);
         }
-        return $ubb;
+        return new ResponseData([
+            'status' => $result->status,
+            'response' => $result->response
+        ]);
+	}
+
+    public function getVIXNCD(object $input) : object
+    {
+        $text = '{
+            "sourceSystem": "PARTNER_ID",
+            "vehicleLicenseId": "'.$input->vehicle_number.'",
+            "identityType": "'.$this->id_type($input->id_type).'",
+            "identityNumber": "'.$input->id_number.'",
+            "checkUbbInd": "1",
+            "postalCode": "'.$input->postcode.'"
+        }';
+        $result = $this->cURL("getData", "/vehicleDetails", $text);
+
+        if(!$result->status) {
+            return $this->abort($result->response);
+        }
+        
+        return new ResponseData([
+            'status' => $result->status,
+            'response' => $result->response
+        ]);
+    }
+    
+    public function update_quotation(object $input) : object
+    {
+        $postcode_details = $this->postalCode($input->postcode);
+        dd($postcode_details);
+        $get_vehicle_details = (object)[
+            'source_system' => "PARTNER_ID",
+            'vehicle_license_id' => $input->vehicle_number,
+            'identity_type' => "NRIC",
+            'identity_number' => $input->id_number,
+            'check_ubb_ind' => 1,
+            'postal_code' => $postcode_details->Postcode,
+        ];
+        $vix = $this->vehicleDetails($get_vehicle_details);
+        $get_avvariant = (object)[
+            'region' => $postcode_details->Region,
+            'makeCode' => $vix->vehicleMake,
+            'modelCode' => $vix->vehicleModel,
+            'makeYear' => $vix->yearOfManufacture,
+        ];
+        $avvariant = $this->avVariant($get_avvariant)->response;
+        dd($vix);
+        $text = '{
+            "salesChannel": "PTR",
+            "partnerId": "AZOL",
+            "contractNumber": "CNAZ00000003637",
+            "effectiveDate": "YYYY-MM-DD",
+            "expirationDate": "YYYY-MM-DD",
+            "additionalCover": [
+              {
+                "coverCode": "72",
+                "coverSumInsured": 0
+              }
+            ],
+            "calculateDiscount": {
+              "discountPercentage": "5"
+            },
+            "unlimitedDriverInd": false,
+            "driverDetails": [
+              {
+                "fullName": "LEE KING WEI",
+                "identityNumber": "841103011116"
+              }
+            ],
+            "vehicle": {
+              "avCode": "HOND93AC"
+            }
+          }';
+		$result = $this->cURL("getData", "/quote", $text);
+        
+        if(!$result->status) {
+            return $this->abort($result->response);
+        }
+        return new ResponseData([
+            'status' => $result->status,
+            'response' => $result->response
+        ]);
 	}
 
     private function postalCode(string $PostCode)
@@ -407,7 +556,32 @@ class Allianz implements InsurerLibraryInterface
 
         return $result->response->PostcodeList[0];
     }
+    
+    private function id_type(string $IDType)
+    {
+        $result = '';
+        switch ($IDType) {
+            case '1': {
+                $result = "NRIC";
+                break;
+            }
+            case '2': {
+                $result = "OLD_IC";
+                break;
+            }
+            case '3': {
+                $result = "PASS";
+                break;
+            }
+            case '4': {
+                $result = "POL";
+                break;
+            }
+        }
 
+        return $result;
+    }
+    
 	private function cURL($type = null, $function = null, $data = null, $additionals = null){
 		$host = $this->host;
 		$username = $this->username;
