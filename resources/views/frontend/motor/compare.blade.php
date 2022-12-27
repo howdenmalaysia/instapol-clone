@@ -349,14 +349,6 @@
                     controller.abort();
                 }
 
-                let product_id = $(e.target).data('product_id');
-                // if(['{{ config('insurer.config.bsib.product_id') }}'].includes(product_id)) {
-
-                // }
-
-                motor.insurance_company_id = product_id;
-                $('#motor').val(JSON.stringify(motor));
-
                 $('#insurance-premium').val(JSON.stringify(premiums[product_id]));
                 $('#h-gender').val($('input[name=gender]:checked').val());
                 $('#h-marital-status').val($('#marital-status').val());
