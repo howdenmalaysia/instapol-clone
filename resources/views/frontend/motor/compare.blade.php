@@ -5,7 +5,6 @@
 @section('content')
     <x-motor-layout id="compare" current-step="2">
         <x-slot name="content">
-           
             <div class="row">
                 <div class="col-12 col-lg-8 mb-5">
                     <h4 class="fw-bold">{{ __('frontend.motor.compare_page.scroll_down') }}</h4>
@@ -149,10 +148,10 @@
                                 <div class="row" id={{ 'insurer-' . $product->id }} data-insurer-id="{{ $product->insurance_company->id }}">
                                     <div class="col-12">
                                         <div class="row p-3">
-                                   
-                                            <div class="col-12 col-sm-12 text-center align-self-center">
+                                            <div class="col-12 text-center align-self-center">
                                                 <div class="row">
-                                                    <div class="col-12"><p class="text-primary">{{ $product->name }}</p>
+                                                    <div class="col-12">
+                                                        <p class="text-primary">{{ $product->name }}</p>
                                                         <img
                                                             src="{{ asset("images/insurer/{$product->insurance_company->logo}") }}"
                                                             alt="{{ $product->insurance_company->name }}"
@@ -161,6 +160,8 @@
                                                         >
                                                     </div>
                                                 </div>
+                                            </div>
+                                            <div class="col-12 col-sm-5 text-center align-self-center">
                                                 <div class="row">
                                                     <div class="col-6">
                                                         <p class="text-primary fs-4 fw-bold mb-0">Price</p>
