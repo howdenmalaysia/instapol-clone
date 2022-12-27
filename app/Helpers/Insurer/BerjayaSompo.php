@@ -443,8 +443,8 @@ class BerjayaSompo implements InsurerLibraryInterface
             'city' => $input->city ?? '',
             'postcode' => $input->postcode,
             'state' => $input->state ?? '',
+            'sum_insured' => $input->vehicle->sum_insured ?? $vehicle->sum_insured,
             'occupation' => $input->occupation,
-            'sum_insured' => $input->vehicle->sum_insured
         ];
 
         $motor_premium = $this->getQuotation($data);
@@ -772,7 +772,6 @@ class BerjayaSompo implements InsurerLibraryInterface
                 'SEAT' => $input->vehicle->extra_attribute->seating_capacity ?? '5',
                 'VEHICLE_CLASS' => $input->vehicle->extra_attribute->vehicle_class ?? '01', // PRIVATE VEHICLE, EXCLUDING GOODS
                 'VEHICLE_NUMBER' => $input->vehicle_number,
-                'VEHICLE_SUM_INSURED' => $input->sum_insured ?? $input->vehicle->sum_insured,
                 'VEHICLE_USAGE' => $vehicle_usage,
             ],
             'ADD_ONS' => $extra_cover,
@@ -782,6 +781,12 @@ class BerjayaSompo implements InsurerLibraryInterface
                 ]
             ]
         ];
+
+        if(!empty($input->sum_insured)) {
+            $data['COVER_NOTE']['VEHICLE_SUM_INSURED'] = $input->sum_insured;
+        } else if(!empty($input->vehicle->sum_insured)) {
+            $data['COVER_NOTE']['VEHICLE_SUM_INSURED'] = $input->vehicle->sum_insured;
+        }
 
         $result = $this->cURL($data);
 
