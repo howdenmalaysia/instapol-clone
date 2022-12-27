@@ -708,13 +708,13 @@ class MotorAPIController extends Controller implements MotorAPIInterface
 
                 break;
             }
-            case 15: {
-                return new BerjayaSompo($insurer->id, $insurer->name);
+            case 14: {
+                return new Liberty($insurer->id, $insurer->name);
 
                 break;
             }
-            case 14: {
-                return new Liberty($insurer->id, $insurer->name);
+            case 15: {
+                return new BerjayaSompo($insurer->id, $insurer->name);
 
                 break;
             }
