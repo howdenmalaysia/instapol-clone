@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Insurance;
 use App\DataTransferObjects\Motor\QuotationData;
 use App\DataTransferObjects\Motor\VehicleData;
 use App\Http\Controllers\Controller;
+use App\Mail\PaymentReceipt;
 use App\Models\InsurancePremium;
 use App\Models\Motor\Insurance;
 use App\Models\Motor\InsuranceAddress;
@@ -20,6 +21,7 @@ use App\Models\Relationship;
 use App\Models\State;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Str;
@@ -404,6 +406,20 @@ class MotorController extends Controller
         $insurance_code = $request->session()->get('motor');
 
         $insurance = Insurance::findByInsuranceCode($insurance_code);
+
+        // Send Success Email
+        $data = (object) [
+            'insurance_code' => $insurance->insurance_code,
+            'insured_name' => $insurance->holder->name,
+            'product_name' => $insurance->product->name,
+            'total_premium' => number_format($insurance->total_payable, 2),
+            'total_payable' => number_format($insurance->total_payable, 2)
+        ];
+
+        Mail::to($insurance->holder->email)
+            ->cc(config('setting.howden.affinity_team_email'))
+            ->send(new PaymentReceipt($data));
+
         return view('frontend.motor.payment_success')
             ->with([
                 'insurance' => $insurance,
