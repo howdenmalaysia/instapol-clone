@@ -418,7 +418,8 @@ class Liberty implements InsurerLibraryInterface
             'vehicle' => $vehicle,
             'vehicle_number' => $input->vehicle_number,
             'vehicle_body_type' => $input->vehicle_body_type ?? '',
-            'ownership_type' => $ownership_type
+            'ownership_type' => $ownership_type,
+            'sum_insured' => $input->vehicle->sum_insured
         ];
 
         $motor_premium = $this->getPremium($data);
@@ -866,7 +867,7 @@ class Liberty implements InsurerLibraryInterface
             'seat_capacity' => $input->vehicle->extra_attribute->seating_capacity,
             'signature' => $this->generateSignature($request_id),
             'state_code' => $this->getStateCode($input->state),
-            'sum_insured' => $input->vehicle->sum_insured,
+            'sum_insured' => $input->sum_insured ?? $input->vehicle->sum_insured,
             'timestamp' => Carbon::now()->format(self::TIMESTAMP_FORMAT), // The time when the request is made
             'town_description' => $this->getStateName($input->state),
             'use_code' => $input->vehicle->extra_attribute->vehicle_use_code,
