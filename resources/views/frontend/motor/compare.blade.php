@@ -5,7 +5,6 @@
 @section('content')
     <x-motor-layout id="compare" current-step="2">
         <x-slot name="content">
-            <x-banner-modal image="{{ asset('images/banner/trapo_thank_you.png') }}" class="d-block mx-auto w-50" />
             <div class="row">
                 <div class="col-12 col-lg-8 mb-5">
                     <h4 class="fw-bold">{{ __('frontend.motor.compare_page.scroll_down') }}</h4>
@@ -145,20 +144,14 @@
                             </div>
                         </div>
                         @foreach ($products as $product)
-                            <div class="col-11 border shadow rounded my-3 mx-auto insurer-card">
+                            <div class="col-4 border shadow rounded my-3 mx-auto insurer-card">
                                 <div class="row" id={{ 'insurer-' . $product->id }} data-insurer-id="{{ $product->insurance_company->id }}">
                                     <div class="col-12">
                                         <div class="row p-3">
-                                            <div class="col-12 col-sm-7 text-center align-self-center">
+                                            <div class="col-12 text-center align-self-center">
                                                 <div class="row">
                                                     <div class="col-12">
                                                         <p class="text-primary">{{ $product->name }}</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-12 col-sm-5 text-center align-self-center">
-                                                <div class="row">
-                                                    <div class="col-12">
                                                         <img
                                                             src="{{ asset("images/insurer/{$product->insurance_company->logo}") }}"
                                                             alt="{{ $product->insurance_company->name }}"
@@ -167,6 +160,8 @@
                                                         >
                                                     </div>
                                                 </div>
+                                            </div>
+                                            <div class="col-12 col-sm-5 text-center align-self-center">
                                                 <div class="row">
                                                     <div class="col-6">
                                                         <p class="text-primary fs-4 fw-bold mb-0">Price</p>
