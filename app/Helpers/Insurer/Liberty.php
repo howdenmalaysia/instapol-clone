@@ -415,11 +415,11 @@ class Liberty implements InsurerLibraryInterface
             'postcode' => $input->postcode,
             'region' => $input->region,
             'state' => $input->state,
+            'sum_insured' => $input->vehicle->sum_insured ?? $vehicle->sum_insured,
             'vehicle' => $vehicle,
             'vehicle_number' => $input->vehicle_number,
             'vehicle_body_type' => $input->vehicle_body_type ?? '',
             'ownership_type' => $ownership_type,
-            'sum_insured' => $input->vehicle->sum_insured
         ];
 
         $motor_premium = $this->getPremium($data);

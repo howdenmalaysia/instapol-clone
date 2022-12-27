@@ -303,7 +303,7 @@ class PacificOrient implements InsurerLibraryInterface
             'postcode' => $input->postcode,
             'region' => $input->region,
             'state' => $input->state,
-            'sum_insured' => $input->vehicle->sum_insured,
+            'sum_insured' => $input->vehicle->sum_insured ?? $vehicle->sum_insured,
             'vehicle' => $vehicle,
             'vehicle_number' => $input->vehicle_number,
         ];
