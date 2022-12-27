@@ -349,6 +349,8 @@
                     controller.abort();
                 }
 
+                let product_id = $(e.target).data('product_id');
+
                 $('#insurance-premium').val(JSON.stringify(premiums[product_id]));
                 $('#h-gender').val($('input[name=gender]:checked').val());
                 $('#h-marital-status').val($('#marital-status').val());
