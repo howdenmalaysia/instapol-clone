@@ -178,7 +178,6 @@ class MotorController extends Controller
 
         // Update Session
         $motor->user_id = auth()->user()->id ?? '';
-        $motor->product_id = intval($motor->insurance_company_id);
         $motor->policy_holder->gender = $request->gender;
         $motor->policy_holder->marital_status = $request->marital_status;
         $motor->av_code = $request->av_code;
