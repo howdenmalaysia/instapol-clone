@@ -859,14 +859,14 @@ class BerjayaSompo implements InsurerLibraryInterface
         if(!empty(json_decode($result->response)->encryptedPayload)) {
             $decrypted_response = json_decode($this->decrypt(json_decode($result->response)->encryptedPayload, $result->response_header['Encryption-Salt'][0])->text);
 
-            if(isset($decrypted_response->status) && !$decrypted_response->status) {
-                // Update the API log
-                APILogs::find($log->id)
-                    ->update([
-                        'response_header' => json_encode($result->response_header),
-                        'response' => json_encode($decrypted_response)
-                    ]);
+            // Update the API log
+            APILogs::find($log->id)
+                ->update([
+                    'response_header' => json_encode($result->response_header),
+                    'response' => json_encode($decrypted_response)
+                ]);
 
+            if(isset($decrypted_response->status) && !$decrypted_response->status) {
                 return $this->abort($decrypted_response->response);
             }
 
