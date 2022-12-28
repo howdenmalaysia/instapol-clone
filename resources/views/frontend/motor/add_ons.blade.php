@@ -316,11 +316,9 @@
         });
 
         $('.extra-coverage-checkbox').on('change', (e) => {
-            if($(e.target).is(':checked')) {
-                $(e.target).parent().parent().find('.premium').text(' ').toggleClass('loadingButton');
-                $('#btn-next').toggleClass('loadingButton');
-                refreshPremium();
-            }
+            $(e.target).parent().parent().find('.premium').text(' ').toggleClass('loadingButton');
+            $('#btn-next').toggleClass('loadingButton');
+            refreshPremium();
         });
 
         $('#roadtax-checkbox').on('change', (e) => {
