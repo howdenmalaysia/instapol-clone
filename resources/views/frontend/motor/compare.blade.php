@@ -350,6 +350,8 @@
                 }
 
                 let product_id = $(e.target).data('product_id');
+                motor.product_id = product_id;
+                $('#motor').val(JSON.stringify(motor));
 
                 $('#insurance-premium').val(JSON.stringify(premiums[product_id]));
                 $('#h-gender').val($('input[name=gender]:checked').val());
