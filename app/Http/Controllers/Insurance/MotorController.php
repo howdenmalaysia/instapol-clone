@@ -19,6 +19,7 @@ use App\Models\Motor\RoadtaxDeliveryType;
 use App\Models\Postcode;
 use App\Models\Relationship;
 use App\Models\State;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -414,6 +415,15 @@ class MotorController extends Controller
             'total_premium' => number_format($insurance->total_payable, 2),
             'total_payable' => number_format($insurance->total_payable, 2)
         ];
+
+        $user = User::where('email', $insurance->holder->email)->first();
+        if(empty($user)) {
+            User::create([
+                'email' => $insurance->holder->email,
+                'name' => $insurance->holder->name,
+                'password' => Hash::make(Str::random(8)),
+            ]);
+        }
 
         Mail::to($insurance->holder->email)
             ->cc(config('setting.howden.affinity_team_email'))
