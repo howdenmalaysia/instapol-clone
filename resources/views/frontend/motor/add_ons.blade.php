@@ -271,6 +271,18 @@
             $(this).closest('info').remove();
         });
 
+        $('#sum-insured-slider').on('change', (e) => {
+            motor.vehicle.sum_insured = parseFloat($(e.target).val());
+            $('#motor').val(JSON.stringify(motor));
+
+            // Set Loading Effect
+            $('#pricing-table #basic-premium').text(' ').toggleClass('loadingButton');
+            $('#pricing-table #gross-premium').text(' ').toggleClass('loadingButton');
+            $('#pricing-table #total-payable').text(' ').toggleClass('loadingButton');
+
+            refreshPremium();
+        });
+
         $('#add-additional-driver').on('click', () => {
             let html = `
                 <div class="row info px-md-3">
@@ -393,15 +405,15 @@
             product_id: motor.product_id,
             motor: motor,
             extra_cover: selected_extra_cover,
-            roadtax: $('#roadtax-checkbox').is(':checked')
         }).then((res) => {
             console.log(res);
 
             // Update Pricing Card
-            $('#add-ons-premium').text(`RM ${formatMoney(res.data.total_benefit_amount)}`);
-            $('#gross-premium').text(`RM ${formatMoney(res.data.gross_premium)}`);
-            $('#sst').text(`RM ${formatMoney(res.data.sst_amount)}`);
-            $('#total-payable').text(`RM ${formatMoney(res.data.total_payable)}`);
+            $('#basic-premium').text(formatMoney(res.data.basic_premium));
+            $('#add-ons-premium').text(formatMoney(res.data.total_benefit_amount));
+            $('#gross-premium').text(formatMoney(res.data.gross_premium));
+            $('#sst').text(formatMoney(res.data.sst_amount));
+            $('#total-payable').text(formatMoney(res.data.total_payable));
 
             // Update Add Ons Pricing
             res.data.extra_cover.forEach((extra_cover) => {
@@ -410,6 +422,11 @@
 
             // Remove Loading for Next Button
             $('#btn-next').removeClass('loadingButton');
+
+            // Remove Loading in Pricing Card
+            $('#pricing-table #basic-premium').removeClass('loadingButton');
+            $('#pricing-table #gross-premium').removeClass('loadingButton');
+            $('#pricing-table #total-payable').removeClass('loadingButton');
         }).catch((err) => {
             console.log(err.response);
         });
