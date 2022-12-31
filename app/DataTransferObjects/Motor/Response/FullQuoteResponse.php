@@ -62,4 +62,7 @@ class FullQuoteResponse extends DataTransferObject
 
     /** @var \App\DataTransferObjects\Motor\ExtraCover[] */
     public $extra_cover;
+
+    /** @var \App\DataTransferObjects\Motor\Vehicle  */
+    public $vehicle;
 }

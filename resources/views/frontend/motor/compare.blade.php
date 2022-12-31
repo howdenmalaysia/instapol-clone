@@ -350,6 +350,7 @@
                 }
 
                 let product_id = $(e.target).data('product_id');
+                motor.vehicle = premiums[product_id].vehicle;
                 motor.product_id = product_id;
                 $('#motor').val(JSON.stringify(motor));
 
