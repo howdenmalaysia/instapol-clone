@@ -320,6 +320,7 @@ class PacificOrient implements InsurerLibraryInterface
                     if((string) $extra->coverageId === $extra_cover->extra_cover_code) {
                         $extra_cover->premium = formatNumber((float) $extra->premium);
                         $total_benefit_amount += (float) $extra->premium;
+                        $extra_cover->selected = (float) $extra->premium == 0;
     
                         if(!empty($extra->sumInsured)) {
                             $extra_cover->sum_insured = formatNumber((float) $extra->sumInsured);

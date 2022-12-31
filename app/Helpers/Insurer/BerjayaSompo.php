@@ -463,6 +463,7 @@ class BerjayaSompo implements InsurerLibraryInterface
                 if($extra_cover->extra_cover_code == $extra_benefit->CODE && $extra_benefit->CODE != 'PA*P') {
                     $extra_cover->premium = formatNumber($extra_benefit->PREMIUM);
                     $extra_cover->extra_cover_description = str_replace(['cart', 'Ncd', 'Add', 'On', 'E-ride'], ['CART', 'NCD',  '', '', 'E-Ride'], ucwords(Str::lower($extra_benefit->DESCRIPTION)));
+                    $extra_cover->selected = $extra_benefit->PREMIUM == 0;
                 } else if ($extra_benefit->CODE == 'PA*P' && $extra_cover->extra_cover_code == 'PA*P') {
                     $pa = (object) [
                         'name' => str_replace(['Add', 'On'], [''], ucwords(Str::lower($extra_benefit->DESCRIPTION))),
