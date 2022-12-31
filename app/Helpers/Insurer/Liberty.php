@@ -452,6 +452,7 @@ class Liberty implements InsurerLibraryInterface
                     if((strpos((string) $item->bencode, $extra_cover->extra_cover_code) !== false) ||
                     ($item->bencode == 'CART' && $extra_cover->extra_cover_code == '112')) {
                         $extra_cover->premium = formatNumber($item->benpremium);
+                        $extra_cover->selected = floatval($item->benpremium) == 0;
                     }
                 }
             }
