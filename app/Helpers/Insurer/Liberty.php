@@ -900,7 +900,7 @@ class Liberty implements InsurerLibraryInterface
         if($refer_code != '') {
             $message = (string) $result->response->reqdataReturn->referdesc;
 
-            return $this->abort(__('api.referred_risk', ['company' => $this->company, 'reason' => str_replace('^', ', ', $message)]), $refer_code);
+            return $this->abort(__('api.referred_risk', ['company' => $this->company_name, 'reason' => str_replace('^', ', ', $message)]), $refer_code);
         }
 
         $response = (object) [
@@ -1187,14 +1187,14 @@ class Liberty implements InsurerLibraryInterface
             $json = json_decode($result->response);
 
             if (empty($json)) {
-                $message = !empty($result->response) ? $result->response : __('api.empty_response', ['company' => $this->company]);
+                $message = !empty($result->response) ? $result->response : __('api.empty_response', ['company' => $this->company_name]);
 
                 return $this->abort($message);
             }
 
             $result->response = $json[0];
         } else {
-            $message = !empty($result->response) ? $result->response : __('api.empty_response', ['company' => $this->company]);
+            $message = !empty($result->response) ? $result->response : __('api.empty_response', ['company' => $this->company_name]);
 
             return $this->abort($message);
         }
