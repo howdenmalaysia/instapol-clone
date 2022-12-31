@@ -122,7 +122,7 @@ class Liberty implements InsurerLibraryInterface
         $variants = [];
         array_push($variants, new VariantData([
             'nvic' => (string) $vehicle_vix->response->nvic,
-            'sum_insured' => $vehicle_vix->response->sum_insured,
+            'sum_insured' => floatval($vehicle_vix->response->sum_insured),
             'variant' => $vehicle_vix->response->variant,
         ]));
 
@@ -143,13 +143,13 @@ class Liberty implements InsurerLibraryInterface
                 'make' => $vehicle_vix->response->make,
                 'manufacture_year' => $vehicle_vix->response->manufacture_year,
                 'make_code' => intval($vehicle_vix->response->make_code),
-                'max_sum_insured' => $vehicle_vix->response->max_sum_insured,
-                'min_sum_insured' => $vehicle_vix->response->min_sum_insured,
+                'max_sum_insured' => floatval($vehicle_vix->response->max_sum_insured),
+                'min_sum_insured' => floatval($vehicle_vix->response->min_sum_insured),
                 'model' => $vehicle_vix->response->model,
                 'model_code' => intval($vehicle_vix->response->model_code),
                 'ncd_percentage' => $vehicle_vix->response->ncd_percentage,
                 'seating_capacity' => $vehicle_vix->response->seating_capacity,
-                'sum_insured' => $sum_insured,
+                'sum_insured' => floatval($sum_insured),
                 'sum_insured_type' => $vehicle_vix->response->sum_insured_type,
                 'variants' => $variants,
                 'vehicle_number' => $input->vehicle_number,
