@@ -14,6 +14,7 @@
         <meta property="og:description" content="@yield('meta_description', 'Your policy, in an instant. instaPol is the quick, hassle-free way to buy insurance.')">
         <meta property="og:image" content="{{ asset('images/instapol_logo.png') }}">
         <meta property="og:url" content="{{ url()->current() }}">
+        <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests"> 
         
         <title>@yield('title', config('app.name'))</title>
 
