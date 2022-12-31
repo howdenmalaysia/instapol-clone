@@ -900,7 +900,7 @@ class Liberty implements InsurerLibraryInterface
         if($refer_code != '') {
             $message = (string) $result->response->reqdataReturn->referdesc;
 
-            return $this->abort(__('api.referred_risk', ['company' => $this->company_name, 'reason' => str_replace('^', ', ', $message)]), $refer_code);
+            return $this->abort(__('api.referred_risk', ['company' => $this->company_name, 'reason' => str_replace('^', ', ', $message)]), intval($refer_code));
         }
 
         $response = (object) [
