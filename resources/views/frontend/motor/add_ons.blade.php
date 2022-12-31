@@ -429,6 +429,9 @@
             $('#pricing-table #total-payable').removeClass('loadingButton');
         }).catch((err) => {
             console.log(err.response);
+            swalAlert(err.response.data.message, () => {
+                window.history.back();
+            });
         });
     }
 
