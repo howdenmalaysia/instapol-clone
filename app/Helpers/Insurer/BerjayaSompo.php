@@ -760,8 +760,8 @@ class BerjayaSompo implements InsurerLibraryInterface
                 'ADDITIONAL_USAGE' => '1', // INCLUDING GOODS [Private Use (Drive to Work)]
                 'ANTITHEFT' => '03', // W/O MECH DEV: FACTORY ALARM
                 'COVER_NOTE_TYPE' => 'NWOO', // NEW BUSINESS - OLD VEHICLE, OLD REGISTRATION
-                'CN_EXPIRY_DATE' => empty($input->vehicle->expiry_date) ? Carbon::today()->addYear()->subDay()->format(self::DATE_FORMAT) : Carbon::parse($input->vehicle->expiry_date)->format(self::DATE_FORMAT),
-                'CN_INCEPTION_DATE' => empty($input->vehicle->inception_date) ? Carbon::today()->format(self::DATE_FORMAT) : Carbon::parse($input->vehicle->inception_date)->format(self::DATE_FORMAT),
+                'CN_EXPIRY_DATE' => empty($input->vehicle->expiry_date) ? Carbon::today()->addYear()->subDay()->format(self::DATE_FORMAT) : Carbon::createFromFormat('d M Y', $input->vehicle->expiry_date)->format(self::DATE_FORMAT),
+                'CN_INCEPTION_DATE' => empty($input->vehicle->inception_date) ? Carbon::today()->format(self::DATE_FORMAT) : Carbon::createFromFormat('d M Y', $input->vehicle->inception_date)->format(self::DATE_FORMAT),
                 'COVERAGE_TYPE' => '05', // SOMPO MOTOR
                 'DRIVER_EXPERIENCE' => $this->getDriverExperienceCode($driving_experience),
                 'DRIVER_RELATIONSHIP' => '0' . ($input->relationship ?? 1), // PARENT / PARENT-IN-LAW
