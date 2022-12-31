@@ -276,9 +276,11 @@
             $('#motor').val(JSON.stringify(motor));
 
             // Set Loading Effect
-            $('#pricing-table #basic-premium').text(' ').toggleClass('loadingButton');
-            $('#pricing-table #gross-premium').text(' ').toggleClass('loadingButton');
-            $('#pricing-table #total-payable').text(' ').toggleClass('loadingButton');
+            if(!$('#pricing-table #basic-premium').hasClass('loadingButton')) {
+                $('#pricing-table #basic-premium').text(' ').toggleClass('loadingButton');
+                $('#pricing-table #gross-premium').text(' ').toggleClass('loadingButton');
+                $('#pricing-table #total-payable').text(' ').toggleClass('loadingButton');
+            }
 
             refreshPremium();
         });
@@ -328,8 +330,11 @@
         });
 
         $('.extra-coverage-checkbox').on('change', (e) => {
-            $(e.target).parent().parent().find('.premium').text(' ').toggleClass('loadingButton');
-            $('#btn-next').toggleClass('loadingButton');
+            if(!$(e.target).parent().parent().find('.premium').hasClass('loadingButton')) {
+                $(e.target).parent().parent().find('.premium').text(' ').toggleClass('loadingButton');
+                $('#btn-next').toggleClass('loadingButton');
+            }
+
             refreshPremium();
         });
 
