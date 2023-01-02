@@ -151,7 +151,7 @@
                                     <h3 class="card-title fw-bold border-bottom py-4 px-md-3">{{ __('frontend.motor.add_ons_page.road_tax_renewal') }}</h3>
                                     <div class="row align-items-center px-md-3">
                                         <div class="col-1">
-                                            <input type="checkbox" id="roadtax-checkbox" class="form-check-input" name="roadtax" {{ session('motor')->roadtax ? 'checked' : '' }} />
+                                            <input type="checkbox" id="roadtax-checkbox" class="form-check-input" name="roadtax" {{ !empty(session('motor')->roadtax) ? 'checked' : '' }} />
                                         </div>
                                         <div class="col-8">
                                             <div class="row align-items-center">
