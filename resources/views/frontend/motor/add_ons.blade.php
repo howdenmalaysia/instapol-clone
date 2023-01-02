@@ -467,7 +467,7 @@
 
             // Update Pricing Card
             $('#road-tax').text(formatMoney(res.data.total));
-            $('#total-payable').text(formatMoney(parseFloat(res.data.total)));
+            $('#total-payable').text(formatMoney(parseFloat(res.data.total) + motor.premium.total_payable));
         }).catch((err) => {
             console.log(err.response);
         });
