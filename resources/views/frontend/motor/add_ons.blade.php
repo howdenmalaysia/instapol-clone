@@ -17,7 +17,7 @@
                         sst-amount="{{ $premium->sst_amount }}"
                         stamp-duty="{{ $premium->stamp_duty }}"
                         total-payable="{{ $premium->total_payable }}"
-                        roadtax-total="{{ session('motor')->roadtax->total }}"
+                        roadtax-total="{{ $premium->roadtax ?? session('motor')->roadtax->total }}"
                     />
                 </div>
                 <div class="col-12 col-lg-8">
@@ -151,7 +151,7 @@
                                     <h3 class="card-title fw-bold border-bottom py-4 px-md-3">{{ __('frontend.motor.add_ons_page.road_tax_renewal') }}</h3>
                                     <div class="row align-items-center px-md-3">
                                         <div class="col-1">
-                                            <input type="checkbox" id="roadtax-checkbox" class="form-check-input" name="roadtax" />
+                                            <input type="checkbox" id="roadtax-checkbox" class="form-check-input" name="roadtax" {{ session('motor')->roadtax ? 'checked' : '' }} />
                                         </div>
                                         <div class="col-8">
                                             <div class="row align-items-center">
@@ -169,31 +169,31 @@
                                             </div>
                                         </div>
                                         <div class="col-1 text-end">RM</div>
-                                        <div id="roadtax-price-display" class="col-2 text-end t-end">0.00</div>
+                                        <div id="roadtax-price-display" class="col-2 text-end t-end">{{ session('motor')->roadtax->roadtax_price }}</div>
                                     </div>
                                     <div class="row align-items-center px-md-3 mt-2">
                                         <div class="col-1"></div>
                                         <div class="col-8">{{ __('frontend.motor.add_ons_page.myeg_fee') }}</div>
                                         <div class="col-1 text-end">RM</div>
-                                        <div id="myeg-fee-display" class="col-2 text-end">0.00</div>
+                                        <div id="myeg-fee-display" class="col-2 text-end">{{ session('motor')->roadtax->myeg_fee }}</div>
                                     </div>
                                     <div class="row align-items-center px-md-3 mt-2">
                                         <div class="col-1"></div>
                                         <div class="col-8">{{ __('frontend.motor.add_ons_page.eservice_fee') }}</div>
                                         <div class="col-1 text-end">RM</div>
-                                        <div id="eservice-fee-display" class="col-2 text-end">0.00</div>
+                                        <div id="eservice-fee-display" class="col-2 text-end">{{ session('motor')->roadtax->eservice_fee }}</div>
                                     </div>
                                     <div class="row align-items-center px-md-3 mt-2">
                                         <div class="col-1"></div>
                                         <div class="col-8">{{ __('frontend.motor.add_ons_page.delivery_fee') }}</div>
                                         <div class="col-1 text-end">RM</div>
-                                        <div id="delivery-fee-display" class="col-2 text-end">0.00</div>
+                                        <div id="delivery-fee-display" class="col-2 text-end">{{ session('motor')->roadtax->delivery_fee }}</div>
                                     </div>
                                     <div class="row align-items-center px-md-3 mt-2">
                                         <div class="col-1"></div>
                                         <div class="col-8">{{ __('frontend.motor.add_ons_page.service_tax') }}</div>
                                         <div class="col-1 text-end">RM</div>
-                                        <div id="service-tax-display" class="col-2 text-end">0.00</div>
+                                        <div id="service-tax-display" class="col-2 text-end">{{ session('motor')->roadtax->sst }}</div>
                                     </div>
                                     <div class="alert alert-success mt-4" role="alert">
                                         {{ __('frontend.motor.add_ons_page.mco_note') }}
@@ -261,9 +261,6 @@
     let motor = JSON.parse($('#motor').val());
 
     $(() => {
-        // Initialize
-        // $('#sum-insured-slider').range('init');
-
         $('#show-more-add-ons').on('click', () => {
             $(this).text("{{ __('frontend.button.show_less') }}");
         });
@@ -468,10 +465,10 @@
 
             // Update Pricing Card
             $('#road-tax').text(formatMoney(res.data.total));
-            $('#total-payable').text(formatMoney(parseFloat(res.data.total) + motor.premium.total_payable));
-
             motor.premium.total_payable += parseFloat(res.data.total);
             $('#motor').val(JSON.stringify(motor));
+            $('#total-payable').text(formatMoney(motor.premium.total_payable));
+
         }).catch((err) => {
             console.log(err.response);
         });
