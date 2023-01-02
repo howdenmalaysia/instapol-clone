@@ -273,6 +273,10 @@
                 });
             });
 
+            $('#btn-back').on('click', () => {
+                window.history.back();
+            });
+
             $('#use-same-address').on('change', (e) => {
                 if($(e.target).is(':checked')) {
                     $('#delivery-info').find('input').each((index, input) => {
