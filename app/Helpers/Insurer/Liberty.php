@@ -731,6 +731,8 @@ class Liberty implements InsurerLibraryInterface
             if (!$make_model_result->status) {
                 return $this->abort($make_model_result->response);
             }
+        } else {
+            return $this->abort(__('api.empty_nvic', ['insurer_id' => $this->company_id]));
         }
 
         $response = (object) [
