@@ -285,6 +285,8 @@
                     });
 
                     $('#delivery-info').hide();
+                } else {
+                    $('#delivery-info').show();
                 }
             });
         });
