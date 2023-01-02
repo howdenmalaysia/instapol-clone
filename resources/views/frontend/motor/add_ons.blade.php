@@ -169,31 +169,31 @@
                                             </div>
                                         </div>
                                         <div class="col-1 text-end">RM</div>
-                                        <div id="roadtax-price-display" class="col-2 text-end t-end">{{ number_format(session('motor')->roadtax->roadtax_price, 2) }}</div>
+                                        <div id="roadtax-price-display" class="col-2 text-end t-end">{{ number_format(session('motor')->roadtax->roadtax_price ?? 0, 2) }}</div>
                                     </div>
                                     <div class="row align-items-center px-md-3 mt-2">
                                         <div class="col-1"></div>
                                         <div class="col-8">{{ __('frontend.motor.add_ons_page.myeg_fee') }}</div>
                                         <div class="col-1 text-end">RM</div>
-                                        <div id="myeg-fee-display" class="col-2 text-end">{{ number_format(session('motor')->roadtax->myeg_fee, 2) }}</div>
+                                        <div id="myeg-fee-display" class="col-2 text-end">{{ number_format(session('motor')->roadtax->myeg_fee ?? 0, 2) }}</div>
                                     </div>
                                     <div class="row align-items-center px-md-3 mt-2">
                                         <div class="col-1"></div>
                                         <div class="col-8">{{ __('frontend.motor.add_ons_page.eservice_fee') }}</div>
                                         <div class="col-1 text-end">RM</div>
-                                        <div id="eservice-fee-display" class="col-2 text-end">{{ number_format(session('motor')->roadtax->eservice_fee, 2) }}</div>
+                                        <div id="eservice-fee-display" class="col-2 text-end">{{ number_format(session('motor')->roadtax->eservice_fee ?? 0, 2) }}</div>
                                     </div>
                                     <div class="row align-items-center px-md-3 mt-2">
                                         <div class="col-1"></div>
                                         <div class="col-8">{{ __('frontend.motor.add_ons_page.delivery_fee') }}</div>
                                         <div class="col-1 text-end">RM</div>
-                                        <div id="delivery-fee-display" class="col-2 text-end">{{ number_format(session('motor')->roadtax->delivery_fee, 2) }}</div>
+                                        <div id="delivery-fee-display" class="col-2 text-end">{{ number_format(session('motor')->roadtax->delivery_fee ?? 0, 2) }}</div>
                                     </div>
                                     <div class="row align-items-center px-md-3 mt-2">
                                         <div class="col-1"></div>
                                         <div class="col-8">{{ __('frontend.motor.add_ons_page.service_tax') }}</div>
                                         <div class="col-1 text-end">RM</div>
-                                        <div id="service-tax-display" class="col-2 text-end">{{ number_format(session('motor')->roadtax->sst, 2) }}</div>
+                                        <div id="service-tax-display" class="col-2 text-end">{{ number_format(session('motor')->roadtax->sst ?? 0, 2) }}</div>
                                     </div>
                                     <div class="alert alert-success mt-4" role="alert">
                                         {{ __('frontend.motor.add_ons_page.mco_note') }}
