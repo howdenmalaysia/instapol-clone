@@ -459,15 +459,15 @@
             $('#h-roadtax').val(JSON.stringify(res.data));
 
             // Update Pricing Display
-            $('#roadtax-price-display').removeClass('loadingButton').text(`RM ${formatMoney(res.data.roadtax_price)}`);
-            $('#myeg-fee-display').removeClass('loadingButton').text(`RM ${formatMoney(res.data.myeg_fee)}`);
-            $('#eservice-fee-display').removeClass('loadingButton').text(`RM ${formatMoney(res.data.eservice_fee)}`);
-            $('#delivery-fee-display').removeClass('loadingButton').text(`RM ${formatMoney(res.data.delivery_fee)}`);
-            $('#service-tax-display').removeClass('loadingButton').text(`RM ${formatMoney(res.data.sst)}`);
+            $('#roadtax-price-display').removeClass('loadingButton').text(formatMoney(res.data.roadtax_price));
+            $('#myeg-fee-display').removeClass('loadingButton').text(formatMoney(res.data.myeg_fee));
+            $('#eservice-fee-display').removeClass('loadingButton').text(formatMoney(res.data.eservice_fee));
+            $('#delivery-fee-display').removeClass('loadingButton').text(formatMoney(res.data.delivery_fee));
+            $('#service-tax-display').removeClass('loadingButton').text(formatMoney(res.data.sst));
 
             // Update Pricing Card
-            $('#road-tax').text(`RM ${formatMoney(res.data.total)}`);
-            $('#total-payable').text(`RM ${formatMoney(parseFloat(res.data.total))}`);
+            $('#road-tax').text(formatMoney(res.data.total));
+            $('#total-payable').text(formatMoney(parseFloat(res.data.total)));
         }).catch((err) => {
             console.log(err.response);
         });
