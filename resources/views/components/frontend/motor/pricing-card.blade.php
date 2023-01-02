@@ -64,7 +64,7 @@
             <tr>
                 <td>{{ '+ ' . __('frontend.price_card.road_tax') }}</td>
                 <td class="text-end">RM</td>
-                <td id="road-tax" class="text-end">0.00</td>
+                <td id="road-tax" class="text-end">{{ $roadtaxTotal }}</td>
             </tr>
             <tr>
                 <td class="border-bottom border-5" colspan="3"></td>
