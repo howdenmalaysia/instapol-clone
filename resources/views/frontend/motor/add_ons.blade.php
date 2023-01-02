@@ -17,6 +17,7 @@
                         sst-amount="{{ $premium->sst_amount }}"
                         stamp-duty="{{ $premium->stamp_duty }}"
                         total-payable="{{ $premium->total_payable }}"
+                        roadtax-total="{{ $motor->roadtax->total }}"
                     />
                 </div>
                 <div class="col-12 col-lg-8">
@@ -468,6 +469,9 @@
             // Update Pricing Card
             $('#road-tax').text(formatMoney(res.data.total));
             $('#total-payable').text(formatMoney(parseFloat(res.data.total) + motor.premium.total_payable));
+
+            motor.premium.total_payable += parseFloat(res.data.total);
+            $('#motor').val(JSON.stringify(motor));
         }).catch((err) => {
             console.log(err.response);
         });
