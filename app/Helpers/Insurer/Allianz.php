@@ -393,25 +393,25 @@ class Allianz implements InsurerLibraryInterface
         $ncd_amount = $basic_premium = $total_benefit_amount = $gross_premium = $sst_percent = $sst_amount = $stamp_duty = $excess_amount = $total_payable = 0;
         $pa = null;
 
-        $postcode_details = $this->postalCode($input->postcode);
-        $get_vehicle_details = (object)[
-            'vehicle_number' => $input->vehicle_number,
-            'id_type' => $this->id_type($input->id_type),
-            'id_number' => $input->id_number,
-            'postcode' => $postcode_details->Postcode,
-        ];
-        $vehicle_vix = $this->vehicleDetails($get_vehicle_details);
-        if (!$vehicle_vix->status) {
-            return $this->abort($vehicle_vix->response, $vehicle_vix->code);
-        }
-        $get_avvariant = (object)[
-            'region' => $postcode_details->Region,
-            'makeCode' => $vehicle_vix->response->make,
-            'modelCode' => $vehicle_vix->response->model,
-            'makeYear' => $vehicle_vix->response->manufacture_year,
-        ];
-        $avvariant = $this->avVariant($get_avvariant)->response;
-        // if ($full_quote) {
+        if ($full_quote) {
+            $postcode_details = $this->postalCode($input->postcode);
+            $get_vehicle_details = (object)[
+                'vehicle_number' => $input->vehicle_number,
+                'id_type' => $this->id_type($input->id_type),
+                'id_number' => $input->id_number,
+                'postcode' => $postcode_details->Postcode,
+            ];
+            $vehicle_vix = $this->vehicleDetails($get_vehicle_details);
+            if (!$vehicle_vix->status) {
+                return $this->abort($vehicle_vix->response, $vehicle_vix->code);
+            }
+            $get_avvariant = (object)[
+                'region' => $postcode_details->Region,
+                'makeCode' => $vehicle_vix->response->make,
+                'modelCode' => $vehicle_vix->response->model,
+                'makeYear' => $vehicle_vix->response->manufacture_year,
+            ];
+            $avvariant = $this->avVariant($get_avvariant)->response;
             // Get Selected Variant
             $selected_variant = null;
             if ($input->nvic == '-') {
@@ -566,7 +566,7 @@ class Allianz implements InsurerLibraryInterface
                 // Include into $input->extra_cover to get the premium
                 array_push($input->extra_cover, $item);
             }
-        // }
+        }
 
         $response = new PremiumResponse([
             'basic_premium' => formatNumber($motor_premium->response->premium->basicPremium),

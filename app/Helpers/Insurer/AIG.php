@@ -4,6 +4,7 @@ namespace App\Helpers\Insurer;
 
 use App\DataTransferObjects\Motor\ExtraCover;
 use App\DataTransferObjects\Motor\VariantData;
+use App\DataTransferObjects\Motor\Vehicle;
 use App\DataTransferObjects\Motor\OptionList;
 use App\DataTransferObjects\Motor\Response\ResponseData;
 use App\DataTransferObjects\Motor\Response\PremiumResponse;
@@ -158,81 +159,132 @@ class AIG implements InsurerLibraryInterface
 
     public function premiumDetails(object $input, $full_quote = false) : object
     {
-        $vehicle_vix = $this->vehicleDetails($input);
-        $data = (object) [
-            'input' => $input,
-            'vehicle' => $vehicle_vix,
-        ];
-        $premium = $this->getPremium($data);
-        $dobs = str_split($input->id_number, 2);
-        $id_number = $dobs[0] . $dobs[1] . $dobs[2] . "-" . $dobs[3] .  "-" . $dobs[4] . $dobs[5];
-        $year = intval($dobs[0]);
-		if ($year >= 10) {
-			$year += 1900;
-		} else {
-			$year += 2000;
-		}
-		$dob = $dobs[2] . "-" . $dobs[1] . "-" . strval($year);
-        $region = '';
-        if($input->region == 'West'){
-            $region = 'W';
-        }
-        else if($input->region == 'East'){
-            $region = 'E';
-        }
-        $extra_cover_list = [];
-        foreach(self::EXTRA_COVERAGE_LIST as $_extra_cover_code) {
-            $extra_cover = new ExtraCover([
-                'selected' => false,
-                'readonly' => false,
-                'extra_cover_code' => $_extra_cover_code,
-                'extra_cover_description' => $this->getExtraCoverDescription($_extra_cover_code),
-                'premium' => 0,
-                'sum_insured' => 0
+        $vehicle = $input->vehicle ?? null;
+        $ncd_amount = $basic_premium = $total_benefit_amount = $gross_premium = $sst_percent = $sst_amount = $stamp_duty = $excess_amount = $total_payable = 0;
+        $pa = null;
+
+        if ($full_quote) {
+            $vehicle_vix = $this->vehicleDetails($input);
+            if (!$vehicle_vix->status) {
+                return $this->abort($vehicle_vix->response, $vehicle_vix->code);
+            }
+            // Get Selected Variant
+            $selected_variant = null;
+            if ($input->nvic == '-') {
+                if (count($vehicle_vix->response->variants) == 1) {
+                    $selected_variant = $vehicle_vix->response->variants[0];
+                }
+            } else {
+                foreach ($vehicle_vix->response->variants as $_variant) {
+                    if ($input->nvic == $_variant->nvic) {
+                        $selected_variant = $_variant;
+                        break;
+                    }
+                }
+            }
+
+            if (empty($selected_variant)) {
+                return $this->abort(trans('api.variant_not_match'));
+            }
+
+            // set vehicle
+            $vehicle = new Vehicle([
+                'make' => $vehicle_vix->response->make ?? $input->vehicle->make,
+                'model' => $vehicle_vix->response->model ?? $input->vehicle->model,
+                'nvic' => $selected_variant->nvic,
+                'variant' => $selected_variant->variant,
+                'engine_capacity' => $vehicle_vix->response->engine_capacity,
+                'manufacture_year' => $vehicle_vix->response->manufacture_year,
+                'ncd_percentage' => $vehicle_vix->response->ncd_percentage,
+                'coverage' => $vehicle_vix->response->coverage,
+                'inception_date' => $vehicle_vix->response->inception_date,
+                'expiry_date' => $vehicle_vix->response->expiry_date,
+                'sum_insured_type' => $vehicle_vix->response->sum_insured_type,
+                'sum_insured' => $vehicle_vix->response->sum_insured,
+                'min_sum_insured' => $vehicle_vix->response->min_sum_insured,
+                'max_sum_insured' => $vehicle_vix->response->max_sum_insured,
+                'extra_attribute' => (object) [
+                    'chassis_number' => $vehicle_vix->response->chassis_number,
+                    'cover_type' => $vehicle_vix->response->cover_type,
+                    'engine_number' => $vehicle_vix->response->engine_number,
+                    'seating_capacity' => $vehicle_vix->response->seating_capacity,
+                ],
             ]);
-            
-            $sum_insured_amount = 0;
-            
-            switch($_extra_cover_code) { 
-                case '25': {
-                    $price = ($vehicle_vix->response->sum_insured / 10) * 3;
-                    $sum_insured_amount = $price;
-                    break;
-                }
-                case '57': {
-                    $price = ($vehicle_vix->response->sum_insured / 10) * 3;
-                    $sum_insured_amount = $price;
-                    break;
-                }
-                case '89': {
-                    $extra_cover->extra_cover_name = 'Windscreen or Windows';
-
-                    // Options List for Windscreen
-                    $option_list = new OptionList([
-                        'name' => 'sum_insured',
-                        'description' => 'Sum Insured Amount',
-                        'values' => generateExtraCoverSumInsured(500, 10000, 1000),
-                        'any_value' => true,
-                        'increment' => 100
-                    ]);
-
-                    $extra_cover->option_list = $option_list;
-
-                    // Default to RM1,000
-                    $sum_insured_amount = $option_list->values[1];
-
-                    break;
-                }
+            $data = (object) [
+                'input' => $input,
+                'vehicle' => $vehicle_vix,
+            ];
+            $premium = $this->getPremium($data);
+            $dobs = str_split($input->id_number, 2);
+            $id_number = $dobs[0] . $dobs[1] . $dobs[2] . "-" . $dobs[3] .  "-" . $dobs[4] . $dobs[5];
+            $year = intval($dobs[0]);
+            if ($year >= 10) {
+                $year += 1900;
+            } else {
+                $year += 2000;
             }
-
-            if(!empty($sum_insured_amount)) {
-                $extra_cover->sum_insured = $sum_insured_amount;
+            $dob = $dobs[2] . "-" . $dobs[1] . "-" . strval($year);
+            $region = '';
+            if($input->region == 'West'){
+                $region = 'W';
             }
+            else if($input->region == 'East'){
+                $region = 'E';
+            }
+            $extra_cover_list = [];
+            foreach(self::EXTRA_COVERAGE_LIST as $_extra_cover_code) {
+                $extra_cover = new ExtraCover([
+                    'selected' => false,
+                    'readonly' => false,
+                    'extra_cover_code' => $_extra_cover_code,
+                    'extra_cover_description' => $this->getExtraCoverDescription($_extra_cover_code),
+                    'premium' => 0,
+                    'sum_insured' => 0
+                ]);
+                
+                $sum_insured_amount = 0;
+                
+                switch($_extra_cover_code) { 
+                    case '25': {
+                        $price = ($vehicle_vix->response->sum_insured / 10) * 3;
+                        $sum_insured_amount = $price;
+                        break;
+                    }
+                    case '57': {
+                        $price = ($vehicle_vix->response->sum_insured / 10) * 3;
+                        $sum_insured_amount = $price;
+                        break;
+                    }
+                    case '89': {
+                        $extra_cover->extra_cover_name = 'Windscreen or Windows';
 
-            array_push($extra_cover_list, $extra_cover);
+                        // Options List for Windscreen
+                        $option_list = new OptionList([
+                            'name' => 'sum_insured',
+                            'description' => 'Sum Insured Amount',
+                            'values' => generateExtraCoverSumInsured(500, 10000, 1000),
+                            'any_value' => true,
+                            'increment' => 100
+                        ]);
+
+                        $extra_cover->option_list = $option_list;
+
+                        // Default to RM1,000
+                        $sum_insured_amount = $option_list->values[1];
+
+                        break;
+                    }
+                }
+
+                if(!empty($sum_insured_amount)) {
+                    $extra_cover->sum_insured = $sum_insured_amount;
+                }
+
+                array_push($extra_cover_list, $extra_cover);
+            }
+            // Include Extra Covers to Get Premium
+            $input->extra_cover = $extra_cover_list;
         }
-        // Include Extra Covers to Get Premium
-        $input->extra_cover = $extra_cover_list;
         $data = (object) [
             'input' => $input,
             'vehicle' => $vehicle_vix,
@@ -276,6 +328,20 @@ class AIG implements InsurerLibraryInterface
             'named_drivers_needed' => true,
         ]);
         
+        if($full_quote) {
+            // Revert to premium without extra covers
+            $response->excess_amount = $excess_amount;
+            $response->basic_premium = $basic_premium;
+            $response->ncd = $ncd_amount;
+            $response->gross_premium = $gross_premium;
+            $response->stamp_duty = $stamp_duty;
+            $response->sst_amount = $sst_amount;
+            $response->sst_percent = $sst_percent;
+            $response->total_benefit_amount = 0;
+            $response->total_payable = $total_payable;
+
+            $response->vehicle = $vehicle;
+        }
         return (object) [
             'status' => true,
             'response' => $response

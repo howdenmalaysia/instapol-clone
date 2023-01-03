@@ -5,6 +5,7 @@ namespace App\Helpers\Insurer;
 use App\DataTransferObjects\Motor\CartList;
 use App\DataTransferObjects\Motor\ExtraCover;
 use App\DataTransferObjects\Motor\VariantData;
+use App\DataTransferObjects\Motor\Vehicle;
 use App\DataTransferObjects\Motor\Response\ResponseData;
 use App\DataTransferObjects\Motor\Response\PremiumResponse;
 use App\DataTransferObjects\Motor\Response\VIXNCDResponse;
@@ -864,172 +865,223 @@ class ZurichTakaful implements InsurerLibraryInterface
 
     public function premiumDetails(object $input, $full_quote = false) : object
     {
-        $vehicle_vix = $this->vehicleDetails($input);
-        $dobs = str_split($input->id_number, 2);
-        $id_number = $dobs[0] . $dobs[1] . $dobs[2] . "-" . $dobs[3] .  "-" . $dobs[4] . $dobs[5];
-        $year = intval($dobs[0]);
-		if ($year >= 10) {
-			$year += 1900;
-		} else {
-			$year += 2000;
-		}
-		$dob = $dobs[2] . "-" . $dobs[1] . "-" . strval($year);
-        $region = '';
-        if($input->region == 'West'){
-            $region = 'W';
-        }
-        else if($input->region == 'East'){
-            $region = 'E';
-        }
-        $quotation = (object)[
-            'request_datetime' => Carbon::now()->format('Y/M/d h:i:s A'),
-            'transaction_ref_no' => $this->participant_code."0000008",//
-            'VehNo' => $input->vehicle_number,
-            'getmail' => [
-                'support@zurich.com.my',
-                'noreply@zurich.com.my',
-            ],
-            'quotationNo' => '',
-            'trans_type' => 'B',
-            'pre_VehNo' => $vehicle_vix->response->vehicle_number,
-            'product_code' => 'PZ01',
-            'cover_type' => 'V-CO',
-            'ci_code' => 'MX1',
-            'eff_date' => Carbon::parse($vehicle_vix->response->inception_date)->format('d/m/Y') ?? Carbon::now()->format('d/m/Y'),
-            'exp_date' => Carbon::parse($vehicle_vix->response->expiry_date)->format('d/m/Y') ?? Carbon::now()->addYear()->subDay()->format('d/m/Y'),
-            'new_owned_Veh_ind' => '',
-            'VehReg_date' => '10/03/2016',
-            'ReconInd' => '',
-            'modcarInd' => 'Y',
-            'modperformanceaesthetic' => '0;2',
-            'modfunctional' => '2;128',
-            'yearofmake' => $vehicle_vix->response->manufacture_year,
-            'make' => $vehicle_vix->response->make_code,
-            'model' => $vehicle_vix->veh_model_code,
-            'capacity' => $vehicle_vix->response->engine_capacity,
-            'uom' => $vehicle_vix->uom,
-            'engine_no' => $vehicle_vix->response->engine_number,
-            'chasis_no' => $vehicle_vix->response->chassis_number,
-            'logbook_no' => '',
-            'reg_loc' => 'L',
-            'region_code' => $region,
-            'no_of_passenger' => $vehicle_vix->response->seating_capacity,
-            'no_of_drivers' => '1',
-            'ins_indicator' => 'P',
-            'name' => $input->name ?? 'TAN AI LING',
-            'ins_nationality' => 'L',
-            'new_ic' => $id_number,
-            'other_id' => '',
-            'date_of_birth' => $dob,
-            'age' => $input->age,
-            'gender' => $input->gender,
-            'marital_sts' => $input->marital_status,
-            'occupation' => self::OCCUPATION,
-            'mobile_no' => $input->phone_number,
-            'off_ph_no' => '',
-            'email' => $input->email,
-            'address' => $input->address_one . $input->address_two,
-            'postcode' => $input->postcode,
-            'state' => $this->getStateCode($input->state),
-            'country' => 'MAS',
-            'sum_insured' => $vehicle_vix->response->sum_insured,
-            'av_ind' => 'N',
-            'vol_excess' => '',
-            'pac_ind' => 'N',
-            'all_driver_ind' => 'Y',
-            'abisi' => '25000.00',
-            'chosen_si_type' => 'REC_SI',
-            'nationality' => 'MAS',
-            'ext_cov_code' => '101',
-            'unit_day' => '7',
-            'unit_amount' => '50',
-            'ecd_eff_date' => '14/1/2017 ',
-            'ecd_exp_date' => '13/1/2018',
-            'ecd_sum_insured' => '3000',
-            'no_of_unit' => '1',
-            'ecd_pac_code' => 'R0075',
-            'ecd_pac_unit' => '1',
-        ];
-        $premium = $this->quotation($quotation);
+        $vehicle = $input->vehicle ?? null;
+        $ncd_amount = $basic_premium = $total_benefit_amount = $gross_premium = $sst_percent = $sst_amount = $stamp_duty = $excess_amount = $total_payable = 0;
+        $pa = null;
 
-        $extra_cover_list = [];
-        foreach(self::EXTRA_COVERAGE_LIST as $_extra_cover_code) {
-            $extra_cover = new ExtraCover([
-                'selected' => false,
-                'readonly' => false,
-                'extra_cover_code' => $_extra_cover_code,
-                'extra_cover_description' => $this->getExtraCoverDescription($_extra_cover_code),
-                'premium' => 0,//here
-                'sum_insured' => 0
+        if ($full_quote) {
+            $vehicle_vix = $this->vehicleDetails($input);
+            if (!$vehicle_vix->status) {
+                return $this->abort($vehicle_vix->response, $vehicle_vix->code);
+            }
+            // Get Selected Variant
+            $selected_variant = null;
+            if ($input->nvic == '-') {
+                if (count($vehicle_vix->response->variants) == 1) {
+                    $selected_variant = $vehicle_vix->response->variants[0];
+                }
+            } else {
+                foreach ($vehicle_vix->response->variants as $_variant) {
+                    if ($input->nvic == $_variant->nvic) {
+                        $selected_variant = $_variant;
+                        break;
+                    }
+                }
+            }
+
+            if (empty($selected_variant)) {
+                return $this->abort(trans('api.variant_not_match'));
+            }
+
+            // set vehicle
+            $vehicle = new Vehicle([
+                'make' => $vehicle_vix->response->make,
+                'model' => $vehicle_vix->response->model,
+                'nvic' => $selected_variant->nvic,
+                'variant' => $selected_variant->variant,
+                'engine_capacity' => $vehicle_vix->response->engine_capacity,
+                'manufacture_year' => $vehicle_vix->response->manufacture_year,
+                'ncd_percentage' => $vehicle_vix->response->ncd_percentage,
+                'coverage' => $vehicle_vix->response->coverage,
+                'inception_date' => $vehicle_vix->response->inception_date,
+                'expiry_date' => $vehicle_vix->response->expiry_date,
+                'sum_insured_type' => $vehicle_vix->response->sum_insured_type,
+                'sum_insured' => $vehicle_vix->response->sum_insured,
+                'min_sum_insured' => $vehicle_vix->response->min_sum_insured,
+                'max_sum_insured' => $vehicle_vix->response->max_sum_insured,
+                'extra_attribute' => (object) [
+                    'chassis_number' => $vehicle_vix->response->chassis_number,
+                    'cover_type' => $vehicle_vix->response->cover_type,
+                    'engine_number' => $vehicle_vix->response->engine_number,
+                    'seating_capacity' => $vehicle_vix->response->seating_capacity,
+                ],
             ]);
-            
-            $sum_insured_amount = 0;
 
-            switch($_extra_cover_code) {
-                case '01': 
-                case '02': 
-                case '03': 
-                case '06': 
-                case '07': 
-                case '101': {
-                    $sum_insured_amount = $vehicle_vix->response->sum_insured;
-                    break;
-                }
-                case '103': 
-                case '108': 
-                case '109':
-                case '111': 
-                case '112':
-                case '19':  
-                case '20E':  
-                case '20W':  
-                case '22': {
-                    $sum_insured_amount = 1500;
-                    break;
-                }
-                case '25': 
-                case '25E': 
-                case '25W': 
-                case '57': 
-                case '72': 
-                case '89': {
-                    $sum_insured_amount = 1000;
-                    break;
-                }
-                case '89A': {
-                    $sum_insured_amount = 1000;
-                    break;
-                }
-                case '97': {
-                    $sum_insured_amount = 500;
-                    break;
-                }
-                case '97A': {
-                    $sum_insured_amount = 2000;
-                    break;
-                }
-                case 'D1': 
-                case 'TW1': 
-                case 'TW2': 
-                case '200': 
-                case '201': 
-                case '202': {
-                    $sum_insured_amount = 1000;
-                    break;
-                }
-                case '203': 
-                case '01A': 
+            $dobs = str_split($input->id_number, 2);
+            $id_number = $dobs[0] . $dobs[1] . $dobs[2] . "-" . $dobs[3] .  "-" . $dobs[4] . $dobs[5];
+            $year = intval($dobs[0]);
+            if ($year >= 10) {
+                $year += 1900;
+            } else {
+                $year += 2000;
             }
-
-            if(!empty($sum_insured_amount)) {
-                $extra_cover->sum_insured = $sum_insured_amount;
+            $dob = $dobs[2] . "-" . $dobs[1] . "-" . strval($year);
+            $region = '';
+            if($input->region == 'West'){
+                $region = 'W';
             }
+            else if($input->region == 'East'){
+                $region = 'E';
+            }
+            $quotation = (object)[
+                'request_datetime' => Carbon::now()->format('Y/M/d h:i:s A'),
+                'transaction_ref_no' => $this->participant_code."0000008",//
+                'VehNo' => $input->vehicle_number,
+                'getmail' => [
+                    'support@zurich.com.my',
+                    'noreply@zurich.com.my',
+                ],
+                'quotationNo' => '',
+                'trans_type' => 'B',
+                'pre_VehNo' => $vehicle_vix->response->vehicle_number,
+                'product_code' => 'PZ01',
+                'cover_type' => 'V-CO',
+                'ci_code' => 'MX1',
+                'eff_date' => Carbon::parse($vehicle_vix->response->inception_date)->format('d/m/Y') ?? Carbon::now()->format('d/m/Y'),
+                'exp_date' => Carbon::parse($vehicle_vix->response->expiry_date)->format('d/m/Y') ?? Carbon::now()->addYear()->subDay()->format('d/m/Y'),
+                'new_owned_Veh_ind' => '',
+                'VehReg_date' => '10/03/2016',
+                'ReconInd' => '',
+                'modcarInd' => 'Y',
+                'modperformanceaesthetic' => '0;2',
+                'modfunctional' => '2;128',
+                'yearofmake' => $vehicle_vix->response->manufacture_year,
+                'make' => $vehicle_vix->response->make_code,
+                'model' => $vehicle_vix->veh_model_code,
+                'capacity' => $vehicle_vix->response->engine_capacity,
+                'uom' => $vehicle_vix->uom,
+                'engine_no' => $vehicle_vix->response->engine_number,
+                'chasis_no' => $vehicle_vix->response->chassis_number,
+                'logbook_no' => '',
+                'reg_loc' => 'L',
+                'region_code' => $region,
+                'no_of_passenger' => $vehicle_vix->response->seating_capacity,
+                'no_of_drivers' => '1',
+                'ins_indicator' => 'P',
+                'name' => $input->name ?? 'TAN AI LING',
+                'ins_nationality' => 'L',
+                'new_ic' => $id_number,
+                'other_id' => '',
+                'date_of_birth' => $dob,
+                'age' => $input->age,
+                'gender' => $input->gender,
+                'marital_sts' => $input->marital_status,
+                'occupation' => self::OCCUPATION,
+                'mobile_no' => $input->phone_number,
+                'off_ph_no' => '',
+                'email' => $input->email,
+                'address' => $input->address_one . $input->address_two,
+                'postcode' => $input->postcode,
+                'state' => $this->getStateCode($input->state),
+                'country' => 'MAS',
+                'sum_insured' => $vehicle_vix->response->sum_insured,
+                'av_ind' => 'N',
+                'vol_excess' => '',
+                'pac_ind' => 'N',
+                'all_driver_ind' => 'Y',
+                'abisi' => '25000.00',
+                'chosen_si_type' => 'REC_SI',
+                'nationality' => 'MAS',
+                'ext_cov_code' => '101',
+                'unit_day' => '7',
+                'unit_amount' => '50',
+                'ecd_eff_date' => '14/1/2017 ',
+                'ecd_exp_date' => '13/1/2018',
+                'ecd_sum_insured' => '3000',
+                'no_of_unit' => '1',
+                'ecd_pac_code' => 'R0075',
+                'ecd_pac_unit' => '1',
+            ];
+            $premium = $this->quotation($quotation);
 
-            array_push($extra_cover_list, $extra_cover);
+            $extra_cover_list = [];
+            foreach(self::EXTRA_COVERAGE_LIST as $_extra_cover_code) {
+                $extra_cover = new ExtraCover([
+                    'selected' => false,
+                    'readonly' => false,
+                    'extra_cover_code' => $_extra_cover_code,
+                    'extra_cover_description' => $this->getExtraCoverDescription($_extra_cover_code),
+                    'premium' => 0,//here
+                    'sum_insured' => 0
+                ]);
+                
+                $sum_insured_amount = 0;
+
+                switch($_extra_cover_code) {
+                    case '01': 
+                    case '02': 
+                    case '03': 
+                    case '06': 
+                    case '07': 
+                    case '101': {
+                        $sum_insured_amount = $vehicle_vix->response->sum_insured;
+                        break;
+                    }
+                    case '103': 
+                    case '108': 
+                    case '109':
+                    case '111': 
+                    case '112':
+                    case '19':  
+                    case '20E':  
+                    case '20W':  
+                    case '22': {
+                        $sum_insured_amount = 1500;
+                        break;
+                    }
+                    case '25': 
+                    case '25E': 
+                    case '25W': 
+                    case '57': 
+                    case '72': 
+                    case '89': {
+                        $sum_insured_amount = 1000;
+                        break;
+                    }
+                    case '89A': {
+                        $sum_insured_amount = 1000;
+                        break;
+                    }
+                    case '97': {
+                        $sum_insured_amount = 500;
+                        break;
+                    }
+                    case '97A': {
+                        $sum_insured_amount = 2000;
+                        break;
+                    }
+                    case 'D1': 
+                    case 'TW1': 
+                    case 'TW2': 
+                    case '200': 
+                    case '201': 
+                    case '202': {
+                        $sum_insured_amount = 1000;
+                        break;
+                    }
+                    case '203': 
+                    case '01A': 
+                }
+
+                if(!empty($sum_insured_amount)) {
+                    $extra_cover->sum_insured = $sum_insured_amount;
+                }
+
+                array_push($extra_cover_list, $extra_cover);
+            }
+            // Include Extra Covers to Get Premium
+            $input->extra_cover = $extra_cover_list;
         }
-        // Include Extra Covers to Get Premium
-        $input->extra_cover = $extra_cover_list;
-        $total_benefit_amount = 0;
 
         if(!empty($premium->response->MotorExtraCoverDetails)) {
             foreach($input->extra_cover as $extra_cover) {
@@ -1072,6 +1124,20 @@ class ZurichTakaful implements InsurerLibraryInterface
             'named_drivers_needed' => false,
         ]);
         
+        if($full_quote) {
+            // Revert to premium without extra covers
+            $response->excess_amount = $excess_amount;
+            $response->basic_premium = $basic_premium;
+            $response->ncd = $ncd_amount;
+            $response->gross_premium = $gross_premium;
+            $response->stamp_duty = $stamp_duty;
+            $response->sst_amount = $sst_amount;
+            $response->sst_percent = $sst_percent;
+            $response->total_benefit_amount = 0;
+            $response->total_payable = $total_payable;
+
+            $response->vehicle = $vehicle;
+        }
         return (object) [
             'status' => true,
             'response' => $response
