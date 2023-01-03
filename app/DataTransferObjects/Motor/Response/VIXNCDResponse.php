@@ -27,7 +27,7 @@ class VIXNCDResponse extends DataTransferObject
     /** @var string|null */
     public $cover_type;
     
-    /** @var int */
+    /** @var int|float */
     public $engine_capacity;
     
     /** @var string */
