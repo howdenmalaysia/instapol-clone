@@ -1,5 +1,5 @@
 
-@if (config('ga_tracking_id'))
+@if (config('setting.ga_tracking_id'))
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id={{ config('setting.ga_tracking_id') }}"></script>
   <script>
