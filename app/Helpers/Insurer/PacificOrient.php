@@ -983,19 +983,4 @@ class PacificOrient implements InsurerLibraryInterface
 
         return $model_details;
     }
-
-    private function getGender(string $gender)
-    {
-        switch($gender) {
-            case 'M': {
-                return 'MALE';
-            }
-            case 'F': {
-                return 'FEMALE';
-            }
-            case 'O': {
-                return 'COMPANY';
-            }
-        }
-    }
 }
