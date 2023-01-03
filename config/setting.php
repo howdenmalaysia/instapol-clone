@@ -4,6 +4,7 @@ return [
     'messagebird' => [
         'widget_id' => env('MB_WIDGET_ID')
     ],
+    'ga_tracking_id' => env('GA_TRACKING_ID'),
     'whatsapp' => [
         'url' => env('WHATSAPP_URL'),
         'number' => env('WHATSAPP_NO'),
