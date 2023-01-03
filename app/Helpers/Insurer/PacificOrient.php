@@ -212,7 +212,7 @@ class PacificOrient implements InsurerLibraryInterface
 
             $data = (object) [
                 'age' => $input->age,
-                'gender' => $input->gender,
+                'gender' => $this->getGender($input->gender),
                 'id_type' => $input->id_type,
                 'id_number' => $id_number,
                 'company_registration_number' => $company_registration_number,
@@ -296,7 +296,7 @@ class PacificOrient implements InsurerLibraryInterface
             'additional_driver' => $input->additional_driver,
             'email' => $input->email,
             'extra_cover' => $input->extra_cover,
-            'gender' => $input->gender,
+            'gender' => $this->getGender($input->gender),
             'id_type' => $input->id_type,
             'id_number' => $input->id_number,
             'marital_status' => $this->getMaritalStatusCode($input->marital_status),
@@ -982,5 +982,20 @@ class PacificOrient implements InsurerLibraryInterface
         }
 
         return $model_details;
+    }
+
+    private function getGender(string $gender)
+    {
+        switch($gender) {
+            case 'M': {
+                return 'MALE';
+            }
+            case 'F': {
+                return 'FEMALE';
+            }
+            case 'O': {
+                return 'COMPANY';
+            }
+        }
     }
 }
