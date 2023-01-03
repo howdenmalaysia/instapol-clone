@@ -21,7 +21,7 @@ class VehicleVariantData extends DataTransferObject
     /** @var string|null */
     public $model;
     
-    /** @var int|null */
+    /** @var int|float|null */
     public $engine_capacity;
     
     /** @var int|null */
