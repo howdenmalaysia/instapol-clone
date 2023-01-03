@@ -188,10 +188,9 @@
                 }).then((response) => {
                     console.log(response);
 
-                    let populated = $('#variant option').length > 1;
                     let singleVariant = response.data.variants.length === 1;
 
-                    if(!populated && !singleVariant) {
+                    if(!singleVariant) {
                         populate(response.data, controller);
 
                         if(selectedVariant) {
@@ -209,10 +208,6 @@
                             $('#h-variant').val(selectedVariant.variants[0].variant);
 
                             swalHide();
-                        }
-
-                        if(populated) {
-                            controller.abort();
                         }
                     }
                 }).catch((error) => {
@@ -257,6 +252,10 @@
             $('#inception-date').text(data.inception_date);
             $('#expiry-date').text(data.expiry_date);
             $('#coverage-type').val(data.coverage);
+
+            if($('#variants option').length > 1 && data.variants.length > 0) {
+                $('#variants').empty();
+            }
 
             data.variants.forEach((variant) => {
                 let option = new Option(variant.variant, variant.nvic, false, false);

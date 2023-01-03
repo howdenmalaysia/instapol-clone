@@ -443,6 +443,7 @@ class BerjayaSompo implements InsurerLibraryInterface
             'city' => $input->city ?? '',
             'postcode' => $input->postcode,
             'state' => $input->state ?? '',
+            'sum_insured' => $input->vehicle->sum_insured ?? $vehicle->sum_insured,
             'occupation' => $input->occupation,
         ];
 
@@ -462,6 +463,7 @@ class BerjayaSompo implements InsurerLibraryInterface
                 if($extra_cover->extra_cover_code == $extra_benefit->CODE && $extra_benefit->CODE != 'PA*P') {
                     $extra_cover->premium = formatNumber($extra_benefit->PREMIUM);
                     $extra_cover->extra_cover_description = str_replace(['cart', 'Ncd', 'Add', 'On', 'E-ride'], ['CART', 'NCD',  '', '', 'E-Ride'], ucwords(Str::lower($extra_benefit->DESCRIPTION)));
+                    $extra_cover->selected = $extra_benefit->PREMIUM == 0;
                 } else if ($extra_benefit->CODE == 'PA*P' && $extra_cover->extra_cover_code == 'PA*P') {
                     $pa = (object) [
                         'name' => str_replace(['Add', 'On'], [''], ucwords(Str::lower($extra_benefit->DESCRIPTION))),
@@ -498,9 +500,9 @@ class BerjayaSompo implements InsurerLibraryInterface
             'personal_accident' => $pa,
             'quotation_number' => $motor_premium->response->QUOTATION_NO,
             'sum_insured' => formatNumber($motor_premium->response->SUM_INSURED),
-            'sum_insured_type' => $vehicle_vix->response->sum_insured_type,
-            'min_sum_insured' => formatNumber($vehicle_vix->response->min_sum_insured),
-            'max_sum_insured' => formatNumber($vehicle_vix->response->max_sum_insured),
+            'sum_insured_type' => $vehicle->sum_insured_type,
+            'min_sum_insured' => formatNumber($vehicle->min_sum_insured),
+            'max_sum_insured' => formatNumber($vehicle->max_sum_insured),
             'named_drivers_needed' => false
         ]);
 
@@ -781,7 +783,9 @@ class BerjayaSompo implements InsurerLibraryInterface
             ]
         ];
 
-        if(!empty($input->vehicle->sum_insured)) {
+        if(!empty($input->sum_insured)) {
+            $data['COVER_NOTE']['VEHICLE_SUM_INSURED'] = $input->sum_insured;
+        } else if(!empty($input->vehicle->sum_insured)) {
             $data['COVER_NOTE']['VEHICLE_SUM_INSURED'] = $input->vehicle->sum_insured;
         }
 
@@ -856,14 +860,14 @@ class BerjayaSompo implements InsurerLibraryInterface
         if(!empty(json_decode($result->response)->encryptedPayload)) {
             $decrypted_response = json_decode($this->decrypt(json_decode($result->response)->encryptedPayload, $result->response_header['Encryption-Salt'][0])->text);
 
-            if(isset($decrypted_response->status) && !$decrypted_response->status) {
-                // Update the API log
-                APILogs::find($log->id)
-                    ->update([
-                        'response_header' => json_encode($result->response_header),
-                        'response' => json_encode($decrypted_response)
-                    ]);
+            // Update the API log
+            APILogs::find($log->id)
+                ->update([
+                    'response_header' => json_encode($result->response_header),
+                    'response' => json_encode($decrypted_response)
+                ]);
 
+            if(isset($decrypted_response->status) && !$decrypted_response->status) {
                 return $this->abort($decrypted_response->response);
             }
 

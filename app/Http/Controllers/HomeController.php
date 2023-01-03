@@ -10,6 +10,9 @@ class HomeController extends Controller
     {
         $referrer = $request->get('r');
         $request->session()->put('referrer', $referrer);
+
+        $previous_insurance = $request->get('param');
+        $request->session()->put('previous_insurance', $previous_insurance);
         
         return view('frontend.index');
     }

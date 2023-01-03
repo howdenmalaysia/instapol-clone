@@ -128,7 +128,7 @@ class PacificOrient implements InsurerLibraryInterface
                 'manufacture_year' => $vix->response->manufacturing_year,
                 'max_sum_insured' => roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_UP, true, self::MAX_SUM_INSURED),
                 'min_sum_insured' => roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_DOWN, false, self::MIN_SUM_INSURED),
-                'sum_insured' => $sum_insured,
+                'sum_insured' => formatNumber($sum_insured),
                 'sum_insured_type' => 'Agreed Value',
                 'ncd_percentage' => floatval($vix->response->ncd),
                 'seating_capacity' => $vix->response->seating_capacity,
@@ -303,6 +303,7 @@ class PacificOrient implements InsurerLibraryInterface
             'postcode' => $input->postcode,
             'region' => $input->region,
             'state' => $input->state,
+            'sum_insured' => $input->vehicle->sum_insured ?? $vehicle->sum_insured,
             'vehicle' => $vehicle,
             'vehicle_number' => $input->vehicle_number,
         ];
@@ -319,6 +320,7 @@ class PacificOrient implements InsurerLibraryInterface
                     if((string) $extra->coverageId === $extra_cover->extra_cover_code) {
                         $extra_cover->premium = formatNumber((float) $extra->premium);
                         $total_benefit_amount += (float) $extra->premium;
+                        $extra_cover->selected = (float) $extra->premium == 0;
     
                         if(!empty($extra->sumInsured)) {
                             $extra_cover->sum_insured = formatNumber((float) $extra->sumInsured);
@@ -366,6 +368,8 @@ class PacificOrient implements InsurerLibraryInterface
             $response->sst_percent = $sst_percent;
             $response->total_benefit_amount = 0;
             $response->total_payable = $total_payable;
+
+            $response->vehicle = $vehicle;
         }
 
         return (object) [
@@ -577,7 +581,7 @@ class PacificOrient implements InsurerLibraryInterface
             'hire_purchase' => 'N',
             'postcode' => $input->postcode,
             'reference_number' => Str::uuid(),
-            'sum_insured' => $input->vehicle->sum_insured,
+            'sum_insured' => $input->sum_insured ?? $input->vehicle->sum_insured,
             'token' => $token,
             'nvic' => $input->vehicle->nvic,
             'vehicle_number' => $input->vehicle_number,

@@ -1,4 +1,4 @@
-<{{"?"}}xml version="1.0" encoding="UTF-8"{{"?"}}>
+<?xml version="1.0" encoding="UTF-8"?>
 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://servlet" xmlns:urn="urn:GetVIXNCD" xmlns:get="https://d1.financial-link.com.my/AGS/services/GetVIXNCD">
    <soapenv:Header/>
    <soapenv:Body>

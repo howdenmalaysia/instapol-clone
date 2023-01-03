@@ -22,39 +22,5 @@ return [
             'host' => env('LIBERTY_MOTOR_API_DOMAIN'),
             'secret_key' => env('LIBERTY_MOTOR_API_PASSWORD')
         ],
-        'am_config' => [
-            'host' => env('AMGEN_MOTOR_API_HOST'),
-            'port' => env('AMGEN_MOTOR_API_PORT'),
-            'client_id'=> env('AMGEN_MOTOR_API_CLIENT_ID'),
-            'client_secret'=> env('AMGEN_MOTOR_API_CLIENT_SECRET'),
-            'username' => env('AMGEN_MOTOR_API_USERNAME'),
-            'password' => env('AMGEN_MOTOR_API_PASSWORD'),
-            'java' => env('AMGEN_MOTOR_API_JAVA'),
-            'encrypt_password' => env('AMGEN_MOTOR_API_ENCRYPT_PASSWORD'),
-            'encrypt_salt' => env('AMGEN_MOTOR_API_ENCRYPT_SALT'),
-            'encrypt_iv' => env('AMGEN_MOTOR_API_ENCRYPT_IV'),
-            'encrypt_pswd_iterations' => 10,
-            'encrypt_key_size' => 32,
-            'channel_token' => env('AMGEN_MOTOR_API_CHANNEL_TOKEN'),
-        ],
-        'zurich_config'=> [
-            'host_vix' => env('ZURICH_MOTOR_API_HOST_VIX'),
-            'agent_code' => env('ZURICH_MOTOR_API_AGENT_CODE'),
-            'secret_key' => env('ZURICH_MOTOR_API_SECRET_KEY'),
-            'participant_code' => env('ZURICH_MOTOR_API_PARTICIPANT_CODE'),
-        ],
-        'zurich_takaful_config'=> [
-            'host_vix' => env('ZURICH_TAKAFUL_MOTOR_API_HOST_VIX'),
-            'agent_code' => env('ZURICH_TAKAFUL_MOTOR_API_AGENT_CODE'),
-            'secret_key' => env('ZURICH_TAKAFUL_MOTOR_API_SECRET_KEY'),
-            'participant_code' => env('ZURICH_TAKAFUL_MOTOR_API_PARTICIPANT_CODE'),
-        ],
-        'allianz_config'=> [
-            'host' => env('ALLIANZ_MOTOR_API_HOST'),
-            'url_token' => env('ALLIANZ_MOTOR_API_URL_TOKEN'),
-            'url' => env('ALLIANZ_MOTOR_API_URL'),
-            'username' => env('ALLIANZ_MOTOR_API_USERNAME'),
-            'password' => env('ALLIANZ_MOTOR_API_PASSWORD'),
-        ],
     ] 
 ];

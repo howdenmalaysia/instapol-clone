@@ -13,12 +13,6 @@ use App\DataTransferObjects\Motor\VehicleVariantData;
 use App\Helpers\Insurer\BerjayaSompo;
 use App\Helpers\Insurer\Liberty;
 use App\Helpers\Insurer\PacificOrient;
-use App\Helpers\Insurer\Allianz;
-use App\Helpers\Insurer\AmGeneral;
-use App\Helpers\Insurer\Zurich;
-use App\Helpers\Insurer\ZurichTakaful;
-use App\Helpers\Aes256Encryption;
-use App\Helpers\HttpClient;
 use App\Http\Controllers\Controller;
 use App\Interfaces\MotorAPIInterface;
 use App\Models\InsuranceAddress;
@@ -45,10 +39,8 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use GuzzleHttp\Client;
 
 class MotorAPIController extends Controller implements MotorAPIInterface
 {
@@ -180,14 +172,19 @@ class MotorAPIController extends Controller implements MotorAPIInterface
                 'min_sum_insured' => $motor->vehicle->min_sum_insured ?? 0.00,
                 'max_sum_insured' => $motor->vehicle->max_sum_insured ?? 0.00,
                 'extra_attribute' => (object) [
-                    'class_code' => $motor->vehicle->extra_attribute->class_code,
-                    'coverage_code' => $motor->vehicle->extra_attribute->coverage_code,
-                    'make_code' => $motor->vehicle->extra_attribute->make_code,
-                    'model_code' => $motor->vehicle->extra_attribute->model_code,
+                    'class_code' => $motor->vehicle->extra_attribute->class_code ?? '',
+                    'coverage_code' => $motor->vehicle->extra_attribute->coverage_code ?? '',
+                    'make_code' => $motor->vehicle->extra_attribute->make_code ?? '',
+                    'model_code' => $motor->vehicle->extra_attribute->model_code ?? '',
                     'engine_number' => $motor->vehicle->extra_attribute->engine_number,
                     'chassis_number' => $motor->vehicle->extra_attribute->chassis_number,
-                    'vehicle_use_code' => $motor->vehicle->extra_attribute->vehicle_use_code,
+                    'vehicle_use_code' => $motor->vehicle->extra_attribute->vehicle_use_code ?? '',
                     'seating_capacity' => $motor->vehicle->extra_attribute->seating_capacity,
+                    'body_type_code' => $motor->vehicle->extra_attribute->body_type_code ?? '',
+                    'body_type_description' => $motor->vehicle->extra_attribute->body_type_description ?? '',
+                    'cover_type' => $motor->vehicle->extra_attribute->cover_type ?? '',
+                    'liberty_model_code' => $motor->vehicle->extra_attribute->liberty_model_code ?? '',
+                    'vehicle_type_code' => $motor->vehicle->extra_attribute->vehicle_type_code ?? '',
                 ]
             ]),
             'extra_cover' => toObject($request->extra_cover ?? []),
@@ -224,7 +221,8 @@ class MotorAPIController extends Controller implements MotorAPIInterface
                 'total_payable' => $result->response->total_payable,
                 'net_premium' => $result->response->net_premium,
                 'extra_cover' => $result->response->extra_cover,
-                'named_drivers_needed' => $result->response->named_drivers_needed
+                'named_drivers_needed' => $result->response->named_drivers_needed,
+                'vehicle' => $result->response->vehicle
             ]);
         } else {
             $quote = new QuoteResponse([
@@ -708,33 +706,13 @@ class MotorAPIController extends Controller implements MotorAPIInterface
 
                 break;
             }
-            case 15: {
-                return new BerjayaSompo($insurer->id, $insurer->name);
-
-                break;
-            }
             case 14: {
                 return new Liberty($insurer->id, $insurer->name);
 
                 break;
             }
-            case 2:{
-                return new AmGeneral($insurer->id, $insurer->name);
-
-                break;
-            }
-            case 3:{
-                return new Allianz($insurer->id, $insurer->name);
-
-                break;
-            }
-            case 10:{
-                return new Zurich($insurer->id, $insurer->name);
-
-                break;
-            }
-            case 12:{
-                return new ZurichTakaful($insurer->id, $insurer->name);
+            case 15: {
+                return new BerjayaSompo($insurer->id, $insurer->name);
 
                 break;
             }

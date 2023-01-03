@@ -17,6 +17,7 @@
                         sst-amount="{{ $premium->sst_amount }}"
                         stamp-duty="{{ $premium->stamp_duty }}"
                         total-payable="{{ $premium->total_payable }}"
+                        roadtax-total="{{ $premium->roadtax ?? session('motor')->roadtax->total }}"
                     />
                 </div>
                 <div class="col-12 col-lg-8">
@@ -273,6 +274,10 @@
                 });
             });
 
+            $('#btn-back').on('click', () => {
+                window.history.back();
+            });
+
             $('#use-same-address').on('change', (e) => {
                 if($(e.target).is(':checked')) {
                     $('#delivery-info').find('input').each((index, input) => {
@@ -280,6 +285,8 @@
                     });
 
                     $('#delivery-info').hide();
+                } else {
+                    $('#delivery-info').show();
                 }
             });
         });
