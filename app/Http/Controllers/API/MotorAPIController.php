@@ -147,9 +147,9 @@ class MotorAPIController extends Controller implements MotorAPIInterface
 
                 break;
             }
-            case 2: {
+            case 4: {
                 $age = 0;
-                
+
                 break;
             }
         }
