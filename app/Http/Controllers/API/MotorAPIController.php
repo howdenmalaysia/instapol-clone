@@ -141,8 +141,21 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             $vehicle_body_type_id = VehicleBodyType::where('name', $motor->vehicle_body_type)->pluck('id');
         }
 
+        switch($motor->policy_holder->id_type) {
+            case 1: {
+                $age = getAgeFromIC($motor->policy_holder->id_number);
+
+                break;
+            }
+            case 2: {
+                $age = 0;
+                
+                break;
+            }
+        }
+
         $data = new APIData([
-            'age' => getAgeFromIC($motor->policy_holder->id_number),
+            'age' => $age,
             'id_type' => $motor->policy_holder->id_type,
             'id_number' => $motor->policy_holder->id_number,
             'vehicle_number' => strtoupper($motor->vehicle_number),
