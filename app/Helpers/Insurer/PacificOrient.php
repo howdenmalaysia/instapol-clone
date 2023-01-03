@@ -128,7 +128,7 @@ class PacificOrient implements InsurerLibraryInterface
                 'manufacture_year' => $vix->response->manufacturing_year,
                 'max_sum_insured' => roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_UP, true, self::MAX_SUM_INSURED),
                 'min_sum_insured' => roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_DOWN, false, self::MIN_SUM_INSURED),
-                'sum_insured' => $sum_insured,
+                'sum_insured' => formatNumber($sum_insured),
                 'sum_insured_type' => 'Agreed Value',
                 'ncd_percentage' => floatval($vix->response->ncd),
                 'seating_capacity' => $vix->response->seating_capacity,
@@ -303,7 +303,7 @@ class PacificOrient implements InsurerLibraryInterface
             'postcode' => $input->postcode,
             'region' => $input->region,
             'state' => $input->state,
-            'sum_insured' => $input->vehicle->sum_insured ?? $vehicle->sum_insured,
+            'sum_insured' => $vehicle->sum_insured,
             'vehicle' => $vehicle,
             'vehicle_number' => $input->vehicle_number,
         ];
