@@ -780,23 +780,15 @@ class PacificOrient implements InsurerLibraryInterface
     // Mapping
     private function getGender($data) : string
     {
-        $gender = '';
-
         switch($data) {
+            case 'M':
             case 'F': {
-                $gender = 'FEMALE';
-                break;
+                return $gender
             }
             case 'O': {
-                $gender = 'COMPANY';
-                break;
-            }
-            default: {
-                $gender = 'MALE';
+                return 'C';
             }
         }
-
-        return $gender;
     }
 
     private function getMaritalStatusCode($marital_status) : int
