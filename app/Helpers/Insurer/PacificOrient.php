@@ -541,7 +541,7 @@ class PacificOrient implements InsurerLibraryInterface
 
         $response = (object) [
             'chassis_number' => (string) $data->ChassisNumber,
-            'engine_capacity' => (int) $data->EngineCC,
+            'engine_capacity' => (float) $data->EngineCC,
             'engine_number' => (string)$data->EngineNumber,
             'error_description' => (string) $data->ErrorDesc,
             'expiry_date' => (string) $data->NextXDate,
@@ -549,10 +549,10 @@ class PacificOrient implements InsurerLibraryInterface
             'make' => (int) $data->VehicleMake,
             'manufacturing_year' => (int) $data->YearManufactured,
             'model' => (int) $data->VehicleModel,
-            'ncd' => (int) $data->NCD,
+            'ncd' => (float) $data->NCD,
             'nvic' => (string) $data->NVIC,
             'seating_capacity' => (int) $data->SeatingCapacity,
-            'sum_insured' => (int) str_replace(',', '', $data->SumInsured)
+            'sum_insured' => (float) str_replace(',', '', $data->SumInsured)
         ];
 
         return new ResponseData([
