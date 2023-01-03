@@ -15,6 +15,7 @@ class PricingCard extends Component
     public string $sstAmount;
     public string $stampDuty;
     public string $totalPayable;
+    public string $roadtaxTotal;
 
     /**
      * Create a new component instance.
@@ -30,7 +31,8 @@ class PricingCard extends Component
         float $grossPremium,
         float $sstAmount,
         float $stampDuty,
-        float $totalPayable)
+        float $totalPayable,
+        float $roadtaxTotal)
     {
         $this->insurerLogo = $insurerLogo;
         $this->insurerName = $insurerName;
@@ -41,6 +43,7 @@ class PricingCard extends Component
         $this->sstAmount = number_format($sstAmount, 2);
         $this->stampDuty = number_format($stampDuty, 2);
         $this->totalPayable = number_format($totalPayable, 2);
+        $this->roadtaxTotal = number_format($roadtaxTotal, 2);
     }
 
     /**

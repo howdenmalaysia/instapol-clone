@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Insurance;
 use App\DataTransferObjects\Motor\QuotationData;
 use App\DataTransferObjects\Motor\VehicleData;
 use App\Http\Controllers\Controller;
+use App\Mail\PaymentReceipt;
 use App\Models\InsurancePremium;
 use App\Models\Motor\Insurance;
 use App\Models\Motor\InsuranceAddress;
@@ -18,8 +19,11 @@ use App\Models\Motor\RoadtaxDeliveryType;
 use App\Models\Postcode;
 use App\Models\Relationship;
 use App\Models\State;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Str;
@@ -176,7 +180,6 @@ class MotorController extends Controller
 
         // Update Session
         $motor->user_id = auth()->user()->id ?? '';
-        $motor->product_id = intval($motor->insurance_company_id);
         $motor->policy_holder->gender = $request->gender;
         $motor->policy_holder->marital_status = $request->marital_status;
         $motor->av_code = $request->av_code;
@@ -257,6 +260,8 @@ class MotorController extends Controller
 
         if(!empty($request->roadtax)) {
             $session->roadtax = json_decode($request->roadtax);
+            $session->premium->roadtax = $session->roadtax->total;
+            $session->premium->total_payable += $session->roadtax->total;
         }
 
         $request->session()->put('motor', $session);
@@ -404,6 +409,29 @@ class MotorController extends Controller
         $insurance_code = $request->session()->get('motor');
 
         $insurance = Insurance::findByInsuranceCode($insurance_code);
+
+        // Send Success Email
+        $data = (object) [
+            'insurance_code' => $insurance->insurance_code,
+            'insured_name' => $insurance->holder->name,
+            'product_name' => $insurance->product->name,
+            'total_premium' => number_format($insurance->total_payable, 2),
+            'total_payable' => number_format($insurance->total_payable, 2)
+        ];
+
+        $user = User::where('email', $insurance->holder->email)->first();
+        if(empty($user)) {
+            User::create([
+                'email' => $insurance->holder->email,
+                'name' => $insurance->holder->name,
+                'password' => Hash::make(Str::random(8)),
+            ]);
+        }
+
+        Mail::to($insurance->holder->email)
+            ->cc([config('setting.howden.affinity_team_email'), config('email_cc_list')])
+            ->send(new PaymentReceipt($data));
+
         return view('frontend.motor.payment_success')
             ->with([
                 'insurance' => $insurance,

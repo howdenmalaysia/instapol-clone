@@ -122,7 +122,7 @@ class Liberty implements InsurerLibraryInterface
         $variants = [];
         array_push($variants, new VariantData([
             'nvic' => (string) $vehicle_vix->response->nvic,
-            'sum_insured' => $vehicle_vix->response->sum_insured,
+            'sum_insured' => floatval($vehicle_vix->response->sum_insured),
             'variant' => $vehicle_vix->response->variant,
         ]));
 
@@ -143,13 +143,13 @@ class Liberty implements InsurerLibraryInterface
                 'make' => $vehicle_vix->response->make,
                 'manufacture_year' => $vehicle_vix->response->manufacture_year,
                 'make_code' => intval($vehicle_vix->response->make_code),
-                'max_sum_insured' => $vehicle_vix->response->max_sum_insured,
-                'min_sum_insured' => $vehicle_vix->response->min_sum_insured,
+                'max_sum_insured' => floatval($vehicle_vix->response->max_sum_insured),
+                'min_sum_insured' => floatval($vehicle_vix->response->min_sum_insured),
                 'model' => $vehicle_vix->response->model,
                 'model_code' => intval($vehicle_vix->response->model_code),
                 'ncd_percentage' => $vehicle_vix->response->ncd_percentage,
                 'seating_capacity' => $vehicle_vix->response->seating_capacity,
-                'sum_insured' => $sum_insured,
+                'sum_insured' => floatval($sum_insured),
                 'sum_insured_type' => $vehicle_vix->response->sum_insured_type,
                 'variants' => $variants,
                 'vehicle_number' => $input->vehicle_number,
@@ -415,10 +415,11 @@ class Liberty implements InsurerLibraryInterface
             'postcode' => $input->postcode,
             'region' => $input->region,
             'state' => $input->state,
+            'sum_insured' => $input->vehicle->sum_insured ?? $vehicle->sum_insured,
             'vehicle' => $vehicle,
             'vehicle_number' => $input->vehicle_number,
             'vehicle_body_type' => $input->vehicle_body_type ?? '',
-            'ownership_type' => $ownership_type
+            'ownership_type' => $ownership_type,
         ];
 
         $motor_premium = $this->getPremium($data);
@@ -451,6 +452,7 @@ class Liberty implements InsurerLibraryInterface
                     if((strpos((string) $item->bencode, $extra_cover->extra_cover_code) !== false) ||
                     ($item->bencode == 'CART' && $extra_cover->extra_cover_code == '112')) {
                         $extra_cover->premium = formatNumber($item->benpremium);
+                        $extra_cover->selected = floatval($item->benpremium) == 0;
                     }
                 }
             }
@@ -461,8 +463,8 @@ class Liberty implements InsurerLibraryInterface
             'excess_amount' => formatNumber($motor_premium->response->excess),
             'extra_cover' => $this->sortExtraCoverList($input->extra_cover),
             'gross_premium' => formatNumber($motor_premium->response->gross_premium),
-            'max_sum_insured' => $vehicle->max_sum_insured,
-            'min_sum_insured' => $vehicle->min_sum_insured,
+            'max_sum_insured' => formatNumber($vehicle->max_sum_insured),
+            'min_sum_insured' => formatNumber($vehicle->min_sum_insured),
             'ncd_amount' => formatNumber($motor_premium->response->ncd_amount),
             'ncd_percentage' => formatNumber($motor_premium->response->ncd_percentage),
             'net_premium' => formatNumber($motor_premium->response->net_premium + $motor_premium->response->sst_amount + $motor_premium->response->stamp_duty),
@@ -470,7 +472,7 @@ class Liberty implements InsurerLibraryInterface
             'sst_percent' => formatNumber($motor_premium->response->sst_percentage),
             'stamp_duty' => formatNumber($motor_premium->response->stamp_duty),
             'sum_insured_type' => $vehicle->sum_insured_type,
-            'sum_insured' => $vehicle->sum_insured,
+            'sum_insured' => formatNumber($vehicle->sum_insured),
             'total_benefit_amount' => formatNumber($total_benefit_amount),
             'total_payable' => formatNumber($motor_premium->response->gross_due),
             'fl_quote_number' => $motor_premium->response->fl_quote_number,
@@ -866,7 +868,7 @@ class Liberty implements InsurerLibraryInterface
             'seat_capacity' => $input->vehicle->extra_attribute->seating_capacity,
             'signature' => $this->generateSignature($request_id),
             'state_code' => $this->getStateCode($input->state),
-            'sum_insured' => $input->vehicle->sum_insured,
+            'sum_insured' => $input->sum_insured ?? $input->vehicle->sum_insured,
             'timestamp' => Carbon::now()->format(self::TIMESTAMP_FORMAT), // The time when the request is made
             'town_description' => $this->getStateName($input->state),
             'use_code' => $input->vehicle->extra_attribute->vehicle_use_code,
@@ -899,7 +901,7 @@ class Liberty implements InsurerLibraryInterface
         if($refer_code != '') {
             $message = (string) $result->response->reqdataReturn->referdesc;
 
-            return $this->abort(__('api.referred_risk', ['company' => $this->company, 'reason' => str_replace('^', ', ', $message)]), $refer_code);
+            return $this->abort(__('api.referred_risk', ['company' => $this->company_name, 'reason' => str_replace('^', ', ', $message)]), intval($refer_code));
         }
 
         $response = (object) [
@@ -1186,14 +1188,14 @@ class Liberty implements InsurerLibraryInterface
             $json = json_decode($result->response);
 
             if (empty($json)) {
-                $message = !empty($result->response) ? $result->response : __('api.empty_response', ['company' => $this->company]);
+                $message = !empty($result->response) ? $result->response : __('api.empty_response', ['company' => $this->company_name]);
 
                 return $this->abort($message);
             }
 
             $result->response = $json[0];
         } else {
-            $message = !empty($result->response) ? $result->response : __('api.empty_response', ['company' => $this->company]);
+            $message = !empty($result->response) ? $result->response : __('api.empty_response', ['company' => $this->company_name]);
 
             return $this->abort($message);
         }

@@ -84,6 +84,7 @@
                                         sst-amount="{{ session('motor')->quotation->sst_amount }}"
                                         stamp-duty="{{ session('motor')->quotation->stamp_duty }}"
                                         total-payable="{{ session('motor')->quotation->total_payable }}"
+                                        roadtax-total="{{ session('motor')->roadtax->total ?? 0.00 }}"
                                     />
                                 </div>
                                 <div class="col-12 col-lg-8">

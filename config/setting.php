@@ -42,7 +42,9 @@ return [
         'general_error' => 490
     ],
     'howden' => [
-        'short_code' => env('HOWDEN_SHORT_CODE')
+        'short_code' => env('HOWDEN_SHORT_CODE'),
+        'affinity_team_email' => env('AFFINITY_TEAM_EMAIL'),
+        'email_cc_list' => empty(env('EMAIL_CC_LIST')) ? [] : explode(',', env('EMAIL_CC_LIST'))
     ],
     'payment' => [
         'gateway' => [

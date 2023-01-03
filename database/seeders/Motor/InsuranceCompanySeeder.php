@@ -114,7 +114,7 @@ class InsuranceCompanySeeder extends Seeder
                 'coming_soon' => 1,
             ],
             [
-                'name' => 'MPIG',
+                'name' => 'MPI Generali',
                 'logo' => 'mpig.png',
                 'sequence' => 15,
                 'active' => 1,

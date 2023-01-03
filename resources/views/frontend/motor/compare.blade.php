@@ -5,7 +5,6 @@
 @section('content')
     <x-motor-layout id="compare" current-step="2">
         <x-slot name="content">
-           
             <div class="row">
                 <div class="col-12 col-lg-8 mb-5">
                     <h4 class="fw-bold">{{ __('frontend.motor.compare_page.scroll_down') }}</h4>
@@ -145,14 +144,14 @@
                             </div>
                         </div>
                         @foreach ($products as $product)
-                            <div class="col-4 border shadow rounded my-3 mx-auto insurer-card">
+                            <div class="col-4 border shadow rounded my-3 insurer-card">
                                 <div class="row" id={{ 'insurer-' . $product->id }} data-insurer-id="{{ $product->insurance_company->id }}">
                                     <div class="col-12">
                                         <div class="row p-3">
-                                   
-                                            <div class="col-12 col-sm-12 text-center align-self-center">
+                                            <div class="col-12 text-center align-self-center mb-3">
                                                 <div class="row">
-                                                    <div class="col-12"><p class="text-primary">{{ $product->name }}</p>
+                                                    <div class="col-12">
+                                                        <p class="text-primary">{{ $product->name }}</p>
                                                         <img
                                                             src="{{ asset("images/insurer/{$product->insurance_company->logo}") }}"
                                                             alt="{{ $product->insurance_company->name }}"
@@ -161,6 +160,8 @@
                                                         >
                                                     </div>
                                                 </div>
+                                            </div>
+                                            <div class="col-12 text-center align-self-center">
                                                 <div class="row">
                                                     <div class="col-6">
                                                         <p class="text-primary fs-4 fw-bold mb-0">Price</p>
@@ -349,11 +350,8 @@
                 }
 
                 let product_id = $(e.target).data('product_id');
-                // if(['{{ config('insurer.config.bsib.product_id') }}'].includes(product_id)) {
-
-                // }
-
-                motor.insurance_company_id = product_id;
+                motor.vehicle = premiums[product_id].vehicle;
+                motor.product_id = product_id;
                 $('#motor').val(JSON.stringify(motor));
 
                 $('#insurance-premium').val(JSON.stringify(premiums[product_id]));

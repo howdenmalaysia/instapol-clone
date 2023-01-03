@@ -17,6 +17,7 @@
                         sst-amount="{{ $premium->sst_amount }}"
                         stamp-duty="{{ $premium->stamp_duty }}"
                         total-payable="{{ $premium->total_payable }}"
+                        roadtax-total="{{ $premium->roadtax ?? session('motor')->roadtax->total ?? 0.00 }}"
                     />
                 </div>
                 <div class="col-12 col-lg-8">
@@ -150,7 +151,7 @@
                                     <h3 class="card-title fw-bold border-bottom py-4 px-md-3">{{ __('frontend.motor.add_ons_page.road_tax_renewal') }}</h3>
                                     <div class="row align-items-center px-md-3">
                                         <div class="col-1">
-                                            <input type="checkbox" id="roadtax-checkbox" class="form-check-input" name="roadtax" />
+                                            <input type="checkbox" id="roadtax-checkbox" class="form-check-input" name="roadtax" {{ !empty(session('motor')->roadtax) ? 'checked' : '' }} />
                                         </div>
                                         <div class="col-8">
                                             <div class="row align-items-center">
@@ -168,31 +169,31 @@
                                             </div>
                                         </div>
                                         <div class="col-1 text-end">RM</div>
-                                        <div id="roadtax-price-display" class="col-2 text-end t-end">0.00</div>
+                                        <div id="roadtax-price-display" class="col-2 text-end t-end">{{ number_format(session('motor')->roadtax->roadtax_price ?? 0, 2) }}</div>
                                     </div>
                                     <div class="row align-items-center px-md-3 mt-2">
                                         <div class="col-1"></div>
                                         <div class="col-8">{{ __('frontend.motor.add_ons_page.myeg_fee') }}</div>
                                         <div class="col-1 text-end">RM</div>
-                                        <div id="myeg-fee-display" class="col-2 text-end">0.00</div>
+                                        <div id="myeg-fee-display" class="col-2 text-end">{{ number_format(session('motor')->roadtax->myeg_fee ?? 0, 2) }}</div>
                                     </div>
                                     <div class="row align-items-center px-md-3 mt-2">
                                         <div class="col-1"></div>
                                         <div class="col-8">{{ __('frontend.motor.add_ons_page.eservice_fee') }}</div>
                                         <div class="col-1 text-end">RM</div>
-                                        <div id="eservice-fee-display" class="col-2 text-end">0.00</div>
+                                        <div id="eservice-fee-display" class="col-2 text-end">{{ number_format(session('motor')->roadtax->eservice_fee ?? 0, 2) }}</div>
                                     </div>
                                     <div class="row align-items-center px-md-3 mt-2">
                                         <div class="col-1"></div>
                                         <div class="col-8">{{ __('frontend.motor.add_ons_page.delivery_fee') }}</div>
                                         <div class="col-1 text-end">RM</div>
-                                        <div id="delivery-fee-display" class="col-2 text-end">0.00</div>
+                                        <div id="delivery-fee-display" class="col-2 text-end">{{ number_format(session('motor')->roadtax->delivery_fee ?? 0, 2) }}</div>
                                     </div>
                                     <div class="row align-items-center px-md-3 mt-2">
                                         <div class="col-1"></div>
                                         <div class="col-8">{{ __('frontend.motor.add_ons_page.service_tax') }}</div>
                                         <div class="col-1 text-end">RM</div>
-                                        <div id="service-tax-display" class="col-2 text-end">0.00</div>
+                                        <div id="service-tax-display" class="col-2 text-end">{{ number_format(session('motor')->roadtax->sst ?? 0, 2) }}</div>
                                     </div>
                                     <div class="alert alert-success mt-4" role="alert">
                                         {{ __('frontend.motor.add_ons_page.mco_note') }}
@@ -260,15 +261,26 @@
     let motor = JSON.parse($('#motor').val());
 
     $(() => {
-        // Initialize
-        // $('#sum-insured-slider').range('init');
-
         $('#show-more-add-ons').on('click', () => {
             $(this).text("{{ __('frontend.button.show_less') }}");
         });
 
         $('#btn-delete').on('click', () => {
             $(this).closest('info').remove();
+        });
+
+        $('#sum-insured-slider').on('change', (e) => {
+            motor.vehicle.sum_insured = parseFloat($(e.target).val());
+            $('#motor').val(JSON.stringify(motor));
+
+            // Set Loading Effect
+            if(!$('#pricing-table #basic-premium').hasClass('loadingButton')) {
+                $('#pricing-table #basic-premium').text(' ').toggleClass('loadingButton');
+                $('#pricing-table #gross-premium').text(' ').toggleClass('loadingButton');
+                $('#pricing-table #total-payable').text(' ').toggleClass('loadingButton');
+            }
+
+            refreshPremium();
         });
 
         $('#add-additional-driver').on('click', () => {
@@ -316,16 +328,23 @@
         });
 
         $('.extra-coverage-checkbox').on('change', (e) => {
-            if($(e.target).is(':checked')) {
+            if(!$(e.target).parent().parent().find('.premium').hasClass('loadingButton')) {
                 $(e.target).parent().parent().find('.premium').text(' ').toggleClass('loadingButton');
                 $('#btn-next').toggleClass('loadingButton');
-                refreshPremium();
             }
+
+            refreshPremium();
         });
 
         $('#roadtax-checkbox').on('change', (e) => {
             if($(e.target).is(':checked')) {
                 $('#body-type-modal').modal('show');
+            } else {
+                $('#roadtax-price-display').removeClass('loadingButton').text(0.00);
+                $('#myeg-fee-display').removeClass('loadingButton').text(0.00);
+                $('#eservice-fee-display').removeClass('loadingButton').text(0.00);
+                $('#delivery-fee-display').removeClass('loadingButton').text(0.00);
+                $('#service-tax-display').removeClass('loadingButton').text(0.00);
             }
         });
 
@@ -395,25 +414,39 @@
             product_id: motor.product_id,
             motor: motor,
             extra_cover: selected_extra_cover,
-            roadtax: $('#roadtax-checkbox').is(':checked')
         }).then((res) => {
             console.log(res);
 
             // Update Pricing Card
-            $('#add-ons-premium').text(`RM ${formatMoney(res.data.total_benefit_amount)}`);
-            $('#gross-premium').text(`RM ${formatMoney(res.data.gross_premium)}`);
-            $('#sst').text(`RM ${formatMoney(res.data.sst_amount)}`);
-            $('#total-payable').text(`RM ${formatMoney(res.data.total_payable)}`);
+            $('#basic-premium').text(formatMoney(res.data.basic_premium));
+            $('#add-ons-premium').text(formatMoney(res.data.total_benefit_amount));
+            $('#gross-premium').text(formatMoney(res.data.gross_premium));
+            $('#sst').text(formatMoney(res.data.sst_amount));
+            $('#total-payable').text(formatMoney(res.data.total_payable));
 
             // Update Add Ons Pricing
-            res.data.extra_cover.forEach((extra_cover) => {
-                $(`#${extra_cover.extra_cover_code}-premium`).text(`${formatMoney(extra_cover.premium)}`).removeClass('loadingButton');
-            });
+            if(res.data.extra_cover.length > 0) {
+                res.data.extra_cover.forEach((extra_cover) => {
+                    $(`#${extra_cover.extra_cover_code}-premium`).text(`${formatMoney(extra_cover.premium)}`).removeClass('loadingButton');
+                });
+            } else {
+                motor.extra_cover_list.forEach((extra_cover) => {
+                    $(`#${extra_cover.extra_cover_code}-premium`).text(`${formatMoney(extra_cover.premium)}`).removeClass('loadingButton');
+                });
+            }
 
             // Remove Loading for Next Button
             $('#btn-next').removeClass('loadingButton');
+
+            // Remove Loading in Pricing Card
+            $('#pricing-table #basic-premium').removeClass('loadingButton');
+            $('#pricing-table #gross-premium').removeClass('loadingButton');
+            $('#pricing-table #total-payable').removeClass('loadingButton');
         }).catch((err) => {
             console.log(err.response);
+            swalAlert(err.response.data.message, () => {
+                window.history.back();
+            });
         });
     }
 
@@ -430,15 +463,18 @@
             $('#h-roadtax').val(JSON.stringify(res.data));
 
             // Update Pricing Display
-            $('#roadtax-price-display').removeClass('loadingButton').text(`RM ${formatMoney(res.data.roadtax_price)}`);
-            $('#myeg-fee-display').removeClass('loadingButton').text(`RM ${formatMoney(res.data.myeg_fee)}`);
-            $('#eservice-fee-display').removeClass('loadingButton').text(`RM ${formatMoney(res.data.eservice_fee)}`);
-            $('#delivery-fee-display').removeClass('loadingButton').text(`RM ${formatMoney(res.data.delivery_fee)}`);
-            $('#service-tax-display').removeClass('loadingButton').text(`RM ${formatMoney(res.data.sst)}`);
+            $('#roadtax-price-display').removeClass('loadingButton').text(formatMoney(res.data.roadtax_price));
+            $('#myeg-fee-display').removeClass('loadingButton').text(formatMoney(res.data.myeg_fee));
+            $('#eservice-fee-display').removeClass('loadingButton').text(formatMoney(res.data.eservice_fee));
+            $('#delivery-fee-display').removeClass('loadingButton').text(formatMoney(res.data.delivery_fee));
+            $('#service-tax-display').removeClass('loadingButton').text(formatMoney(res.data.sst));
 
             // Update Pricing Card
-            $('#road-tax').text(`RM ${formatMoney(res.data.total)}`);
-            $('#total-payable').text(`RM ${formatMoney(parseFloat(res.data.total))}`);
+            $('#road-tax').text(formatMoney(res.data.total));
+            motor.premium.total_payable += parseFloat(res.data.total);
+            $('#motor').val(JSON.stringify(motor));
+            $('#total-payable').text(formatMoney(motor.premium.total_payable));
+
         }).catch((err) => {
             console.log(err.response);
         });

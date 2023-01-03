@@ -8,6 +8,7 @@ return [
     'unsupported_id_type' => 'Unsupported ID Type.',
     'variant_not_match' => 'Variant combination does not match.',
     'file_not_found' => 'Mapping file not found. (Mapping File Type: :type)',
+    'empty_nvic' => 'NVIC code is empty. (Insurer ID: :insurer_id)',
 
     // Underwriting Related
     'gap_in_cover' => 'It seems like your car insurance has expired more than :days days. Please WhatsApp us for help.',
