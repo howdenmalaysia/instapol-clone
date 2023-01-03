@@ -3,7 +3,7 @@
         <PremiumRequest xmlns="http://tempuri.org/">
             <reqData>
                 <allRider xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $all_rider }}</allRider>
-                <altIDNo xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API"></altIDNo>
+                <altIDNo xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $company_registration_number }}</altIDNo>
                 <companyVehicle xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $is_company }}</companyVehicle>
                 <coverage xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $coverage }}</coverage>
                 <effDate xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $effective_date }}</effDate>
