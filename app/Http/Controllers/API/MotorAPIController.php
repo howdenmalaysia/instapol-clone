@@ -13,6 +13,7 @@ use App\DataTransferObjects\Motor\VehicleVariantData;
 use App\Helpers\Insurer\BerjayaSompo;
 use App\Helpers\Insurer\Liberty;
 use App\Helpers\Insurer\PacificOrient;
+use App\Helpers\Insurer\AIG;
 use App\Helpers\Insurer\Allianz;
 use App\Helpers\Insurer\AmGeneral;
 use App\Helpers\Insurer\Zurich;
@@ -725,6 +726,11 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             }
             case 3:{
                 return new Allianz($insurer->id, $insurer->name);
+
+                break;
+            }
+            case 6:{
+                return new AIG($insurer->id, $insurer->name);
 
                 break;
             }

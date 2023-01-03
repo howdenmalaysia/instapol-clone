@@ -56,5 +56,11 @@ return [
             'username' => env('ALLIANZ_MOTOR_API_USERNAME'),
             'password' => env('ALLIANZ_MOTOR_API_PASSWORD'),
         ],
+        'aig_config'=> [
+            'url' => env('AIG_MOTOR_API_URL'),
+            'jpj' => env('AIG_MOTOR_API_JPJ'),
+            'agent_code' => env('AIG_MOTOR_API_AGENT_CODE'),
+            'password' => env('AIG_MOTOR_API_PASSWORD'),
+        ],
     ] 
 ];
