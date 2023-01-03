@@ -783,7 +783,7 @@ class PacificOrient implements InsurerLibraryInterface
         switch($data) {
             case 'M':
             case 'F': {
-                return $gender
+                return $data;
             }
             case 'O': {
                 return 'C';
