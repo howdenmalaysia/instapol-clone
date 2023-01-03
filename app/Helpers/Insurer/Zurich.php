@@ -29,7 +29,8 @@ class Zurich implements InsurerLibraryInterface
 
     private const SOAP_ACTION_DOMAIN = 'https://gtws2.zurich.com.my/ziapps/zurichinsurance/services';
     private const EXTRA_COVERAGE_LIST = ['01','02','03','06','07','101','103','108','109','111',
-    '112','19','22','25','57','72','89','97','200','201','202','203'];
+    '112','19','20E','20W','22','25','25E','25W','57','72','89','89A','97','97A','D1','TW1','TW2',
+    '200','201','202','203','01A'];
     private const MIN_SUM_INSURED = 10000;
     private const MAX_SUM_INSURED = 500000;
     private const OCCUPATION = '99';
@@ -48,7 +49,7 @@ class Zurich implements InsurerLibraryInterface
     public function vehInputMake(object $input) : object
     {
         $path = 'GetVehicleMake';
-        $request_datetime = $input->request_datetime;
+        $request_datetime = Carbon::now()->format('Y-M-d h:i:s A');
         $product_code = $input->product_code;
         $signature = array(
             'request_datetime' => $request_datetime,
@@ -243,6 +244,14 @@ class Zurich implements InsurerLibraryInterface
                 'variant' => $get_variant,
             ]));
         }
+        // Get Vehicle Details
+        $vehicle_make = $this->vehInputMake($vehInputModel);
+        $make = '';
+        foreach($vehicle_make->response->Make as $make_details){
+            if($make_details['sdfMakeID'] == $vix->response->VehMake){
+                $make = $make_details['Description'];
+            }
+        }
         return (object) [
             'status' => true,
             'veh_model_code' => $vix->response->VehModelCode,
@@ -250,16 +259,16 @@ class Zurich implements InsurerLibraryInterface
             'response' => new VIXNCDResponse([
                 'body_type_code' => intval($this->body_type_code($BodyType)) ?? null,
                 'body_type_description' => $BodyType ?? null,
-                'chassis_number' => $input->vehicle->extra_attribute->chassis_number,
-                'coverage' => $input->vehicle->coverage,
+                'chassis_number' => $vix->response->VehChassisNo,
+                'coverage' => $vix->response->CoverType,
                 'engine_capacity' => intval($vix->response->VehCC),
                 'engine_number' => $vix->response->VehEngineNo,
                 'expiry_date' => Carbon::parse($expiry_date)->format('d M Y'),
                 'inception_date' => Carbon::parse($inception_date)->format('d M Y'),
-                'make' => $input->vehicle->make ?? '',
+                'make' => $make ?? '',
                 'make_code' => intval($vix->response->VehMake),
-                'model' => $input->vehicle->model ?? '',
-                'model_code' => $input->vehicle->extra_attribute->model_code,
+                'model' => $vix->response->VehModel ?? '',
+                'model_code' => null,
                 'manufacture_year' => intval($vix->response->VehMakeYear),
                 'max_sum_insured' => doubleval(self::MAX_SUM_INSURED),
                 'min_sum_insured' => doubleval(self::MIN_SUM_INSURED),
@@ -889,7 +898,7 @@ class Zurich implements InsurerLibraryInterface
             'make' => $vehicle_vix->response->make_code,
             'model' => $vehicle_vix->veh_model_code,
             'capacity' => $vehicle_vix->response->engine_capacity,
-            'uom' => $vehicle_vix->veh_model_code,
+            'uom' => $vehicle_vix->uom,
             'engine_no' => $vehicle_vix->response->engine_number,
             'chasis_no' => $vehicle_vix->response->chassis_number,
             'logbook_no' => '',
@@ -964,16 +973,44 @@ class Zurich implements InsurerLibraryInterface
                 case '111': 
                 case '112':
                 case '19':  
-                case '22': 
+                case '20E':  
+                case '20W':  
+                case '22': {
+                    $sum_insured_amount = 1500;
+                    break;
+                }
                 case '25': 
+                case '25E': 
+                case '25W': 
                 case '57': 
                 case '72': 
-                case '89': 
-                case '97': 
+                case '89': {
+                    $sum_insured_amount = 1000;
+                    break;
+                }
+                case '89A': {
+                    $sum_insured_amount = 1000;
+                    break;
+                }
+                case '97': {
+                    $sum_insured_amount = 500;
+                    break;
+                }
+                case '97A': {
+                    $sum_insured_amount = 2000;
+                    break;
+                }
+                case 'D1': 
+                case 'TW1': 
+                case 'TW2': 
                 case '200': 
                 case '201': 
-                case '202': 
+                case '202': {
+                    $sum_insured_amount = 1000;
+                    break;
+                }
                 case '203': 
+                case '01A': 
             }
 
             if(!empty($sum_insured_amount)) {
@@ -1086,11 +1123,27 @@ class Zurich implements InsurerLibraryInterface
                 $extra_cover_name = 'Passenger Risk';
                 break;
             }
+            case '20E': { 
+                $extra_cover_name = 'Passenger Risk - Motor Trade';
+                break;
+            }
+            case '20W': { 
+                $extra_cover_name = 'Passenger Risk - Motor Trade';
+                break;
+            }
             case '22': { 
                 $extra_cover_name = 'Caravan / Luggage / Trailers (Private Car Only)';
                 break;
             }
             case '25': { 
+                $extra_cover_name = 'Strike Riot & Civil Commotion';
+                break;
+            }
+            case '25E': { 
+                $extra_cover_name = 'Strike Riot & Civil Commotion';
+                break;
+            }
+            case '25W': { 
                 $extra_cover_name = 'Strike Riot & Civil Commotion';
                 break;
             }
@@ -1106,8 +1159,28 @@ class Zurich implements InsurerLibraryInterface
                 $extra_cover_name = 'Breakage Of Glass In WindScreen, Window Or Sunroof';
                 break;
             }
+            case '89A': { 
+                $extra_cover_name = 'Breakage Of Glass In WindScreen, Window Sunroof';
+                break;
+            }
             case '97': { 
                 $extra_cover_name = 'Vehicle Accessories Endorsement';
+                break;
+            }
+            case '97A': { 
+                $extra_cover_name = 'Gas Conversion Kit Tank';
+                break;
+            }
+            case 'D1': { 
+                $extra_cover_name = 'Demonstration';
+                break;
+            }
+            case 'TW1': { 
+                $extra_cover_name = 'Inclusion Of Third Party';
+                break;
+            }
+            case 'TW2': { 
+                $extra_cover_name = 'Inclusion Of Third Party Working Risk - All';
                 break;
             }
             case '200': { 
@@ -1124,6 +1197,10 @@ class Zurich implements InsurerLibraryInterface
             }
             case '203': { 
                 $extra_cover_name = 'Key Replacement';
+                break;
+            }
+            case '01A': {
+                $extra_cover_name = 'Authorised Driver';
                 break;
             }
         }
@@ -1184,12 +1261,28 @@ class Zurich implements InsurerLibraryInterface
                     $sequence = 12;
                     break;
                 }
+                case '20E': { // Passenger Risk - Motor Trade
+                    $sequence = 13;
+                    break;
+                }
+                case '20W': { // Passenger Risk - Motor Trade
+                    $sequence = 14;
+                    break;
+                }
                 case '22': { // Caravan / Luggage / Trailers (Private Car Only) 
                     $sequence = 15;
                     break;
                 }
                 case '25': { // Strike Riot & Civil Commotion
                     $sequence = 16;
+                    break;
+                }
+                case '25E': { // Strike Riot & Civil Commotion
+                    $sequence = 17;
+                    break;
+                }
+                case '25W': { // Strike Riot & Civil Commotion
+                    $sequence = 18;
                     break;
                 }
                 case '57': { // Inclusion Of Special Perils 
@@ -1204,8 +1297,28 @@ class Zurich implements InsurerLibraryInterface
                     $sequence = 21;
                     break;
                 }
+                case '89A': { // Breakage Of Glass In WindScreen, Window Sunroof 
+                    $sequence = 22;
+                    break;
+                }
                 case '97': { // Vehicle Accessories Endorsement 
                     $sequence = 23;
+                    break;
+                }
+                case '97A': { // Gas Conversion Kit Tank
+                    $sequence = 24;
+                    break;
+                }
+                case 'D1': { // Demonstration
+                    $sequence = 25;
+                    break;
+                }
+                case 'TW1': { // Inclusion Of Third Party
+                    $sequence = 26;
+                    break;
+                }
+                case 'TW2': { // Inclusion Of Third Party Working Risk - All
+                    $sequence = 27;
                     break;
                 }
                 case '200': { // PA Basic 
@@ -1222,6 +1335,10 @@ class Zurich implements InsurerLibraryInterface
                 }
                 case '203': { // Key Replacement
                     $sequence = 31;
+                    break;
+                }
+                case '01A': { // Authorised Driver
+                    $sequence = 32;
                     break;
                 }
             }

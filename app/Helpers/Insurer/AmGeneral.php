@@ -61,19 +61,6 @@ class AmGeneral implements InsurerLibraryInterface
 		$this->encrypt_pswd_iterations = config('insurer.config.am_config.encrypt_pswd_iterations');
 		$this->encrypt_key_size = config('insurer.config.am_config.encrypt_key_size');
 		$this->channel_token = config('insurer.config.am_config.channel_token');
-        
-        // $b = array(
-        //     'newICNo' => 871102055170,
-        //     'vehicleNo' => "WD3436D",
-        //     'vehiclePostCode' => 51200,
-		// 	"oldICNo" => "",
-		// 	"busRegNo" => "",
-		// 	"newBusRegNo" => "",
-		// 	"vehicleClass" => "PC",
-		// 	"brand" => "A",
-        // );
-
-        // $a = $this->Q_GetProductList($b);
 	}
 
 	public function get_token(){
@@ -93,265 +80,13 @@ class AmGeneral implements InsurerLibraryInterface
         }
 	}
 
-	// function comparison($cParams = null, $test = false){
-	// 	$this->CI->load->helper('formatter_helper');
-	// 	$business_registration_number = $new_business_registration_number = '';
-	// 	switch($cParams['id_type']) {
-	// 		case '1': {
-	// 			$dobs = str_split($cParams['icNo'], 2);
-	// 			$year = intval($dobs[0]);
-
-	// 			if ($year >= date('y', strtotime('now'))) {
-	// 				$year += 1900;
-	// 			} else {
-	// 				$year += 2000;
-	// 			}
-
-	// 			$dob = $dobs[2] . "-" . $dobs[1] . "-" . strval($year);
-	// 			$nric_number = $cParams['icNo'];
-
-	// 			break;
-	// 		}
-	// 		case '6': {
-	// 			if ($this->isNewBusinessRegistrationNumber($cParams['icNo'])) {
-	// 				$new_business_registration_number = $cParams['icNo'];
-	// 			} else {
-	// 				$business_registration_number = $cParams['icNo'];
-	// 			}
-
-	// 			break;
-	// 		}
-	// 	}
-
-	// 	$text = array(
-	// 		"newICNo" => $nric_number ?? '',
-	// 		"oldICNo" => "",
-	// 		"busRegNo" => $business_registration_number,
-	// 		"newBusRegNo" => $new_business_registration_number,
-	// 		"vehicleClass" => "PC",
-	// 		"vehicleNo" => $cParams['veh_no'],
-	// 		"brand" => "A",
-	// 		"insuredPostCode" => $cParams['postcode'],
-	// 		"vehiclePostCode" => $cParams['postcode'],
-	// 		"dob" => $dob ?? ''
-	// 	);
-
-	// 	$encrypted = $this->encrypt(json_encode($text));
-
-	// 	$data = array(
-	// 		'requestData' => $encrypted
-	// 	);
-
-	// 	$response = $this->cURL("getData", "QuickQuotation/GetProductList", json_encode($data));
-
-	// 	if($response->status):
-	// 		if(!isset($response->response->responseData)){
-	// 			$this->CI->db->insert("error_log", [
-	// 				"Code" => 300,
-	// 				"Message" => "AMG Error. No data in the response. Source : AMGWS/comparison",
-	// 				"Created" => date("Y-m-d H:i:s")
-	// 			]);
-
-	// 			return false;
-	// 		}
-
-	// 		$encrypted = $response->response->responseData;
-	// 		$decrypted = json_decode($this->decrypt($encrypted));
-	// 		$header = $response->header;
-	// 		$headers = explode("<br>", nl2br($header,false));
-
-	// 		if($test) {
-	// 			header('Content-Type: application/json');
-	// 			$return['GetProductList'] = [
-	// 				'RequestHeader'=>$response->request_header,
-	// 				'RequestParams'=>$response->request_param,
-	// 				'RequestParamsDecrypted'=>array('requestData' => $text),
-	// 				'ResponseHeader'=>$response->header,
-	// 				'ResponseBody'=>$response->response,
-	// 				'Response_decrypted' => $decrypted
-	// 			];
-	// 		}
-
-	// 		$auth_token = $referenceData = "";
-	// 		foreach ($headers as $item) {
-	// 			$items = explode(":", trim($item));
-
-	// 			if(strtolower($items[0]) == "auth_token"): $auth_token = trim($items[1]);
-	// 			elseif(strtolower($items[0]) == "referencedata"): $referenceData = trim($items[1]);
-	// 			endif;
-	// 		}
-
-	// 		if(isset($decrypted->variantSeriesList)):
-	// 			$market_value = 0;
-	// 			$total_payable = 0;
-
-	// 			$search = [
-	// 				'nvic' => "",
-	// 				'value' => 0
-	// 			];
-
-	// 			foreach($decrypted->variantSeriesList as $variant){
-	// 				if($variant->nvicCode == $cParams['nvic']):
-	// 					$market_value = $variant->marketValue;
-	// 					$search = [
-	// 						'nvic' => $variant->nvicCode,
-	// 						'value'=>$variant->marketValue
-	// 					];
-	// 				else:
-	// 					$cParams['nvic'] = $variant->nvicCode;
-	// 					$market_value = $variant->marketValue;
-	// 				endif;
-	// 			}
-
-	// 			if(!empty($search['nvic'])):
-	// 				$cParams['nvic'] = $search['nvic'];
-	// 				$market_value = $search['value'];
-	// 			endif;
-
-	// 			$params = array(
-	// 				'auth_token' => $auth_token,
-	// 				'referenceData' => $referenceData,
-	// 				'nvic' => $cParams['nvic']
-	// 			);
-	// 			$response2 = $this->GetProductListVariant($params);
-
-	// 			if(!isset($response2->response->responseData)){
-	// 				$this->CI->db->insert("error_log", [
-	// 					"Code" => 300,
-	// 					"Message" => "AMG Error. No data for variant in the response. Source : AMGWS/comparison",
-	// 					"Created" => date("Y-m-d H:i:s")
-	// 				]);
-	// 				return false;
-	// 			}
-
-	// 			$header = $response2->header;
-	// 			$headers = explode("<br>", nl2br($header, false));
-	// 			$encrypted2 = $response2->response->responseData;
-	// 			$decrypted2 = json_decode($this->decrypt($encrypted2));
-
-	// 			if(isset($decrypted2->errorCode)):
-	// 				return ['details' => $decrypted2->errorCode . " : " . $decrypted2->errorMessage];
-	// 			endif;
-
-	// 			foreach ($headers as $item) {
-	// 				$items = explode(":", trim($item));
-
-	// 				if(strtolower($items[0]) == "auth_token"): $auth_token = trim($items[1]);
-	// 				elseif(strtolower($items[0]) == "referencedata"): $referenceData = trim($items[1]);
-	// 				endif;
-	// 			}
-
-	// 			if($test) {
-	// 				$return['GetProductListVariant'] = [
-	// 					'RequestHeader'=>$response2->request_header,
-	// 					'RequestParams'=>$response2->request_param,
-	// 					'RequestParamsDecrypted'=>array('requestData' => array("nvicCode"=>$params['nvic'])),
-	// 					'ResponseHeader'=>$response2->header,
-	// 					'ResponseBody'=>$response2->response,
-	// 					'Response_decrypted' => $decrypted2
-	// 				];
-	// 				echo json_encode($return);die;
-	// 			}
-
-	// 			$details = $comp_prem = $comp_plus = "";
-
-	// 			foreach ($decrypted2->productList as $product) {
-	// 				if(isset($cParams['scopeOfCover'])) {
-	// 					if($cParams['scopeOfCover'] == $product->scopeOfCover){
-	// 						$details = $product;
-	// 						$total_payable = $product->totalPayable;
-	// 					}
-	// 				} else {
-	// 					if($product->scopeOfCover == "COMP PREM") {
-	// 						$comp_prem = $product;
-	// 					} else if($product->scopeOfCover == "COMP PLUS") {
-	// 						$comp_plus = $product;
-	// 					}
-	// 				}
-	// 			}
-
-	// 			if(empty($total_payable)) {
-	// 				// get COMP PREM first then only COMP
-	// 				if(!empty($comp_prem)) {
-	// 					$details = $comp_prem;
-	// 					$total_payable = $comp_prem->totalPayable;
-	// 				}else if(!empty($comp_plus)) {
-	// 					$details = $comp_plus;
-	// 					$total_payable = $comp_plus->totalPayable;
-	// 				}
-	// 			}
-
-	// 			$return = array(
-	// 				'total_payable' => $total_payable,
-	// 				'market_value' => $decrypted2->sumInsured,
-	// 				'min_market_value' => $details->minSumInsured,
-	// 				'max_market_value' => $details->maxSumInsured,
-	// 				'auth_token' => $auth_token,
-	// 				'referenceData' => $referenceData,
-	// 				'isRoadTaxAvail' => $decrypted2->isRoadTaxAvail,
-	// 				'details' => $details
-	// 			);
-	// 			else:
-	// 				$total_payable = 0;
-	// 				$details = "";
-
-	// 			if($test) {
-	// 				echo json_encode($return);die;
-	// 			}
-
-	// 			if(isset($decrypted->productList)) {
-	// 				$comp_prem = $comp_plus = "";
-
-	// 				foreach ($decrypted->productList as $product) {
-	// 					if($product->scopeOfCover == "COMP PREM") {
-	// 						$comp_prem = $product;
-	// 					} else if($product->scopeOfCover == "COMP PLUS") {
-	// 						$comp_plus = $product;
-	// 					}
-	// 				}
-
-	// 				if(empty($total_payable)) {
-	// 					// get COMP PREM first then only COMP
-	// 					if(!empty($comp_prem)) {
-	// 						$details = $comp_prem;
-	// 						$total_payable = $comp_prem->totalPayable;
-	// 					}else if(!empty($comp_plus)) {
-	// 						$details = $comp_plus;
-	// 						$total_payable = $comp_plus->totalPayable;
-	// 					}
-	// 				}
-	// 			} else {
-	// 				$this->CI->db->insert("error_log", [
-	// 					"Code" => 300,
-	// 					"Message" => "AMG Error. Error retrieving data. Source : AMGWS/comparison",
-	// 					"Created" => date("Y-m-d H:i:s")
-	// 				]);
-	// 				$details = "Error retrieving data.";
-	// 			}
-
-	// 			$return = array(
-	// 				'total_payable' => $total_payable,
-	// 				'market_value' => $decrypted->sumInsured,
-	// 				'min_market_value' => $details->minSumInsured,
-	// 				'max_market_value' => $details->maxSumInsured,
-	// 				'auth_token' => $auth_token,
-	// 				'referenceData' => $referenceData,
-	// 				'isRoadTaxAvail' => $decrypted->isRoadTaxAvail ?? "N",
-	// 				'details' => $details
-	// 			);
-	// 		endif;
-	// 		return $return;
-	// 	else:
-	// 		return false;
-	// 	endif;
-	// }
     public function vehicleDetails(object $input) : object
     {
 
     }
     public function premiumDetails(object $input, $full_quote = false) : object
     {
-
+		dd($this->F_GetProductListVariant($input));
     }
     public function submission(object $input) : object
     {
@@ -532,18 +267,35 @@ class AmGeneral implements InsurerLibraryInterface
 	}
 
 	public function GetProductListVariant($params){
-		$text = array("nvicCode" => $params['newICNo']);
+		$text = '{
+			"nvicCode":"'.$params->nvic.'",
+		}';
 		$encrypted = $this->encrypt(json_encode($text));
 		$data = array(
 			'requestData' => $encrypted
 		);
-		$response = $this->cURL("with_auth_token", "QuickQuotation/GetProductListVariant", json_encode($data), $params);
-
+		dd($params->nvic, $encrypted);
+		$result = $this->cURL("with_auth_token", "QuickQuotation/GetProductListVariant", json_encode($data), $params);
+		foreach( $result->response as $variant){
+			$variantSeriesList = (object)[
+				'marketValue' => $variant,
+				'modelDesc' => $variant,
+				'nvicCode' => $variant,
+				'nvicDesc' => $variant,
+			];
+		}
+		$response = (object)[
+			"capacity" => $result,
+			"chassisNo" => $result,
+			"engineNo" => $result,
+			"mfgYear" => $result,
+			"variantSeriesList" => $variantSeriesList,
+		];
 		return $response;
 	}
 
 	public function Q_GetProductList($cParams = null){
-		$dobs = str_split($cParams['newICNo'], 2);
+		$dobs = str_split($cParams->id_number, 2);
 
 		$year = intval($dobs[0]);
 		if ($year >= 10) {
@@ -554,18 +306,18 @@ class AmGeneral implements InsurerLibraryInterface
 
 		$dob = $dobs[2] . "-" . $dobs[1] . "-" . strval($year);
 
-		$text = array(
-			"newICNo" => $cParams['newICNo'],
-			"oldICNo" => "",
-			"busRegNo" => $cParams['busRegNo'],
-			"newBusRegNo" => "",
-			"vehicleClass" => $cParams['vehicleClass'],
-			"vehicleNo" => $cParams['vehicleNo'],
-			"brand" => $cParams['brand'],
-			"insuredPostCode" => $cParams['vehiclePostCode'],
-			"vehiclePostCode" => $cParams['vehiclePostCode'],
-			"dob" => $dob
-		);
+		$text = '{
+			"newICNo":"'.$cParams->id_number.'",
+			"oldICNo":"",
+			"busRegNo":"179811-W",
+			"vehicleClass":"",
+			"vehicleNo":"'.$cParams->vehicle_number.'",
+			"brand":"A",
+			"insuredPostCode":"51200",
+			"vehiclePostCode":"51200",
+			"dob":"'.$dob.'",
+			"newBusRegNo":"",
+		}';
 		$encrypted = $this->encrypt(json_encode($text));
 
 		$data = array(
@@ -573,7 +325,8 @@ class AmGeneral implements InsurerLibraryInterface
 		);
 
 		$response = $this->cURL("getData","QuickQuotation/GetProductList",json_encode($data));
-        return $response;
+        dd($response);
+		return $response;
         if($response->status){
 			$encrypted = $response->response->responseData;
 			$decrypted = json_decode($this->decrypt($encrypted));
@@ -655,13 +408,16 @@ class AmGeneral implements InsurerLibraryInterface
 	}
 
     public function F_GetProductListVariant($params){
-        $text = array("nvicCode" => $params['newICNo']);
+        $text = '{
+			"nvicCode":"'.$params->nvic.'"
+		}';
 		$encrypted = $this->encrypt(json_encode($text));
 		$data = array(
 			'requestData' => $encrypted
 		);
 		$response = $this->cURL("with_auth_token", "FullQuotation/GetProductListVariant", json_encode($data), $params);
-        if($response->status){
+        dd($input,$response, $encrypted);
+		if($response->status){
 			$encrypted = $response->response->responseData;
 			$decrypted = json_decode($this->decrypt($encrypted));
 
@@ -742,22 +498,32 @@ class AmGeneral implements InsurerLibraryInterface
             ];
         }
 	}
-    public function get_motor_policy_info(){
-        $text = array(
-			"newICNo" => "750113086211",
-			"oldICNo" => "750113086211",
-			"busRegNo" => "WSD2363",
-			"policyNo" => "WSD2363",
-			"grabConvertCompPlus" => "WSD2363",
-			"newBusRegNo" => "WSD2363",
-			"vehicleNo" => "WSD2363",
-		);
+    public function get_motor_policy_info($cParams){
+        $text = '{
+			"newICNo":"'.$cParams->id_number.'",
+			"oldICNo":"",
+			"busRegNo":"",
+			"policyNo":"",
+			"grabConvertCompPlus":"",
+			"newBusRegNo":"",
+			"vehicleNo":"'.$cParams->vehicle_number.'",
+		}';
+		// array(
+		// 	"newICNo" => "750113086211",
+		// 	"oldICNo" => "750113086211",
+		// 	"busRegNo" => "WSD2363",
+		// 	"policyNo" => "WSD2363",
+		// 	"grabConvertCompPlus" => "WSD2363",
+		// 	"newBusRegNo" => "WSD2363",
+		// 	"vehicleNo" => "WSD2363",
+		// );
 		$encrypted = $this->encrypt(json_encode($text));
 		$data = array(
 			'requestData' => $encrypted
 		);
 
 		$response = $this->cURL("getData", "Renewal/GetPolicyInfo", json_encode($data));
+		dd($response, $encrypted);
 		if($response->status){
 			$encrypted = $response->response->responseData;
 			$decrypted = json_decode($this->decrypt($encrypted));
@@ -1010,8 +776,8 @@ class AmGeneral implements InsurerLibraryInterface
             ];
 
             if ($type == "with_auth_token") {
-                $options['headers']['auth_token'] = $additionals['auth_token'];
-                $options['headers']['referencedata'] = $additionals['referenceData'];
+                $options['headers']['auth_token'] = $additionals->auth_token;
+                $options['headers']['referencedata'] = $additionals->referenceData;
             }
 
             $postfield = $data;
@@ -1020,7 +786,6 @@ class AmGeneral implements InsurerLibraryInterface
 
         $result = HttpClient::curl('POST', $host, $options);
         
-        dump($result, $host);
         if ($result->status) {
             $json = json_decode($result->response);
 
