@@ -429,7 +429,7 @@ class MotorController extends Controller
         }
 
         Mail::to($insurance->holder->email_address)
-            ->cc([config('setting.howden.affinity_team_email'), config('email_cc_list')])
+            ->cc(array_push(config('email_cc_list'), config('setting.howden.affinity_team_email')))
             ->send(new PaymentReceipt($data));
 
         return view('frontend.motor.payment_success')
