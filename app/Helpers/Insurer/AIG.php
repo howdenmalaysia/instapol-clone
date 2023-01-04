@@ -927,7 +927,6 @@ class AIG implements InsurerLibraryInterface
         // Call API
         $result = $this->cURL($path, $xml);
 
-        dd($result, $xml);
         if(!$result->status) {
             return $this->abort($result->response);
         }
@@ -1176,7 +1175,6 @@ class AIG implements InsurerLibraryInterface
         // Call API
         $result = $this->cURL($path, $xml);
 
-        dd($result, $xml);
         if(!$result->status) {
             return $this->abort($result->response);
         }
@@ -1211,7 +1209,6 @@ class AIG implements InsurerLibraryInterface
         // Call API
         $result = $this->cURL($path, $xml);
 
-        dd($result, $xml);
         if(!$result->status) {
             return $this->abort($result->response);
         }
@@ -1247,7 +1244,6 @@ class AIG implements InsurerLibraryInterface
         // Call API
         $result = $this->cURL($path, $xml);
 
-        dd($result, $xml);
         if(!$result->status) {
             return $this->abort($result->response);
         }
@@ -1287,7 +1283,6 @@ class AIG implements InsurerLibraryInterface
         // Call API
         $result = $this->cURL($path, $xml);
 
-        dd($result, $xml);
         if(!$result->status) {
             return $this->abort($result->response);
         }
@@ -1324,7 +1319,6 @@ class AIG implements InsurerLibraryInterface
         // Call API
         $result = $this->cURL($path, $xml);
 
-        dd($result, $xml);
         if(!$result->status) {
             return $this->abort($result->response);
         }
@@ -1360,7 +1354,6 @@ class AIG implements InsurerLibraryInterface
         // Call API
         $result = $this->cURL($path, $xml);
 
-        dd($result, $xml);
         if(!$result->status) {
             return $this->abort($result->response);
         }
@@ -1393,7 +1386,6 @@ class AIG implements InsurerLibraryInterface
         // Call API
         $result = $this->cURL($path, $xml);
 
-        dd($result, $xml);
         if(!$result->status) {
             return $this->abort($result->response);
         }
