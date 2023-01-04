@@ -372,6 +372,10 @@
             $('#btn-pay-modal').on('click', () => {
                 $('#payment-form').submit();
             });
+
+            $('#btn-back').on('click', () => {
+                window.history.back();
+            });
         });
     </script>
 @endpush
