@@ -86,7 +86,7 @@ class AmGeneral implements InsurerLibraryInterface
     }
     public function premiumDetails(object $input, $full_quote = false) : object
     {
-		dd($this->F_GetProductListVariant($input));
+		dd($this->Q_GetProductList($input));
     }
     public function submission(object $input) : object
     {
@@ -307,24 +307,25 @@ class AmGeneral implements InsurerLibraryInterface
 		$dob = $dobs[2] . "-" . $dobs[1] . "-" . strval($year);
 
 		$text = '{
-			"newICNo":"'.$cParams->id_number.'",
+			"newICNo":"",
 			"oldICNo":"",
 			"busRegNo":"179811-W",
-			"vehicleClass":"",
+			"vehicleClass":"PC",
 			"vehicleNo":"'.$cParams->vehicle_number.'",
 			"brand":"A",
-			"insuredPostCode":"51200",
-			"vehiclePostCode":"51200",
-			"dob":"'.$dob.'",
+			"insuredPostCode":"'.$cParams->postcode.'",
+			"vehiclePostCode":"'.$cParams->postcode.'",
+			"dob":"",
 			"newBusRegNo":"",
 		}';
+
 		$encrypted = $this->encrypt(json_encode($text));
 
 		$data = array(
 			'requestData' => $encrypted
 		);
 
-		$response = $this->cURL("getData","QuickQuotation/GetProductList",json_encode($data));
+		$response = $this->cURL("getData","QuickQuotation/GetProductList",$data);
         dd($response);
 		return $response;
         if($response->status){
@@ -764,12 +765,12 @@ class AmGeneral implements InsurerLibraryInterface
             $host .= "/api/KEC/v1.0/" . $function;
             $options = [];
             $options['headers'] = [
-                'Authorization' => 'Bearer '.$token,
+                'Authorization' => 'Bearer '.(string)$token,
                 'Channel-Token' => $this->channel_token,
                 'Content-Type' => 'application/json',
                 'Accept' => 'application/json',
                 'Username' => $this->username,
-                'Password' => $this->encrypt_password,
+                'Password' => $this->encrypt($this->password),
                 'Browser' => 'Chrome',
                 'Channel' => 'Kurnia',
                 'Device' => 'PC',
@@ -781,7 +782,8 @@ class AmGeneral implements InsurerLibraryInterface
             }
 
             $postfield = $data;
-            $options['body'] = $postfield;
+            $options['json'] = $postfield;
+			dump($options);
         }
 
         $result = HttpClient::curl('POST', $host, $options);
@@ -789,7 +791,7 @@ class AmGeneral implements InsurerLibraryInterface
         if ($result->status) {
             $json = json_decode($result->response);
 
-            if (empty($json)) {
+			if (empty($json)) {
                 $message = !empty($result->response) ? $result->response : __('api.empty_response', ['company' => $this->company]);
 
                 return $this->abort($message);
