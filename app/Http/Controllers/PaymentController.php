@@ -50,7 +50,7 @@ class PaymentController extends Controller
 
                 break;
             }
-            default {
+            default: {
                 $merchant_id = config('setting.payment.gateway.merchant_id');
                 $merchant_password = config('setting.payment.gateway.merchant_password');
             }
