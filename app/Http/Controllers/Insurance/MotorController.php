@@ -299,6 +299,7 @@ class MotorController extends Controller
 
         $motor->insurance_code = $request->insurance_code;
         $motor->quotation = json_decode($request->quotation);
+        $request->session()->put('motor', $motor);
 
         $data = (object) [
             'quotation_id' => $motor->quotation_id ?? $motor->quotation->id,
@@ -326,8 +327,6 @@ class MotorController extends Controller
         ];
 
         $this->updateQuotation($data);
-
-        $request->session()->put('motor', $motor);
 
         return redirect()->route('motor.payment-summary');
     }
