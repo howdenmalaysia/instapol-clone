@@ -42,6 +42,20 @@ class PaymentController extends Controller
             $payment_description .= ', ' . $request->description;
         }
 
+        $merchant_id = $merchant_password = '';
+        switch($insurance->holder->id_type_id) {
+            case config('setting.id_type.company_registration_no'): {
+                $merchant_id = config('setting.payment.gateway.fpx_merchant_id');
+                $merchant_password = config('setting.payment.gateway.fpx_merchant_password');
+
+                break;
+            }
+            default {
+                $merchant_id = config('setting.payment.gateway.merchant_id');
+                $merchant_password = config('setting.payment.gateway.merchant_password');
+            }
+        }
+
         $data = [
             'transaction_type' => 'SALE',
             'payment_method' => 'ANY',
@@ -59,11 +73,12 @@ class PaymentController extends Controller
             'language' => 'en',
             'timeout' => 780,
             'param6' => Str::snake(Str::lower(str_replace('-', '', $product->product_type->description))) . '-' . $product->name,
+            'merchant_id' => $merchant_id
         ];
 
         $hash = [
-            config('setting.payment.gateway.merchant_password'),
-            config('setting.payment.gateway.merchant_id'),
+            $merchant_password,
+            $merchant_id,
             $data['payment_id'],
             $data['return_url'],
             $data['callback_url'],
