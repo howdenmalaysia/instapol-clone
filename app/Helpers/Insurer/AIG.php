@@ -162,7 +162,7 @@ class AIG implements InsurerLibraryInterface
         $vehicle = $input->vehicle ?? null;
         $ncd_amount = $basic_premium = $total_benefit_amount = $gross_premium = $sst_percent = $sst_amount = $stamp_duty = $excess_amount = $total_payable = 0;
         $pa = null;
-        $this->issue_covernote($input);
+        
         if ($full_quote) {
             $vehicle_vix = $this->vehicleDetails($input);
             if (!$vehicle_vix->status) {
@@ -932,7 +932,7 @@ class AIG implements InsurerLibraryInterface
         }
 
         return new ResponseData([
-            'response' => $result_data,
+            'response' => $response,
         ]);
     }
 
