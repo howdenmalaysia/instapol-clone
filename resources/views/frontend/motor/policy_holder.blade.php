@@ -17,7 +17,7 @@
                         sst-amount="{{ $premium->sst_amount }}"
                         stamp-duty="{{ $premium->stamp_duty }}"
                         total-payable="{{ $premium->total_payable }}"
-                        roadtax-total="{{ $premium->roadtax ?? session('motor')->roadtax->total }}"
+                        roadtax-total="{{ $premium->roadtax ?? session('motor')->roadtax->total ?? 0.00 }}"
                     />
                 </div>
                 <div class="col-12 col-lg-8">
