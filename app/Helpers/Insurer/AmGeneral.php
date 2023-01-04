@@ -326,7 +326,6 @@ class AmGeneral implements InsurerLibraryInterface
 		);
 
 		$response = $this->cURL("getData","QuickQuotation/GetProductList",$data);
-        dd($response);
 		return $response;
         if($response->status){
 			$encrypted = $response->response->responseData;

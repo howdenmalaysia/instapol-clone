@@ -162,7 +162,7 @@ class AIG implements InsurerLibraryInterface
         $vehicle = $input->vehicle ?? null;
         $ncd_amount = $basic_premium = $total_benefit_amount = $gross_premium = $sst_percent = $sst_amount = $stamp_duty = $excess_amount = $total_payable = 0;
         $pa = null;
-
+        $this->issue_covernote($input);
         if ($full_quote) {
             $vehicle_vix = $this->vehicleDetails($input);
             if (!$vehicle_vix->status) {
@@ -775,13 +775,13 @@ class AIG implements InsurerLibraryInterface
                 ]);
             }
         }
-        $item = [];
-        // $item = [
-        //     'paramIndicator' =>
-        //     'paramRemark' =>
-        //     'paramValue' =>
-        // ];
-        
+        $item = [];        
+        array_push($item,(object)[
+            'paramIndicator' => 'NVIC',
+            'paramRemark' => '',
+            'paramValue' => $input->nvic,
+        ]);
+
         $dobs = str_split($input->id_number, 2);
         $id_number = $dobs[0] . $dobs[1] . $dobs[2] . "-" . $dobs[3] .  "-" . $dobs[4] . $dobs[5];
         $year = intval($dobs[0]);
@@ -829,12 +829,12 @@ class AIG implements InsurerLibraryInterface
             'discountamt' => doubleval('0'),
             'discountperc' => doubleval('0'),
             'drvexp' => intval(getAgeFromIC($input->id_number) - 18),
-            'effectivedate' => Carbon::parse($input->vehicle->inception_date)->format('d-m-Y'),
+            'effectivedate' => Carbon::parse($input->vehicle->inception_date)->format('Y-m-d'),
             'effectivetime' => $effective_time,
             'email' => $input->email,
             'engineno' => 'STG4567STG4567',
             'excess' => doubleval('770'),
-            'expirydate' => Carbon::parse($input->vehicle->expiry_date)->format('d-m-Y'),
+            'expirydate' => Carbon::parse($input->vehicle->expiry_date)->format('Y-m-d'),
             'flquoteno' => 'FLTIB000001-001',
             'garage' => 'B',
             'gender' => 'M',
@@ -875,7 +875,7 @@ class AIG implements InsurerLibraryInterface
             'oldic' => '',
             'ownershiptype' => 'I',
             'passportno' => '',
-            'payamt' => '',
+            'payamt' => '0',
             'paytype' => 'CC',
             'piamdrv' => '03',
             'postcode' => $input->postcode,
@@ -997,11 +997,11 @@ class AIG implements InsurerLibraryInterface
             }
         }
         $item = [];
-        // $item = [
-        //         'paramIndicator' => '',
-        //         'paramRemark' => '',
-        //         'paramValue' => '',
-        // ];
+        array_push($item,(object)[
+            'paramIndicator' => 'NVIC',
+            'paramRemark' => '',
+            'paramValue' => $input->nvic,
+        ]);
         $dobs = str_split($input->id_number, 2);
         $id_number = $dobs[0] . $dobs[1] . $dobs[2] . "-" . $dobs[3] .  "-" . $dobs[4] . $dobs[5];
         $year = intval($dobs[0]);
@@ -1087,7 +1087,7 @@ class AIG implements InsurerLibraryInterface
             'oldic' => '',
             'ownershiptype' => 'I',
             'passportno' => '',
-            'payamt' => '',
+            'payamt' => '0',
             'payno' => '',
             'piamdrv' => '03',
             'postcode' => $input->postcode,
@@ -1141,7 +1141,6 @@ class AIG implements InsurerLibraryInterface
         // Call API
         $result = $this->cURL($path, $xml);
 
-        dd($result, $xml);
         if(!$result->status) {
             return $this->abort($result->response);
         }
@@ -1155,11 +1154,11 @@ class AIG implements InsurerLibraryInterface
     {
         $path = 'GetReferredListing';
         $item = [];
-        // $item = [
-        //         'paramIndicator' => '',
-        //         'paramRemark' => '',
-        //         'paramValue' => '',
-        // ];
+        array_push($item,(object)[
+            'paramIndicator' => 'NVIC',
+            'paramRemark' => '',
+            'paramValue' => $input->nvic,
+        ]);
 
         $data = [
             'agentcode' => $this->agent_code,
@@ -1191,11 +1190,11 @@ class AIG implements InsurerLibraryInterface
     {
         $path = 'GetReferredListing';
         $item = [];
-        // $item = [
-        //         'paramIndicator' => '',
-        //         'paramRemark' => '',
-        //         'paramValue' => '',
-        // ];
+        array_push($item,(object)[
+            'paramIndicator' => 'NVIC',
+            'paramRemark' => '',
+            'paramValue' => $input->nvic,
+        ]);
 
         $data = [
             'agentcode' => $this->agent_code,
@@ -1226,11 +1225,11 @@ class AIG implements InsurerLibraryInterface
     {
         $path = 'GetJPJStatusListing';
         $item = [];
-        // $item = [
-        //         'paramIndicator' => '',
-        //         'paramRemark' => '',
-        //         'paramValue' => '',
-        // ];
+        array_push($item,(object)[
+            'paramIndicator' => 'NVIC',
+            'paramRemark' => '',
+            'paramValue' => $input->nvic,
+        ]);
 
         $data = [
             'agentcode' => $this->agent_code,
@@ -1262,11 +1261,11 @@ class AIG implements InsurerLibraryInterface
     {
         $path = 'UpdJPJStatus';
         $item = [];
-        // $item = [
-        //         'paramIndicator' => '',
-        //         'paramRemark' => '',
-        //         'paramValue' => '',
-        // ];
+        array_push($item,(object)[
+            'paramIndicator' => 'NVIC',
+            'paramRemark' => '',
+            'paramValue' => $input->nvic,
+        ]);
 
         $data = [
             'agentcode' => $this->agent_code,
@@ -1302,11 +1301,11 @@ class AIG implements InsurerLibraryInterface
     {
         $path = 'GetRenewalData';
         $item = [];
-        // $item = [
-        //         'paramIndicator' => '',
-        //         'paramRemark' => '',
-        //         'paramValue' => '',
-        // ];
+        array_push($item,(object)[
+            'paramIndicator' => 'NVIC',
+            'paramRemark' => '',
+            'paramValue' => $input->nvic,
+        ]);
 
         $data = [
             'agentcode' => $this->agent_code,
@@ -1339,11 +1338,11 @@ class AIG implements InsurerLibraryInterface
     {
         $path = 'GetPolicyPrintListing';
         $item = [];
-        // $item = [
-        //         'paramIndicator' => '',
-        //         'paramRemark' => '',
-        //         'paramValue' => '',
-        // ];
+        array_push($item,(object)[
+            'paramIndicator' => 'NVIC',
+            'paramRemark' => '',
+            'paramValue' => $input->nvic,
+        ]);
 
         $data = [
             'agentcode' => $this->agent_code,
@@ -1375,11 +1374,11 @@ class AIG implements InsurerLibraryInterface
     {
         $path = 'GetPolicyData';
         $item = [];
-        // $item = [
-        //         'paramIndicator' => '',
-        //         'paramRemark' => '',
-        //         'paramValue' => '',
-        // ];
+        array_push($item,(object)[
+            'paramIndicator' => 'NVIC',
+            'paramRemark' => '',
+            'paramValue' => $input->nvic,
+        ]);
 
         $data = [
             'compcode' => '71',
