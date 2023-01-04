@@ -420,16 +420,16 @@ class MotorController extends Controller
             'total_payable' => number_format($insurance->total_payable, 2)
         ];
 
-        $user = User::where('email', $insurance->holder->email)->first();
+        $user = User::where('email', $insurance->holder->email_address)->first();
         if(empty($user)) {
             User::create([
-                'email' => $insurance->holder->email,
+                'email' => $insurance->holder->email_address,
                 'name' => $insurance->holder->name,
                 'password' => Hash::make(Str::random(8)),
             ]);
         }
 
-        Mail::to($insurance->holder->email)
+        Mail::to($insurance->holder->email_address)
             ->cc([config('setting.howden.affinity_team_email'), config('email_cc_list')])
             ->send(new PaymentReceipt($data));
 
