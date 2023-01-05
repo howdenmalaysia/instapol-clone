@@ -415,8 +415,8 @@ class MotorController extends Controller
             'insurance_code' => $insurance->insurance_code,
             'insured_name' => $insurance->holder->name,
             'product_name' => $insurance->product->name,
-            'total_premium' => number_format($insurance->total_payable, 2),
-            'total_payable' => number_format($insurance->total_payable, 2)
+            'total_premium' => number_format($insurance->amount, 2),
+            'total_payable' => number_format($insurance->amount, 2)
         ];
 
         $user = User::where('email', $insurance->holder->email_address)->first();
