@@ -366,7 +366,7 @@
 
                                         <div style="line-height: 140%; text-align: left; word-wrap: break-word;">
                                             <p style="font-size: 14px; line-height: 140%;">
-                                                <strong>For any questions related to your insurance needs, feel free to email to instaPol@my.howdengroup.com</strong></p>
+                                                <strong>For any questions related to your insurance needs, feel free to email to <a href="mailto:instaPol@my.howdengroup.com">instaPol@my.howdengroup.com</a></strong></p>
                                         </div>
                                     </td>
                                 </tr>
