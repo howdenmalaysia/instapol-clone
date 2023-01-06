@@ -477,7 +477,7 @@
             motor: motor,
             extra_cover: selected_extra_cover,
         }).then((res) => {
-            console.log(res);
+            console.log('refreshPremium', res);
 
             // Update Pricing Card
             $('#basic-premium').text(formatMoney(res.data.basic_premium));
@@ -520,7 +520,7 @@
             postcode: motor.postcode,
             body_type: $('#body-type').val(),
         }).then((res) => {
-            console.log(res);
+            console.log('RoadTax', res);
 
             $('#h-roadtax').val(JSON.stringify(res.data));
 
