@@ -314,7 +314,9 @@
                     $('#add-on-item #show-more-wrapper').append(html);
                 });
 
+                console.log(new_select_fields);
                 new_select_fields.forEach((field_id) => {
+                    console.log('element', $('#' + $.escapeSelector(field_id)));
                     $('#' + $.escapeSelector(field_id)).select2({
                         width: '100%',
                         theme: 'bootstrap-5'
