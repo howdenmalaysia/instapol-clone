@@ -315,7 +315,7 @@
                 });
 
                 new_select_fields.forEach((field_id) => {
-                    $('#' + field_id).select2({
+                    $('#' + $.escapeSelector(field_id)).select2({
                         width: '100%',
                         theme: 'bootstrap-5'
                     }).on('select2:select', function () {
@@ -422,7 +422,7 @@
             $('.extra-coverage-checkbox:checked').each((index, element) => {
                 selected_extra_cover.push({
                     extra_cover_code: $(element).val(),
-                    sum_insured: $(`#sum-insured-${$(element).val()}`).val()
+                    sum_insured: $(`#sum-insured-${$.escapeSelector($(element).val())}`).val()
                 })
             });
 
@@ -469,7 +469,7 @@
 
         selected_extra_cover.forEach((extra_cover) => {
             if(extra_cover.option_list) {
-                extra_cover.sum_insured = $(`#sum-insured-${extra_cover.extra_cover_code}`).val();
+                extra_cover.sum_insured = $(`#sum-insured-${$.escapeSelector(extra_cover.extra_cover_code)}`).val();
             }
         });
 
@@ -490,11 +490,11 @@
             // Update Add Ons Pricing
             if(res.data.extra_cover.length > 0) {
                 res.data.extra_cover.forEach((extra_cover) => {
-                    $(`#${extra_cover.extra_cover_code}-premium`).text(`${formatMoney(extra_cover.premium)}`).removeClass('loadingButton');
+                    $(`#${$>escapeSelector(extra_cover.extra_cover_code)}-premium`).text(`${formatMoney(extra_cover.premium)}`).removeClass('loadingButton');
                 });
             } else {
                 motor.extra_cover_list.forEach((extra_cover) => {
-                    $(`#${extra_cover.extra_cover_code}-premium`).text(`${formatMoney(extra_cover.premium)}`).removeClass('loadingButton');
+                    $(`#${$>escapeSelector(extra_cover.extra_cover_code)}-premium`).text(`${formatMoney(extra_cover.premium)}`).removeClass('loadingButton');
                 });
             }
 
