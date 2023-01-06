@@ -318,6 +318,7 @@
                     $('#' + field_id).select2();
                 });
             } else {
+                $(this).data('shown', false);
                 $('#add-on-item #show-more-wrapper').empty();
             }
         });
