@@ -298,7 +298,7 @@
                                     <select id="${'sum-insured-' + extra.extra_cover_code}" class="option-list" data-select data-extra-cover-code="${extra.extra_cover_code}">
                         `;
 
-                        extra.option_list.values.forEach((option) => {
+                        Object.values(extra.option_list.values).forEach((option) => {
                             html += `<option value="${option}" ${option === 1000 ? 'selected' : ''}>${'RM ' + option}</option>`;
                         });
 
