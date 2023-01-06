@@ -214,7 +214,7 @@
                     </div>
                 </div>
             </div>
-            <x-modal maxWidth="md" id="body-type-modal" headerClass="bg-primary text-white">
+            <x-modal maxWidth="md" id="body-type-modal" headerClass="bg-primary text-white" backdrop-static>
                 <x-slot name="title">{{ __('frontend.motor.add_ons_page.body_type_modal.header') }}</x-slot>
                 <x-slot name="body">
                     <div class="form-check border-bottom py-3">
@@ -380,7 +380,7 @@
             if(!$('#roadtax-checkbox').is(':checked')) {
                 swalAlert("{{ __('frontend.modal.forget_road_tax') }}", (result) => {
                     if(result.isConfirmed) {
-                        $('#roadtax-checkbox').attr('checked', true);
+                        $('#roadtax-checkbox').attr('checked', true).trigger('change');
                     } else {
                         $('#add-ons-form').submit();
                     }
