@@ -289,7 +289,7 @@
                                 <div id="${extra.extra_cover_code + '-premium'}" class="col-2 text-end premium">${formatMoney(extra.premium)}</div>
                             </div>`;
                         
-                    if(extra.option_list.length > 0) {
+                    if(extra.option_list) {
                         html += `
                             <div class="row">
                                 <div class="col-5 px-md-3 mb-3 ms-3">
