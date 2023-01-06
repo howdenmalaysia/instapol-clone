@@ -107,15 +107,15 @@ class MotorController extends Controller
         }
 
         $products = Product::with('insurance_company')->get();
-        $product_ids = $insurer_ids = [];
+        $product_ids = [];
         foreach($products as $product) {
-            array_push($product_ids, $product->id);
-            array_push($insurer_ids, $product->insurance_company->id);
+            if(in_array($product->insurance_company->name, ['Pacific & Orient Insurance', 'Lonpac', 'Tune Protect', 'Zurich'])) {
+                array_push($product_ids, $product->id);
+            }
         }
 
         return view('frontend.motor.vehicle_details')->with([
-            'product_ids' => $product_ids,
-            'insurer_ids' => $insurer_ids
+            'product_ids' => $product_ids
         ]);
     }
 
