@@ -285,6 +285,44 @@ class Zurich implements InsurerLibraryInterface
 
     public function quotation(object $input) : object
     {
+        $data = (object) [
+			'vehicle_number' => $input->vehicle_number,
+			'id_type' => $input->id_type,
+			'id_number' => $input->id_number,
+			'gender' => $input->gender,
+			'marital_status' => $input->marital_status,
+			'region' => $input->region,
+			'vehicle' => $input->vehicle,
+			'extra_cover' => $input->extra_cover,
+			'email' => $input->email,
+			'phone_number' => $input->phone_number,
+			'nvic' => $input->vehicle->nvic,
+			'unit_no' => $input->unit_no ?? '',
+			'building_name' => $input->building_name ?? '',
+			'address_one' => $input->address_one,
+			'address_two' => $input->address_two ?? '',
+			'city' => $input->city,
+			'postcode' => $input->postcode,
+			'state' => $input->state,
+			'occupation' => $input->occupation,
+		];
+
+		$result = $this->premiumDetails($data);
+
+		if (!$result->status) {
+			return $this->abort($result->response);
+		}
+
+		$result->response->quotation_number = $result->response->quotation_number;
+
+		return (object) [
+			'status' => true,
+			'response' => $result->response
+		];
+    }
+
+    public function getQuotation(object $input) : object
+    {
         //participant
         $participant_code = $this->participant_code;
         $transaction_ref_no = $input->transaction_ref_no;
@@ -994,7 +1032,7 @@ class Zurich implements InsurerLibraryInterface
                 'ecd_pac_code' => 'R0075',
                 'ecd_pac_unit' => '1',
             ];
-            $premium = $this->quotation($quotation);
+            $premium = $this->getQuotation($quotation);
 
             $extra_cover_list = [];
             foreach(self::EXTRA_COVERAGE_LIST as $_extra_cover_code) {

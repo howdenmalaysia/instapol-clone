@@ -182,7 +182,7 @@ class Allianz implements InsurerLibraryInterface
             'vix'=>$vix,
             'avvariant'=>$avvariant,
         ];
-        $quotation = $this->quotation($get_quotation)->response;
+        $quotation = $this->getQuotation($get_quotation)->response;
         $text = '{
             "ReferenceNo": "'.$quotation->contract->contractNumber.'",
             "ProductCat": "MT",
@@ -460,7 +460,7 @@ class Allianz implements InsurerLibraryInterface
                 'vix'=>$vehicle_vix,
                 'avvariant'=>$avvariant,
             ];
-            $motor_premium = $this->quotation($get_quotation);
+            $motor_premium = $this->getQuotation($get_quotation);
 
             if (!$motor_premium->status) {
                 return $this->abort($motor_premium->response);
@@ -797,6 +797,44 @@ class Allianz implements InsurerLibraryInterface
     }
 
     public function quotation(object $qParams) : object
+    {
+        $data = (object) [
+            'vehicle_number' => $input->vehicle_number,
+            'id_type' => $input->id_type,
+            'id_number' => $input->id_number,
+            'gender' => $input->gender,
+            'marital_status' => $input->marital_status,
+            'region' => $input->region,
+            'vehicle' => $input->vehicle,
+            'extra_cover' => $input->extra_cover,
+            'email' => $input->email,
+            'phone_number' => $input->phone_number,
+            'nvic' => $input->vehicle->nvic,
+            'unit_no' => $input->unit_no ?? '',
+            'building_name' => $input->building_name ?? '',
+            'address_one' => $input->address_one,
+            'address_two' => $input->address_two ?? '',
+            'city' => $input->city,
+            'postcode' => $input->postcode,
+            'state' => $input->state,
+            'occupation' => $input->occupation,
+        ];
+
+        $result = $this->premiumDetails($data);
+
+        if (!$result->status) {
+            return $this->abort($result->response);
+        }
+
+        $result->response->quotation_number = $result->response->quotation_number;
+
+        return (object) [
+            'status' => true,
+            'response' => $result->response
+        ];
+    }
+
+    public function getQuotation(object $qParams) : object
     {
         $dobs = str_split($qParams->input->id_number, 2);
         $id_number = $dobs[0] . $dobs[1] . $dobs[2] . "-" . $dobs[3] .  "-" . $dobs[4] . $dobs[5];
