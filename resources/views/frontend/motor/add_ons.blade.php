@@ -543,7 +543,8 @@
         });
     }
 
-    function getTootip(description) {
+    function getTootip(description)
+    {
         if(description.includes('Windscreen')) {
             return `
                 <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('frontend.motor.add_ons_page.tooltip.windscreen') }}">
