@@ -270,6 +270,7 @@
             if(!shown) {
                 $(this).text("{{ __('frontend.button.show_less') }}");
 
+                let new_select_fields = [];
                 var additional_add_ons = motor.extra_cover_list;
                 additional_add_ons.splice(0, 5);
                 console.log('additional', additional_add_ons);
@@ -291,6 +292,8 @@
                             </div>`;
                         
                     if(extra.option_list) {
+                        new_select_fields.push('sum-insured-' + extra.extra_cover_code);
+
                         html += `
                             <div class="row">
                                 <div class="col-5 px-md-3 mb-3 ms-3">
@@ -308,6 +311,10 @@
                     }
 
                     $('#add-on-item #show-more-wrapper').append(html);
+                });
+
+                new_select_fields.forEach((field_id) => {
+                    $('#' + field_id).select2();
                 });
             } else {
                 $('#add-on-item #show-more-wrapper').empty();
