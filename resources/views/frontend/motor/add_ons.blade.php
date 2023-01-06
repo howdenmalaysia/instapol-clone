@@ -313,6 +313,7 @@
                     $('#add-on-item #show-more-wrapper').append(html);
                 });
 
+                // Initialize Dynamic Elements
                 new_select_fields.forEach((field_id) => {
                     $('#' + $.escapeSelector(field_id)).select2({
                         width: '100%',
@@ -320,6 +321,10 @@
                     }).on('select2:select', function () {
                         $(this).parsley().validate();
                     });
+                });
+
+                $('[data-bs-toggle=tooltip]').each((index, element) => {
+                    new bootstrap.Tooltip(element);
                 });
             } else {
                 $(this).data('shown', false);
