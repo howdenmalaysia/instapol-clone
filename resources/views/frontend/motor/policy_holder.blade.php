@@ -287,6 +287,10 @@
                     $('#delivery-info').hide();
                 } else {
                     $('#delivery-info').show();
+
+                    $('#delivery-info').find('input').each((index, input) => {
+                        $(input).attr('required', true);
+                    });
                 }
             });
         });
