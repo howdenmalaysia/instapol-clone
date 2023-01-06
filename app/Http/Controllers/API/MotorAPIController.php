@@ -562,11 +562,13 @@ class MotorAPIController extends Controller implements MotorAPIInterface
     public function calculateRoadtax(Request $request)
     {
         // 1. Get Region from Postcode
-        $region = Postcode::with(['state'])
-            ->where('postcode', $request->postcode)
-            ->firstOrFail()
-            ->state
-            ->region;
+        $postcode_details = $this->getPostcodeDetails($request->postcode);
+
+        if(empty($postcode_details)) {
+            return $this->abort("Unable to get postcode details for {$request->postcode}");
+        }
+
+        $region = $postcode_details->state->region;
 
         // 2. Get Roadtax Matrix
         $roadtax = RoadTaxMatrix::whereRaw('? BETWEEN engine_capacity_from AND engine_capacity_to', $request->engine_capacity)
@@ -742,8 +744,8 @@ class MotorAPIController extends Controller implements MotorAPIInterface
     private function getPostcodeDetails(int $postcode) : Postcode
     {
         return Postcode::with('state')
-        ->where('postcode', $postcode)
-        ->first();
+            ->where('postcode', $postcode)
+            ->first();
     }
 
     private function getProduct(int $product_id) : Product
