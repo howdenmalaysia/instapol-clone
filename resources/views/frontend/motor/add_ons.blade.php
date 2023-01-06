@@ -511,42 +511,42 @@
     }
 
     function getTootip(description) {
-        if(description.contains('Windscreen')) {
+        if(description.includes('Windscreen')) {
             return `
                 <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('frontend.motor.add_ons_page.tooltip.windscreen') }}">
                     <i class="fa-solid fa-circle-question text-primary fa-15x"></i>
                 </span>`;
-        } else if (description.contains('Legal Liability Of')) {
+        } else if (description.includes('Legal Liability Of')) {
             return `
                 <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('frontend.motor.add_ons_page.tooltip.llop') }}">
                     <i class="fa-solid fa-circle-question text-primary fa-15x"></i>
                 </span>
             `;
-        } else if (description.contains('Legal Liability to')) {
+        } else if (description.includes('Legal Liability to')) {
             return `
                 <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('frontend.motor.add_ons_page.tooltip.lltp') }}">
                     <i class="fa-solid fa-circle-question text-primary fa-15x"></i>
                 </span>
             `;
-        } else if (description.contains('Strike, Riot')) {
+        } else if (description.includes('Strike, Riot')) {
             return `
                 <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('frontend.motor.add_ons_page.tooltip.srcc') }}">
                     <i class="fa-solid fa-circle-question text-primary fa-15x"></i>
                 </span>
             `;
-        } else if (description.contains('Accessories')) {
+        } else if (description.includes('Accessories')) {
             return `
                 <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('frontend.motor.add_ons_page.tooltip.accessories') }}">
                     <i class="fa-solid fa-circle-question text-primary fa-15x"></i>
                 </span>
             `;
-        } else if (description.contains('Personal Accident')) {
+        } else if (description.includes('Personal Accident')) {
             return `
                 <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('frontend.motor.add_ons_page.tooltip.pa') }}">
                     <i class="fa-solid fa-circle-question text-primary fa-15x"></i>
                 </span>
             `;
-        } else if (description.contains('NCD')) {
+        } else if (description.includes('NCD')) {
             return `
                 <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('frontend.motor.add_ons_page.tooltip.ncd') }}">
                     <i class="fa-solid fa-circle-question text-primary fa-15x"></i>
