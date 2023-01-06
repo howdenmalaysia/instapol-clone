@@ -299,7 +299,7 @@
                         `;
 
                         extra.option_list.values.forEach((option) => {
-                            html += `<option value="${option}" ${option === 1000 ? 'selected' : ''}>${'RM ' . $option}</option>`;
+                            html += `<option value="${option}" ${option === 1000 ? 'selected' : ''}>${'RM ' . option}</option>`;
                         });
 
                         html += `</select></div></div></div>`;
