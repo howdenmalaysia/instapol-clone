@@ -315,7 +315,12 @@
                 });
 
                 new_select_fields.forEach((field_id) => {
-                    $('#' + field_id).select2();
+                    $('#' + field_id).select2({
+                        width: '100%',
+                        theme: 'bootstrap-5'
+                    }).on('select2:select', function () {
+                        $(this).parsley().validate();
+                    });
                 });
             } else {
                 $(this).data('shown', false);
