@@ -105,6 +105,7 @@
                                                 @endif
                                             </div>
                                         @endforeach
+                                        <div id="show-more-wrapper"></div>
                                     </div>
                                     @if (count(session('motor')->extra_cover_list) > 5)
                                         <div class="mt-4">
@@ -273,8 +274,8 @@
                 additional_add_ons.splice(0, 5);
 
                 additional_add_ons.forEach((extra) => {
-                    $('#add-on-item').append(
-                        `<div class="mb-2 extra-coverage">
+                    let html = `
+                        <div class="mb-2 extra-coverage">
                             <div class="row px-md-3">
                                 <div class="col-1">
                                     <input type="checkbox" id="${'checkbox-' + extra.extra_cover_code}" class="form-check-input extra-coverage-checkbox" name="extra_coverage[]" value="${extra.extra_cover_code}" ${extra.selected ? 'checked' : ''} />
@@ -286,12 +287,29 @@
                                 </div>
                                 <div class="col-1 text-end">RM</div>
                                 <div id="${extra.extra_cover_code + '-premium'}" class="col-2 text-end premium">${formatMoney(extra.premium)}</div>
-                            </div>
-                        </div>`
-                    );
+                            </div>`;
+                        
+                    if(extra.option_list.length > 0) {
+                        html += `
+                            <div class="row">
+                                <div class="col-5 px-md-3 mb-3 ms-3">
+                                    <small>${extra.option_list.description + ':'}</small>
+                                    <select id="${'sum-insured-' . extra.extra_cover_code}" class="option-list" data-select data-extra-cover-code="${extra.extra_cover_code}">
+                        `;
+
+                        extra.option_list.values.forEach((option) => {
+                            html += `<option value="${option}" ${option === 1000 ? 'selected' : ''}>${'RM ' . $option}</option>`;
+                        });
+
+                        html += `</select></div></div></div>`;
+                    } else {
+                        html += '</div>';
+                    }
+
+                    $('#add-on-item #show-more-wrapper').append(html);
                 });
             } else {
-                
+                $('#add-on-item #show-more-wrapper').empty();
             }
         });
 
