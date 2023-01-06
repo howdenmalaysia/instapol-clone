@@ -272,7 +272,7 @@
                 $(this).text("{{ __('frontend.button.show_less') }}");
 
                 let new_select_fields = [];
-                var additional_add_ons = motor.extra_cover_list;
+                var additional_add_ons = JSON.parse(JSON.stringify(motor.extra_cover_list));
                 additional_add_ons.splice(0, 5);
                 console.log('additional', additional_add_ons);
 
