@@ -295,11 +295,11 @@
                             <div class="row">
                                 <div class="col-5 px-md-3 mb-3 ms-3">
                                     <small>${extra.option_list.description + ':'}</small>
-                                    <select id="${'sum-insured-' . extra.extra_cover_code}" class="option-list" data-select data-extra-cover-code="${extra.extra_cover_code}">
+                                    <select id="${'sum-insured-' + extra.extra_cover_code}" class="option-list" data-select data-extra-cover-code="${extra.extra_cover_code}">
                         `;
 
                         extra.option_list.values.forEach((option) => {
-                            html += `<option value="${option}" ${option === 1000 ? 'selected' : ''}>${'RM ' . option}</option>`;
+                            html += `<option value="${option}" ${option === 1000 ? 'selected' : ''}>${'RM ' + option}</option>`;
                         });
 
                         html += `</select></div></div></div>`;
