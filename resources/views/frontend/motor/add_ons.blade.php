@@ -36,77 +36,79 @@
                                 </div>
                                 <div id="extra-coverages">
                                     <h3 class="card-title fw-bold border-bottom py-4 px-md-3">{{ __('frontend.motor.add_ons_page.additional_coverage') }}</h3>
-                                    @foreach (array_chunk(session('motor')->extra_cover_list, 5)[0] as $_extra_cover)
-                                        <div class="mb-2 extra-coverage">
-                                            <div class="row px-md-3">
-                                                <div class="col-1">
-                                                    <input type="checkbox" id="{{ 'checkbox-' . $_extra_cover->extra_cover_code }}" class="form-check-input extra-coverage-checkbox" name="extra_coverage[]" value="{{ $_extra_cover->extra_cover_code }}" {{ $_extra_cover->selected ? 'checked' : '' }} />
-                                                </div>
-                                                <div class="col-8 d-flex justify-content-between">
-                                                    <label for="{{ '#checkbox-' . $_extra_cover->extra_cover_code }}">{{ $_extra_cover->extra_cover_description }}</label>
-                                                    
-                                                    @if (strpos($_extra_cover->extra_cover_description, 'Windscreen') !== false)
-                                                        <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('frontend.motor.add_ons_page.tooltip.windscreen') }}">
-                                                            <i class="fa-solid fa-circle-question text-primary fa-15x"></i>
-                                                        </span>
-                                                    @else
-                                                        @if (strpos($_extra_cover->extra_cover_description, 'Legal Liability Of') !== false)
-                                                            <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('frontend.motor.add_ons_page.tooltip.llop') }}">
+                                    <div id="add-on-item">
+                                        @foreach (array_chunk(session('motor')->extra_cover_list, 5)[0] as $_extra_cover)
+                                            <div class="mb-2 extra-coverage">
+                                                <div class="row px-md-3">
+                                                    <div class="col-1">
+                                                        <input type="checkbox" id="{{ 'checkbox-' . $_extra_cover->extra_cover_code }}" class="form-check-input extra-coverage-checkbox" name="extra_coverage[]" value="{{ $_extra_cover->extra_cover_code }}" {{ $_extra_cover->selected ? 'checked' : '' }} />
+                                                    </div>
+                                                    <div class="col-8 d-flex justify-content-between">
+                                                        <label for="{{ '#checkbox-' . $_extra_cover->extra_cover_code }}">{{ $_extra_cover->extra_cover_description }}</label>
+                                                        
+                                                        @if (strpos($_extra_cover->extra_cover_description, 'Windscreen') !== false)
+                                                            <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('frontend.motor.add_ons_page.tooltip.windscreen') }}">
                                                                 <i class="fa-solid fa-circle-question text-primary fa-15x"></i>
                                                             </span>
                                                         @else
-                                                            @if (strpos($_extra_cover->extra_cover_description, 'Legal Liability to') !== false)
-                                                                <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('frontend.motor.add_ons_page.tooltip.lltp') }}">
+                                                            @if (strpos($_extra_cover->extra_cover_description, 'Legal Liability Of') !== false)
+                                                                <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('frontend.motor.add_ons_page.tooltip.llop') }}">
                                                                     <i class="fa-solid fa-circle-question text-primary fa-15x"></i>
                                                                 </span>
                                                             @else
-                                                                @if (strpos($_extra_cover->extra_cover_description, 'Strike, Riot') !== false)
-                                                                    <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('frontend.motor.add_ons_page.tooltip.srcc') }}">
+                                                                @if (strpos($_extra_cover->extra_cover_description, 'Legal Liability to') !== false)
+                                                                    <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('frontend.motor.add_ons_page.tooltip.lltp') }}">
                                                                         <i class="fa-solid fa-circle-question text-primary fa-15x"></i>
                                                                     </span>
                                                                 @else
-                                                                    @if (strpos($_extra_cover->extra_cover_description, 'Accessories') !== false)
-                                                                        <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('frontend.motor.add_ons_page.tooltip.accessories') }}">
+                                                                    @if (strpos($_extra_cover->extra_cover_description, 'Strike, Riot') !== false)
+                                                                        <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('frontend.motor.add_ons_page.tooltip.srcc') }}">
                                                                             <i class="fa-solid fa-circle-question text-primary fa-15x"></i>
                                                                         </span>
                                                                     @else
-                                                                        @if (strpos($_extra_cover->extra_cover_description, 'Personal Accident') !== false)
-                                                                            <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('frontend.motor.add_ons_page.tooltip.pa') }}">
+                                                                        @if (strpos($_extra_cover->extra_cover_description, 'Accessories') !== false)
+                                                                            <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('frontend.motor.add_ons_page.tooltip.accessories') }}">
                                                                                 <i class="fa-solid fa-circle-question text-primary fa-15x"></i>
                                                                             </span>
                                                                         @else
-                                                                            @if (strpos($_extra_cover->extra_cover_description, 'NCD') !== false)
-                                                                                <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('frontend.motor.add_ons_page.tooltip.ncd') }}">
+                                                                            @if (strpos($_extra_cover->extra_cover_description, 'Personal Accident') !== false)
+                                                                                <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('frontend.motor.add_ons_page.tooltip.pa') }}">
                                                                                     <i class="fa-solid fa-circle-question text-primary fa-15x"></i>
                                                                                 </span>
+                                                                            @else
+                                                                                @if (strpos($_extra_cover->extra_cover_description, 'NCD') !== false)
+                                                                                    <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('frontend.motor.add_ons_page.tooltip.ncd') }}">
+                                                                                        <i class="fa-solid fa-circle-question text-primary fa-15x"></i>
+                                                                                    </span>
+                                                                                @endif
                                                                             @endif
                                                                         @endif
                                                                     @endif
                                                                 @endif
                                                             @endif
                                                         @endif
-                                                    @endif
-                                                </div>
-                                                <div class="col-1 text-end">RM</div>
-                                                <div id="{{ $_extra_cover->extra_cover_code . '-premium' }}" class="col-2 text-end premium">{{ number_format($_extra_cover->premium, 2) }}</div>
-                                            </div>
-                                            @if (!empty($_extra_cover->option_list))
-                                                <div class="row">
-                                                    <div class="col-5 px-md-3 mb-3 ms-3">
-                                                        <small>{{ $_extra_cover->option_list->description . ':' }}</small>
-                                                        <select id="{{ 'sum-insured-' . $_extra_cover->extra_cover_code }}" class="option-list" data-select data-extra-cover-code="{{ $_extra_cover->extra_cover_code }}">
-                                                            @foreach ($_extra_cover->option_list->values as $option)
-                                                                <option value="{{ $option }}" {{ $option === 1000 ? 'selected' : '' }}>{{ 'RM ' . $option }}</option>
-                                                            @endforeach
-                                                        </select>
                                                     </div>
+                                                    <div class="col-1 text-end">RM</div>
+                                                    <div id="{{ $_extra_cover->extra_cover_code . '-premium' }}" class="col-2 text-end premium">{{ number_format($_extra_cover->premium, 2) }}</div>
                                                 </div>
-                                            @endif
-                                        </div>
-                                    @endforeach
+                                                @if (!empty($_extra_cover->option_list))
+                                                    <div class="row">
+                                                        <div class="col-5 px-md-3 mb-3 ms-3">
+                                                            <small>{{ $_extra_cover->option_list->description . ':' }}</small>
+                                                            <select id="{{ 'sum-insured-' . $_extra_cover->extra_cover_code }}" class="option-list" data-select data-extra-cover-code="{{ $_extra_cover->extra_cover_code }}">
+                                                                @foreach ($_extra_cover->option_list->values as $option)
+                                                                    <option value="{{ $option }}" {{ $option === 1000 ? 'selected' : '' }}>{{ 'RM ' . $option }}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        @endforeach
+                                    </div>
                                     @if (count(session('motor')->extra_cover_list) > 5)
                                         <div class="mt-4">
-                                            <button type="button" id="show-more-add-ons" class="btn btn-light float-end rounded">{{ __('frontend.button.show_more') }}</button>
+                                            <button type="button" id="show-more-add-ons" class="btn btn-light float-end rounded" data-shown="false">{{ __('frontend.button.show_more') }}</button>
                                         </div>
                                     @endif
                                 </div>
@@ -262,7 +264,35 @@
 
     $(() => {
         $('#show-more-add-ons').on('click', () => {
-            $(this).text("{{ __('frontend.button.show_less') }}");
+            let shown = $(this).data('shown');
+            
+            if(!shown) {
+                $(this).text("{{ __('frontend.button.show_less') }}");
+
+                var additional_add_ons = motor.extra_cover_list;
+                additional_add_ons = additional_add_ons.splice(0, 5);
+
+                additional_add_ons.forEach((extra) => {
+                    $('#add-on-item').append(
+                        `<div class="mb-2 extra-coverage">
+                            <div class="row px-md-3">
+                                <div class="col-1">
+                                    <input type="checkbox" id="${'checkbox-' + extra.extra_cover_code}" class="form-check-input extra-coverage-checkbox" name="extra_coverage[]" value="${extra.extra_cover_code}" ${extra.selected ? 'checked' : ''} />
+                                </div>
+                                <div class="col-8 d-flex justify-content-between">
+                                    <label for="${'#checkbox-' + extra.extra_cover_code}">${extra.extra_cover_description}</label>
+                                    
+                                    ${getTootip(extra.extra_cover_description)}
+                                </div>
+                                <div class="col-1 text-end">RM</div>
+                                <div id="${extra.extra_cover_code + '-premium'}" class="col-2 text-end premium">${formatMoney(extra.premium)}</div>
+                            </div>
+                        </div>`
+                    );
+                });
+            } else {
+                
+            }
         });
 
         $('#btn-delete').on('click', () => {
@@ -478,6 +508,53 @@
         }).catch((err) => {
             console.log(err.response);
         });
+    }
+
+    function getTootip(description) {
+        if(description.contains('Windscreen')) {
+            return `
+                <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('frontend.motor.add_ons_page.tooltip.windscreen') }}">
+                    <i class="fa-solid fa-circle-question text-primary fa-15x"></i>
+                </span>`;
+        } else if (description.contains('Legal Liability Of')) {
+            return `
+                <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('frontend.motor.add_ons_page.tooltip.llop') }}">
+                    <i class="fa-solid fa-circle-question text-primary fa-15x"></i>
+                </span>
+            `;
+        } else if (description.contains('Legal Liability to')) {
+            return `
+                <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('frontend.motor.add_ons_page.tooltip.lltp') }}">
+                    <i class="fa-solid fa-circle-question text-primary fa-15x"></i>
+                </span>
+            `;
+        } else if (description.contains('Strike, Riot')) {
+            return `
+                <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('frontend.motor.add_ons_page.tooltip.srcc') }}">
+                    <i class="fa-solid fa-circle-question text-primary fa-15x"></i>
+                </span>
+            `;
+        } else if (description.contains('Accessories')) {
+            return `
+                <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('frontend.motor.add_ons_page.tooltip.accessories') }}">
+                    <i class="fa-solid fa-circle-question text-primary fa-15x"></i>
+                </span>
+            `;
+        } else if (description.contains('Personal Accident')) {
+            return `
+                <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('frontend.motor.add_ons_page.tooltip.pa') }}">
+                    <i class="fa-solid fa-circle-question text-primary fa-15x"></i>
+                </span>
+            `;
+        } else if (description.contains('NCD')) {
+            return `
+                <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('frontend.motor.add_ons_page.tooltip.ncd') }}">
+                    <i class="fa-solid fa-circle-question text-primary fa-15x"></i>
+                </span>
+            `;
+        }
+
+        return '';
     }
 </script>
 @endpush
