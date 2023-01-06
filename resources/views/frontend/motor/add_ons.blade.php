@@ -268,6 +268,7 @@
             let shown = $(this).data('shown');
             
             if(!shown) {
+                $(this).data('shown', true);
                 $(this).text("{{ __('frontend.button.show_less') }}");
 
                 let new_select_fields = [];
