@@ -6,7 +6,6 @@ use App\DataTransferObjects\Motor\QuotationData;
 use App\DataTransferObjects\Motor\VehicleData;
 use App\Http\Controllers\Controller;
 use App\Mail\PaymentReceipt;
-use App\Models\InsurancePremium;
 use App\Models\Motor\Insurance;
 use App\Models\Motor\InsuranceAddress;
 use App\Models\Motor\InsuranceCompany;
