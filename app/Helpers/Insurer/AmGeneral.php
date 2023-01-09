@@ -230,6 +230,7 @@ class AmGeneral implements InsurerLibraryInterface
 
     public function premiumDetails(object $input, $full_quote = false) : object
     {
+		dd($this->Q_GetProductList($input));
 		$vehicle = $input->vehicle ?? null;
         $ncd_amount = $basic_premium = $total_benefit_amount = $gross_premium = $sst_percent = $sst_amount = $stamp_duty = $excess_amount = $total_payable = 0;
         $pa = null;
@@ -539,366 +540,507 @@ class AmGeneral implements InsurerLibraryInterface
         ]);
     }
 	
-    public function quotation(object $qParams) : object
+    public function quotation(object $input) : object
     {
-		$data = (object) [
-			'vehicle_number' => $input->vehicle_number,
-			'id_type' => $input->id_type,
-			'id_number' => $input->id_number,
-			'gender' => $input->gender,
-			'marital_status' => $input->marital_status,
-			'region' => $input->region,
-			'vehicle' => $input->vehicle,
-			'extra_cover' => $input->extra_cover,
-			'email' => $input->email,
-			'phone_number' => $input->phone_number,
-			'nvic' => $input->vehicle->nvic,
-			'unit_no' => $input->unit_no ?? '',
-			'building_name' => $input->building_name ?? '',
-			'address_one' => $input->address_one,
-			'address_two' => $input->address_two ?? '',
-			'city' => $input->city,
-			'postcode' => $input->postcode,
-			'state' => $input->state,
-			'occupation' => $input->occupation,
-		];
+        $data = (object) [
+            'vehicle_number' => $input->vehicle_number,
+            'id_type' => $input->id_type,
+            'id_number' => $input->id_number,
+            'gender' => $input->gender,
+            'marital_status' => $input->marital_status,
+            'region' => $input->region,
+            'vehicle' => $input->vehicle,
+            'extra_cover' => $input->extra_cover,
+            'email' => $input->email,
+            'phone_number' => $input->phone_number,
+            'nvic' => $input->vehicle->nvic,
+            'unit_no' => $input->unit_no ?? '',
+            'building_name' => $input->building_name ?? '',
+            'address_one' => $input->address_one,
+            'address_two' => $input->address_two ?? '',
+            'city' => $input->city,
+            'postcode' => $input->postcode,
+            'state' => $input->state,
+            'occupation' => $input->occupation,
+        ];
 
-		$result = $this->premiumDetails($data);
+        $result = $this->premiumDetails($data);
 
-		if (!$result->status) {
-			return $this->abort($result->response);
+        if (!$result->status) {
+            return $this->abort($result->response);
+        }
+
+        $result->response->quotation_number = $result->response->quotation_number;
+
+        return (object) [
+            'status' => true,
+            'response' => $result->response
+        ];
+    }
+
+	public function Q_GetProductList($cParams = null)
+	{
+		$dobs = str_split($cParams->id_number, 2);
+
+		$year = intval($dobs[0]);
+		if ($year >= 10) {
+			$year += 1900;
+		} else {
+			$year += 2000;
 		}
 
-		$result->response->quotation_number = $result->response->quotation_number;
+		$dob = $dobs[2] . "-" . $dobs[1] . "-" . strval($year);
 
-		return (object) [
-			'status' => true,
-			'response' => $result->response
-		];
-	}
-
-    public function getVIXNCD(object $input) : object
-    {
-        // $text = '{
-		// 	"newICNo":"'.$input->newICNo.'",
-		// 	"oldICNo":"",
-		// 	"busRegNo":"",
-		// 	"vehicleClass":"",
-		// 	"vehicleNo":"'.$input->vehicleNo.'",
-		// 	"brand":"K",
-		// 	"insuredPostCode":"'.$input->insuredPostCode.'",
-		// 	"vehiclePostCode":"'.$input->insuredPostCode.'",
-		// 	"dob":"'.$input->dob.'"
-        // }';
 		$text = array(
-			"newICNo"=>$input->newICNo,
+			"newICNo"=>$cParams->id_number,
 			"oldICNo"=>"",
 			"busRegNo"=>"",
-			"vehicleClass"=>"",
-			"vehicleNo"=>$input->vehicleNo,
-			"brand"=>"",
-			"insuredPostCode"=>$input->insuredPostCode,
-			"vehiclePostCode"=>$input->insuredPostCode,
-			"dob"=>$input->dob
+			"vehicleClass"=>"PC",
+			"vehicleNo"=>$cParams->vehicle_number,
+			"brand"=>"A",
+			"insuredPostCode"=>$cParams->postcode,
+			"vehiclePostCode"=>$cParams->postcode,
+			"dob"=>$dob,
+			"newBusRegNo"=>"",
 		);
-		$data = array(
-			// 'requestData' => 'MtFbTbB3e8pi4ZwD3WBfzREBLZNPw+Y0uXBMi7Hfo6VqyTueeaRETj4PLX7PfCQDi19z+SeIQL20eTh0whVwif07+Ur2etapl/S6jo0tcsYzMBFV4owfDmloLUi0OP7DGs/nHfU5mTGXowFDCxksGa+qwgaFDWDXAP5IVeiDnxAgrX8kfLch/J+yfnykNsntynbotRUmdkeUSRE0DU+wGMe+DAzKyJSMu1t6Y2NT8wOY8kz2tRU8ZcNyQ8AZ1ovs'
-			// 'requestData' => $this->encrypt($text)
-			'requestData' => $this->encrypt(json_encode($text))
-		);
-        $result = $this->cURL("vix", "vix", json_encode($data));
-		dd($text, $data, $result);
-        if(!$result->status) {
-            return $this->abort($result->response);
-        }
-        
-        return new ResponseData([
-            'status' => $result->status,
-            'response' => $result->response
-        ]);
-    }
-
-    public function getQuickProduct(object $qParams) : object
-    {
-		$text = '{
-			"nvicCode":"'.$qParams->nvic.'"
-		}';
-		
 		$encrypted = $this->encrypt(json_encode($text));
+
 		$data = array(
 			'requestData' => $encrypted
 		);
 
-		$result = $this->cURL("with_auth_token", "motorproduct", json_encode($data));
-		
-        if(!$result->status) {
-            return $this->abort($result->response);
-        }
-        
-        return new ResponseData([
-            'status' => $result->status,
-            'response' => $result->response
-        ]);
-	}
-
-    public function getQuickQuote(object $qParams) : object
-    {
-		$text = '{
-			"vehicleClass":"'.$qParams->vehicleClass.'",
-			"scopeOfCover":"'.$qParams->scopeOfCover.'",
-			"roadTaxOption":"N",
-			"vehBodyTypeCode":"02",
-			"saveInd":"Y",
-			"sumInsured":"'.$qParams->sumInsured.'",
-			"extraCoverageList":"'.$extra_coverage.'",
-			"namedDriversList":"'.$named_driver.'"
-		}';
-		$encrypted = $this->encrypt(json_encode($text));
-		$data = array(
-			'requestData' => $encrypted
-		);
-
-		$result = $this->cURL("with_auth_token", "motorquickquote", json_encode($data));
-        if(!$result->status) {
-            return $this->abort($result->response);
-        }
-        
-        return new ResponseData([
-            'status' => $result->status,
-            'response' => $result->response
-        ]);
-	}
-
-    public function getQuote(object $qParams) : object
-    {
-		$text = '{
-			"newICNo":"750113086211",
-			"oldICNo":"",
-			"busRegNo":"",
-			"clientName":"Prawira Ari K",
-			"genderCode":"M",
-			"maritalStatusCode":"M",
-			"insuredAddress1":"address 1",
-			"insuredAddress2":"address 2",
-			"insuredAddress3":"",
-			"insuredAddress4":"",
-			"vehicleKeptAddress1":"Address 1",
-			"vehicleKeptAddress2":"Address 2",
-			"vehicleKeptAddress3":"",
-			"vehicleKeptAddress4":"",
-			"mobileNo":"0124231749",
-			"emailId":"prawira.ari@gmail.com",
-			"garagedCode":"12",
-			"safetyCode":"99"
-			"occupationCode":"",
-			"nationalityCode":"",
-			"gReferenceNo":"WSD2363"
-		}';
-		$encrypted = $this->encrypt(json_encode($text));
-		$data = array(
-			'requestData' => $encrypted
-		);
-
-		$result = $this->cURL("with_auth_token", "motorquote", json_encode($data));
-        if(!$result->status) {
-            return $this->abort($result->response);
-        }
-        
-        return new ResponseData([
-            'status' => $result->status,
-            'response' => $result->response
-        ]);
-	}
-
-    public function covernote($qParams){
-        $text = '{
-            "quotationNo":"address 1",
-			"newICNo":"address 2",
-			"oldICNo":"",
-			"busRegNo":"",
-			"paymentStatus":"52100",
-			"paymentMode":"WSD2363",
-			"cardNo":"Address 1",
-			"cardHolderName":"Address 2",
-			"paymentAmount":"123", //Optional
-			"payBy":"total payable", //Optional
-			"bankApprovalCode":"52100",
-		}';
-		$encrypted = $this->encrypt(json_encode($text));
-		$data = array(
-			'requestData' => $encrypted
-		);
-
-		$response = $this->cURL("confirm", "motorcovernote", json_encode($data));
-		if($response->status){
+		$response = $this->cURL("getData","QuickQuotation/GetProductList", json_encode($data));
+		dd($text, json_encode($text), $data, json_encode($data), $response);
+		return $response;
+        if($response->status){
 			$encrypted = $response->response->responseData;
-			$decrypted = json_decode($this->decrypt($encrypted));
+			$decrypted = json_decode($this->decrypt($response->response->responseData));
 
 			return $decrypted;
         }
-		else{
+        else{
 			return false;
         }
-    }
-
-    public function getVehicle($qParams){
-        $text = '{
-			"newICNo":"750113086211",
-			"oldICNo":"",
-			"busRegNo":"",
-			"vehicleClass":"",
-			"vehicleNo":"",
-			"brand":"",
-			"dob":"",
-			"clientName":"Prawira Ari K",
-			"genderCode":"M",
-			"maritalStatusCode":"M",
-			"insuredAddress1":"address 1",
-			"insuredAddress2":"address 2",
-			"insuredAddress3":"",
-			"insuredAddress4":"",
-			"insuredPostCode":"",
-			"vehicleKeptAddress1":"Address 1",
-			"vehicleKeptAddress2":"Address 2",
-			"vehicleKeptAddress3":"",
-			"vehicleKeptAddress4":"",
-			"mobileNo":"0124231749",
-			"emailId":"prawira.ari@gmail.com",
-			"vehiclePostCode":"",
-			"garagedCode":"12",
-			"safetyCode":"99"
-			"occupationCode":"",
-			"nationalityCode":"",
-		}';
-		$encrypted = $this->encrypt(json_encode($text));
-		$data = array(
-			'requestData' => $encrypted
-		);
-        //option 1 and 2 got different header selection
-		$response = $this->cURL("vix", "vehicle", json_encode($data));
-		if($response->status){
-			$encrypted = $response->response->responseData;
-			$decrypted = json_decode($this->decrypt($encrypted));
-
-			return $decrypted;
-        }
-		else{
-			return false;
-        }
-    }
-
-    public function getProductList(object $qParams) : object
-    {
-		$text = '{
-			"nvicCode":"'.$qParams->nvic.'"
-		}';
-		
-		$encrypted = $this->encrypt(json_encode($text));
-		$data = array(
-			'requestData' => $encrypted
-		);
-
-		$result = $this->cURL("with_auth_token", "motorproductlist", json_encode($data));
-		
-        if(!$result->status) {
-            return $this->abort($result->response);
-        }
-        
-        return new ResponseData([
-            'status' => $result->status,
-            'response' => $result->response
-        ]);
 	}
 
-    public function getFullQuote(object $qParams) : object
-    {
-		$text = '{
-			"vehicleClass":"PC",
-			"scopeOfCover":"",
-			"roadTaxOption":"",
-			"sumInsured":"'.$qParams->insured.'",
-			"saveInd":"Y",
-			"extraCoverageList":"'.$extra_coverage_list.'",
-			"namedDriversList":"'.$named_driver_list.'"
-		}';
+	public function Q_GetProductListVariant($cParams = null)
+	{
+		$text = array(
+			"nvicCode"=>$cParams->nvic,
+		);
 		$encrypted = $this->encrypt(json_encode($text));
+
 		$data = array(
 			'requestData' => $encrypted
 		);
 
-		$result = $this->cURL("with_auth_token", "motorfullquote", json_encode($data));
-        if(!$result->status) {
-            return $this->abort($result->response);
+		$response = $this->cURL("with_auth_token","QuickQuotation/GetProductListVariant", json_encode($data));
+		dd($text, json_encode($text), $data, json_encode($data), $response);
+		return $response;
+        if($response->status){
+			$encrypted = $response->response->responseData;
+			$decrypted = json_decode($this->decrypt($response->response->responseData));
+
+			return $decrypted;
         }
-        
-        return new ResponseData([
-            'status' => $result->status,
-            'response' => $result->response
-        ]);
+        else{
+			return false;
+        }
+	}
+	
+	public function Q_GetQuote($cParams = null)
+	{
+		$text = array(
+			"vehicleClass"=>$cParams->vehicleClass,
+			"scopeOfCover"=>$cParams->scopeOfCover,
+			"roadTaxOption"=>$cParams->roadTaxOption,
+			"vehBodyTypeCode"=>$cParams->vehBodyTypeCode,
+			"sumInsured"=>$cParams->sumInsured,
+			"saveInd"=>$cParams->saveInd,
+			"ptvSelectInd"=>$cParams->ptvSelectInd,
+			"extraCoverageList"=>$cParams->extraCoverageList,
+			"namedDriversList"=>$cParams->namedDriversList,
+			"vehicleAgeLoadPercent"=>$cParams->vehicleAgeLoadPercent,
+			"insuredAgeLoadPercent"=>$cParams->insuredAgeLoadPercent,
+			"claimsExpLoadPercent"=>$cParams->claimsExpLoadPercent,
+		);
+		$encrypted = $this->encrypt(json_encode($text));
+
+		$data = array(
+			'requestData' => $encrypted
+		);
+
+		$response = $this->cURL("with_auth_token","QuickQuotation/GetQuickQuote", json_encode($data));
+		dd($text, json_encode($text), $data, json_encode($data), $response);
+		return $response;
+        if($response->status){
+			$encrypted = $response->response->responseData;
+			$decrypted = json_decode($this->decrypt($response->response->responseData));
+
+			return $decrypted;
+        }
+        else{
+			return false;
+        }
 	}
 
-    public function policyInfo($qParams){
-        $text = '{
-			"newICNo":"address 2",
-			"oldICNo":"",
-			"busRegNo":"",
-			"policyNo":"52100",
-		}';
+	public function Q_GetAdditionalQuoteInfo($cParams = null)
+	{
+		$text = array(
+			"newICNo"=>$cParams->newICNo,
+			"oldICNo"=>$cParams->oldICNo,
+			"busRegNo"=>$cParams->busRegNo,
+			"clientName"=>$cParams->clientName,
+			"genderCode"=>$cParams->genderCode,
+			"maritalStatusCode"=>$cParams->maritalStatusCode,
+			"insuredAddress1"=>$cParams->insuredAddress1,
+			"insuredAddress2"=>$cParams->insuredAddress2,
+			"insuredAddress3"=>$cParams->insuredAddress3,
+			"insuredAddress4"=>$cParams->insuredAddress4,
+			"vehicleKeptAddress1"=>$cParams->vehicleKeptAddress1,
+			"vehicleKeptAddress2"=>$cParams->vehicleKeptAddress2,
+			"vehicleKeptAddress3"=>$cParams->vehicleKeptAddress3,
+			"vehicleKeptAddress4"=>$cParams->vehicleKeptAddress4,
+			"mobileNo"=>$cParams->mobileNo,
+			"emailId"=>$cParams->emailId,
+			"garagedCode"=>$cParams->garagedCode,
+			"safetyCode"=>$cParams->safetyCode,
+			"qReferenceNo"=>$cParams->qReferenceNo,
+			"occupationCode"=>$cParams->occupationCode,
+			"nationalityCode"=>$cParams->nationalityCode,
+			"newBusRegNo"=>$cParams->newBusRegNo,
+		);
 		$encrypted = $this->encrypt(json_encode($text));
+
 		$data = array(
 			'requestData' => $encrypted
 		);
 
-		$response = $this->cURL("getdata", "motorpolicyinfo", json_encode($data));
-		if($response->status){
+		$response = $this->cURL("getData","QuickQuotation/GetAdditionalQuoteInfo", json_encode($data));
+		dd($text, json_encode($text), $data, json_encode($data), $response);
+		return $response;
+        if($response->status){
 			$encrypted = $response->response->responseData;
-			$decrypted = json_decode($this->decrypt($encrypted));
+			$decrypted = json_decode($this->decrypt($response->response->responseData));
 
 			return $decrypted;
         }
-		else{
+        else{
 			return false;
         }
-    }
+	}
 
-    public function renewalQuote($qParams){
-        $text = '{
-			"insuredAddress1":"address 1",
-			"insuredAddress2":"address 2",
-			"insuredAddress3":"",
-			"insuredAddress4":"",
-			"insuredPostCode":"",
-			"vehicleKeptAddress1":"Address 1",
-			"vehicleKeptAddress2":"Address 2",
-			"vehicleKeptAddress3":"",
-			"vehicleKeptAddress4":"",
-			"vehiclePostCode":"",
-			"roadTaxOption":"",
-			"garagedCode":"",
-			"occupationCode":"",
-			"sumInsured":"",
-			"saveInd":"",
-			"modifyNamedDrivers":"N",
-			"selectedNamedDriversList":"'.$selectedNamedDriversList.'",
-			"modifyExtraCoverage":"Y",
-			"selectedExtraCoverageList":"'.$selectedExtraCoverageList.'",
-		}';
+	public function F_GetProductList($cParams = null)
+	{
+		$dobs = str_split($cParams->id_number, 2);
+
+		$year = intval($dobs[0]);
+		if ($year >= 10) {
+			$year += 1900;
+		} else {
+			$year += 2000;
+		}
+
+		$dob = $dobs[2] . "-" . $dobs[1] . "-" . strval($year);
+
+		$text = array(
+			"newICNo"=>$cParams->newICNo,
+			"vehicleClass"=>$cParams->vehicleClass,
+			"vehicleNo"=>$cParams->vehicleNo,
+			"brand"=>$cParams->brand,
+			"dob"=>$dob,
+			"clientName"=>$cParams->clientName,
+			"genderCode"=>$cParams->genderCode,
+			"maritalStatusCode"=>$cParams->maritalStatusCode,
+			"insuredAddress1"=>$cParams->insuredAddress1,
+			"insuredAddress2"=>$cParams->insuredAddress2,
+			"insuredAddress3"=>$cParams->insuredAddress3,
+			"insuredAddress4"=>$cParams->insuredAddress4,
+			"vehicleKeptAddress1"=>$cParams->vehicleKeptAddress1,
+			"vehicleKeptAddress2"=>$cParams->vehicleKeptAddress2,
+			"vehicleKeptAddress3"=>$cParams->vehicleKeptAddress3,
+			"vehicleKeptAddress4"=>$cParams->vehicleKeptAddress4,
+			"insuredPostCode"=>$cParams->insuredPostCode,
+			"vehiclePostCode"=>$cParams->vehiclePostCode,
+			"mobileNo"=>$cParams->mobileNo,
+			"emailId"=>$cParams->emailId,
+			"garagedCode"=>$cParams->garagedCode,
+			"safetyCode"=>$cParams->safetyCode,
+			"occupationCode"=>$cParams->occupationCode,
+			"nationalityCode"=>$cParams->nationalityCode,
+			"newBusRegNo"=>$cParams->newBusRegNo,
+		);
 		$encrypted = $this->encrypt(json_encode($text));
+
 		$data = array(
 			'requestData' => $encrypted
 		);
-        //option 1 and 2 got different header selection
-		$response = $this->cURL("with_auth_token", "motorrenewalquote", json_encode($data));
-		if($response->status){
+
+		$response = $this->cURL("getData","FullQuotation/GetProductList", json_encode($data));
+		dd($text, json_encode($text), $data, json_encode($data), $response);
+		return $response;
+        if($response->status){
 			$encrypted = $response->response->responseData;
-			$decrypted = json_decode($this->decrypt($encrypted));
+			$decrypted = json_decode($this->decrypt($response->response->responseData));
 
 			return $decrypted;
         }
-		else{
+        else{
 			return false;
         }
-    }
+	}
+
+	public function F_GetProductListVariant($cParams = null)
+	{
+		$text = array(
+			"nvicCode"=>$cParams->nvic,
+		);
+		$encrypted = $this->encrypt(json_encode($text));
+
+		$data = array(
+			'requestData' => $encrypted
+		);
+
+		$response = $this->cURL("with_auth_token","FullQuotation/GetProductListVariant", json_encode($data));
+		dd($text, json_encode($text), $data, json_encode($data), $response);
+		return $response;
+        if($response->status){
+			$encrypted = $response->response->responseData;
+			$decrypted = json_decode($this->decrypt($response->response->responseData));
+
+			return $decrypted;
+        }
+        else{
+			return false;
+        }
+	}
+	
+	public function F_GetFullQuote($cParams = null)
+	{
+		$text = array(
+			"vehicleClass"=>$cParams->vehicleClass,
+			"scopeOfCover"=>$cParams->scopeOfCover,
+			"roadTaxOption"=>$cParams->roadTaxOption,
+			"vehBodyTypeCode"=>$cParams->vehBodyTypeCode,
+			"sumInsured"=>$cParams->sumInsured,
+			"saveInd"=>$cParams->saveInd,
+			"ptvSelectInd"=>$cParams->ptvSelectInd,
+			"vehicleAgeLoadPercent"=>$cParams->vehicleAgeLoadPercent,
+			"insuredAgeLoadPercent"=>$cParams->insuredAgeLoadPercent,
+			"claimsExpLoadPercent"=>$cParams->claimsExpLoadPercent,
+			"extraCoverageList"=>$cParams->extraCoverageList,
+			"namedDriversList"=>$cParams->namedDriversList,
+		);
+		$encrypted = $this->encrypt(json_encode($text));
+
+		$data = array(
+			'requestData' => $encrypted
+		);
+
+		$response = $this->cURL("with_auth_token","FullQuotation/GetFullQuote", json_encode($data));
+		dd($text, json_encode($text), $data, json_encode($data), $response);
+		return $response;
+        if($response->status){
+			$encrypted = $response->response->responseData;
+			$decrypted = json_decode($this->decrypt($response->response->responseData));
+
+			return $decrypted;
+        }
+        else{
+			return false;
+        }
+	}
+
+	public function Renewal_GetPolicyInfo($cParams = null)
+	{
+		$text = array(
+			"newICNo"=>$cParams->newICNo,
+			"oldICNo"=>$cParams->oldICNo,
+			"busRegNo"=>$cParams->busRegNo,
+			"policyNo"=>$cParams->policyNo,
+			"grabConvertCompPlus"=>$cParams->grabConvertCompPlus,
+			"newBusRegNo"=>$cParams->newBusRegNo,
+			"vehicleNo"=>$cParams->vehicleNo,
+		);
+		$encrypted = $this->encrypt(json_encode($text));
+
+		$data = array(
+			'requestData' => $encrypted
+		);
+
+		$response = $this->cURL("getData","Renewal/GetPolicyInfo", json_encode($data));
+		dd($text, json_encode($text), $data, json_encode($data), $response);
+		return $response;
+        if($response->status){
+			$encrypted = $response->response->responseData;
+			$decrypted = json_decode($this->decrypt($response->response->responseData));
+
+			return $decrypted;
+        }
+        else{
+			return false;
+        }
+	}
+
+	public function Renewal_GetRenewalQuote($cParams = null)
+	{
+		$text = array(
+			"insuredAddress1"=>$cParams->insuredAddress1,
+			"insuredAddress2"=>$cParams->insuredAddress2,
+			"insuredAddress3"=>$cParams->insuredAddress3,
+			"insuredAddress4"=>$cParams->insuredAddress4,
+			"insuredPostCode"=>$cParams->insuredPostCode,
+			"occupationCode"=>$cParams->occupationCode,
+			"vehicleKeptAddress1"=>$cParams->vehicleKeptAddress1,
+			"vehicleKeptAddress2"=>$cParams->vehicleKeptAddress2,
+			"vehicleKeptAddress3"=>$cParams->vehicleKeptAddress3,
+			"vehicleKeptAddress4"=>$cParams->vehicleKeptAddress4,
+			"vehiclePostCode"=>$cParams->vehiclePostCode,
+			"roadTaxOption"=>$cParams->roadTaxOption,
+			"vehBodyTypeCode"=>$cParams->vehBodyTypeCode,
+			"modifyExtraCoverage"=>$cParams->modifyExtraCoverage,
+			"modifyNamedDrivers"=>$cParams->modifyNamedDrivers,
+			"sumInsured"=>$sumInsured,
+			"saveInd"=>$cParams->saveInd,
+			"ptvSelectInd"=>$cParams->ptvSelectInd,
+			"vehicleAgeLoadPercent"=>$cParams->vehicleAgeLoadPercent,
+			"insuredAgeLoadPercent"=>$cParams->insuredAgeLoadPercent,
+			"claimsExpLoadPercent"=>$cParams->claimsExpLoadPercent,
+			"selectedExtraCoverageList"=>$cParams->selectedExtraCoverageList,
+			"selectedNamedDriversList"=>$cParams->selectedNamedDriversList,
+		);
+		$encrypted = $this->encrypt(json_encode($text));
+
+		$data = array(
+			'requestData' => $encrypted
+		);
+
+		$response = $this->cURL("with_auth_token","Renewal/GetRenewalQuote", json_encode($data));
+		dd($text, json_encode($text), $data, json_encode($data), $response);
+		return $response;
+        if($response->status){
+			$encrypted = $response->response->responseData;
+			$decrypted = json_decode($this->decrypt($response->response->responseData));
+
+			return $decrypted;
+        }
+        else{
+			return false;
+        }
+	}
+
+	public function GetCovernoteSubmission($cParams = null)
+	{
+		$text = array(
+			"quotationNo"=>$cParams->quotationNo,
+			"newICNo"=>$cParams->newICNo,
+			"oldICNo"=>$cParams->oldICNo,
+			"busRegNo"=>$cParams->busRegNo,
+			"paymentStatus"=>$cParams->paymentStatus,
+			"paymentMode"=>$cParams->paymentMode,
+			"cardNo"=>$cParams->cardNo,
+			"cardHolderName"=>$cParams->cardHolderName,
+			"paymentAmount"=>$cParams->paymentAmount,
+			"payBy"=>$cParams->payBy,
+			"bankApprovalCode"=>$cParams->bankApprovalCode,
+		);
+		$encrypted = $this->encrypt(json_encode($text));
+
+		$data = array(
+			'requestData' => $encrypted
+		);
+
+		$response = $this->cURL("getData","GetCovernoteSubmission", json_encode($data));
+		dd($text, json_encode($text), $data, json_encode($data), $response);
+		return $response;
+        if($response->status){
+			$encrypted = $response->response->responseData;
+			$decrypted = json_decode($this->decrypt($response->response->responseData));
+
+			return $decrypted;
+        }
+        else{
+			return false;
+        }
+	}
+
+	public function GetQuotationDetails($cParams = null)
+	{
+		$text = array(
+			"newICNo"=>$cParams->newICNo,
+			"oldICNo"=>$cParams->oldICNo,
+			"busRegNo"=>$cParams->busRegNo,
+		);
+		$encrypted = $this->encrypt(json_encode($text));
+
+		$data = array(
+			'requestData' => $encrypted
+		);
+
+		$response = $this->cURL("getData","GetQuotationDetails", json_encode($data));
+		dd($text, json_encode($text), $data, json_encode($data), $response);
+		return $response;
+        if($response->status){
+			$encrypted = $response->response->responseData;
+			$decrypted = json_decode($this->decrypt($response->response->responseData));
+
+			return $decrypted;
+        }
+        else{
+			return false;
+        }
+	}
+
+	public function GetQuotationStatus($cParams = null)
+	{
+		$text = array(
+			"quotationNo"=>$cParams->quotationNo,
+		);
+		$encrypted = $this->encrypt(json_encode($text));
+
+		$data = array(
+			'requestData' => $encrypted
+		);
+
+		$response = $this->cURL("getData","GetQuotationStatus", json_encode($data));
+		dd($text, json_encode($text), $data, json_encode($data), $response);
+		return $response;
+        if($response->status){
+			$encrypted = $response->response->responseData;
+			$decrypted = json_decode($this->decrypt($response->response->responseData));
+
+			return $decrypted;
+        }
+        else{
+			return false;
+        }
+	}
+
+	public function GetMasterData($cParams = null)
+	{
+		$text = array(
+			"occupationMaster"=>$cParams->occupationMaster,
+			"nationalityMaster"=>$cParams->nationalityMaster,
+		);
+		$encrypted = $this->encrypt(json_encode($text));
+
+		$data = array(
+			'requestData' => $encrypted
+		);
+
+		$response = $this->cURL("getData","GetMasterData", json_encode($data));
+		dd($text, json_encode($text), $data, json_encode($data), $response);
+		return $response;
+        if($response->status){
+			$encrypted = $response->response->responseData;
+			$decrypted = json_decode($this->decrypt($response->response->responseData));
+
+			return $decrypted;
+        }
+        else{
+			return false;
+        }
+	}
 
 	private function decrypt($data){
         $first_key = openssl_pbkdf2($this->password, $this->encrypt_salt, $this->encrypt_key_size, $this->encrypt_pswd_iterations, "sha1");
@@ -909,15 +1051,15 @@ class AmGeneral implements InsurerLibraryInterface
 
 	private function encrypt($data){
         $first_key = openssl_pbkdf2($this->password, $this->encrypt_salt, $this->encrypt_key_size, $this->encrypt_pswd_iterations, "sha1");
-        dump($first_key);
 		$first_encrypted =openssl_encrypt($data,$this->encrypt_method,$first_key, OPENSSL_RAW_DATA,$this->encrypt_iv);
-        dump($first_encrypted);
+		dump('encrypt', $first_key, $first_encrypted);
 		$output = base64_encode($first_encrypted);
         return $output;
 	}
 
 	private function cURL($type = null, $function = null, $data = null, $additionals = null){
-		$host = $this->host;
+		$port = $this->port;
+		$host = $this->host.$port;
 		$username = $this->username;
 		$password = $this->password;
 		$options = [
@@ -942,27 +1084,28 @@ class AmGeneral implements InsurerLibraryInterface
 			$postfield = "grant_type=client_credentials&scope=resource.READ,resource.WRITE";
         }
         else{
-            // $token = $this->get_token();
-            $host .= "/enquiry/" . $function;
-			if($type == "confirm"){
-				$host .= "/confirm/" . $function;
-			}
+            $token = $this->get_token();
+            $host .= "/api/KEC/v1.0/" . $function;
             $options = [];
-			$options['headers'] = [
-				'Content-Type' => 'application/json',
-				'Accept' => 'application/json',
-				'Username' => $this->username,
-				'Password' => $this->password,
-				'Browser' => 'Chrome',
-				'Channel' => 'Kurnia',
-				'Device' => 'PC',
-			];
+            $options['headers'] = [
+                'Authorization' => 'Bearer '.(string)$token,
+                'Channel-Token' => $this->channel_token,
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json',
+                'Username' => $this->username,
+                'Password' => $this->encrypt_password,
+                'Browser' => 'Chrome',
+                'Channel' => 'Kurnia',
+                'Device' => 'PC',
+            ];
 
             if ($type == "with_auth_token") {
                 $options['headers']['auth_token'] = $additionals->auth_token;
                 $options['headers']['referencedata'] = $additionals->referenceData;
             }
-            $options['body'] = $data;
+
+            $postfield = $data;
+            $options['body'] = $postfield;
 			dump($options);
         }
 

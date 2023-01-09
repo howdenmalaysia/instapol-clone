@@ -927,16 +927,16 @@ class ZurichTakaful implements InsurerLibraryInterface
                 }
             }
 
-            if (empty($selected_variant)) {
-                return $this->abort(trans('api.variant_not_match'));
-            }
+            // if (empty($selected_variant)) {
+            //     return $this->abort(trans('api.variant_not_match'));
+            // }
 
             // set vehicle
             $vehicle = new Vehicle([
                 'make' => $vehicle_vix->response->make,
                 'model' => $vehicle_vix->response->model,
-                'nvic' => $selected_variant->nvic,
-                'variant' => $selected_variant->variant,
+                'nvic' => $selected_variant->nvic ?? $input->nvic,
+                'variant' => $selected_variant->variant ?? $input->vehicle->variant,
                 'engine_capacity' => $vehicle_vix->response->engine_capacity,
                 'manufacture_year' => $vehicle_vix->response->manufacture_year,
                 'ncd_percentage' => $vehicle_vix->response->ncd_percentage,
@@ -1041,6 +1041,16 @@ class ZurichTakaful implements InsurerLibraryInterface
                 'ecd_pac_unit' => '1',
             ];
             $premium = $this->getQuotation($quotation);
+
+            $excess_amount = formatNumber($premium->response->PremiumDetails['ExcessAmt']);
+            $ncd_amount = formatNumber($premium->response->PremiumDetails['NCDAmt']);
+            $basic_premium = formatNumber($premium->response->PremiumDetails['BasicPrem']);
+            $total_benefit_amount = 0;
+            $gross_premium = formatNumber($premium->response->PremiumDetails['GrossPrem']);
+            $stamp_duty = formatNumber($premium->response->PremiumDetails['StampDutyAmt']);
+            $sst_amount = formatNumber($premium->response->PremiumDetails['GST_Amt']);
+            $total_payable = formatNumber($premium->response->PremiumDetails['TtlPayablePremium']);
+            $sst_percent = ($sst_amount / $gross_premium) * 100;
 
             $extra_cover_list = [];
             foreach(self::EXTRA_COVERAGE_LIST as $_extra_cover_code) {

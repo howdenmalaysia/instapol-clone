@@ -79,6 +79,7 @@ class Allianz implements InsurerLibraryInterface
         ];
         
         $vix = $this->getVIXNCD($data);
+        dd($vix);
         if(!$vix->status && is_string($vix->response)) {
             return $this->abort($vix->response);
         }
@@ -427,16 +428,16 @@ class Allianz implements InsurerLibraryInterface
                 }
             }
 
-            if (empty($selected_variant)) {
-                return $this->abort(trans('api.variant_not_match'));
-            }
+            // if (empty($selected_variant)) {
+            //     return $this->abort(trans('api.variant_not_match'));
+            // }
 
             // set vehicle
             $vehicle = new Vehicle([
                 'make' => $vehicle_vix->response->make,
                 'model' => $vehicle_vix->response->model,
-                'nvic' => $selected_variant->nvic,
-                'variant' => $selected_variant->variant,
+                'nvic' => $selected_variant->nvic ?? $input->nvic,
+                'variant' => $selected_variant->variant ?? $input->vehicle->variant,
                 'engine_capacity' => $vehicle_vix->response->engine_capacity,
                 'manufacture_year' => $vehicle_vix->response->manufacture_year,
                 'ncd_percentage' => $vehicle_vix->response->ncd_percentage,
