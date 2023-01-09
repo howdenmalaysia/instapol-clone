@@ -66,16 +66,20 @@
                         <ABISI>{{ $abisi }}</ABISI>
                         <Chosen_SI_Type>{{ $chosen_si_type }}</Chosen_SI_Type>
                     </BasicDetails>
-                    <ExtraCoverDetails>
+                    <ExtraCoverDetails>   
+                    @if (!empty($extcover))
+                            @foreach ($extcover as $ec)
                             <ExtraCoverData>
-                                <ExtCovCode>{{ $ext_cov_code }}</ExtCovCode>
-                                <UnitDay>{{ $unit_day }}</UnitDay>
-                                <UnitAmount>{{ $unit_amount }}</UnitAmount>
-                                <EffDate>{{ $ECD_eff_date }}</EffDate>
-                                <ExpDate>{{ $ECD_exp_date }}</ExpDate>
-                                <SumInsured>{{ $ECD_sum_insured }}</SumInsured>
-                                <NoOfUnit>{{ $no_of_unit }}</NoOfUnit>
+                                <ExtCovCode>{{ $ec->ext_cov_code }}</ExtCovCode>
+                                <UnitDay>{{ $ec->unit_day }}</UnitDay>
+                                <UnitAmount>{{ $ec->unit_amount }}</UnitAmount>
+                                <EffDate>{{ $ec->ECD_eff_date }}</EffDate>
+                                <ExpDate>{{ $ec->ECD_exp_date }}</ExpDate>
+                                <SumInsured>{{ $ec->ECD_sum_insured }}</SumInsured>
+                                <NoOfUnit>{{ $ec->no_of_unit }}</NoOfUnit>
                             </ExtraCoverData>
+                            @endforeach
+                    @endif
                     </ExtraCoverDetails>
                     
                     @if (!empty($additional_driver))

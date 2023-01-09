@@ -249,7 +249,7 @@
             $('input[name=id_type]').on('change', () => {
                 if($('input[name=id_type]:checked').val() == 2) {
                     $('#id-number-label').text("{{ __('frontend.motor.company_resgistration') }}");
-                    $('#id-number').removeAttr('pattern').attr('minlength', 9);
+                    $('#id-number').attr('placeholder', '1183636-M').removeAttr('pattern').attr('minlength', 8);
 
                     Inputmask.remove('#id-number')
                 } else {

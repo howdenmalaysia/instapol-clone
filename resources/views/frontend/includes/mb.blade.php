@@ -1,4 +1,4 @@
-@if(config('messagebird.widget-id'))
+@if(config('setting.messagebird.widget_id'))
 <script>
     var MessageBirdChatWidgetSettings = {
         widgetId: "{{ config('setting.messagebird.widget_id') }}",
