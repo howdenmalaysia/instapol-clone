@@ -13,13 +13,6 @@ use App\DataTransferObjects\Motor\VehicleVariantData;
 use App\Helpers\Insurer\BerjayaSompo;
 use App\Helpers\Insurer\Liberty;
 use App\Helpers\Insurer\PacificOrient;
-use App\Helpers\Insurer\AIG;
-use App\Helpers\Insurer\Allianz;
-use App\Helpers\Insurer\AmGeneral;
-use App\Helpers\Insurer\Zurich;
-use App\Helpers\Insurer\ZurichTakaful;
-use App\Helpers\Aes256Encryption;
-use App\Helpers\HttpClient;
 use App\Http\Controllers\Controller;
 use App\Interfaces\MotorAPIInterface;
 use App\Models\InsuranceAddress;
@@ -46,10 +39,8 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use GuzzleHttp\Client;
 
 class MotorAPIController extends Controller implements MotorAPIInterface
 {
@@ -150,21 +141,8 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             $vehicle_body_type_id = VehicleBodyType::where('name', $motor->vehicle_body_type)->pluck('id');
         }
 
-        switch($motor->policy_holder->id_type) {
-            case 1: {
-                $age = getAgeFromIC($motor->policy_holder->id_number);
-
-                break;
-            }
-            case 4: {
-                $age = 0;
-
-                break;
-            }
-        }
-
         $data = new APIData([
-            'age' => $age,
+            'age' => getAgeFromIC($motor->policy_holder->id_number),
             'id_type' => $motor->policy_holder->id_type,
             'id_number' => $motor->policy_holder->id_number,
             'vehicle_number' => strtoupper($motor->vehicle_number),

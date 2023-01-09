@@ -212,7 +212,7 @@ class PacificOrient implements InsurerLibraryInterface
 
             $data = (object) [
                 'age' => $input->age,
-                'gender' => $this->getGender($input->gender),
+                'gender' => $input->gender,
                 'id_type' => $input->id_type,
                 'id_number' => $id_number,
                 'company_registration_number' => $company_registration_number,
@@ -296,14 +296,14 @@ class PacificOrient implements InsurerLibraryInterface
             'additional_driver' => $input->additional_driver,
             'email' => $input->email,
             'extra_cover' => $input->extra_cover,
-            'gender' => $this->getGender($input->gender),
+            'gender' => $input->gender,
             'id_type' => $input->id_type,
             'id_number' => $input->id_number,
             'marital_status' => $this->getMaritalStatusCode($input->marital_status),
             'postcode' => $input->postcode,
             'region' => $input->region,
             'state' => $input->state,
-            'sum_insured' => $vehicle->sum_insured,
+            'sum_insured' => $input->vehicle->sum_insured ?? $vehicle->sum_insured,
             'vehicle' => $vehicle,
             'vehicle_number' => $input->vehicle_number,
         ];
@@ -541,7 +541,7 @@ class PacificOrient implements InsurerLibraryInterface
 
         $response = (object) [
             'chassis_number' => (string) $data->ChassisNumber,
-            'engine_capacity' => (float) $data->EngineCC,
+            'engine_capacity' => (int) $data->EngineCC,
             'engine_number' => (string)$data->EngineNumber,
             'error_description' => (string) $data->ErrorDesc,
             'expiry_date' => (string) $data->NextXDate,
@@ -549,10 +549,10 @@ class PacificOrient implements InsurerLibraryInterface
             'make' => (int) $data->VehicleMake,
             'manufacturing_year' => (int) $data->YearManufactured,
             'model' => (int) $data->VehicleModel,
-            'ncd' => (float) $data->NCD,
+            'ncd' => (int) $data->NCD,
             'nvic' => (string) $data->NVIC,
             'seating_capacity' => (int) $data->SeatingCapacity,
-            'sum_insured' => (float) str_replace(',', '', $data->SumInsured)
+            'sum_insured' => (int) str_replace(',', '', $data->SumInsured)
         ];
 
         return new ResponseData([
@@ -568,7 +568,6 @@ class PacificOrient implements InsurerLibraryInterface
         $data = [
             'all_rider' => 'Y', // Default to Yes,
             'is_company' => $input->id_type === config('setting.id_type.company_registration_no') ? 'Y' : 'N',
-            'company_registration_number' => $input->company_registration_number,
             'coverage' => self::COVER_TYPE,
             'effective_date' => $input->vehicle->inception_date,
             'expiry_date' => $input->vehicle->expiry_date,
@@ -780,15 +779,23 @@ class PacificOrient implements InsurerLibraryInterface
     // Mapping
     private function getGender($data) : string
     {
+        $gender = '';
+
         switch($data) {
-            case 'M':
             case 'F': {
-                return $data;
+                $gender = 'FEMALE';
+                break;
             }
             case 'O': {
-                return 'C';
+                $gender = 'COMPANY';
+                break;
+            }
+            default: {
+                $gender = 'MALE';
             }
         }
+
+        return $gender;
     }
 
     private function getMaritalStatusCode($marital_status) : int

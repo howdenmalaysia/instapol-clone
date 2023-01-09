@@ -43,6 +43,5 @@
         @stack('after-scripts')
 
         @include('frontend.includes.mb')
-        @include('frontend.includes.ga')
     </body>
 </html>

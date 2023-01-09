@@ -15,10 +15,10 @@ class Vehicle extends DataTransferObject
     /** @var string */
     public $nvic;
 
-    /** @var string|null */
+    /** @var string */
     public $variant;
 
-    /** @var int|float */
+    /** @var int */
     public $engine_capacity;
 
     /** @var int */

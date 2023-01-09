@@ -65,7 +65,6 @@ class MotorController extends Controller
                 $driving_experience = getAgeFromIC($request->id_number) - 18;
                 $marital_status = 'S';
                 $id_type = config('setting.id_type.nric_no');
-                $dob = formatDateFromIC($request->id_number);
 
                 break;
             }
@@ -86,7 +85,7 @@ class MotorController extends Controller
                 'id_number' => formatIC($request->id_number),
                 'email' => $request->email,
                 'phone_number' => Str::startsWith($request->phone_number, '0') ? substr($request->phone_number, 1) : $request->phone_number,
-                'date_of_birth' => $dob ?? null,
+                'date_of_birth' => formatDateFromIC($request->id_number),
                 'gender' => $gender,
                 'marital_status' => $marital_status,
                 'driving_experience' => $driving_experience,
@@ -266,7 +265,7 @@ class MotorController extends Controller
         }
 
         $request->session()->put('motor', $session);
-        dd($selected_extra_cover);
+
         return redirect()->route('motor.policy-holder');
     }
 
