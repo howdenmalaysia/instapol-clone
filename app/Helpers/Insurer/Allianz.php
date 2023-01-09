@@ -21,15 +21,7 @@ use Illuminate\Support\Str;
 
 class Allianz implements InsurerLibraryInterface
 {
-    private string $host;
-    private string $url_token;
-    private string $url;
-    private string $token;
-    private string $agent_code;
-    private string $company_id;
-    private string $company_name;
-
-	private string $username;
+    private string $username;
 	private string $password;
     private const MIN_SUM_INSURED = 10000;
     private const MAX_SUM_INSURED = 500000;
@@ -79,6 +71,7 @@ class Allianz implements InsurerLibraryInterface
         ];
         
         $vix = $this->getVIXNCD($data);
+        dd($vix);
         if(!$vix->status && is_string($vix->response)) {
             return $this->abort($vix->response);
         }
@@ -101,7 +94,6 @@ class Allianz implements InsurerLibraryInterface
                 config('setting.response_codes.sum_insured_referred')
             );
         }
-
         $nvic = explode('|', (string) $vix->response->nvicList[0]->nvic);
         //getting model
         $vehInputModel = (object)[      
@@ -174,7 +166,7 @@ class Allianz implements InsurerLibraryInterface
             'region' => $postcode_details->Region,
             'makeCode' => $vix->response->make,
             'modelCode' => $vix->response->model,
-            'makeYear' => $vix->response->manufacture_year,
+            'makeYear' => $vix->response->manufacture_year, 
         ];
         $avvariant = $this->avVariant($get_avvariant)->response;
         $get_quotation = (object)[
@@ -182,7 +174,7 @@ class Allianz implements InsurerLibraryInterface
             'vix'=>$vix,
             'avvariant'=>$avvariant,
         ];
-        $quotation = $this->quotation($get_quotation)->response;
+        $quotation = $this->getQuotation($get_quotation)->response;
         $text = '{
             "ReferenceNo": "'.$quotation->contract->contractNumber.'",
             "ProductCat": "MT",
@@ -427,16 +419,16 @@ class Allianz implements InsurerLibraryInterface
                 }
             }
 
-            if (empty($selected_variant)) {
-                return $this->abort(trans('api.variant_not_match'));
-            }
+            // if (empty($selected_variant)) {
+            //     return $this->abort(trans('api.variant_not_match'));
+            // }
 
             // set vehicle
             $vehicle = new Vehicle([
                 'make' => $vehicle_vix->response->make,
                 'model' => $vehicle_vix->response->model,
-                'nvic' => $selected_variant->nvic,
-                'variant' => $selected_variant->variant,
+                'nvic' => $selected_variant->nvic ?? $input->nvic,
+                'variant' => $selected_variant->variant ?? $input->vehicle->variant,
                 'engine_capacity' => $vehicle_vix->response->engine_capacity,
                 'manufacture_year' => $vehicle_vix->response->manufacture_year,
                 'ncd_percentage' => $vehicle_vix->response->ncd_percentage,
@@ -460,7 +452,7 @@ class Allianz implements InsurerLibraryInterface
                 'vix'=>$vehicle_vix,
                 'avvariant'=>$avvariant,
             ];
-            $motor_premium = $this->quotation($get_quotation);
+            $motor_premium = $this->getQuotation($get_quotation);
 
             if (!$motor_premium->status) {
                 return $this->abort($motor_premium->response);
@@ -798,6 +790,44 @@ class Allianz implements InsurerLibraryInterface
 
     public function quotation(object $qParams) : object
     {
+        $data = (object) [
+            'vehicle_number' => $input->vehicle_number,
+            'id_type' => $input->id_type,
+            'id_number' => $input->id_number,
+            'gender' => $input->gender,
+            'marital_status' => $input->marital_status,
+            'region' => $input->region,
+            'vehicle' => $input->vehicle,
+            'extra_cover' => $input->extra_cover,
+            'email' => $input->email,
+            'phone_number' => $input->phone_number,
+            'nvic' => $input->vehicle->nvic,
+            'unit_no' => $input->unit_no ?? '',
+            'building_name' => $input->building_name ?? '',
+            'address_one' => $input->address_one,
+            'address_two' => $input->address_two ?? '',
+            'city' => $input->city,
+            'postcode' => $input->postcode,
+            'state' => $input->state,
+            'occupation' => $input->occupation,
+        ];
+
+        $result = $this->premiumDetails($data);
+
+        if (!$result->status) {
+            return $this->abort($result->response);
+        }
+
+        $result->response->quotation_number = $result->response->quotation_number;
+
+        return (object) [
+            'status' => true,
+            'response' => $result->response
+        ];
+    }
+
+    public function getQuotation(object $qParams) : object
+    {
         $dobs = str_split($qParams->input->id_number, 2);
         $id_number = $dobs[0] . $dobs[1] . $dobs[2] . "-" . $dobs[3] .  "-" . $dobs[4] . $dobs[5];
         $year = intval($dobs[0]);
@@ -839,7 +869,6 @@ class Allianz implements InsurerLibraryInterface
             }
         }';
 		$result = $this->cURL("getData", "/quote", $text);
-        
         if(!$result->status) {
             return $this->abort($result->response);
         }
@@ -939,7 +968,7 @@ class Allianz implements InsurerLibraryInterface
 
         return $result->response->PostcodeList[0];
     }
-    
+
     private function id_type(string $IDType)
     {
         $result = '';

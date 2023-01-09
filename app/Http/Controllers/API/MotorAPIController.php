@@ -13,12 +13,11 @@ use App\DataTransferObjects\Motor\VehicleVariantData;
 use App\Helpers\Insurer\BerjayaSompo;
 use App\Helpers\Insurer\Liberty;
 use App\Helpers\Insurer\PacificOrient;
-use App\Helpers\Insurer\AIG;
-use App\Helpers\Insurer\Allianz;
 use App\Helpers\Insurer\AmGeneral;
+use App\Helpers\Insurer\Allianz;
+use App\Helpers\Insurer\AIG;
 use App\Helpers\Insurer\Zurich;
 use App\Helpers\Insurer\ZurichTakaful;
-use App\Helpers\Aes256Encryption;
 use App\Helpers\HttpClient;
 use App\Http\Controllers\Controller;
 use App\Interfaces\MotorAPIInterface;
@@ -149,7 +148,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
         if(!empty($motor->vehicle_body_type)) {
             $vehicle_body_type_id = VehicleBodyType::where('name', $motor->vehicle_body_type)->pluck('id');
         }
-
+        
         switch($motor->policy_holder->id_type) {
             case 1: {
                 $age = getAgeFromIC($motor->policy_holder->id_number);
@@ -729,21 +728,6 @@ class MotorAPIController extends Controller implements MotorAPIInterface
         $insurer = Product::findOrFail($product_id)->insurance_company;
 
         switch($product_id) {
-            case 9: {
-                return new PacificOrient($insurer->id, $insurer->name);
-
-                break;
-            }
-            case 14: {
-                return new Liberty($insurer->id, $insurer->name);
-
-                break;
-            }
-            case 15: {
-                return new BerjayaSompo($insurer->id, $insurer->name);
-
-                break;
-            }
             case 2:{
                 return new AmGeneral($insurer->id, $insurer->name);
 
@@ -759,6 +743,11 @@ class MotorAPIController extends Controller implements MotorAPIInterface
 
                 break;
             }
+            case 9: {
+                return new PacificOrient($insurer->id, $insurer->name);
+
+                break;
+            }
             case 10:{
                 return new Zurich($insurer->id, $insurer->name);
 
@@ -766,6 +755,16 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             }
             case 12:{
                 return new ZurichTakaful($insurer->id, $insurer->name);
+
+                break;
+            }
+            case 14: {
+                return new Liberty($insurer->id, $insurer->name);
+
+                break;
+            }
+            case 15: {
+                return new BerjayaSompo($insurer->id, $insurer->name);
 
                 break;
             }

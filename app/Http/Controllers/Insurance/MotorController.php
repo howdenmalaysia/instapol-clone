@@ -265,7 +265,7 @@ class MotorController extends Controller
         }
 
         $request->session()->put('motor', $session);
-        dd($selected_extra_cover);
+
         return redirect()->route('motor.policy-holder');
     }
 

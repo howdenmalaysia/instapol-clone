@@ -245,6 +245,7 @@ class Zurich implements InsurerLibraryInterface
                 'variant' => $get_variant,
             ]));
         }
+
         // Get Vehicle Details
         $vehicle_make = $this->vehInputMake($vehInputModel);
         $make = '';
@@ -284,6 +285,44 @@ class Zurich implements InsurerLibraryInterface
     }
 
     public function quotation(object $input) : object
+    {
+        $data = (object) [
+			'vehicle_number' => $input->vehicle_number,
+			'id_type' => $input->id_type,
+			'id_number' => $input->id_number,
+			'gender' => $input->gender,
+			'marital_status' => $input->marital_status,
+			'region' => $input->region,
+			'vehicle' => $input->vehicle,
+			'extra_cover' => $input->extra_cover,
+			'email' => $input->email,
+			'phone_number' => $input->phone_number,
+			'nvic' => $input->vehicle->nvic,
+			'unit_no' => $input->unit_no ?? '',
+			'building_name' => $input->building_name ?? '',
+			'address_one' => $input->address_one,
+			'address_two' => $input->address_two ?? '',
+			'city' => $input->city,
+			'postcode' => $input->postcode,
+			'state' => $input->state,
+			'occupation' => $input->occupation,
+		];
+
+		$result = $this->premiumDetails($data);
+
+		if (!$result->status) {
+			return $this->abort($result->response);
+		}
+
+		$result->response->quotation_number = $result->response->quotation_number;
+
+		return (object) [
+			'status' => true,
+			'response' => $result->response
+		];
+    }
+
+    public function getQuotation(object $input) : object
     {
         //participant
         $participant_code = $this->participant_code;
@@ -880,16 +919,16 @@ class Zurich implements InsurerLibraryInterface
                 }
             }
 
-            if (empty($selected_variant)) {
-                return $this->abort(trans('api.variant_not_match'));
-            }
+            // if (empty($selected_variant)) {
+            //     return $this->abort(trans('api.variant_not_match'));
+            // }
 
             // set vehicle
             $vehicle = new Vehicle([
                 'make' => $vehicle_vix->response->make,
                 'model' => $vehicle_vix->response->model,
-                'nvic' => $selected_variant->nvic,
-                'variant' => $selected_variant->variant,
+                'nvic' => $selected_variant->nvic ?? $input->nvic,
+                'variant' => $selected_variant->variant ?? $input->vehicle->variant,
                 'engine_capacity' => $vehicle_vix->response->engine_capacity,
                 'manufacture_year' => $vehicle_vix->response->manufacture_year,
                 'ncd_percentage' => $vehicle_vix->response->ncd_percentage,
@@ -994,7 +1033,17 @@ class Zurich implements InsurerLibraryInterface
                 'ecd_pac_code' => 'R0075',
                 'ecd_pac_unit' => '1',
             ];
-            $premium = $this->quotation($quotation);
+            $premium = $this->getQuotation($quotation);
+
+            $excess_amount = formatNumber($premium->response->PremiumDetails['ExcessAmt']);
+            $ncd_amount = formatNumber($premium->response->PremiumDetails['NCDAmt']);
+            $basic_premium = formatNumber($premium->response->PremiumDetails['BasicPrem']);
+            $total_benefit_amount = 0;
+            $gross_premium = formatNumber($premium->response->PremiumDetails['GrossPrem']);
+            $stamp_duty = formatNumber($premium->response->PremiumDetails['StampDutyAmt']);
+            $sst_amount = formatNumber($premium->response->PremiumDetails['GST_Amt']);
+            $total_payable = formatNumber($premium->response->PremiumDetails['TtlPayablePremium']);
+            $sst_percent = ($sst_amount / $gross_premium) * 100;
 
             $extra_cover_list = [];
             foreach(self::EXTRA_COVERAGE_LIST as $_extra_cover_code) {
@@ -1115,7 +1164,6 @@ class Zurich implements InsurerLibraryInterface
             'total_payable' => formatNumber($premium_data['TtlPayablePremium']),
             'named_drivers_needed' => false,
         ]);
-        
         if($full_quote) {
             // Revert to premium without extra covers
             $response->excess_amount = $excess_amount;

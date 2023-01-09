@@ -66,8 +66,7 @@
                         <ABISI>{{ $abisi }}</ABISI>
                         <Chosen_SI_Type>{{ $chosen_si_type }}</Chosen_SI_Type>
                     </BasicDetails>
-                    <ExtraCoverDetails>
-                        
+                    <ExtraCoverDetails>   
                     @if (!empty($extcover))
                             @foreach ($extcover as $ec)
                             <ExtraCoverData>
