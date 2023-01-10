@@ -165,7 +165,7 @@
                                                         <option value="saloon">{{ __('frontend.motor.add_ons_page.body_type_modal.saloon') }}</option>
                                                         <option value="non-saloon">{{ __('frontend.motor.add_ons_page.body_type_modal.non_saloon') }}</option>
                                                     </select>
-                                                    <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('frontend.motor.add_ons_page.tooltip.windscreen') }}">
+                                                    <span data-bs-toggle="tooltip" data-bs-placement="top" title="{!! __('frontend.motor.add_ons_page.tooltip.roadtax') !!}">
                                                         <i class="fa-solid fa-circle-question text-primary fa-15x"></i>
                                                     </span>
                                                 </div>
@@ -591,6 +591,24 @@
         } else if (description.includes('NCD')) {
             return `
                 <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('frontend.motor.add_ons_page.tooltip.ncd') }}">
+                    <i class="fa-solid fa-circle-question text-primary fa-15x"></i>
+                </span>
+            `;
+        } else if (description.includes('NGV')) {
+            return `
+                <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('frontend.motor.add_ons_page.tooltip.ngv') }}">
+                    <i class="fa-solid fa-circle-question text-primary fa-15x"></i>
+                </span>
+            `;
+        } else if (description.includes('CART')) {
+            return `
+                <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('frontend.motor.add_ons_page.tooltip.cart') }}">
+                    <i class="fa-solid fa-circle-question text-primary fa-15x"></i>
+                </span>
+            `;
+        } else if (description.includes('Special Perils')) {
+            return `
+                <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('frontend.motor.add_ons_page.tooltip.special_perils') }}">
                     <i class="fa-solid fa-circle-question text-primary fa-15x"></i>
                 </span>
             `;
