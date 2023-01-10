@@ -178,7 +178,7 @@ class Allianz implements InsurerLibraryInterface
         $text = '{
             "ReferenceNo": "'.$quotation->contract->contractNumber.'",
             "ProductCat": "MT",
-            "SourceSystem": "PARTNER_ID",
+            "SourceSystem": "HOWDEN",
             "ClaimsExp": "0",
             "ReconInd": "N",
             "ExcessWaiveInd": "'.$quotation->contract->excessWaiveInd.'",
@@ -881,15 +881,15 @@ class Allianz implements InsurerLibraryInterface
     public function getVIXNCD(object $input) : object
     {
         $text = '{
-            "sourceSystem": "PARTNER_ID",
+            "sourceSystem": "HOWDEN",
             "vehicleLicenseId": "'.$input->vehicle_number.'",
-            "identityType": "'.$this->id_type($input->id_type).'",
+            "identityType": "NRIC",
             "identityNumber": "'.$input->id_number.'",
             "checkUbbInd": "1",
             "postalCode": "'.$input->postcode.'"
         }';
         $result = $this->cURL("getData", "/vehicleDetails", $text);
-
+dd($text, $result);
         if(!$result->status) {
             return $this->abort($result->response);
         }
@@ -1046,7 +1046,7 @@ class Allianz implements InsurerLibraryInterface
             $options['body'] = $postfield;
         }
         $result = HttpClient::curl($method, $host, $options);
-        
+        dump($host,$options);
         if ($result->status) {
             if($type == "GET"){
                 if($result->response == ''){

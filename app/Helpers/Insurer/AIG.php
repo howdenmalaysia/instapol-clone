@@ -68,11 +68,10 @@ class AIG implements InsurerLibraryInterface
         if(!$vix->status && is_string($vix->response)) {
             return $this->abort($vix->response);
         }
-        dd($vix);
         $get_inception = str_split(str_replace('/','',$vix->response->expirydate), 2);
-        $inception_date =  $get_inception[2] . strval(intval($get_inception[3]) - 1) . "-" . $get_inception[1] .  "-" . strval(intval($get_inception[0] + 1));
+        $inception_date =  $get_inception[2] . $get_inception[3] . "-" . $get_inception[1] .  "-" . strval(intval($get_inception[0] + 1));
         $get_expiry = str_split(str_replace('/','',$vix->response->expirydate), 2);
-        $expiry_date =  $get_expiry[2] . $get_expiry[3] . "-" . $get_expiry[1] .  "-" . $get_expiry[0];
+        $expiry_date =  $get_expiry[2] . strval(intval($get_inception[3]) + 1) . "-" . $get_expiry[1] .  "-" . $get_expiry[0];
         $today = Carbon::today()->format('Y-m-d');
         // 1. Check inception date
         // if($inception_date < $today) {
@@ -107,7 +106,7 @@ class AIG implements InsurerLibraryInterface
                 'body_type_code' => null,
                 'body_type_description' => null,
                 'chassis_number' => (string) $vix->response->chassisno,
-                'coverage' => '',
+                'coverage' => 'Comprehensive',
                 'engine_capacity' => intval($vix->response->vehcapacity),
                 'engine_number' => (string) $vix->response->engineno,
                 'expiry_date' => Carbon::parse($expiry_date)->format('d M Y'),
@@ -196,6 +195,22 @@ class AIG implements InsurerLibraryInterface
         $vehicle = $input->vehicle ?? null;
         $ncd_amount = $basic_premium = $total_benefit_amount = $gross_premium = $sst_percent = $sst_amount = $stamp_duty = $excess_amount = $total_payable = 0;
         $pa = null;
+        $dobs = str_split($input->id_number, 2);
+        $id_number = $dobs[0] . $dobs[1] . $dobs[2] . "-" . $dobs[3] .  "-" . $dobs[4] . $dobs[5];
+        $year = intval($dobs[0]);
+        if ($year >= 10) {
+            $year += 1900;
+        } else {
+            $year += 2000;
+        }
+        $dob = $dobs[2] . "-" . $dobs[1] . "-" . strval($year);
+        $region = '';
+        if($input->region == 'West'){
+            $region = 'W';
+        }
+        else if($input->region == 'East'){
+            $region = 'E';
+        }
         
         if ($full_quote) {
             $vehicle_vix = $this->vehicleDetails($input);
@@ -242,14 +257,16 @@ class AIG implements InsurerLibraryInterface
                     'cover_type' => $vehicle_vix->response->cover_type,
                     'engine_number' => $vehicle_vix->response->engine_number,
                     'seating_capacity' => $vehicle_vix->response->seating_capacity,
+                    'vehicle_use_code' => (string)$vehicle_vix->usecode,
+                    'tariff_premium' => '',
                 ],
             ]);
             $data = (object) [
                 'input' => $input,
-                'vehicle' => $vehicle_vix,
+                'vehicle' => $vehicle,
             ];
             $premium = $this->getPremium($data);
-
+            
             $excess_amount = formatNumber($premium->response->excess);
             $ncd_amount = formatNumber($premium->response->ncd_amount);
             $basic_premium = formatNumber($premium->response->gross_premium + $ncd_amount);
@@ -259,24 +276,8 @@ class AIG implements InsurerLibraryInterface
             $sst_amount = formatNumber($premium->response->sst_amount);
             $total_payable = formatNumber($premium->response->gross_due);
             $sst_percent = ($sst_amount / $gross_premium) * 100;
+            $vehicle->extra_attribute->tariff_premium = formatNumber($premium->response->tariff_premium);
 
-            $dobs = str_split($input->id_number, 2);
-            $id_number = $dobs[0] . $dobs[1] . $dobs[2] . "-" . $dobs[3] .  "-" . $dobs[4] . $dobs[5];
-            $year = intval($dobs[0]);
-            if ($year >= 10) {
-                $year += 1900;
-            } else {
-                $year += 2000;
-            }
-            $dob = $dobs[2] . "-" . $dobs[1] . "-" . strval($year);
-            $region = '';
-            if($input->region == 'West'){
-                $region = 'W';
-            }
-            else if($input->region == 'East'){
-                $region = 'E';
-            }
-            
             $extra_cover_list = [];
             foreach(self::EXTRA_COVERAGE_LIST as $_extra_cover_code) {
                 $extra_cover = new ExtraCover([
@@ -333,10 +334,14 @@ class AIG implements InsurerLibraryInterface
         }
         $data = (object) [
             'input' => $input,
-            'vehicle' => $vehicle_vix,
-            'tariffpremium' => $premium->response->tariff_premium
+            'vehicle' => $vehicle,
         ];
         $premium = $this->getPremium($data);
+        
+        if (!$premium->status) {
+            return $this->abort($premium->response);
+        }
+
         $total_benefit_amount = 0;
         if(isset($premium->response->extra_benefit->item)) {
             foreach($premium->response->extra_benefit->item as $item) {
@@ -509,12 +514,10 @@ class AIG implements InsurerLibraryInterface
     private function getPremium(object $input) : ResponseData
     {
         $path = 'GetPremium';
-
         // $request_id = Str::uuid();
         $request_id = 'D112';
-
         $effective_time = '00:00:01';
-        if(Carbon::parse($input->vehicle->response->inception_date)->lessThan(Carbon::today())) {
+        if(Carbon::parse($input->vehicle->inception_date)->lessThan(Carbon::today())) {
             $effective_time = date('H:i:s', strtotime('now'));
         }
 
@@ -538,11 +541,11 @@ class AIG implements InsurerLibraryInterface
                 if($extra_cover->extra_cover_code == '01') {
                     $extra_cover->sum_insured = 50;
                 } else if($extra_cover->extra_cover_code == '02') {
-                    $extra_cover->sum_insured = ($input->tariffpremium/100)*25;
+                    $extra_cover->sum_insured = ($input->vehicle->extra_attribute->tariff_premium/100)*25;
                 } else if($extra_cover->extra_cover_code == '72') {
                     $extra_cover->sum_insured = 7.50;
                 } else if($extra_cover->extra_cover_code == '57' || $extra_cover->extra_cover_code == '25') {
-                    $extra_cover->sum_insured = $input->vehicle->response->sum_insured;
+                    $extra_cover->sum_insured = $input->vehicle->sum_insured;
                 }
 
                 array_push($formatted_extra_cover, (object) [
@@ -569,13 +572,17 @@ class AIG implements InsurerLibraryInterface
 			$year += 2000;
 		}
 		$dob = strval($year) . "-" . $dobs[1] . "-" . $dobs[2];
+        $inception_date = Carbon::parse($input->vehicle->inception_date)->format('Y-m-d');
+        $expiry_date = Carbon::parse($input->vehicle->expiry_date)->format('Y-m-d');
+        if(strtotime($expiry_date)<strtotime($inception_date)){
+            $expiry_date = Carbon::parse($expiry_date)->addYear()->format('Y-m-d');
+        }
         $item = [];
         array_push($item,(object)[
             'paramIndicator' => 'NVIC',
             'paramRemark' => '',
             'paramValue' => $input->input->nvic,
         ]);
-dd($input);
         $data = [
             'address_1' => ($input->input->address_one ?? '11 FLOOR AIK HUA'),
             'address_2' => isset($input->input->address_two) ? (empty($input->input->address_two) ? $input->input->city . ', ' . $input->input->state : $input->input->address_two) : '',
@@ -587,7 +594,7 @@ dd($input);
             'birthdate' => $dob,
             'bizregno' => '',
             'channel' => 'TIB',
-            'chassisno' => $input->vehicle->response->chassis_number,
+            'chassisno' => $input->vehicle->extra_attribute->chassis_number,
             'claimamt' => '0',
             'cncondition' => 'u',
             'commiperc' => 10,
@@ -597,11 +604,11 @@ dd($input);
             'discount' => 'NO',
             'discountperc' => 0,
             'driveexp' => getAgeFromIC($input->input->id_number) - 18,
-            'effectivedate' => Carbon::parse($input->vehicle->response->inception_date)->format('Y-m-d'),
+            'effectivedate' => $inception_date,
             'effectivetime' => $effective_time,
             'email' => $input->input->email,
-            'engineno' => $input->vehicle->response->engine_number,
-            'expirydate' => Carbon::parse($input->vehicle->response->inception_date)->addYear()->subDay()->format('Y-m-d'),
+            'engineno' => $input->vehicle->extra_attribute->engine_number,
+            'expirydate' => $expiry_date,
             'garage' => 'B',
             'gender' => $input->input->gender,
             'gstclaimperc' => 0,
@@ -618,12 +625,12 @@ dd($input);
             'loadingperc' => '30',
             'makecodemajor' => '33',
             'makecodeminor' => '12',
-            'makeyear' => $input->vehicle->response->manufacture_year,
+            'makeyear' => $input->vehicle->manufacture_year,
             'maritalstatus' => $input->input->marital_status,
             'mtcycrider' => 'S',
             'name' => $input->input->name ?? config('app.name'),
             'ncdamt' => 0,
-            'ncdperc' => $input->vehicle->response->ncd_percentage,
+            'ncdperc' => $input->vehicle->ncd_percentage,
             'newic' => $input->input->id_number, //810323-14-5146
             'occupmajor' => '11',
             'oldic' => '',
@@ -652,18 +659,18 @@ dd($input);
             'signature' => $this->generateSignature('D112'),
             'stampduty' => 10,
             'statecode' => '017',
-            'suminsured' => $input->vehicle->response->sum_insured,
+            'suminsured' => $input->vehicle->sum_insured,
             'theftclaim' => 0,
             'thirdclaim' => 0,
             'towndesc' => $this->getStateName($input->input->state),
             'trailerno' => '',
-            'usecode' => $input->vehicle->usecode,
+            'usecode' => $input->vehicle->extra_attribute->vehicle_use_code,
             'vehbody' => 'SEDAN',
             'vehbodycode' => 27,
-            'vehcapacity' => $input->vehicle->response->engine_capacity,
+            'vehcapacity' => $input->vehicle->engine_capacity,
             'vehcapacitycode' => self::VEHICLE_CAPACITY_CODE,
             'vehclaim' => 0,
-            'vehtypecode' => $input->vehicle->response->extra_attribute->vehicle_type_code ?? 'V010010',
+            'vehtypecode' => 'V010010',
             'winclaim' => 0,
             'extra_benefit' => $formatted_extra_cover,
             'add_driver' => $input->input->additional_driver ?? [],
@@ -672,9 +679,9 @@ dd($input);
 
         // Generate XML from view
         $xml = view('backend.xml.aig.premium')->with($data)->render();
-        
         // Call API
         $result = $this->cURL($path, $xml);
+        // dd($data,$result);
         if (!$result->status) {
             return $this->abort($result->response);
         }
@@ -691,7 +698,7 @@ dd($input);
         if($refer_code != '') {
             $message = (string) $result->response->reqdataReturn->referdesc;
 
-            return $this->abort(__('api.referred_risk', ['company' => $this->company, 'reason' => str_replace('^', ', ', $message)]), $refer_code);
+            return $this->abort(__('api.referred_risk', ['company' => $this->company_name, 'reason' => str_replace('^', ', ', $message)]), $refer_code);
         }
 
         $response = (object) [

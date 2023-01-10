@@ -356,8 +356,11 @@ class Zurich implements InsurerLibraryInterface
         $product_code = $input->product_code;
         $cover_type = $input->cover_type;
         $ci_code = $input->ci_code;
-        $eff_date = $input->eff_date;
-        $exp_date = $input->exp_date;
+        $eff_date = Carbon::parse($input->eff_date)->format('d/m/Y');
+        $exp_date = Carbon::parse($input->exp_date)->format('d/m/Y');
+        if(strtotime($exp_date)<strtotime($eff_date)){
+            $exp_date = Carbon::parse($exp_date)->addYear()->format('d/m/Y');
+        }
         $new_owned_Veh_ind = $input->new_owned_Veh_ind;
         $VehReg_date = $input->VehReg_date;
         $ReconInd = $input->ReconInd;
@@ -425,7 +428,7 @@ class Zurich implements InsurerLibraryInterface
         $data["mod_performance_aesthentic"] = $modperformanceaesthetic;
         $data["mod_functional"] = $modfunctional;
         $data["year_of_make"] = $yearofmake;
-        $data["make"] = $make;
+        $data["make"] = (int)$make;
         $data["model"] = $model;
         $data["capacity"] = $capacity;
         $data["uom"] = $uom;
@@ -499,13 +502,15 @@ class Zurich implements InsurerLibraryInterface
         //respone
         $index = 0;
         $MotorExtraCoverDetails = [];
-        foreach($xml_data->ExtraCoverData as $value){
-            $MotorExtraCoverDetails[$index]['ExtCoverCode'] = (string)$value->ExtCoverCode;
-            $MotorExtraCoverDetails[$index]['ExtCoverPrem'] = (string)$value->ExtCoverPrem;
-            $MotorExtraCoverDetails[$index]['ExtCoverSumInsured'] = (string)$value->ExtCoverSumInsured;
-            $MotorExtraCoverDetails[$index]['Compulsory_Ind'] = (string)$value->Compulsory_Ind;
-            $MotorExtraCoverDetails[$index]['sequence'] = '';
-            $index++;
+        if(isset($xml_data->ExtraCoverData)){
+            foreach($xml_data->ExtraCoverData as $value){
+                $MotorExtraCoverDetails[$index]['ExtCoverCode'] = (string)$value->ExtCoverCode;
+                $MotorExtraCoverDetails[$index]['ExtCoverPrem'] = (string)$value->ExtCoverPrem;
+                $MotorExtraCoverDetails[$index]['ExtCoverSumInsured'] = (string)$value->ExtCoverSumInsured;
+                $MotorExtraCoverDetails[$index]['Compulsory_Ind'] = (string)$value->Compulsory_Ind;
+                $MotorExtraCoverDetails[$index]['sequence'] = '';
+                $index++;
+            }
         }
         $response = (object)[
             'PremiumDetails' => [
@@ -898,7 +903,24 @@ class Zurich implements InsurerLibraryInterface
         $vehicle = $input->vehicle ?? null;
         $ncd_amount = $basic_premium = $total_benefit_amount = $gross_premium = $sst_percent = $sst_amount = $stamp_duty = $excess_amount = $total_payable = 0;
         $pa = null;
+        $region = '';
+        if($input->region == 'West'){
+            $region = 'W';
+        }
+        else if($input->region == 'East'){
+            $region = 'E';
+        }
 
+        $dobs = str_split($input->id_number, 2);
+        $id_number = $dobs[0] . $dobs[1] . $dobs[2] . "-" . $dobs[3] .  "-" . $dobs[4] . $dobs[5];
+        $year = intval($dobs[0]);
+        if ($year >= 10) {
+            $year += 1900;
+        } else {
+            $year += 2000;
+        }
+        $dob = $dobs[2] . "-" . $dobs[1] . "-" . strval($year);
+        
         if ($full_quote) {
             $vehicle_vix = $this->vehicleDetails($input);
             if (!$vehicle_vix->status) {
@@ -925,8 +947,8 @@ class Zurich implements InsurerLibraryInterface
 
             // set vehicle
             $vehicle = new Vehicle([
-                'make' => $vehicle_vix->response->make,
-                'model' => $vehicle_vix->response->model,
+                'make' => (string)$vehicle_vix->response->make_code,
+                'model' => (string)$vehicle_vix->veh_model_code,
                 'nvic' => $selected_variant->nvic ?? $input->nvic,
                 'variant' => $selected_variant->variant ?? $input->vehicle->variant,
                 'engine_capacity' => $vehicle_vix->response->engine_capacity,
@@ -946,23 +968,6 @@ class Zurich implements InsurerLibraryInterface
                     'seating_capacity' => $vehicle_vix->response->seating_capacity,
                 ],
             ]);
-
-            $dobs = str_split($input->id_number, 2);
-            $id_number = $dobs[0] . $dobs[1] . $dobs[2] . "-" . $dobs[3] .  "-" . $dobs[4] . $dobs[5];
-            $year = intval($dobs[0]);
-            if ($year >= 10) {
-                $year += 1900;
-            } else {
-                $year += 2000;
-            }
-            $dob = $dobs[2] . "-" . $dobs[1] . "-" . strval($year);
-            $region = '';
-            if($input->region == 'West'){
-                $region = 'W';
-            }
-            else if($input->region == 'East'){
-                $region = 'E';
-            }
             $quotation = (object)[
                 'request_datetime' => Carbon::now()->format('Y/M/d h:i:s A'),
                 'transaction_ref_no' => $this->participant_code."0000008",//
@@ -977,8 +982,8 @@ class Zurich implements InsurerLibraryInterface
                 'product_code' => 'PZ01',
                 'cover_type' => 'V-CO',
                 'ci_code' => 'MX1',
-                'eff_date' => Carbon::parse($vehicle_vix->response->inception_date)->format('d/m/Y') ?? Carbon::now()->format('d/m/Y'),
-                'exp_date' => Carbon::parse($vehicle_vix->response->expiry_date)->format('d/m/Y') ?? Carbon::now()->addYear()->subDay()->format('d/m/Y'),
+                'eff_date' => $vehicle_vix->response->inception_date ?? Carbon::now()->format('d/m/Y'),
+                'exp_date' => $vehicle_vix->response->expiry_date ?? Carbon::now()->addYear()->subDay()->format('d/m/Y'),
                 'new_owned_Veh_ind' => '',
                 'VehReg_date' => '10/03/2016',
                 'ReconInd' => '',
@@ -1123,6 +1128,82 @@ class Zurich implements InsurerLibraryInterface
             // Include Extra Covers to Get Premium
             $input->extra_cover = $extra_cover_list;
         }
+        
+        $quotation = (object)[
+            'request_datetime' => Carbon::now()->format('Y/M/d h:i:s A'),
+            'transaction_ref_no' => $this->participant_code."0000008",//
+            'VehNo' => $input->vehicle_number,
+            'getmail' => [
+                'support@zurich.com.my',
+                'noreply@zurich.com.my',
+            ],
+            'quotationNo' => '',
+            'trans_type' => 'B',
+            'pre_VehNo' => $input->vehicle_number,
+            'product_code' => 'PZ01',
+            'cover_type' => 'V-CO',
+            'ci_code' => 'MX1',
+            'eff_date' => $vehicle->inception_date,
+            'exp_date' => $vehicle->expiry_date,
+            'new_owned_Veh_ind' => '',
+            'VehReg_date' => '10/03/2016',
+            'ReconInd' => '',
+            'modcarInd' => 'Y',
+            'modperformanceaesthetic' => 'o',
+            'modfunctional' => '2,128',
+            'yearofmake' => $input->vehicle->manufacture_year,
+            'make' => $vehicle->make,
+            'model' => $vehicle->model,
+            'capacity' => $input->vehicle->engine_capacity,
+            'uom' => $input->uom ?? 'CC',
+            'engine_no' => $input->vehicle->extra_attribute->engine_number,
+            'chasis_no' => $input->vehicle->extra_attribute->chassis_number,
+            'logbook_no' => '',
+            'reg_loc' => 'L',
+            'region_code' => $region,
+            'no_of_passenger' => $input->vehicle->extra_attribute->seating_capacity,
+            'no_of_drivers' => '1',
+            'ins_indicator' => 'P',
+            'name' => $input->name ?? 'TAN AI LING',
+            'ins_nationality' => 'L',
+            'new_ic' => $id_number,
+            'other_id' => '',
+            'date_of_birth' => $dob,
+            'age' => $input->age,
+            'gender' => $input->gender,
+            'marital_sts' => $input->marital_status,
+            'occupation' => self::OCCUPATION,
+            'mobile_no' => $input->phone_number,
+            'off_ph_no' => '',
+            'email' => $input->email,
+            'address' => $input->address_one . $input->address_two,
+            'postcode' => $input->postcode,
+            'state' => $this->getStateCode($input->state),
+            'country' => 'MAS',
+            'sum_insured' => $vehicle->sum_insured,
+            'av_ind' => 'Y',
+            'vol_excess' => '',
+            'pac_ind' => 'N',
+            'pac_type' => 'TAGPLUS PAC',
+            'pac_unit' => '1',
+            'all_driver_ind' => 'Y',
+            'abisi' => '25000.00',
+            'chosen_si_type' => 'REC_SI',
+            'ext_cov_code' => '101',
+            'unit_day' => '7',
+            'unit_amount' => '50',
+            'ecd_eff_date' => '14/1/2017',
+            'ecd_exp_date' => '13/1/2018',
+            'ecd_sum_insured' => '3000',
+            'no_of_unit' => '1',
+            'ecd_pac_code' => 'R0075',
+            'ecd_pac_unit' => '1',
+        ];
+        $premium = $this->getQuotation($quotation);
+        
+        if(!$premium->status) {
+            return $this->abort($premium->response);
+        }
 
         if(!empty($premium->response->MotorExtraCoverDetails)) {
             foreach($input->extra_cover as $extra_cover) {
@@ -1152,10 +1233,10 @@ class Zurich implements InsurerLibraryInterface
             'loading' => formatNumber($premium_data['LoadAmt']),
             'ncd_amount' => formatNumber($premium_data['NCDAmt']),
             'net_premium' => formatNumber($premium_data['NettPrem'] + $premium_data['GST_Amt'] + $premium_data['StampDutyAmt']),
-            'sum_insured' => formatNumber($vehicle_vix->response->sum_insured ?? 0),
-            'min_sum_insured' => formatNumber($vehicle_vix->response->min_sum_insured),
-            'max_sum_insured' => formatNumber($vehicle_vix->response->max_sum_insured),
-            'sum_insured_type' => $vehicle_vix->response->sum_insured_type,
+            'sum_insured' => formatNumber($vehicle_vix->response->sum_insured ?? $vehicle->sum_insured),
+            'min_sum_insured' => formatNumber($vehicle_vix->response->min_sum_insured ?? $vehicle->min_sum_insured),
+            'max_sum_insured' => formatNumber($vehicle_vix->response->max_sum_insured ?? $vehicle->max_sum_insured),
+            'sum_insured_type' => $vehicle_vix->response->sum_insured_type ?? $vehicle->sum_insured_type,
             'sst_amount' => formatNumber($premium_data['GST_Amt']),
             'sst_percent' => formatNumber(ceil(($premium_data['GST_Amt'] / $premium_data['GrossPrem']) * 100)),
             'stamp_duty' => formatNumber($premium_data['StampDutyAmt']),

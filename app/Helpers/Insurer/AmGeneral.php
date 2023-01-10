@@ -1083,6 +1083,7 @@ class AmGeneral implements InsurerLibraryInterface
 				'scope' => 'resource.READ,resource.WRITE'
 			];
 
+			dump($options);
 			$postfield = "grant_type=client_credentials&scope=resource.READ,resource.WRITE";
         }
         else{
