@@ -568,7 +568,7 @@ class PacificOrient implements InsurerLibraryInterface
         $data = [
             'all_rider' => 'Y', // Default to Yes,
             'is_company' => $input->id_type === config('setting.id_type.company_registration_no') ? 'Y' : 'N',
-            'company_registration_number' => $input->company_registration_number,'coverage' => self::COVER_TYPE,
+            'company_registration_number' => $input->company_registration_number ?? '','coverage' => self::COVER_TYPE,
             'effective_date' => $input->vehicle->inception_date,
             'expiry_date' => $input->vehicle->expiry_date,
             'extra_cover' => $input->extra_cover ?? [],

@@ -73,10 +73,12 @@ class AIG implements InsurerLibraryInterface
         $get_expiry = str_split(str_replace('/','',$vix->response->expirydate), 2);
         $expiry_date =  $get_expiry[2] . strval(intval($get_inception[3]) + 1) . "-" . $get_expiry[1] .  "-" . $get_expiry[0];
         $today = Carbon::today()->format('Y-m-d');
+        $inception_date = '2023-01-11';
+        $expiry_date = '2024-01-10';
         // 1. Check inception date
-        // if($inception_date < $today) {
-        //     return $this->abort('inception date expired');
-        // }
+        if($inception_date < $today) {
+            return $this->abort('inception date expired');
+        }
         $uriSegments = explode("/", parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
         if($uriSegments[3] == 'vehicle-details'){
             return $this->abort('Empty variant');
@@ -232,9 +234,9 @@ class AIG implements InsurerLibraryInterface
                 }
             }
 
-            // if (empty($selected_variant)) {
-            //     return $this->abort(trans('api.variant_not_match'));
-            // }
+            if (empty($selected_variant)) {
+                return $this->abort(trans('api.variant_not_match'));
+            }
 
             // set vehicle
             $vehicle = new Vehicle([
@@ -342,18 +344,26 @@ class AIG implements InsurerLibraryInterface
             return $this->abort($premium->response);
         }
 
-        $total_benefit_amount = 0;
+        $new_extracover_list = [];
         if(isset($premium->response->extra_benefit->item)) {
-            foreach($premium->response->extra_benefit->item as $item) {
-                $total_benefit_amount += formatNumber($item->benpremium);
+            foreach($input->extra_cover as $extra_cover) {
+                foreach($premium->response->extra_benefit->item as $item) {
+                    if((string) $item->bencode === $extra_cover->extra_cover_code) {
+                            $extra_cover->premium = formatNumber($item->benpremium);
+                            $total_benefit_amount += floatval($item->benpremium);
+                            $extra_cover->selected = floatval($item->benpremium) == 0;
 
-                foreach($input->extra_cover as $extra_cover) {
-                    if(strpos((string) $item->bencode, $extra_cover->extra_cover_code) !== false) {
-                        $extra_cover->premium = formatNumber($item->benpremium);
+                            if(!empty($extra->sumInsured)) {
+                                $extra_cover->sum_insured = formatNumber((float) $item->suminsured);
+                            }
+                            if($extra_cover->premium > 0){
+                                array_push($new_extracover_list, $extra_cover);
+                            }
                     }
                 }
             }
         }
+        $input->extra_cover = $new_extracover_list;
         $premium_data = $premium->response;
         $response = new PremiumResponse([
             'act_premium' => formatNumber($premium_data->act_premium),
@@ -365,10 +375,10 @@ class AIG implements InsurerLibraryInterface
             'ncd_amount' => formatNumber($premium_data->ncd_amount),
             'ncd_percentage' => formatNumber($premium_data->ncd_percentage),
             'net_premium' => formatNumber($premium_data->net_premium + $premium_data->sst_amount + $premium_data->stamp_duty),
-            'sum_insured' => formatNumber($vehicle_vix->response->sum_insured ?? 0),
-            'min_sum_insured' => formatNumber($vehicle_vix->response->min_sum_insured),
-            'max_sum_insured' => formatNumber($vehicle_vix->response->max_sum_insured),
-            'sum_insured_type' => $vehicle_vix->response->sum_insured_type,
+            'sum_insured' => formatNumber($vehicle->sum_insured ?? 0),
+            'min_sum_insured' => formatNumber($vehicle->min_sum_insured),
+            'max_sum_insured' => formatNumber($vehicle->max_sum_insured),
+            'sum_insured_type' => $vehicle->sum_insured_type,
             'sst_amount' => formatNumber($premium_data->sst_amount),
             'sst_percent' => formatNumber($premium_data->sst_percentage),
             'stamp_duty' => formatNumber($premium_data->stamp_duty),
@@ -681,7 +691,7 @@ class AIG implements InsurerLibraryInterface
         $xml = view('backend.xml.aig.premium')->with($data)->render();
         // Call API
         $result = $this->cURL($path, $xml);
-        // dd($data,$result);
+
         if (!$result->status) {
             return $this->abort($result->response);
         }
@@ -1719,8 +1729,24 @@ class AIG implements InsurerLibraryInterface
             'body' => $xml
         ];
         
+        $log = APILogs::create([
+            'insurance_company_id' => $this->company_id,
+            'method' => $method,
+            'domain' => $this->url,
+            'path' => $path,
+            'request_header' => json_encode($request_options['headers']),
+            'request' => json_encode($request_options['body']),
+        ]);
+
         $result = HttpClient::curl($method, $url, $request_options);
         
+        // Update the API log
+        APILogs::find($log->id)
+            ->update([
+                'response_header' => json_encode($result->response_header),
+                'response' => $result->response
+            ]);
+
         if($result->status) {
             $cleaned_xml = preg_replace('/(<\/|<)[a-zA-Z]+:([a-zA-Z0-9]+[ =>])/', '$1$2', $result->response);
             $response = simplexml_load_string($cleaned_xml);

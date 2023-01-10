@@ -465,21 +465,37 @@ class ZurichTakaful implements InsurerLibraryInterface
         $data["nationality"] = $nationality;
 
         //motor extra cover details
-        $ext_cov_code = $input->ext_cov_code;
-        $unit_day = $input->unit_day;
-        $unit_amount = $input->unit_amount;
-        $ecd_eff_date = $input->ecd_eff_date;
-        $ecd_exp_date = $input->ecd_exp_date;
-        $ecd_sum_insured = $input->ecd_sum_insured;
-        $no_of_unit = $input->no_of_unit;
-
-        $data["ext_cov_code"] = $ext_cov_code;
-        $data["unit_day"] = $unit_day;
-        $data["unit_amount"] = $unit_amount;
-        $data["ECD_eff_date"] = $ecd_eff_date;
-        $data["ECD_exp_date"] = $ecd_exp_date;
-        $data["ECD_sum_insured"] = $ecd_sum_insured;
-        $data["no_of_unit"] = $no_of_unit;
+        $extra_cover = [];
+        if(isset($input->extcover)){
+            foreach($input->extcover as $extcover){
+                array_push($extra_cover, (object) [
+                    'ext_cov_code' => $extcover->extra_cover_code,
+                    'unit_day' => 7,
+                    'unit_amount' => 50,
+                    'ECD_eff_date' => Carbon::now()->format('d/m/Y'),
+                    'ECD_exp_date' => Carbon::now()->addYear()->subDay()->format('d/m/Y'),
+                    'ECD_sum_insured' => $extcover->sum_insured ?? 0,
+                    'no_of_unit' => 1
+                ]);
+            }
+        }
+        $data["extcover"] = $extra_cover;
+        //additional driver
+        $add_driver = [];
+        if(isset($input->additional_driver)){
+            foreach($input->additional_driver as $adddriver){
+                array_push($add_driver, (object) [
+                    'nd_name' =>'',
+                    'nd_identity_no' => '',
+                    'nd_date_of_birth' => '',
+                    'nd_gender' => '',
+                    'nd_marital_sts' => '',
+                    'nd_occupation' => '',
+                    'nd_relationship' => ''
+                ]);
+            }
+        }
+        $data["additional_driver"] = $add_driver;
 
         //PAC extra cover details
         $ecd_pac_code = $input->ecd_pac_code;
@@ -950,9 +966,9 @@ class ZurichTakaful implements InsurerLibraryInterface
                 }
             }
 
-            // if (empty($selected_variant)) {
-            //     return $this->abort(trans('api.variant_not_match'));
-            // }
+            if (empty($selected_variant)) {
+                return $this->abort(trans('api.variant_not_match'));
+            }
 
             // set vehicle
             $vehicle = new Vehicle([
@@ -1036,13 +1052,6 @@ class ZurichTakaful implements InsurerLibraryInterface
                 'abisi' => '25000.00',
                 'chosen_si_type' => 'REC_SI',
                 'nationality' => 'MAS',
-                'ext_cov_code' => '101',
-                'unit_day' => '7',
-                'unit_amount' => '50',
-                'ecd_eff_date' => '14/1/2017 ',
-                'ecd_exp_date' => '13/1/2018',
-                'ecd_sum_insured' => '3000',
-                'no_of_unit' => '1',
                 'ecd_pac_code' => 'R0075',
                 'ecd_pac_unit' => '1',
             ];
@@ -1198,36 +1207,34 @@ class ZurichTakaful implements InsurerLibraryInterface
             'abisi' => '25000.00',
             'chosen_si_type' => 'REC_SI',
             'nationality' => 'MAS',
-            'ext_cov_code' => '101',
-            'unit_day' => '7',
-            'unit_amount' => '50',
-            'ecd_eff_date' => '14/1/2017',
-            'ecd_exp_date' => '13/1/2018',
-            'ecd_sum_insured' => '3000',
-            'no_of_unit' => '1',
+            'extcover' => $input->extra_cover,
             'ecd_pac_code' => 'R0075',
             'ecd_pac_unit' => '1',
+            'additional_driver' => $input->additional_driver,
         ];
         $premium = $this->getQuotation($quotation);
-        
+
         if(!$premium->status) {
             return $this->abort($premium->response);
         }
 
+        $new_extracover_list = [];
         if(!empty($premium->response->MotorExtraCoverDetails)) {
             foreach($input->extra_cover as $extra_cover) {
                 foreach($premium->response->MotorExtraCoverDetails as $extra) {
                     if((string) $extra['ExtCoverCode'] === $extra_cover->extra_cover_code) {
-                        $extra_cover->ExtCoverPrem = formatNumber((float) $extra['ExtCoverPrem']);
+                        $extra_cover->premium = formatNumber((float) $extra['ExtCoverPrem']);
                         $total_benefit_amount += (float) $extra['ExtCoverPrem'];
     
                         if(!empty($extra['ExtCoverSumInsured'])) {
                             $extra_cover->sum_insured = formatNumber((float) $extra['ExtCoverSumInsured']);
                         }
+                        array_push($new_extracover_list, $extra_cover);
                     }
                 }
             }
         }
+        $input->extra_cover = $new_extracover_list;
         $premium_data = $premium->response->PremiumDetails;
         $response = new PremiumResponse([
             'act_premium' => formatNumber($premium_data['ActPrem']),
@@ -2143,7 +2150,23 @@ class ZurichTakaful implements InsurerLibraryInterface
             'body' => $xml
         ];
 
+        $log = APILogs::create([
+            'insurance_company_id' => $this->company_id,
+            'method' => $method,
+            'domain' => $this->host_vix,
+            'path' => $path,
+            'request_header' => json_encode($request_options['headers']),
+            'request' => json_encode($request_options['body']),
+        ]);
+
         $result = HttpClient::curl($method, $url, $request_options);
+
+        // Update the API log
+        APILogs::find($log->id)
+            ->update([
+                'response_header' => json_encode($result->response_header),
+                'response' => $result->response
+            ]);
 
         if($result->status) {
             $cleaned_xml = preg_replace('/(<\/|<)[a-zA-Z]+:([a-zA-Z0-9]+[ =>])/', '$1$2', $result->response);

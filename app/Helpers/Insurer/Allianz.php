@@ -71,7 +71,7 @@ class Allianz implements InsurerLibraryInterface
         ];
         
         $vix = $this->getVIXNCD($data);
-        dd($vix);
+
         if(!$vix->status && is_string($vix->response)) {
             return $this->abort($vix->response);
         }
@@ -419,14 +419,14 @@ class Allianz implements InsurerLibraryInterface
                 }
             }
 
-            // if (empty($selected_variant)) {
-            //     return $this->abort(trans('api.variant_not_match'));
-            // }
+            if (empty($selected_variant)) {
+                return $this->abort(trans('api.variant_not_match'));
+            }
 
             // set vehicle
             $vehicle = new Vehicle([
-                'make' => $vehicle_vix->response->make,
-                'model' => $vehicle_vix->response->model,
+                'make' => (string)$vehicle_vix->response->make,
+                'model' => (string)$vehicle_vix->response->model,
                 'nvic' => $selected_variant->nvic ?? $input->nvic,
                 'variant' => $selected_variant->variant ?? $input->vehicle->variant,
                 'engine_capacity' => $vehicle_vix->response->engine_capacity,
@@ -444,13 +444,14 @@ class Allianz implements InsurerLibraryInterface
                     'cover_type' => $vehicle_vix->response->cover_type,
                     'engine_number' => $vehicle_vix->response->engine_number,
                     'seating_capacity' => $vehicle_vix->response->seating_capacity,
+                    'contractNumber' => $vehicle_vix->contractNumber,
+                    'avvariant' => $avvariant
                 ],
             ]);
             // get premium
             $get_quotation = (object)[
                 'input'=>$input,
-                'vix'=>$vehicle_vix,
-                'avvariant'=>$avvariant,
+                'vix'=>$vehicle,
             ];
             $motor_premium = $this->getQuotation($get_quotation);
 
@@ -560,6 +561,36 @@ class Allianz implements InsurerLibraryInterface
             }
         }
 
+        // get premium
+        $get_quotation = (object)[
+            'input'=>$input,
+            'vix'=>$vehicle,
+        ];
+        $motor_premium = $this->getQuotation($get_quotation);
+        
+        if (!$motor_premium->status) {
+            return $this->abort($motor_premium->response);
+        }
+
+        $new_extracover_list = [];
+        if(!empty($motor_premium->response->additionalCover)) {
+            foreach($input->extra_cover as $extra_cover) {
+                foreach($motor_premium->response->additionalCover as $extra) {
+                    if((string) $extra->coverCode === $extra_cover->extra_cover_code) {
+                        $extra_cover->premium = formatNumber((float) $extra->displayPremium);
+                        $total_benefit_amount += (float) $extra->displayPremium;
+                        $extra_cover->selected = floatval($extra->displayPremium) == 0;
+    
+                        if(!empty($extra->coverSumInsured)) {
+                            $extra_cover->sum_insured = formatNumber((float) $extra->coverSumInsured);
+                        }
+                        array_push($new_extracover_list, $extra_cover);
+                    }
+                }
+            }
+        }
+        $input->extra_cover = $new_extracover_list;
+
         $response = new PremiumResponse([
             'basic_premium' => formatNumber($motor_premium->response->premium->basicPremium),
             'ncd_percentage' => $motor_premium->response->premium->ncdPct,
@@ -575,10 +606,10 @@ class Allianz implements InsurerLibraryInterface
             'extra_cover' => $input->extra_cover,
             'personal_accident' => $pa,
             // 'quotation_number' => $motor_premium->response->premium->QUOTATION_NO,
-            'sum_insured' => formatNumber($vehicle_vix->response->sum_insured ?? 0),
-            'sum_insured_type' => $vehicle_vix->response->sum_insured_type,
-            'min_sum_insured' => formatNumber($vehicle_vix->response->min_sum_insured),
-            'max_sum_insured' => formatNumber($vehicle_vix->response->max_sum_insured),
+            'sum_insured' => formatNumber($vehicle->sum_insured ?? 0),
+            'sum_insured_type' => $vehicle->sum_insured_type,
+            'min_sum_insured' => formatNumber($vehicle->min_sum_insured),
+            'max_sum_insured' => formatNumber($vehicle->max_sum_insured),
             'named_drivers_needed' => false
         ]);
 
@@ -837,12 +868,12 @@ class Allianz implements InsurerLibraryInterface
 			$year += 2000;
 		}
 		$dob = strval($year) . "-" . $dobs[1] . "-" . $dobs[2];
-        $avcode = $qParams->avvariant->VariantGrp[0]->AvCode ?? '';
+        $avcode = $qParams->vix->extra_attribute->avvariant->VariantGrp[0]->AvCode ?? '';
         $text = '{
             "partnerId": "PARTNERID",
-            "contractNumber": "'.$qParams->vix->contractNumber.'",
-            "effectiveDate": "'.Carbon::parse($qParams->vix->response->inception_date)->format('Y-m-d').'",
-            "expirationDate": "'.Carbon::parse($qParams->vix->response->expiry_date)->format('Y-m-d').'",
+            "contractNumber": "'.$qParams->vix->extra_attribute->contractNumber.'",
+            "effectiveDate": "'.Carbon::parse($qParams->vix->inception_date)->format('Y-m-d').'",
+            "expirationDate": "'.Carbon::parse($qParams->vix->expiry_date)->format('Y-m-d').'",
             "person": {
                 "identityType": "NRIC",
                 "identityNumber": "'.$qParams->input->id_number.'",
@@ -856,14 +887,14 @@ class Allianz implements InsurerLibraryInterface
                 "discountPercentage": ""
             },
             "vehicle": {
-                "vehicleLicenseId": "'.$qParams->vix->response->vehicle_number.'",
-                "vehicleMake": "'.$qParams->vix->response->make_code.'",
-                "vehicleModel": "'.$qParams->vix->response->model_code.'",
-                "vehicleEngineCC": '.$qParams->vix->response->engine_capacity.',
-                "yearOfManufacture": "'.$qParams->vix->response->manufacture_year.'",
-                "occupantsNumber": '.$qParams->vix->response->seating_capacity.',
-                "ncdPercentage": '.$qParams->vix->response->ncd_percentage.',
-                "sumInsured": "'.$qParams->vix->response->sum_insured.'",
+                "vehicleLicenseId": "'.$qParams->input->vehicle_number.'",
+                "vehicleMake": "'.$qParams->vix->make.'",
+                "vehicleModel": "'.$qParams->vix->model.'",
+                "vehicleEngineCC": '.$qParams->vix->engine_capacity.',
+                "yearOfManufacture": "'.$qParams->vix->manufacture_year.'",
+                "occupantsNumber": '.$qParams->vix->extra_attribute->seating_capacity.',
+                "ncdPercentage": '.$qParams->vix->ncd_percentage.',
+                "sumInsured": "'.$qParams->vix->sum_insured.'",
                 "avCode": "'.$avcode.'",
                 "mvInd": "Y"
             }
@@ -889,7 +920,7 @@ class Allianz implements InsurerLibraryInterface
             "postalCode": "'.$input->postcode.'"
         }';
         $result = $this->cURL("getData", "/vehicleDetails", $text);
-dd($text, $result);
+
         if(!$result->status) {
             return $this->abort($result->response);
         }
@@ -1028,10 +1059,6 @@ dd($text, $result);
                 'Content-Type' => 'application/json',
             ];
 
-            // if ($type == "with_auth_token") {
-            //     $options['headers']['auth_token'] = $additionals['auth_token'];
-            //     $options['headers']['referencedata'] = $additionals['referenceData'];
-            // }
             if($type == "GET"){
                 $method = 'GET';
             }
@@ -1045,8 +1072,25 @@ dd($text, $result);
             $postfield = $data;
             $options['body'] = $postfield;
         }
+        
+        $log = APILogs::create([
+            'insurance_company_id' => $this->company_id,
+            'method' => $method,
+            'domain' => $this->url,
+            'path' => $function,
+            'request_header' => json_encode($request_options['headers']),
+            'request' => json_encode($request_options['body']),
+        ]);
+
         $result = HttpClient::curl($method, $host, $options);
-        dump($host,$options);
+
+        // Update the API log
+        APILogs::find($log->id)
+            ->update([
+                'response_header' => json_encode($result->response_header),
+                'response' => $result->response
+            ]);
+
         if ($result->status) {
             if($type == "GET"){
                 if($result->response == ''){
