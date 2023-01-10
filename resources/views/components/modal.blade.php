@@ -1,4 +1,4 @@
-<div id="{{ $id }}" class="modal fade rounded" tabindex="-1" {{ $backdropStatic ? 'data-bs-backdrop="static" data-bs-keyboard="false"' : '' }}>
+<div id="{{ $id }}" class="modal fade rounded" tabindex="-1" {{ $backdropStatic ? 'data-bs-backdrop="static" data-bs-keyboard=false' : '' }}>
     <div class="{{ "modal-dialog modal-dialog-centered {$maxWidth}" }}">
         <div class="modal-content">
             <div class="{{ "modal-header {$headerClass}" }}">
