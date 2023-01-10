@@ -250,7 +250,7 @@
                         <p class="mb-0">{{ __('frontend.motor.add_ons_page.body_type_modal.need_assisstance') }}</p>
                         <span>
                             <p class="mb-0">{{ __('frontend.motor.add_ons_page.body_type_modal.contact_us') }}</p>
-                            <a href="mailto:instapol@my.howdengroup.com"> {{ config('setting.customer_service.email') }}</a>
+                            <a href="{{ 'mailto:' . config('setting.customer_service.email') }}">{{ config('setting.customer_service.email') }}</a>
                         </span>
                     </div>
                 </x-slot>
