@@ -559,7 +559,7 @@
                        }
                     });
 
-                    const to_remove = $('#compare-table tbody .add-ons-row').concat($('.compare .' + product_id));
+                    const to_remove = [...$('#compare-table tbody .add-ons-row'), ...$('.compare .' + product_id)];
                     to_remove.each((index, element) => {
                         $(element).remove();
                     });
