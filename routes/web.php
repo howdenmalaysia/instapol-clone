@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware(['web'])->group(function() {
+Route::middleware(['web', 'cors'])->group(function() {
     // General Routes
     Route::get('/', [HomeController::class, 'index'])->name('frontend.index');
     Route::get('/about-us', [HomeController::class, 'aboutUs'])->name('frontend.about-us');
@@ -52,10 +52,6 @@ Route::middleware(['web'])->group(function() {
 Route::group(['prefix' => 'payment'], function() {
     Route::post('/insurance', [PaymentController::class, 'store'])->name('payment.store');
     Route::match(['get', 'post'], '/callback', [PaymentController::class, 'callback'])->name('payment.callback');
-});
-
-Route::get('/test', function () {
-    return view('frontend.payment.summary');
 });
 
 // Redirects

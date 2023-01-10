@@ -50,9 +50,11 @@ return [
     'payment' => [
         'gateway' => [
             'url' => env('EGHL_PAYMENT_URL'),
+            'fpx_merchant_id' => env('EGHL_FPX_MERCHANT_ID'),
+            'fpx_merchant_password' => env('EGHL_FPX_MERCHANT_PASSWORD'),
             'merchant_id' => env('EGHL_MERCHANT_ID'),
             'merchant_name' => env('EGHL_MERCHANT_NAME'),
-            'merchant_password' => env('EGHL_MERCHANT_PASSWORD')
+            'merchant_password' => env('EGHL_MERCHANT_PASSWORD'),
         ]
     ]
 ];
