@@ -11,5 +11,11 @@ Homestead.yaml
 npm-debug.log
 yarn-error.log
 
+/public/js
+/public/css
+/public/images
+/public/fonts
+/public/mix-manifest.json
+
 package-lock.json
 
