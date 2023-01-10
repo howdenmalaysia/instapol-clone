@@ -591,7 +591,7 @@ return [
         'add_ons_page' => [
             'add_ons' => 'Add Ons',
             'sum_insured' => 'Sum Insured',
-            'sum_insured_amount' => 'Sum Imsured Amount',
+            'sum_insured_amount' => 'Sum Insured Amount',
             'additional_coverage' => 'Additional Coverage',
             'additional_driver' => 'Additional Driver(s)',
             'add_driver' => 'Add Driver',
@@ -614,6 +614,10 @@ return [
                 'accessories' => 'If you have fitted your car with expensive accessories, then it is a good idea to gconsider getting this add-ons as insurance companies do not cover aftermarket accessories, only standard installations as listed by car manufacturer during claim.',
                 'pa' => 'Personal accident plan while traveling in your vehilce is now available for purchase',
                 'ncd' => 'This extension provides covers for compensation for loss of "No Claim Discount" (NCD)',
+                'cart' => 'Compensation when your car under repair',
+                'special_perils' => 'Cover loss or damage to your car caused by flood, typhoon, hurricane, storm, tempest, volcanic eruption, earthquake., landslide, landslip, subsidence or sinking of the soil/earth or convulsions of nature.',
+                'ngv' => 'Obtain extended coverage on loss or damage to the gas conversion kit and tank of your car as a separate item',
+                'roadtax' => '<div><li>Klang Valley: within 2 - 3 working days of your confirmed purchase date</li><li>Peninsular: within 6 working days of your confirmed purchase date</li></div>'
             ],
             'body_type_modal' => [
                 'header' => 'Please choose your vehicle body type based on the description below',

@@ -15,7 +15,7 @@
                 <div class="row align-items-center">
                     <div class="col-6">
                         <div class="px-3 py-4">
-                            <p>{{ implode(' ', [__('frontend.general.hi'), $insruance->holder->name]) . ',' }}</p>
+                            <p>{{ implode(' ', [__('frontend.general.hi'), $insurance->holder->name]) . ',' }}</p>
                             
                             @foreach (__('frontend.motor.payment_success_page.messages') as $message)
                                 <p>{!! str_replace(':insurer', 'Insurer', $message) !!}</p>
