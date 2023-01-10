@@ -329,6 +329,14 @@
                 }
             });
 
+            $('input[name=gender]').on('change', (e) => {
+                if($(e.target).val() === 'M') {
+                    $('#male-label').trigger('click');
+                } else {
+                    $('#female-label').trigger('click');
+                }
+            });
+
             $('#sort-by').on('change', (e) => {
                 sortPrice($(e.target).val() == 'HP');
             });
