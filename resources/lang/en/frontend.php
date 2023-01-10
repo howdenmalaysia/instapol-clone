@@ -591,7 +591,7 @@ return [
         'add_ons_page' => [
             'add_ons' => 'Add Ons',
             'sum_insured' => 'Sum Insured',
-            'sum_insured_amount' => 'Sum Imsured Amount',
+            'sum_insured_amount' => 'Sum Insured Amount',
             'additional_coverage' => 'Additional Coverage',
             'additional_driver' => 'Additional Driver(s)',
             'add_driver' => 'Add Driver',
