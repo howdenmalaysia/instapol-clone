@@ -1078,8 +1078,8 @@ class Allianz implements InsurerLibraryInterface
             'method' => $method,
             'domain' => $this->url,
             'path' => $function,
-            'request_header' => json_encode($request_options['headers']),
-            'request' => json_encode($request_options['body']),
+            'request_header' => json_encode($options['headers']),
+            'request' => json_encode($options['body'] ?? $options['form_params']),
         ]);
 
         $result = HttpClient::curl($method, $host, $options);

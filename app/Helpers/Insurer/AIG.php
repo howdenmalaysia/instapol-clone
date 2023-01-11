@@ -65,6 +65,7 @@ class AIG implements InsurerLibraryInterface
         ];
         
         $vix = $this->getVIXNCD($data);
+        
         if(!$vix->status && is_string($vix->response)) {
             return $this->abort($vix->response);
         }
@@ -72,9 +73,7 @@ class AIG implements InsurerLibraryInterface
         $inception_date =  $get_inception[2] . $get_inception[3] . "-" . $get_inception[1] .  "-" . strval(intval($get_inception[0] + 1));
         $get_expiry = str_split(str_replace('/','',$vix->response->expirydate), 2);
         $expiry_date =  $get_expiry[2] . strval(intval($get_inception[3]) + 1) . "-" . $get_expiry[1] .  "-" . $get_expiry[0];
-        $today = Carbon::today()->format('Y-m-d');
-        $inception_date = '2023-01-11';
-        $expiry_date = '2024-01-10';
+        $today = Carbon::today()->format('d-m-Y');
         // 1. Check inception date
         if($inception_date < $today) {
             return $this->abort('inception date expired');

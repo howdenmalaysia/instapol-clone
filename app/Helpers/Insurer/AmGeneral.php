@@ -2,7 +2,14 @@
 
 namespace App\Helpers\Insurer;
 
+use App\DataTransferObjects\Motor\CartList;
+use App\DataTransferObjects\Motor\OptionList;
+use App\DataTransferObjects\Motor\ExtraCover;
+use App\DataTransferObjects\Motor\VariantData;
+use App\DataTransferObjects\Motor\Vehicle;
 use App\DataTransferObjects\Motor\Response\ResponseData;
+use App\DataTransferObjects\Motor\Response\PremiumResponse;
+use App\DataTransferObjects\Motor\Response\VIXNCDResponse;
 use App\Helpers\HttpClient;
 use App\Interfaces\InsurerLibraryInterface;
 use App\Models\APILogs;
@@ -39,8 +46,11 @@ class AmGeneral implements InsurerLibraryInterface
 	private int $encrypt_pswd_iterations;
 	private int $encrypt_key_size;
 	private string $encrypt_method = "AES-256-CBC";
-
-	private string $CI;
+    private const MIN_SUM_INSURED = 10000;
+    private const MAX_SUM_INSURED = 500000;
+    private const EXTRA_COVERAGE_LIST = ['B101','111','112','25','57','72','72A','89','89(a)','C001','C002'];
+    private const CART_AMOUNT_LIST = [50, 100, 200];
+    private const CART_DAY_LIST = [7, 14, 21];
 
 	public function __construct(int $insurer_id, string $insurer_name)
     {
@@ -94,19 +104,40 @@ class AmGeneral implements InsurerLibraryInterface
 		$dob = $dobs[2] . "-" . $dobs[1] . "-" . strval($year);
 
 		$data = (object) [
-            'vehicleNo' => $input->vehicle_number,
-            'newICNo' => $input->id_number,
-            'insuredPostCode' => $input->postcode,
+            'vehicle_number' => $input->vehicle_number,
+            'id_number' => $input->id_number,
+            'postcode' => $input->postcode,
 			'dob' => $dob,
         ];
-  
+		
         $vix = $this->Q_GetProductList($data);
         if(!$vix->status && is_string($vix->response)) {
             return $this->abort($vix->response);
         }
-
-        $inception_date = $vix->response->polEffectiveDate;
-        $expiry_date = $vix->response->polExpiryDate;
+		//check nvic
+		if(empty($input->nvic)){
+			//use first nvic
+			$index = 0;
+			for($i = 0; $i < count($vix->response->variantSeriesList); $i++){
+				if(! $vix->response->variantSeriesList[$i]->marketValue > 0){
+					$index++;
+				}
+			}
+			$get_data = (object)[
+				'nvicCode' => $vix->response->variantSeriesList[$index]->nvicCode,
+				'header' => $vix->header,
+			];
+			$vix_variant = $this->Q_GetProductListVariant($get_data);
+		}
+		else{
+			$get_data = (object)[
+				'nvicCode' => $input->nvic,
+				'header' => $vix->header,
+			];
+			$vix_variant = $this->Q_GetProductListVariant($get_data);
+		}
+        $inception_date = Carbon::parse($vix_variant->response->inceptionDate)->format('Y-m-d');
+        $expiry_date = Carbon::parse($vix_variant->response->expiryDate)->format('Y-m-d');
         
         $today = Carbon::today()->format('Y-m-d');
         // 1. Check inception date
@@ -115,7 +146,7 @@ class AmGeneral implements InsurerLibraryInterface
         }
 
         // 2. Check Sum Insured -> market price
-        $sum_insured = formatNumber($vix->response->nvicList[0]->vehicleMarketValue, 0);
+        $sum_insured = formatNumber($vix_variant->response->sumInsured, 0);
         $sum_insured_type = "Makert Value";
         if ($sum_insured < self::MIN_SUM_INSURED || $sum_insured > self::MAX_SUM_INSURED) {
             return $this->abort(
@@ -124,58 +155,94 @@ class AmGeneral implements InsurerLibraryInterface
             );
         }
 
-        $nvic = explode('|', (string) $vix->response->nvicList[0]->nvic);
-        //getting model
-        $vehInputModel = (object)[      
-            'makeCode' => $vix->response->makeCode,
-            'modelCode' => $vix->response->modelCode,
-        ];
         $variants = [];
-        $BodyType = '';
-        $uom = '';
-        $VehModelCode = '';
-        foreach($nvic as $_nvic) {
-            // Get Vehicle Details
-            $details = $this->allianzVariant($vehInputModel);
-            $get_variant = $vix->response->nvicList[0]->vehicleVariant;
-            foreach($details->response->VehicleList as $model_details){
-                if(str_contains($model_details->Descp, $vix->response->nvicList[0]->vehicleVariant)){
-                    $get_variant = $model_details->Descp;
-                    $uom = $model_details->UOM;
-                    $VehModelCode = $model_details->ModelCode;
-                }
-            }
-            array_push($variants, new VariantData([
-                'nvic' => $_nvic,
-                'sum_insured' => floatval($sum_insured),
-                'variant' => $get_variant,
-            ]));
+        foreach($vix->response->variantSeriesList as $_nvic) {
+			if($_nvic->marketValue > 0){
+				array_push($variants, new VariantData([
+				    'nvic' => $_nvic->nvicCode,
+				    'sum_insured' => floatval($_nvic->marketValue),
+				    'variant' => $_nvic->nvicDesc,
+				]));
+			}
         }
-
+		//make
+		$get_make = explode (" ", $vix_variant->response->modelDesc);
         return (object) [
             'status' => true,
+			'header' => $vix_variant->header,
+			'vehicleClass' => $vix_variant->response->productList[0]->vehicleClass,
+			'isRoadTaxAvail' => $vix_variant->response->isRoadTaxAvail,
+			'extraCoverageList' => $vix_variant->response->productList[0]->extraCoverageList,
+			'defaultDriver' => $vix_variant->response->productList[0]->defaultDriver,
             'response' => new VIXNCDResponse([
-                'chassis_number' => $vix->response->CHASSIS_NO,
-                'class_code' => $vix->response->VEHICLE_CLASS,
-                'coverage' => 'Comprehensive',
-                'cover_type' => $vix->response->COVERAGE_TYPE,
-                'engine_capacity' => $vix->response->CAPACITY,
-                'engine_number' => $vix->response->ENGINE_NUMBER,
+                'chassis_number' => $vix->response->chassisNo,
+                'coverage' => $this->coverage_type($vix_variant->response->productList[0]->scopeOfCover),
+                'cover_type' => $vix_variant->response->productList[0]->scopeOfCover,
+                'engine_capacity' => $vix_variant->response->capacity,
+                'engine_number' => $vix->response->engineNo,
                 'expiry_date' => Carbon::parse($expiry_date)->format('d M Y'),
-                'inception_date' => $inception_date->format('d M Y'),
-                'make' => $vix->response->MAKE_DESC,
-                'manufacture_year' => $vix->response->YEAR_OF_MANUFACTURING,
-                'max_sum_insured' => roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_UP, true, self::MAX_SUM_INSURED),
-                'min_sum_insured' => roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_DOWN, false, self::MIN_SUM_INSURED),
-                'model' => str_replace($vix->response->MAKE_DESC . ' ', '', $vix->response->MODEL_DESC),
-                'ncd_percentage' => floatval($vix->response->NCD_PERCENT),
-                'seating_capacity' => $vix->response->SEAT,
-                'sum_insured' => roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_UP, true, self::MAX_SUM_INSURED),
-                'sum_insured_type' => $vix->response->ENDT_CLAUSE_CODE === 113 ? 'Market Value' : 'Agreed Value',
+                'inception_date' => Carbon::parse($inception_date)->format('d M Y'),
+                'make' => $get_make[0],
+                'manufacture_year' => $vix_variant->response->mfgYear,
+                'max_sum_insured' => $vix_variant->response->productList[0]->maxSumInsured,
+                'min_sum_insured' => $vix_variant->response->productList[0]->minSumInsured,
+                'model' => $vix_variant->response->modelDesc,
+                'ncd_percentage' => floatval($vix_variant->response->productList[0]->ncdPercent),
+                'seating_capacity' => 0,
+                'sum_insured' => $sum_insured,
+                'sum_insured_type' => $vix_variant->response->productList[0]->basisofCoverage,
                 'variants' => $variants,
                 'vehicle_number' => $input->vehicle_number,
-                'vehicle_body_code' => $vix->response->VEHICLE_BODY
+                'vehicle_body_code' => null
             ])];
+    }
+
+    private function coverage_type(string $coverage_type) : string
+    {
+		switch ($coverage_type) {
+			case 'COMP': {
+				$description = 'Comprehensive';
+
+				break;
+			}
+			case 'COMP PLUS': {
+				$description = 'Comprehensive Plus';
+
+				break;
+			}
+			case 'COMP PREM': {
+				$description = 'Comprehensive Premier';
+
+				break;
+			}
+			case 'PTP PLUS': {
+				$description = 'Comprehensive PTP Plus';
+
+				break;
+			}
+			case 'PROTON': {
+				$description = 'Comprehensive PIP';
+
+				break;
+			}
+			case 'TPFT': {
+				$description = 'Third Part Fire and Theft';
+
+				break;
+			}
+			case 'TPFT PREM': {
+				$description = 'Third-part Fire and Theft Premier';
+
+				break;
+			}
+			case 'TP': {
+				$description = 'Third party';
+
+				break;
+			}
+		}
+
+        return $description;
     }
 
     public function premiumDetails(object $input, $full_quote = false) : object
@@ -184,7 +251,7 @@ class AmGeneral implements InsurerLibraryInterface
         $ncd_amount = $basic_premium = $total_benefit_amount = $gross_premium = $sst_percent = $sst_amount = $stamp_duty = $excess_amount = $total_payable = 0;
         $pa = null;
 
-        if ($full_quote) {
+		if ($full_quote) {
             $vehicle_vix = $this->vehicleDetails($input);
             if (!$vehicle_vix->status) {
                 return $this->abort($vehicle_vix->response, $vehicle_vix->code);
@@ -230,69 +297,54 @@ class AmGeneral implements InsurerLibraryInterface
                     'cover_type' => $vehicle_vix->response->cover_type,
                     'engine_number' => $vehicle_vix->response->engine_number,
                     'seating_capacity' => $vehicle_vix->response->seating_capacity,
+					'vehicleClass' => $vehicle_vix->vehicleClass,
+					'isRoadTaxAvail' => $vehicle_vix->isRoadTaxAvail,
+					'vehicle_body_code' => $vehicle_vix->response->vehicle_body_code,
+					'extraCoverageList' => $vehicle_vix->extraCoverageList,
+					'namedDriversList' => $vehicle_vix->defaultDriver,
+					'header' => $vehicle_vix->header,
                 ],
             ]);
 
             // get premium
             $data = (object) [
-                'vehicle_number' => $input->vehicle_number,
-                'id_type' => $input->id_type,
-                'id_number' => $input->id_number,
-                'gender' => $input->gender,
-                'marital_status' => $input->marital_status,
-                'postcode' => $input->postcode,
-                'state' => $input->state,
-                'region' => $input->region,
-                'vehicle' => $vehicle,
-                'email' => $input->email,
-                'phone_number' => $input->phone_number,
-                'nvic' => $vehicle->nvic,
-                'postcode' => $input->postcode,
-                'occupation' => $input->occupation,
+				"vehicleClass"=>$vehicle->extra_attribute->vehicleClass,
+				"scopeOfCover"=>$vehicle->extra_attribute->cover_type,
+				"roadTaxOption"=>$vehicle->extra_attribute->isRoadTaxAvail,
+				"vehBodyTypeCode"=>$vehicle->extra_attribute->vehicle_body_code,
+				"sumInsured"=>$vehicle->sum_insured,
+				"saveInd"=> 'Y',
+				"ptvSelectInd"=>'N',
+				"extraCoverageList"=>$vehicle->extra_attribute->extraCoverageList,
+				"namedDriversList"=>$vehicle->extra_attribute->namedDriversList,
+				"vehicleAgeLoadPercent"=>'',
+				"insuredAgeLoadPercent"=>'',
+				"claimsExpLoadPercent"=>'',
+				'header'=>$vehicle->extra_attribute->header,
             ];
 
-            $motor_premium = $this->F_GetProductListVariant($data);
+            $motor_premium = $this->Q_GetQuote($data);
 
-            if (!$motor_premium->status) {
+			if (!$motor_premium->status) {
                 return $this->abort($motor_premium->response);
             }
 
-            $basic_premium = formatNumber($motor_premium->response->BASIC_PREMIUM);
+            $basic_premium = formatNumber($motor_premium->response->basicPremium);
             $excess_amount = 0;
-            $ncd_percentage = $vehicle->ncd_percentage;
-            $ncd_amount = formatNumber($motor_premium->response->NCD_AMOUNT);
-            $total_benefit_amount = formatNumber($motor_premium->response->EXTRACOVERAGE_AMOUNT);
-            $gross_premium = formatNumber($motor_premium->response->GROSS_PREMIUM);
-            $sst_percent = formatNumber($motor_premium->response->SST_PERCENTAGE);
-            $sst_amount = formatNumber($motor_premium->response->SST_PREMIUM);
-            $stamp_duty = formatNumber($motor_premium->response->STAMP_DUTY);
-            $total_payable = formatNumber($motor_premium->response->AMT_PAY_CLIENT);
-            $net_premium = formatNumber($motor_premium->response->AMT_PAY_CLIENT - $motor_premium->response->COMMISSION);
+            $ncd_percentage = $motor_premium->response->ncdPercent;
+            $ncd_amount = formatNumber($motor_premium->response->ncdAmount);
+            $total_benefit_amount = formatNumber($motor_premium->response->extraCoverageAmount);
+            $gross_premium = formatNumber($motor_premium->response->grossPremium);
+            $sst_percent = formatNumber($motor_premium->response->sstPercent);
+            $sst_amount = formatNumber($motor_premium->response->sstAmount);
+            $stamp_duty = formatNumber($motor_premium->response->stampDuty);
+            $total_payable = formatNumber($motor_premium->response->totalPayable);
+            $net_premium = formatNumber($motor_premium->response->netPremiumAfterPtv);
 
             // Remove Extra Cover which is not entitled
             $available_benefits = self::EXTRA_COVERAGE_LIST;
 
-            /// 1. Private Hire Car Endorsement (E-Hailing)
-            if($input->id_type == config('setting.id_type.company_registration_no')) { //// Company Registered Vehicles
-                unset($available_benefits[array_search('EHRP', $available_benefits)]);
-            }
-
-            /// 2. NCD Relief
-            if($vehicle->ncd_percentage == 0) {
-                unset($available_benefits[array_search('111', $available_benefits)]);
-            }
-
-            /// 3. Waiver Of Betterment
-            /// 4. Unlimited Towing Costs
-            $vehicle_age = Carbon::now()->year - $vehicle->manufacture_year;
-            if($vehicle_age < 5 || $vehicle_age > 14) {
-                unset($available_benefits[array_search('BTWP', $available_benefits)]);
-
-                if($vehicle_age > 15) {
-                    unset($available_benefits[array_search('TOWP', $available_benefits)]);
-                }
-            }
-
+            $extra_cover_list = [];
             // Generate Extra Cover List
             foreach($available_benefits as $extra_cover_code) {
                 $_sum_insured_amount = $_cart_amount = $_cart_day = 0;
@@ -305,43 +357,8 @@ class AmGeneral implements InsurerLibraryInterface
                     'sum_insured' => 0,
                     'premium' => 0,
                 ]);
-
                 switch($extra_cover_code) {
-                    case '89A': { // Windscreen Damage
-                        // Generate Options From 500 To 10,000
-                        $option_list = new OptionList([
-                            'name' => 'sum_insured',
-                            'description' => 'Sum Insured Amount',
-                            'values' => generateExtraCoverSumInsured(500, 10000, 1000),
-                            'any_value' => true,
-                            'increment' => 100
-                        ]);
-
-                        $item->option_list = $option_list;
-
-                        // Default to RM 1,000
-                        $_sum_insured_amount = $option_list->values[1];
-
-                        break;
-                    }
-                    case '97': { // Vehicle Accessories
-                        // Generate Options From 1,000 To 10,000
-                        $option_list = new OptionList([
-                            'name' => 'sum_insured',
-                            'description' => 'Sum Insured Amount',
-                            'values' => generateExtraCoverSumInsured(1000, 10000, 1000),
-                            'any_value' => true,
-                            'increment' => 100
-                        ]);
-
-                        $item->option_list = $option_list;
-
-                        // Default to RM 1,000
-                        $_sum_insured_amount = $option_list->values[0];
-
-                        break;
-                    }
-                    case '112': { // Compensation For Assessed Repair Time (CART)
+                    case '112': { // COMPENSATION FOR ASSESSED REPAIR TIME (CART)
                         // Get CART Days & Its Amount
                         $cart_list = [];
 
@@ -366,57 +383,6 @@ class AmGeneral implements InsurerLibraryInterface
 
                         break;
                     }
-                    case '97A': { // Gas Conversion Kit And Tank
-                        // Generate Options From 1,000 To 10,000
-                        $option_list = new OptionList([
-                            'name' => 'sum_insured',
-                            'description' => 'Sum Insured Amount',
-                            'values' => generateExtraCoverSumInsured(1000, 10000, 1000),
-                            'any_value' => true,
-                            'increment' => 100
-                        ]);
-
-                        $item->option_list = $option_list;
-
-                        // Default to RM 1,000
-                        $_sum_insured_amount = $option_list->values[0];
-
-                        break;
-                    }
-                    case 'LOUP': { // Compesation For Loss Of Use Of Vehicle - E-Ride/Hailing
-                        // Generate Options From 1,000 To 10,000
-                        $option_list = new OptionList([
-                            'name' => 'sum_insured',
-                            'description' => 'Sum Insured Amount',
-                            'values' => array_diff(generateExtraCoverSumInsured(500, 2000, 500), array(1500)),
-                            'any_value' => true,
-                            'increment' => 500
-                        ]);
-
-                        $item->option_list = $option_list;
-
-                        // Default to RM 500
-                        $_sum_insured_amount = $option_list->values[0];
-
-                        break;
-                    }
-                    case 'PA*P': { // Personal Accident Add-On
-                        // Generate Options From 1,000 To 10,000
-                        $option_list = new OptionList([
-                            'name' => 'sum_insured',
-                            'description' => 'Sum Insured Amount',
-                            'values' => array_diff(generateExtraCoverSumInsured(25000, 100000, 25000), array(75000)),
-                            'any_value' => true,
-                            'increment' => 25000
-                        ]);
-
-                        $item->option_list = $option_list;
-
-                        // Default to RM 1,000
-                        $_sum_insured_amount = $option_list->values[0];
-
-                        break;
-                    }
                 }
 
                 if (!empty($_sum_insured_amount)) {
@@ -433,68 +399,95 @@ class AmGeneral implements InsurerLibraryInterface
 		
 		// get premium
 		$data = (object) [
-			'vehicle_number' => $input->vehicle_number,
-			'id_type' => $input->id_type,
-			'id_number' => $input->id_number,
-			'gender' => $input->gender,
-			'marital_status' => $input->marital_status,
-			'postcode' => $input->postcode,
-			'state' => $input->state,
-			'region' => $input->region,
-			'vehicle' => $vehicle,
-			'email' => $input->email,
-			'phone_number' => $input->phone_number,
-			'nvic' => $vehicle->nvic,
-			'postcode' => $input->postcode,
-			'occupation' => $input->occupation,
-			'extra_cover' => $input->extra_cover,
+			"vehicleClass"=>$vehicle->extra_attribute->vehicleClass,
+			"scopeOfCover"=>$vehicle->extra_attribute->cover_type,
+			"roadTaxOption"=>$vehicle->extra_attribute->isRoadTaxAvail,
+			"vehBodyTypeCode"=>$vehicle->extra_attribute->vehicle_body_code,
+			"sumInsured"=>$vehicle->sum_insured,
+			"saveInd"=> 'Y',
+			"ptvSelectInd"=>'N',
+			"extraCoverageList"=>$vehicle->extra_attribute->extraCoverageList,
+			"namedDriversList"=>$vehicle->extra_attribute->namedDriversList,
+			"vehicleAgeLoadPercent"=>'',
+			"insuredAgeLoadPercent"=>'',
+			"claimsExpLoadPercent"=>'',
+			'header'=>$vehicle->extra_attribute->header,
 		];
 
-		$motor_premium = $this->Q_GetProductListVariant($data);
+		$motor_premium = $this->Q_GetQuote($data);
 
 		if (!$motor_premium->status) {
 			return $this->abort($motor_premium->response);
 		}
-
+		//get quotationNo
+		
+		$text = (object)[
+			"newICNo"=>$input->id_number,
+			"vehicleClass"=>$vehicle->extra_attribute->vehicleClass,
+			"vehicleNo"=>$input->vehicle_number,
+			"brand"=>'Kurnia',
+			"dob"=>$dob,
+			"clientName"=>$input->name ?? config('app.name'),
+			"genderCode"=>$input->gender,
+			"maritalStatusCode"=>$input->marital_status,
+			"insuredAddress1"=>$input->address_one ?? '11 FLOOR AIK HUA',
+			"insuredAddress2"=>isset($input->address_two) ? (empty($input->address_two) ? $input->city . ', ' . $input->state : $input->address_two) : '',
+			"insuredAddress3"=>isset($input->address_two) ? (empty($input->address_two) ? '' : $input->city . ', ' . $input->state) : '',
+			"insuredAddress4"=> '',
+			"vehicleKeptAddress1"=>$input->address_one ?? '11 FLOOR AIK HUA',
+			"vehicleKeptAddress2"=>isset($input->address_two) ? (empty($input->address_two) ? $input->city . ', ' . $input->state : $input->address_two) : '',
+			"vehicleKeptAddress3"=>isset($input->address_two) ? (empty($input->address_two) ? '' : $input->city . ', ' . $input->state) : '',
+			"vehicleKeptAddress4"=> '',
+			"insuredPostCode"=>$input->postcode,
+			"vehiclePostCode"=>$input->postcode,
+			"mobileNo"=>$input->phone_code,
+			"emailId"=>$input->email,
+			"garagedCode"=>'01',
+			"safetyCode"=>'01',
+			"occupationCode"=>$input->occupation,
+			"nationalityCode"=>$input->nationality,
+			"newBusRegNo"=>'',
+			'header'=>$motor_premium->header,
+		];
+		$add_quote = $this->Q_GetAdditionalQuoteInfo($text);
+		if (!$add_quote->status) {
+			return $this->abort($add_quote->response);
+		}
         $new_extracover_list = [];
-        if(!empty($motor_premium->response->additionalCover)) {
+        if(!empty($motor_premium->response->extraCoverageList)) {
             foreach($input->extra_cover as $extra_cover) {
-                foreach($motor_premium->response->additionalCover as $extra) {
-                    if((string) $extra->coverCode === $extra_cover->extra_cover_code) {
-                        $extra_cover->premium = formatNumber((float) $extra->displayPremium);
-                        $total_benefit_amount += (float) $extra->displayPremium;
-                        $extra_cover->selected = floatval($extra->displayPremium) == 0;
-    
-                        if(!empty($extra->coverSumInsured)) {
-                            $extra_cover->sum_insured = formatNumber((float) $extra->coverSumInsured);
-                        }
+                foreach($motor_premium->response->extraCoverageList as $extra) {
+                    if((string) $extra->extraCoverageCode === $extra_cover->extra_cover_code) {
+                        $extra_cover->premium = formatNumber((float) $extra->premium);
+                        $total_benefit_amount += (float) $extra->premium;
+                        $extra_cover->selected = floatval($extra->premium) == 0;
+
                         array_push($new_extracover_list, $extra_cover);
                     }
                 }
             }
         }
         $input->extra_cover = $new_extracover_list;
-
+        $premium_data = $motor_premium->response;
         $response = new PremiumResponse([
-            'basic_premium' => formatNumber($motor_premium->response->premium->basicPremium),
-            'ncd_percentage' => $motor_premium->response->premium->ncdPct,
-            'ncd_amount' => formatNumber($motor_premium->response->premium->ncdAmt),
-            'total_benefit_amount' => 0.00, //formatNumber($motor_premium->response->premium->EXTRACOVERAGE_AMOUNT),
-            'gross_premium' => formatNumber($motor_premium->response->premium->grossPremium),
-            'sst_percent' => formatNumber($motor_premium->response->premium->serviceTaxPercentage),
-            'sst_amount' => formatNumber($motor_premium->response->premium->serviceTaxAmount),
-            'stamp_duty' => formatNumber($motor_premium->response->premium->stampDuty),
-            'excess_amount' => formatNumber($motor_premium->response->premium->excessAmount),
-            'total_payable' => formatNumber($motor_premium->response->premium->premiumDueRoundedAfterPTV),
-            'net_premium' => formatNumber($motor_premium->response->premium->premiumDueRoundedAfterPTV - $motor_premium->response->premium->commissionAmount),
+            'basic_premium' => formatNumber($premium_data->basicPremium),
+            'excess_amount' => formatNumber($premium_data->compulsoryExcess),
             'extra_cover' => $input->extra_cover,
-            'personal_accident' => $pa,
-            // 'quotation_number' => $motor_premium->response->premium->QUOTATION_NO,
-            'sum_insured' => formatNumber($vehicle->sum_insured ?? 0),
+            'gross_premium' => formatNumber($premium_data->grossPremium),
+            'ncd_amount' => formatNumber($premium_data->ncdAmount),
+            'ncd_percentage' => formatNumber($premium_data->ncdPercent),
+            'net_premium' => formatNumber($premium_data->netPremiumAfterPtv),
+            'sum_insured' => formatNumber($premium_data->sumInsured ?? 0),
+            'min_sum_insured' => formatNumber($premium_data->minSumInsured),
+            'max_sum_insured' => formatNumber($premium_data->maxSumInsured),
             'sum_insured_type' => $vehicle->sum_insured_type,
-            'min_sum_insured' => formatNumber($vehicle->min_sum_insured),
-            'max_sum_insured' => formatNumber($vehicle->max_sum_insured),
-            'named_drivers_needed' => false
+            'sst_amount' => formatNumber($premium_data->sstAmount),
+            'sst_percent' => formatNumber($premium_data->sstPercent),
+            'stamp_duty' => formatNumber($premium_data->stampDuty),
+            'total_benefit_amount' => formatNumber($total_benefit_amount),
+            'total_payable' => formatNumber($premium_data->totalPayable),
+            'named_drivers_needed' => true,
+            'quotation_number' => $add_quote->response->quotationNo,
         ]);
 
         if ($full_quote) {
@@ -602,21 +595,37 @@ class AmGeneral implements InsurerLibraryInterface
 		);
 
 		$response = $this->cURL("getData","QuickQuotation/GetProductList", json_encode($data));
+
         if($response->status){
 			$encrypted = $response->response->responseData;
 			$decrypted = json_decode($this->decrypt($response->response->responseData));
 
-			return $decrypted;
+			if (empty($decrypted)) {
+                $message = !empty($response->response) ? $response->response : __('api.empty_response', ['company' => $this->company_name]);
+
+                return $this->abort($message);
+            }
+
+			$data = (object)[
+				'status'=>$response->status,
+				'response'=>$decrypted,
+				'header'=>$response->response_header,
+			];
+			return $data;
         }
         else{
-			return false;
+			$error = (object)[
+				'status'=>$response->status,
+				'response'=>$response->response,
+			];
+			return $error;
         }
 	}
 
 	public function Q_GetProductListVariant($cParams = null)
 	{
 		$text = array(
-			"nvicCode"=>$cParams->nvic,
+			"nvicCode"=>$cParams->nvicCode,
 		);
 		$encrypted = $this->encrypt(json_encode($text));
 
@@ -624,15 +633,31 @@ class AmGeneral implements InsurerLibraryInterface
 			'requestData' => $encrypted
 		);
 
-		$response = $this->cURL("with_auth_token","QuickQuotation/GetProductListVariant", json_encode($data));
-        if($response->status){
+		$response = $this->cURL("with_auth_token","QuickQuotation/GetProductListVariant", json_encode($data),$cParams->header);
+
+		if($response->status){
 			$encrypted = $response->response->responseData;
 			$decrypted = json_decode($this->decrypt($response->response->responseData));
+			
+			if (empty($decrypted)) {
+                $message = !empty($response->response) ? $response->response : __('api.empty_response', ['company' => $this->company_name]);
 
-			return $decrypted;
+                return $this->abort($message);
+            }
+
+			$data = (object)[
+				'status'=>$response->status,
+				'response'=>$decrypted,
+				'header'=>$response->response_header,
+			];
+			return $data;
         }
         else{
-			return false;
+			$error = (object)[
+				'status'=>$response->status,
+				'response'=>$response->response,
+			];
+			return $error;
         }
 	}
 	
@@ -658,15 +683,30 @@ class AmGeneral implements InsurerLibraryInterface
 			'requestData' => $encrypted
 		);
 
-		$response = $this->cURL("with_auth_token","QuickQuotation/GetQuickQuote", json_encode($data));
+		$response = $this->cURL("with_auth_token","QuickQuotation/GetQuickQuote", json_encode($data),$cParams->header);
         if($response->status){
 			$encrypted = $response->response->responseData;
 			$decrypted = json_decode($this->decrypt($response->response->responseData));
+			
+			if (empty($decrypted)) {
+                $message = !empty($response->response) ? $response->response : __('api.empty_response', ['company' => $this->company_name]);
 
-			return $decrypted;
+                return $this->abort($message);
+            }
+
+			$data = (object)[
+				'status'=>$response->status,
+				'response'=>$decrypted,
+				'header'=>$response->response_header,
+			];
+			return $data;
         }
         else{
-			return false;
+			$error = (object)[
+				'status'=>$response->status,
+				'response'=>$response->response,
+			];
+			return $error;
         }
 	}
 
@@ -702,15 +742,29 @@ class AmGeneral implements InsurerLibraryInterface
 			'requestData' => $encrypted
 		);
 
-		$response = $this->cURL("getData","QuickQuotation/GetAdditionalQuoteInfo", json_encode($data));
+		$response = $this->cURL("with_auth_token","QuickQuotation/GetAdditionalQuoteInfo", json_encode($data),$cParams->header);
         if($response->status){
 			$encrypted = $response->response->responseData;
 			$decrypted = json_decode($this->decrypt($response->response->responseData));
+			
+			if (empty($decrypted)) {
+                $message = !empty($response->response) ? $response->response : __('api.empty_response', ['company' => $this->company_name]);
 
-			return $decrypted;
+                return $this->abort($message);
+            }
+
+			$data = (object)[
+				'status'=>$response->status,
+				'response'=>$decrypted,
+				'header'=>$response->response_header,
+			];
         }
         else{
-			return false;
+			$error = (object)[
+				'status'=>$response->status,
+				'response'=>$response->response,
+			];
+			return $error;
         }
 	}
 
@@ -728,31 +782,31 @@ class AmGeneral implements InsurerLibraryInterface
 		$dob = $dobs[2] . "-" . $dobs[1] . "-" . strval($year);
 
 		$text = array(
-			"newICNo"=>$cParams->newICNo,
-			"vehicleClass"=>$cParams->vehicleClass,
-			"vehicleNo"=>$cParams->vehicleNo,
-			"brand"=>$cParams->brand,
+			"newICNo"=>$cParams->id_number,
+			"vehicleClass"=>'PC',
+			"vehicleNo"=>$cParams->vehicle_number,
+			"brand"=>'Kurnia',
 			"dob"=>$dob,
-			"clientName"=>$cParams->clientName,
-			"genderCode"=>$cParams->genderCode,
-			"maritalStatusCode"=>$cParams->maritalStatusCode,
-			"insuredAddress1"=>$cParams->insuredAddress1,
-			"insuredAddress2"=>$cParams->insuredAddress2,
-			"insuredAddress3"=>$cParams->insuredAddress3,
-			"insuredAddress4"=>$cParams->insuredAddress4,
-			"vehicleKeptAddress1"=>$cParams->vehicleKeptAddress1,
-			"vehicleKeptAddress2"=>$cParams->vehicleKeptAddress2,
-			"vehicleKeptAddress3"=>$cParams->vehicleKeptAddress3,
-			"vehicleKeptAddress4"=>$cParams->vehicleKeptAddress4,
-			"insuredPostCode"=>$cParams->insuredPostCode,
-			"vehiclePostCode"=>$cParams->vehiclePostCode,
-			"mobileNo"=>$cParams->mobileNo,
-			"emailId"=>$cParams->emailId,
-			"garagedCode"=>$cParams->garagedCode,
-			"safetyCode"=>$cParams->safetyCode,
-			"occupationCode"=>$cParams->occupationCode,
-			"nationalityCode"=>$cParams->nationalityCode,
-			"newBusRegNo"=>$cParams->newBusRegNo,
+			"clientName"=>$cParams->name ?? config('app.name'),
+			"genderCode"=>$cParams->gender,
+			"maritalStatusCode"=>$cParams->marital_status,
+			"insuredAddress1"=>$cParams->address_one ?? '11 FLOOR AIK HUA',
+			"insuredAddress2"=>isset($cParams->address_two) ? (empty($cParams->address_two) ? $cParams->city . ', ' . $cParams->state : $cParams->address_two) : '',
+			"insuredAddress3"=>isset($cParams->address_two) ? (empty($cParams->address_two) ? '' : $cParams->city . ', ' . $cParams->state) : '',
+			"insuredAddress4"=> '',
+			"vehicleKeptAddress1"=>$cParams->address_one ?? '11 FLOOR AIK HUA',
+			"vehicleKeptAddress2"=>isset($cParams->address_two) ? (empty($cParams->address_two) ? $cParams->city . ', ' . $cParams->state : $cParams->address_two) : '',
+			"vehicleKeptAddress3"=>isset($cParams->address_two) ? (empty($cParams->address_two) ? '' : $cParams->city . ', ' . $cParams->state) : '',
+			"vehicleKeptAddress4"=> '',
+			"insuredPostCode"=>$cParams->postcode,
+			"vehiclePostCode"=>$cParams->postcode,
+			"mobileNo"=>$cParams->phone_code,
+			"emailId"=>$cParams->email,
+			"garagedCode"=>'01',
+			"safetyCode"=>'01',
+			"occupationCode"=>$cParams->occupation,
+			"nationalityCode"=>$cParams->nationality,
+			"newBusRegNo"=>'',
 		);
 		$encrypted = $this->encrypt(json_encode($text));
 
@@ -764,11 +818,26 @@ class AmGeneral implements InsurerLibraryInterface
         if($response->status){
 			$encrypted = $response->response->responseData;
 			$decrypted = json_decode($this->decrypt($response->response->responseData));
+			
+			if (empty($decrypted)) {
+                $message = !empty($response->response) ? $response->response : __('api.empty_response', ['company' => $this->company_name]);
 
-			return $decrypted;
+                return $this->abort($message);
+            }
+
+			$data = (object)[
+				'status'=>$response->status,
+				'response'=>$decrypted,
+				'header'=>$response->response_header,
+			];
+			return $data;
         }
         else{
-			return false;
+			$error = (object)[
+				'status'=>$response->status,
+				'response'=>$response->response,
+			];
+			return $error;
         }
 	}
 
@@ -783,15 +852,29 @@ class AmGeneral implements InsurerLibraryInterface
 			'requestData' => $encrypted
 		);
 
-		$response = $this->cURL("with_auth_token","FullQuotation/GetProductListVariant", json_encode($data));
+		$response = $this->cURL("with_auth_token","FullQuotation/GetProductListVariant", json_encode($data),$cParams->header);
         if($response->status){
 			$encrypted = $response->response->responseData;
 			$decrypted = json_decode($this->decrypt($response->response->responseData));
+			
+			if (empty($decrypted)) {
+                $message = !empty($response->response) ? $response->response : __('api.empty_response', ['company' => $this->company_name]);
 
-			return $decrypted;
+                return $this->abort($message);
+            }
+
+			$data = (object)[
+				'status'=>$response->status,
+				'response'=>$decrypted,
+				'header'=>$response->response_header,
+			];
         }
         else{
-			return false;
+			$error = (object)[
+				'status'=>$response->status,
+				'response'=>$response->response,
+			];
+			return $error;
         }
 	}
 	
@@ -817,15 +900,29 @@ class AmGeneral implements InsurerLibraryInterface
 			'requestData' => $encrypted
 		);
 
-		$response = $this->cURL("with_auth_token","FullQuotation/GetFullQuote", json_encode($data));
+		$response = $this->cURL("with_auth_token","FullQuotation/GetFullQuote", json_encode($data),$cParams->header);
         if($response->status){
 			$encrypted = $response->response->responseData;
 			$decrypted = json_decode($this->decrypt($response->response->responseData));
+			
+			if (empty($decrypted)) {
+                $message = !empty($response->response) ? $response->response : __('api.empty_response', ['company' => $this->company_name]);
 
-			return $decrypted;
+                return $this->abort($message);
+            }
+
+			$data = (object)[
+				'status'=>$response->status,
+				'response'=>$decrypted,
+				'header'=>$response->response_header,
+			];
         }
         else{
-			return false;
+			$error = (object)[
+				'status'=>$response->status,
+				'response'=>$response->response,
+			];
+			return $error;
         }
 	}
 
@@ -850,11 +947,25 @@ class AmGeneral implements InsurerLibraryInterface
         if($response->status){
 			$encrypted = $response->response->responseData;
 			$decrypted = json_decode($this->decrypt($response->response->responseData));
+			
+			if (empty($decrypted)) {
+                $message = !empty($response->response) ? $response->response : __('api.empty_response', ['company' => $this->company_name]);
 
-			return $decrypted;
+                return $this->abort($message);
+            }
+
+			$data = (object)[
+				'status'=>$response->status,
+				'response'=>$decrypted,
+				'header'=>$response->response_header,
+			];
         }
         else{
-			return false;
+			$error = (object)[
+				'status'=>$response->status,
+				'response'=>$response->response,
+			];
+			return $error;
         }
 	}
 
@@ -891,15 +1002,29 @@ class AmGeneral implements InsurerLibraryInterface
 			'requestData' => $encrypted
 		);
 
-		$response = $this->cURL("with_auth_token","Renewal/GetRenewalQuote", json_encode($data));
+		$response = $this->cURL("with_auth_token","Renewal/GetRenewalQuote", json_encode($data),$cParams->header);
         if($response->status){
 			$encrypted = $response->response->responseData;
 			$decrypted = json_decode($this->decrypt($response->response->responseData));
+			
+			if (empty($decrypted)) {
+                $message = !empty($response->response) ? $response->response : __('api.empty_response', ['company' => $this->company_name]);
 
-			return $decrypted;
+                return $this->abort($message);
+            }
+
+			$data = (object)[
+				'status'=>$response->status,
+				'response'=>$decrypted,
+				'header'=>$response->response_header,
+			];
         }
         else{
-			return false;
+			$error = (object)[
+				'status'=>$response->status,
+				'response'=>$response->response,
+			];
+			return $error;
         }
 	}
 
@@ -924,15 +1049,29 @@ class AmGeneral implements InsurerLibraryInterface
 			'requestData' => $encrypted
 		);
 
-		$response = $this->cURL("getData","GetCovernoteSubmission", json_encode($data));
+		$response = $this->cURL("with_auth_token","GetCovernoteSubmission", json_encode($data),$cParams->header);
         if($response->status){
 			$encrypted = $response->response->responseData;
 			$decrypted = json_decode($this->decrypt($response->response->responseData));
+			
+			if (empty($decrypted)) {
+                $message = !empty($response->response) ? $response->response : __('api.empty_response', ['company' => $this->company_name]);
 
-			return $decrypted;
+                return $this->abort($message);
+            }
+
+			$data = (object)[
+				'status'=>$response->status,
+				'response'=>$decrypted,
+				'header'=>$response->response_header,
+			];
         }
         else{
-			return false;
+			$error = (object)[
+				'status'=>$response->status,
+				'response'=>$response->response,
+			];
+			return $error;
         }
 	}
 
@@ -953,11 +1092,25 @@ class AmGeneral implements InsurerLibraryInterface
         if($response->status){
 			$encrypted = $response->response->responseData;
 			$decrypted = json_decode($this->decrypt($response->response->responseData));
+			
+			if (empty($decrypted)) {
+                $message = !empty($response->response) ? $response->response : __('api.empty_response', ['company' => $this->company_name]);
 
-			return $decrypted;
+                return $this->abort($message);
+            }
+
+			$data = (object)[
+				'status'=>$response->status,
+				'response'=>$decrypted,
+				'header'=>$response->response_header,
+			];
         }
         else{
-			return false;
+			$error = (object)[
+				'status'=>$response->status,
+				'response'=>$response->response,
+			];
+			return $error;
         }
 	}
 
@@ -976,11 +1129,25 @@ class AmGeneral implements InsurerLibraryInterface
         if($response->status){
 			$encrypted = $response->response->responseData;
 			$decrypted = json_decode($this->decrypt($response->response->responseData));
+			
+			if (empty($decrypted)) {
+                $message = !empty($response->response) ? $response->response : __('api.empty_response', ['company' => $this->company_name]);
 
-			return $decrypted;
+                return $this->abort($message);
+            }
+
+			$data = (object)[
+				'status'=>$response->status,
+				'response'=>$decrypted,
+				'header'=>$response->response_header,
+			];
         }
         else{
-			return false;
+			$error = (object)[
+				'status'=>$response->status,
+				'response'=>$response->response,
+			];
+			return $error;
         }
 	}
 
@@ -1000,11 +1167,25 @@ class AmGeneral implements InsurerLibraryInterface
         if($response->status){
 			$encrypted = $response->response->responseData;
 			$decrypted = json_decode($this->decrypt($response->response->responseData));
+			
+			if (empty($decrypted)) {
+                $message = !empty($response->response) ? $response->response : __('api.empty_response', ['company' => $this->company_name]);
 
-			return $decrypted;
+                return $this->abort($message);
+            }
+
+			$data = (object)[
+				'status'=>$response->status,
+				'response'=>$decrypted,
+				'header'=>$response->response_header,
+			];
         }
         else{
-			return false;
+			$error = (object)[
+				'status'=>$response->status,
+				'response'=>$response->response,
+			];
+			return $error;
         }
 	}
 
@@ -1018,7 +1199,6 @@ class AmGeneral implements InsurerLibraryInterface
 	private function encrypt($data){
         $first_key = openssl_pbkdf2($this->password, $this->encrypt_salt, $this->encrypt_key_size, $this->encrypt_pswd_iterations, "sha1");
 		$first_encrypted =openssl_encrypt($data,$this->encrypt_method,$first_key, OPENSSL_RAW_DATA,$this->encrypt_iv);
-		dump('encrypt', $first_key, $first_encrypted);
 		$output = base64_encode($first_encrypted);
         return $output;
 	}
@@ -1033,7 +1213,7 @@ class AmGeneral implements InsurerLibraryInterface
 			'http_errors' => false,
 			'verify' => false
 		];
-
+        $method = 'POST';
 		if($type == "token"){
 			$host .= "/api/oauth/v2.0/token";
 
@@ -1047,7 +1227,6 @@ class AmGeneral implements InsurerLibraryInterface
 				'scope' => 'resource.READ,resource.WRITE'
 			];
 
-			dump($options);
 			$postfield = "grant_type=client_credentials&scope=resource.READ,resource.WRITE";
         }
         else{
@@ -1067,13 +1246,12 @@ class AmGeneral implements InsurerLibraryInterface
             ];
 
             if ($type == "with_auth_token") {
-                $options['headers']['auth_token'] = $additionals->auth_token;
-                $options['headers']['referencedata'] = $additionals->referenceData;
+                $options['headers']['auth_token'] = $additionals['auth_token'][0];
+                $options['headers']['referencedata'] = $additionals['referenceData'][0];
             }
 
             $postfield = $data;
             $options['body'] = $postfield;
-			dump($options);
         }
 
         $log = APILogs::create([
@@ -1081,11 +1259,11 @@ class AmGeneral implements InsurerLibraryInterface
             'method' => $method,
             'domain' => $this->host.$this->port,
             'path' => "/api/KEC/v1.0/".$function,
-            'request_header' => json_encode($request_options['headers']),
-            'request' => json_encode($request_options['body']),
+            'request_header' => json_encode($options['headers']),
+            'request' => json_encode($options['body']??$options['form_params']),
         ]);
 
-        $result = HttpClient::curl('POST', $host, $options);
+		$result = HttpClient::curl('POST', $host, $options);
 
         // Update the API log
         APILogs::find($log->id)
@@ -1098,13 +1276,13 @@ class AmGeneral implements InsurerLibraryInterface
             $json = json_decode($result->response);
 
             if (empty($json)) {
-                $message = !empty($result->response) ? $result->response : __('api.empty_response', ['company' => $this->company]);
+                $message = !empty($result->response) ? $result->response : __('api.empty_response', ['company' => $this->company_name]);
 
                 return $this->abort($message);
             }
             $result->response = $json;
         } else {
-            $message = !empty($result->response) ? $result->response : __('api.empty_response', ['company' => $this->company]);
+            $message = !empty($result->response) ? $result->response : __('api.empty_response', ['company' => $this->company_name]);
             if(isset($result->response->status_code)){
                 $message = $result->response->status_code;
             }
