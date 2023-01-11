@@ -294,11 +294,12 @@ class PacificOrient implements InsurerLibraryInterface
         $data = (object) [
             'age' => $input->age,
             'additional_driver' => $input->additional_driver,
+            'company_registration_number' => $company_registration_number,
             'email' => $input->email,
             'extra_cover' => $input->extra_cover,
             'gender' => $this->getGender($input->gender),
             'id_type' => $input->id_type,
-            'id_number' => $input->id_number,
+            'id_number' => $id_number,
             'marital_status' => $this->getMaritalStatusCode($input->marital_status),
             'postcode' => $input->postcode,
             'region' => $input->region,
@@ -432,6 +433,17 @@ class PacificOrient implements InsurerLibraryInterface
     {
         // Get Extra Attribute
         $extra_attribute = json_decode($input->insurance->extra_attribute->value);
+
+        switch($input->id_type) {
+            case config('setting.id_type.company_registration_no'): {
+                $input->company_registration_number = $input->id_number;
+
+                break;
+            }
+            default: {
+                return $this->abort(__('api.unsupported_id_type'), config('setting.response_codes.unsupported_id_types'));
+            }
+        }
         
         $input->vehicle = (object) [
             'inception_date' => $input->insurance->inception_date,
