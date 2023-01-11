@@ -100,7 +100,7 @@ class AmGeneral implements InsurerLibraryInterface
 			'dob' => $dob,
         ];
   
-        $vix = $this->getVIXNCD($data);
+        $vix = $this->Q_GetProductList($data);
         if(!$vix->status && is_string($vix->response)) {
             return $this->abort($vix->response);
         }
