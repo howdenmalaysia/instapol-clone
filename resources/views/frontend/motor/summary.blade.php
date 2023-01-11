@@ -232,7 +232,7 @@
                                     <div id="additional-driver" class="card bg-light rounded mt-4">
                                         <div class="card-body">
                                             <div class="row">
-                                                <div class="col-12 d-flex justify-content-between">
+                                                <div class="col-12 d-flex justify-content-between align-items-start">
                                                     <h4 class="card-title fw-bold border-bottom border-4 pb-3">{{ __('frontend.motor.add_ons_page.additional_driver') }}</h4>
                                                     <a href="{{ route('motor.add-ons') }}" class="btn btn-outline-secondary text-uppercase">{{ __('frontend.button.edit') }}</a>
                                                 </div>
@@ -371,6 +371,10 @@
 
             $('#btn-pay-modal').on('click', () => {
                 $('#payment-form').submit();
+            });
+
+            $('#btn-back').on('click', () => {
+                window.history.back();
             });
         });
     </script>

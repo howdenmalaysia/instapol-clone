@@ -13,7 +13,7 @@
         <form method="POST" action="{{ config('setting.payment.gateway.url') }}" id="eghl-form">
             <input type="hidden" name="TransactionType" value="{{ $transaction_type }}">
             <input type="hidden" name="PymtMethod" value="{{ strtolower(session('referral_code')) === 'mcash' ? Str::replaceFirst('CC|', '', $payment_method) : $payment_method }}">
-            <input type="hidden" name="ServiceID" value="{{ config('setting.payment.gateway.merchant_id') }}">
+            <input type="hidden" name="ServiceID" value="{{ $merchant_id }}">
             <input type="hidden" name="PaymentID" value="{{ $payment_id }}">
             <input type="hidden" name="OrderNumber" value="{{ $order_number }}">
             <input type="hidden" name="PaymentDesc" value="{{ $payment_description }}">
