@@ -550,7 +550,8 @@ return [
             'chassis_number' => 'Chassis Number',
             'engine_number' => 'Engine Number',
             'seating_capacity' => 'Seating Capacity',
-            'nvic' => 'NVIC'
+            'nvic' => 'NVIC',
+            'roadtax_tooltip' => 'No Claim Discount is a special discount given for every claim-free year.'
         ],
         'compare_page' => [
             'scroll_down' => 'Scroll down for our highlights of the policies on offer.',
