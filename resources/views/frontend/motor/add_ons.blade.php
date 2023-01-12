@@ -27,10 +27,10 @@
                             <div class="card-body">
                                 <h3 class="card-title fw-bold border-bottom pb-4 px-md-3 mt-3">{{ __('frontend.motor.add_ons_page.sum_insured_amount') }}</h3>
                                 <h5 class="card-text">{{ __('frontend.motor.add_ons_page.sum_insured') }}</h5>
-                                <div id="tolltip-wrapper" class="pb-4 px-md-3" data-bs-toggle="tooltip" data-bs-placement="top">
+                                <div class="pb-4 px-md-3">
                                     <label class="float-left text-primary fw-bold">{{ 'RM ' . number_format(session('motor')->vehicle->min_sum_insured) }}</label>
                                     <label class="float-end text-primary fw-bold">{{ 'RM ' . number_format(session('motor')->vehicle->max_sum_insured) }}</label>
-                                    <div class="range">
+                                    <div id="sum-insured-tooltip" class="range" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ 'RM ' . number_format(session('motor')->vehicle->sum_insured) }}">
                                         <input type="range" id="sum-insured-slider" class="form-range" min="{{ session('motor')->vehicle->min_sum_insured }}" max="{{ session('motor')->vehicle->max_sum_insured }}" step="1000">
                                     </div>
                                 </div>
@@ -339,6 +339,17 @@
         $('#sum-insured-slider').on('change', (e) => {
             motor.vehicle.sum_insured = parseFloat($(e.target).val());
             $('#motor').val(JSON.stringify(motor));
+
+            // Update Tooltip Position
+            let percentage = ((parseFloat($(e.target).val()) - parseFloat($(e.target).attr('min'))) / (parseFloat($(e.target).attr('max')) - parseFloat($(e.target).attr('min'))));
+
+            if(percentage > 0.5) {
+                let position = Math.round(percentage * $(e.target).width());
+            } else {
+                let position = Math.round((percentage * $(e.target).width()) * -1);
+            }
+
+            $('.tooltip').css('left', position + ($(e.target).width() / 2) - 2);
 
             // Set Loading Effect
             if(!$('#pricing-table #basic-premium').hasClass('loadingButton')) {
