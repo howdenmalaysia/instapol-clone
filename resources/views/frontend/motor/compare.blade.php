@@ -90,7 +90,7 @@
                                                                         value="M"
                                                                         {{ session('motor')->policy_holder->gender === 'M' ? 'checked' : '' }}
                                                                     >
-                                                                    <label id="male-label" class="btn btn-primary text-white rounded-start border active" for="male">
+                                                                    <label id="male-label" class="{{ session('motor')->policy_holder->gender === 'M' ? 'btn btn-primary text-white rounded-start border active' : 'btn btn-light rounded-end' }}" for="male">
                                                                         {{ __('frontend.motor.compare_page.male') }}
                                                                     </label>
                             
@@ -102,7 +102,7 @@
                                                                         value="F"
                                                                         {{ session('motor')->policy_holder->gender === 'F' ? 'checked' : '' }}
                                                                     >
-                                                                    <label id="female-label" class="btn btn-light rounded-end" for="female">
+                                                                    <label id="female-label" class="{{ session('motor')->policy_holder->gender === 'F' ? 'btn btn-primary text-white rounded-start border active' : 'btn btn-light rounded-end' }}" for="female">
                                                                         {{ __('frontend.motor.compare_page.female') }}
                                                                     </label>
                                                                 </div>
@@ -520,8 +520,8 @@
                                 break;
                             }
                             default: {
-                                if(!(add_ons.name in add_ons_available)) {
-                                    add_ons_available[add_ons.name] = [product_id];
+                                if(!(add_ons.extra_cover_description in add_ons_available)) {
+                                    add_ons_available[add_ons.extra_cover_description] = [product_id];
                                 }
                             }
                         }
@@ -545,7 +545,7 @@
                             $('.row.compare').show();
                         }
                     } else {
-                        $(e.target).removeClass('btn-primary text-white').addClass('btn-outline-primary').text('Compare');
+                        $(e.target).removeClass('btn-primary text-white').addClass('btn-outline-primary').text({{ __('frontend.button.compare') }});
     
                         if($('.btn-compare.btn-primary').length === 0) {
                             $('.row.compare').hide();
@@ -560,9 +560,11 @@
                     });
 
                     const to_remove = [...$('#compare-table tbody .add-ons-row'), ...$('.compare .' + product_id)];
-                    to_remove.each((index, element) => {
+                    to_remove.forEach((element) => {
                         $(element).remove();
                     });
+
+                    $(e.target).removeClass('btn-primary text-white').addClass('btn-outline-primary').text({{ __('frontend.button.compare') }});
 
                     // Re-render Add Ons
                     renderAddOns();

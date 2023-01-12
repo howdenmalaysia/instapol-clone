@@ -27,10 +27,10 @@
                             <div class="card-body">
                                 <h3 class="card-title fw-bold border-bottom pb-4 px-md-3 mt-3">{{ __('frontend.motor.add_ons_page.sum_insured_amount') }}</h3>
                                 <h5 class="card-text">{{ __('frontend.motor.add_ons_page.sum_insured') }}</h5>
-                                <div id="tolltip-wrapper" class="pb-4 px-md-3" data-bs-toggle="tooltip" data-bs-placement="top">
+                                <div class="pb-4 px-md-3">
                                     <label class="float-left text-primary fw-bold">{{ 'RM ' . number_format(session('motor')->vehicle->min_sum_insured) }}</label>
                                     <label class="float-end text-primary fw-bold">{{ 'RM ' . number_format(session('motor')->vehicle->max_sum_insured) }}</label>
-                                    <div class="range">
+                                    <div id="sum-insured-tooltip" class="range" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ 'RM ' . number_format(session('motor')->vehicle->sum_insured) }}">
                                         <input type="range" id="sum-insured-slider" class="form-range" min="{{ session('motor')->vehicle->min_sum_insured }}" max="{{ session('motor')->vehicle->max_sum_insured }}" step="1000">
                                     </div>
                                 </div>
@@ -159,13 +159,13 @@
                                         <div class="col-8">
                                             <div class="row align-items-center">
                                                 <div class="col-3">{{ __('frontend.motor.add_ons_page.road_tax_fee') }}</div>
-                                                <div class="col-9 d-flex justify-content-between align-items-center">
+                                                <div id="body-type-wrapper" class="col-9 d-flex justify-content-between align-items-center">
                                                     <select name="body_type" id="body-type" class="form-control w-75" disabled>
                                                         <option value="">{{ __('frontend.motor.add_ons_page.body_type') }}</option>
                                                         <option value="saloon">{{ __('frontend.motor.add_ons_page.body_type_modal.saloon') }}</option>
                                                         <option value="non-saloon">{{ __('frontend.motor.add_ons_page.body_type_modal.non_saloon') }}</option>
                                                     </select>
-                                                    <span data-bs-toggle="tooltip" data-bs-placement="top" title="{!! __('frontend.motor.add_ons_page.tooltip.roadtax') !!}">
+                                                    <span data-bs-toggle="tooltip" data-bs-placement="top" data-html="true" title="{!! __('frontend.motor.add_ons_page.tooltip.roadtax') !!}">
                                                         <i class="fa-solid fa-circle-question text-primary fa-15x"></i>
                                                     </span>
                                                 </div>
@@ -340,6 +340,17 @@
             motor.vehicle.sum_insured = parseFloat($(e.target).val());
             $('#motor').val(JSON.stringify(motor));
 
+            // Update Tooltip Position
+            let percentage = ((parseFloat($(e.target).val()) - parseFloat($(e.target).attr('min'))) / (parseFloat($(e.target).attr('max')) - parseFloat($(e.target).attr('min'))));
+
+            if(percentage > 0.5) {
+                let position = Math.round(percentage * $(e.target).width());
+            } else {
+                let position = Math.round((percentage * $(e.target).width()) * -1);
+            }
+
+            $('.tooltip').css('left', position + ($(e.target).width() / 2) - 2);
+
             // Set Loading Effect
             if(!$('#pricing-table #basic-premium').hasClass('loadingButton')) {
                 $('#pricing-table #basic-premium').text(' ').toggleClass('loadingButton');
@@ -463,6 +474,10 @@
         $('.option-list').on('change', (e) => {
             $(`#checkbox-${$(e.target).data('extra-cover-code')}`).attr('checked', true).trigger('change');
         });
+
+        $('#body-type-wrapper').on('click', () => {
+            $('#body-type-modal').modal('show');
+        });
     });
 
     function refreshPremium()
@@ -492,7 +507,7 @@
             $('#add-ons-premium').text(formatMoney(res.data.total_benefit_amount));
             $('#gross-premium').text(formatMoney(res.data.gross_premium));
             $('#sst').text(formatMoney(res.data.sst_amount));
-            $('#total-payable').text(formatMoney(res.data.total_payable));
+            $('#total-payable').text(formatMoney(res.data.total_payable + parseFloat($('#road-tax').text())));
 
             // Update Add Ons Pricing
             if(res.data.extra_cover.length > 0) {
@@ -594,7 +609,7 @@
                     <i class="fa-solid fa-circle-question text-primary fa-15x"></i>
                 </span>
             `;
-        } else if (description.includes('NGV')) {
+        } else if (description.includes('NGV') || description.includes('Gas')) {
             return `
                 <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('frontend.motor.add_ons_page.tooltip.ngv') }}">
                     <i class="fa-solid fa-circle-question text-primary fa-15x"></i>
@@ -609,6 +624,12 @@
         } else if (description.includes('Special Perils')) {
             return `
                 <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('frontend.motor.add_ons_page.tooltip.special_perils') }}">
+                    <i class="fa-solid fa-circle-question text-primary fa-15x"></i>
+                </span>
+            `;
+        } else if (description.includes('Thailand')) {
+            return `
+                <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('frontend.motor.add_ons_page.tooltip.thailand') }}">
                     <i class="fa-solid fa-circle-question text-primary fa-15x"></i>
                 </span>
             `;
