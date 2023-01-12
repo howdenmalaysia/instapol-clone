@@ -594,7 +594,7 @@
                     <i class="fa-solid fa-circle-question text-primary fa-15x"></i>
                 </span>
             `;
-        } else if (description.includes('NGV')) {
+        } else if (description.includes('NGV') || description.includes('Gas')) {
             return `
                 <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('frontend.motor.add_ons_page.tooltip.ngv') }}">
                     <i class="fa-solid fa-circle-question text-primary fa-15x"></i>
@@ -609,6 +609,12 @@
         } else if (description.includes('Special Perils')) {
             return `
                 <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('frontend.motor.add_ons_page.tooltip.special_perils') }}">
+                    <i class="fa-solid fa-circle-question text-primary fa-15x"></i>
+                </span>
+            `;
+        } else if (description.includes('Thailand')) {
+            return `
+                <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('frontend.motor.add_ons_page.tooltip.thailand') }}">
                     <i class="fa-solid fa-circle-question text-primary fa-15x"></i>
                 </span>
             `;
