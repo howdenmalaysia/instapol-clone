@@ -520,8 +520,8 @@
                                 break;
                             }
                             default: {
-                                if(!(add_ons.name in add_ons_available)) {
-                                    add_ons_available[add_ons.name] = [product_id];
+                                if(!(add_ons.extra_cover_description in add_ons_available)) {
+                                    add_ons_available[add_ons.extra_cover_description] = [product_id];
                                 }
                             }
                         }
