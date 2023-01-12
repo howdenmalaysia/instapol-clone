@@ -507,7 +507,7 @@
             $('#add-ons-premium').text(formatMoney(res.data.total_benefit_amount));
             $('#gross-premium').text(formatMoney(res.data.gross_premium));
             $('#sst').text(formatMoney(res.data.sst_amount));
-            $('#total-payable').text(formatMoney(res.data.total_payable));
+            $('#total-payable').text(formatMoney(res.data.total_payable + parseFloat($('#road-tax').text())));
 
             // Update Add Ons Pricing
             if(res.data.extra_cover.length > 0) {
