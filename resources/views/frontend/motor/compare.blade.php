@@ -90,7 +90,7 @@
                                                                         value="M"
                                                                         {{ session('motor')->policy_holder->gender === 'M' ? 'checked' : '' }}
                                                                     >
-                                                                    <label id="male-label" class="btn btn-primary text-white rounded-start border active" for="male">
+                                                                    <label id="male-label" class="{{ session('motor')->policy_holder->gender === 'M' ? 'btn btn-primary text-white rounded-start border active' : 'btn btn-light rounded-end' }}" for="male">
                                                                         {{ __('frontend.motor.compare_page.male') }}
                                                                     </label>
                             
@@ -102,7 +102,7 @@
                                                                         value="F"
                                                                         {{ session('motor')->policy_holder->gender === 'F' ? 'checked' : '' }}
                                                                     >
-                                                                    <label id="female-label" class="btn btn-light rounded-end" for="female">
+                                                                    <label id="female-label" class="{{ session('motor')->policy_holder->gender === 'F' ? 'btn btn-primary text-white rounded-start border active' : 'btn btn-light rounded-end' }}" for="female">
                                                                         {{ __('frontend.motor.compare_page.female') }}
                                                                     </label>
                                                                 </div>
