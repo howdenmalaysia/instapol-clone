@@ -159,7 +159,7 @@
                                         <div class="col-8">
                                             <div class="row align-items-center">
                                                 <div class="col-3">{{ __('frontend.motor.add_ons_page.road_tax_fee') }}</div>
-                                                <div class="col-9 d-flex justify-content-between align-items-center">
+                                                <div id="body-type-wrapper" class="col-9 d-flex justify-content-between align-items-center">
                                                     <select name="body_type" id="body-type" class="form-control w-75" disabled>
                                                         <option value="">{{ __('frontend.motor.add_ons_page.body_type') }}</option>
                                                         <option value="saloon">{{ __('frontend.motor.add_ons_page.body_type_modal.saloon') }}</option>
@@ -473,6 +473,10 @@
 
         $('.option-list').on('change', (e) => {
             $(`#checkbox-${$(e.target).data('extra-cover-code')}`).attr('checked', true).trigger('change');
+        });
+
+        $('#body-type-wrapper').on('click', () => {
+            $('#body-type-modal').modal('show');
         });
     });
 
