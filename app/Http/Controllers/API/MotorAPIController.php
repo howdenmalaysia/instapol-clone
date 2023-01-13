@@ -271,7 +271,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
     /** @return QuotationResponse|Response */
     public function createQuotation(Request $request)
     {
-        $motor = toObject($request->motor);
+        $motor = json_decode($request->motor);
 
         // Get State Details with Postcode
         $postcode = $this->getPostcodeDetails($motor->postcode);
@@ -305,7 +305,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             'gender' => $motor->policy_holder->gender,
             'marital_status' => $motor->policy_holder->marital_status,
             'vehicle' => new Vehicle((array) $motor->vehicle),
-            'extra_cover' => toObject($request->extra_cover ?? []),
+            'extra_cover' => toObject($motor->selected_extra_cover ?? []),
             'additional_driver' => toObject($motor->additional_driver ?? []),
             'vehicle_body_type' => $vehicle_body_type_id ?? null,
             'name' => strtoupper($motor->policy_holder->name),
@@ -404,8 +404,6 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             InsuranceAddress::updateOrCreate([
                 'insurance_id' => $insurance->id
             ], [
-                'unit_no' => strtoupper($input->unit_no ?? null),
-                'building_name' => strtoupper($input->building_name ?? null),
                 'address_one' => strtoupper($input->address_one),
                 'address_two' => strtoupper($input->address_two),
                 'city' => strtoupper($input->city),
