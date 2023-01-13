@@ -544,12 +544,6 @@
                         if(!$('.row.compare').is(':visible')) {
                             $('.row.compare').show();
                         }
-                    } else {
-                        $(e.target).removeClass('btn-primary text-white').addClass('btn-outline-primary').text({{ __('frontend.button.compare') }});
-    
-                        if($('.btn-compare.btn-primary').length === 0) {
-                            $('.row.compare').hide();
-                        }
                     }
                 } else {
                     // Remove Add Ons
@@ -565,6 +559,10 @@
                     });
 
                     $(e.target).removeClass('btn-primary text-white').addClass('btn-outline-primary').text({{ __('frontend.button.compare') }});
+
+                    if($('.btn-compare.btn-primary').length === 0) {
+                        $('.row.compare').hide();
+                    }
 
                     // Re-render Add Ons
                     renderAddOns();
