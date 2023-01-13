@@ -502,6 +502,9 @@
         }).then((res) => {
             console.log('refreshPremium', res);
 
+            motor.premium.total_benefit_amount = total_benefit_amount;
+            $('#motor').val(JSON.stringify(motor));
+
             // Update Pricing Card
             $('#basic-premium').text(formatMoney(res.data.basic_premium));
             $('#add-ons-premium').text(formatMoney(res.data.total_benefit_amount));
