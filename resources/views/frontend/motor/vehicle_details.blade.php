@@ -91,12 +91,10 @@
                                 <p>{{ __('frontend.motor.vehicle_details.ncd') }}</p>
                             </div>
                             <div class="col-6">
-                                <p id="ncd-percentage" class="text-decoration-underline">
-                                    -
-                                    <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('frontend.motor.vehicle_details.roadtax_tooltip') }}">
-                                        <i class="fa-solid fa-circle-question text-primary fa-15x"></i>
-                                    </span>
-                                </p>
+                                <p id="ncd-percentage" class="text-decoration-underline">-</p>
+                                <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('frontend.motor.vehicle_details.roadtax_tooltip') }}">
+                                    <i class="fa-solid fa-circle-question text-primary fa-15x"></i>
+                                </span>
                             </div>
                         </div>
                         <div class="row">
