@@ -165,7 +165,7 @@
                                                         <option value="saloon">{{ __('frontend.motor.add_ons_page.body_type_modal.saloon') }}</option>
                                                         <option value="non-saloon">{{ __('frontend.motor.add_ons_page.body_type_modal.non_saloon') }}</option>
                                                     </select>
-                                                    <span data-bs-toggle="tooltip" data-bs-placement="top" data-html="true" title="{!! __('frontend.motor.add_ons_page.tooltip.roadtax') !!}">
+                                                    <span data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="{!! __('frontend.motor.add_ons_page.tooltip.roadtax') !!}">
                                                         <i class="fa-solid fa-circle-question text-primary fa-15x"></i>
                                                     </span>
                                                 </div>
