@@ -159,7 +159,7 @@
                                                     </div>
                                                     <div class="row">
                                                         <div class="col-12 col-lg-6">
-                                                            <p class="mb-0">{{ __('frontend.motor.payment_summary_page.sum_insured' . ' amount :' . number_format($_extra_cover->sum_insured, 2)) }}</p>
+                                                            <p class="mb-0">{{ __('frontend.motor.payment_summary_page.sum_insured') . ' amount :' . number_format($_extra_cover->sum_insured, 2) }}</p>
                                                         </div>
                                                     </div>
                                                 @endforeach
