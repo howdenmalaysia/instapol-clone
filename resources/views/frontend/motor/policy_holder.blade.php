@@ -289,7 +289,9 @@
                     $('#delivery-info').show();
 
                     $('#delivery-info').find('input').each((index, input) => {
-                        $(input).attr('required', true);
+                        if(['delivery-address-2'].includes($(input).attr('id'))) {
+                            $(input).attr('required', true);
+                        }
                     });
                 }
             });
