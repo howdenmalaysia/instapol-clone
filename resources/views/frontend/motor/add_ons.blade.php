@@ -504,6 +504,8 @@
             console.log('refreshPremium', res);
 
             motor.premium.total_benefit_amount = res.data.total_benefit_amount;
+            motor.premium.gross_premium = res.data.gross_premium;
+            motor.premium.total_payable = res.data.total_payable + parseFloat($('#road-tax').text());
             $('#motor').val(JSON.stringify(motor));
 
             // Update Pricing Card
