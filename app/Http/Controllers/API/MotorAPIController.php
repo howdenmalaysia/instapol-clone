@@ -451,9 +451,8 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             foreach($input->extra_cover as $extra_cover) {
                 InsuranceExtraCover::create([
                     'insurance_id' => $insurance->id,
-                    'insurance_extra_cover_type_id',
                     'code' => $extra_cover->extra_cover_code,
-                    'description' => $extra_cover->description,
+                    'description' => $extra_cover->extra_cover_description,
                     'sum_insured' => $extra_cover->sum_insured,
                     'amount' => $extra_cover->total_payable,
                 ]);
