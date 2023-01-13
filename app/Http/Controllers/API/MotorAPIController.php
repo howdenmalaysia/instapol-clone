@@ -305,7 +305,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             'gender' => $motor->policy_holder->gender,
             'marital_status' => $motor->policy_holder->marital_status,
             'vehicle' => new Vehicle((array) $motor->vehicle),
-            'extra_cover' => toObject($request->extra_cover ?? []),
+            'extra_cover' => toObject($motor->selected_extra_coverage ?? []),
             'additional_driver' => toObject($motor->additional_driver ?? []),
             'vehicle_body_type' => $vehicle_body_type_id ?? null,
             'name' => strtoupper($motor->policy_holder->name),
@@ -404,8 +404,6 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             InsuranceAddress::updateOrCreate([
                 'insurance_id' => $insurance->id
             ], [
-                'unit_no' => strtoupper($input->unit_no ?? null),
-                'building_name' => strtoupper($input->building_name ?? null),
                 'address_one' => strtoupper($input->address_one),
                 'address_two' => strtoupper($input->address_two),
                 'city' => strtoupper($input->city),
@@ -453,11 +451,12 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             foreach($input->extra_cover as $extra_cover) {
                 InsuranceExtraCover::create([
                     'insurance_id' => $insurance->id,
-                    'insurance_extra_cover_type_id',
                     'code' => $extra_cover->extra_cover_code,
-                    'description' => $extra_cover->description,
+                    'description' => $extra_cover->extra_cover_description,
                     'sum_insured' => $extra_cover->sum_insured,
-                    'amount' => $extra_cover->total_payable,
+                    'amount' => array_filter($quotation->extra_cover, function($item) use($extra_cover) {
+                        return $item->extra_cover_code === $extra_cover->extra_cover_code;
+                    })[0]->premium,
                 ]);
             }
 
@@ -570,7 +569,13 @@ class MotorAPIController extends Controller implements MotorAPIInterface
     public function calculateRoadtax(Request $request)
     {
         // 1. Get Region from Postcode
-        $region = Postcode::with(['state'])->findOrFail($request->postcode)->first()->state->region;
+        $postcode_details = $this->getPostcodeDetails($request->postcode);
+
+        if(empty($postcode_details)) {
+            return $this->abort("Unable to get postcode details for {$request->postcode}");
+        }
+
+        $region = $postcode_details->state->region;
 
         // 2. Get Roadtax Matrix
         $roadtax = RoadTaxMatrix::whereRaw('? BETWEEN engine_capacity_from AND engine_capacity_to', $request->engine_capacity)
@@ -771,8 +776,8 @@ class MotorAPIController extends Controller implements MotorAPIInterface
     private function getPostcodeDetails(int $postcode) : Postcode
     {
         return Postcode::with('state')
-        ->where('postcode', $postcode)
-        ->first();
+            ->where('postcode', $postcode)
+            ->first();
     }
 
     private function getProduct(int $product_id) : Product

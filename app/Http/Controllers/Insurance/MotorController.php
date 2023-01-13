@@ -107,15 +107,15 @@ class MotorController extends Controller
         }
 
         $products = Product::with('insurance_company')->get();
-        $product_ids = $insurer_ids = [];
+        $product_ids = [];
         foreach($products as $product) {
-            array_push($product_ids, $product->id);
-            array_push($insurer_ids, $product->insurance_company->id);
+            if(in_array($product->insurance_company->name, ['Pacific & Orient Insurance', 'Lonpac', 'Tune Protect', 'Zurich'])) {
+                array_push($product_ids, $product->id);
+            }
         }
 
         return view('frontend.motor.vehicle_details')->with([
-            'product_ids' => $product_ids,
-            'insurer_ids' => $insurer_ids
+            'product_ids' => $product_ids
         ]);
     }
 
@@ -237,16 +237,18 @@ class MotorController extends Controller
 
         $session = $request->session()->get('motor');
 
+        $session->premium = json_decode($request->motor)->premium;
+
         if(!empty($request->selected_extra_coverage)) {
             $selected_extra_cover = [];
-            
+
             foreach(json_decode($request->selected_extra_coverage) as $selected) {
                 foreach($session->extra_cover_list as $extra_cover) {
                     if($extra_cover->extra_cover_code === $selected->extra_cover_code) {
                         array_push($selected_extra_cover, (object) [
                             'sum_insured' => $selected->sum_insured ?? $extra_cover->sum_insured,
-                            'description' => $extra_cover->extra_cover_description,
-                            'code' => $selected->extra_cover_code
+                            'extra_cover_description' => $extra_cover->extra_cover_description,
+                            'extra_cover_code' => $selected->extra_cover_code
                         ]);
                     }
                 }
@@ -299,6 +301,7 @@ class MotorController extends Controller
 
         $motor->insurance_code = $request->insurance_code;
         $motor->quotation = json_decode($request->quotation);
+        $request->session()->put('motor', $motor);
 
         $data = (object) [
             'quotation_id' => $motor->quotation_id ?? $motor->quotation->id,
@@ -327,8 +330,6 @@ class MotorController extends Controller
 
         $this->updateQuotation($data);
 
-        $request->session()->put('motor', $motor);
-
         return redirect()->route('motor.payment-summary');
     }
 
@@ -340,7 +341,7 @@ class MotorController extends Controller
 
         $session = $request->session()->get('motor');
 
-        $insurance = Insurance::findByInsuranceCode($session->insurance_code);
+        $insurance = Insurance::findByInsuranceCode($session->insurance_code ?? $request->insurance_code);
 
         if(empty($insurance)) {
             return $this->abort(__('api.insurance_record_not_match'));
@@ -375,7 +376,7 @@ class MotorController extends Controller
 
             // Get Selected Extra Covers Details
             $extra_cover = InsuranceExtraCover::where('insurance_id', $insurance->id)
-                ->first();
+                ->get();
 
             // Get Product Details
             $product = Product::with(['insurance_company', 'product_type'])
@@ -416,21 +417,24 @@ class MotorController extends Controller
             'insurance_code' => $insurance->insurance_code,
             'insured_name' => $insurance->holder->name,
             'product_name' => $insurance->product->name,
-            'total_premium' => number_format($insurance->total_payable, 2),
-            'total_payable' => number_format($insurance->total_payable, 2)
+            'total_premium' => number_format($insurance->amount, 2),
+            'total_payable' => number_format($insurance->amount, 2)
         ];
 
-        $user = User::where('email', $insurance->holder->email)->first();
+        $user = User::where('email', $insurance->holder->email_address)->first();
         if(empty($user)) {
             User::create([
-                'email' => $insurance->holder->email,
+                'email' => $insurance->holder->email_address,
                 'name' => $insurance->holder->name,
                 'password' => Hash::make(Str::random(8)),
             ]);
         }
 
-        Mail::to($insurance->holder->email)
-            ->cc([config('setting.howden.affinity_team_email'), config('email_cc_list')])
+        $cc_list = config('setting.howden.email_cc_list');
+        array_push($cc_list, config('setting.howden.affinity_team_email'));
+
+        Mail::to($insurance->holder->email_address)
+            ->cc($cc_list)
             ->send(new PaymentReceipt($data));
 
         return view('frontend.motor.payment_success')

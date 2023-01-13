@@ -212,7 +212,7 @@ class Liberty implements InsurerLibraryInterface
             $vehicle = new Vehicle([
                 'coverage' => $vehicle_detail->response->coverage,
                 'engine_capacity' => $vehicle_detail->response->engine_capacity,
-                'expiry_date' => $vehicle_detail->response->expiry_date,
+                'expiry_date' => Carbon::createFromFormat('d M Y', $vehicle_detail->response->expiry_date)->format('Y-m-d'),
                 'extra_attribute' => (object) [
                     'body_type_code' => $vehicle_detail->response->body_type_code,
                     'body_type_description' => $vehicle_detail->response->body_type_description,
@@ -226,7 +226,7 @@ class Liberty implements InsurerLibraryInterface
                     'vehicle_use_code' => $vehicle_detail->response->vehicle_use_code,
                     'vehicle_type_code' => $vehicle_detail->response->vehicle_type_code,
                 ],
-                'inception_date' => $vehicle_detail->response->inception_date,
+                'inception_date' => Carbon::createFromFormat('d M Y', $vehicle_detail->response->inception_date)->format('Y-m-d'),
                 'make' =>  $vehicle_detail->response->make,
                 'manufacture_year' => $vehicle_detail->response->manufacture_year,
                 'max_sum_insured' => $vehicle_detail->response->max_sum_insured,

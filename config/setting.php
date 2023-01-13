@@ -44,15 +44,17 @@ return [
     ],
     'howden' => [
         'short_code' => env('HOWDEN_SHORT_CODE'),
-        'affinity_team_email' => env('AFFINITY_TEAM_EMAIL'),
+        'affinity_team_email' => empty(env('AFFINITY_TEAM_EMAIL')) ? [] : explode(',', env('AFFINITY_TEAM_EMAIL')),
         'email_cc_list' => empty(env('EMAIL_CC_LIST')) ? [] : explode(',', env('EMAIL_CC_LIST'))
     ],
     'payment' => [
         'gateway' => [
             'url' => env('EGHL_PAYMENT_URL'),
+            'fpx_merchant_id' => env('EGHL_FPX_MERCHANT_ID'),
+            'fpx_merchant_password' => env('EGHL_FPX_MERCHANT_PASSWORD'),
             'merchant_id' => env('EGHL_MERCHANT_ID'),
             'merchant_name' => env('EGHL_MERCHANT_NAME'),
-            'merchant_password' => env('EGHL_MERCHANT_PASSWORD')
+            'merchant_password' => env('EGHL_MERCHANT_PASSWORD'),
         ]
     ]
 ];

@@ -90,8 +90,11 @@
                             <div class="col-6">
                                 <p>{{ __('frontend.motor.vehicle_details.ncd') }}</p>
                             </div>
-                            <div class="col-6">
+                            <div class="col-6 d-inline-flex">
                                 <p id="ncd-percentage" class="text-decoration-underline">-</p>
+                                <span class="ms-3" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('frontend.motor.vehicle_details.roadtax_tooltip') }}">
+                                    <i class="fa-solid fa-circle-question text-primary fa-15x"></i>
+                                </span>
                             </div>
                         </div>
                         <div class="row">
