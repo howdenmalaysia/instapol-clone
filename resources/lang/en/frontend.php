@@ -619,7 +619,7 @@ return [
                 'special_perils' => 'Cover loss or damage to your car caused by flood, typhoon, hurricane, storm, tempest, volcanic eruption, earthquake., landslide, landslip, subsidence or sinking of the soil/earth or convulsions of nature.',
                 'ngv' => 'Obtain extended coverage on loss or damage to the gas conversion kit and tank of your car as a separate item',
                 'thailand' => 'This extension provides cover when you are using your vehicle in Thailand',
-                'roadtax' => '<div><li>Klang Valley: within 2 - 3 working days of your confirmed purchase date</li><li>Peninsular: within 6 working days of your confirmed purchase date</li></div>'
+                'roadtax' => '<div><li>Klang Valley: within 2 - 3 working days of your confirmed purchase date</li><li>Peninsular, Sabah & Sarawak: within 6 working days of your confirmed purchase date</li></div>'
             ],
             'body_type_modal' => [
                 'header' => 'Please choose your vehicle body type based on the description below',
