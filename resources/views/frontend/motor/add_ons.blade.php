@@ -402,6 +402,9 @@
         $('.extra-coverage-checkbox').on('change', (e) => {
             if(!$(e.target).parent().parent().find('.premium').hasClass('loadingButton')) {
                 $(e.target).parent().parent().find('.premium').text(' ').toggleClass('loadingButton');
+            }
+            
+            if($('#pricing-table #add-ons-premium').hasClass('loadingButton')) {
                 $('#pricing-table #add-ons-premium').text(' ').toggleClass('loadingButton');
                 $('#pricing-table #gross-premium').text(' ').toggleClass('loadingButton');
                 $('#pricing-table #total-payable').text(' ').toggleClass('loadingButton');
@@ -535,15 +538,6 @@
                 $('#pricing-table #gross-premium').removeClass('loadingButton');
                 $('#pricing-table #total-payable').removeClass('loadingButton');
             }
-
-            // Remove Loading for Next Button
-            $('#btn-next').removeClass('loadingButton');
-
-            // Remove Loading in Pricing Card
-            $('#pricing-table #basic-premium').removeClass('loadingButton');
-            $('#pricing-table #add-ons-premium').removeClass('loadingButton')
-            $('#pricing-table #gross-premium').removeClass('loadingButton');
-            $('#pricing-table #total-payable').removeClass('loadingButton');
         }).catch((err) => {
             console.log(err.response);
             swalAlert(err.response.data.message, () => {
