@@ -247,8 +247,8 @@ class MotorController extends Controller
                     if($extra_cover->extra_cover_code === $selected->extra_cover_code) {
                         array_push($selected_extra_cover, (object) [
                             'sum_insured' => $selected->sum_insured ?? $extra_cover->sum_insured,
-                            'description' => $extra_cover->extra_cover_description,
-                            'code' => $selected->extra_cover_code
+                            'extra_cover_description' => $extra_cover->extra_cover_description,
+                            'extr_cover_code' => $selected->extra_cover_code
                         ]);
                     }
                 }
