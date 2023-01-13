@@ -493,15 +493,10 @@
             }
         });
 
-        const controller = new AbortController();
-        controller.abort();
-
         instapol.post("{{ route('motor.api.quote') }}", {
             product_id: motor.product_id,
             motor: motor,
             extra_cover: selected_extra_cover,
-        }, {
-            signal: controller.signal
         }).then((res) => {
             if(res.data) {
                 console.log('refreshPremium', res);
