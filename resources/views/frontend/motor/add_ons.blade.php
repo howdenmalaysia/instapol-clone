@@ -188,12 +188,6 @@
                                     </div>
                                     <div class="row align-items-center px-md-3 mt-2">
                                         <div class="col-1"></div>
-                                        <div class="col-8">{{ __('frontend.motor.add_ons_page.delivery_fee') }}</div>
-                                        <div class="col-1 text-end">RM</div>
-                                        <div id="delivery-fee-display" class="col-2 text-end">{{ number_format(session('motor')->roadtax->delivery_fee ?? 0, 2) }}</div>
-                                    </div>
-                                    <div class="row align-items-center px-md-3 mt-2">
-                                        <div class="col-1"></div>
                                         <div class="col-8">{{ __('frontend.motor.add_ons_page.service_tax') }}</div>
                                         <div class="col-1 text-end">RM</div>
                                         <div id="service-tax-display" class="col-2 text-end">{{ number_format(session('motor')->roadtax->sst ?? 0, 2) }}</div>
