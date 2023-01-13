@@ -341,7 +341,7 @@ class MotorController extends Controller
 
         $session = $request->session()->get('motor');
 
-        $insurance = Insurance::findByInsuranceCode($session->insurance_code);
+        $insurance = Insurance::findByInsuranceCode($session->insurance_code ?? $request->insurance_code);
 
         if(empty($insurance)) {
             return $this->abort(__('api.insurance_record_not_match'));
