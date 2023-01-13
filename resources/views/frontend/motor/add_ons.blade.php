@@ -404,7 +404,7 @@
                 $(e.target).parent().parent().find('.premium').text(' ').toggleClass('loadingButton');
             }
             
-            if($('#pricing-table #add-ons-premium').hasClass('loadingButton')) {
+            if(!$('#pricing-table #add-ons-premium').hasClass('loadingButton')) {
                 $('#pricing-table #add-ons-premium').text(' ').toggleClass('loadingButton');
                 $('#pricing-table #gross-premium').text(' ').toggleClass('loadingButton');
                 $('#pricing-table #total-payable').text(' ').toggleClass('loadingButton');
