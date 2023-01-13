@@ -239,10 +239,13 @@ class MotorController extends Controller
 
         if(!empty($request->selected_extra_coverage)) {
             $selected_extra_cover = [];
+            $total_benefit_amount = 0;
 
             foreach(json_decode($request->selected_extra_coverage) as $selected) {
                 foreach($session->extra_cover_list as $extra_cover) {
                     if($extra_cover->extra_cover_code === $selected->extra_cover_code) {
+                        $total_benefit_amount += $selected->premium;
+
                         array_push($selected_extra_cover, (object) [
                             'sum_insured' => $selected->sum_insured ?? $extra_cover->sum_insured,
                             'description' => $extra_cover->extra_cover_description,
@@ -252,6 +255,7 @@ class MotorController extends Controller
                 }
             }
 
+            $session->premium->total_benefit_amount = $total_benefit_amount;
             $session->selected_extra_coverage = $selected_extra_cover;
         }
 
