@@ -500,29 +500,40 @@
         }, {
             signal: controller.signal
         }).then((res) => {
-            console.log('refreshPremium', res);
-
-            motor.premium.total_benefit_amount = res.data.total_benefit_amount;
-            motor.premium.gross_premium = res.data.gross_premium;
-            motor.premium.total_payable = res.data.total_payable + parseFloat($('#road-tax').text());
-            $('#motor').val(JSON.stringify(motor));
-
-            // Update Pricing Card
-            $('#basic-premium').text(formatMoney(res.data.basic_premium));
-            $('#add-ons-premium').text(formatMoney(res.data.total_benefit_amount));
-            $('#gross-premium').text(formatMoney(res.data.gross_premium));
-            $('#sst').text(formatMoney(res.data.sst_amount));
-            $('#total-payable').text(formatMoney(res.data.total_payable + parseFloat($('#road-tax').text())));
-
-            // Update Add Ons Pricing
-            if(res.data.extra_cover.length > 0) {
-                res.data.extra_cover.forEach((extra_cover) => {
-                    $(`#${$.escapeSelector(extra_cover.extra_cover_code)}-premium`).text(`${formatMoney(extra_cover.premium)}`).removeClass('loadingButton');
-                });
-            } else {
-                motor.extra_cover_list.forEach((extra_cover) => {
-                    $(`#${$.escapeSelector(extra_cover.extra_cover_code)}-premium`).text(`${formatMoney(extra_cover.premium)}`).removeClass('loadingButton');
-                });
+            if(res.data) {
+                console.log('refreshPremium', res);
+    
+                motor.premium.total_benefit_amount = res.data.total_benefit_amount;
+                motor.premium.gross_premium = res.data.gross_premium;
+                motor.premium.total_payable = res.data.total_payable + parseFloat($('#road-tax').text());
+                $('#motor').val(JSON.stringify(motor));
+    
+                // Update Pricing Card
+                $('#basic-premium').text(formatMoney(res.data.basic_premium));
+                $('#add-ons-premium').text(formatMoney(res.data.total_benefit_amount));
+                $('#gross-premium').text(formatMoney(res.data.gross_premium));
+                $('#sst').text(formatMoney(res.data.sst_amount));
+                $('#total-payable').text(formatMoney(res.data.total_payable + parseFloat($('#road-tax').text())));
+    
+                // Update Add Ons Pricing
+                if(res.data.extra_cover.length > 0) {
+                    res.data.extra_cover.forEach((extra_cover) => {
+                        $(`#${$.escapeSelector(extra_cover.extra_cover_code)}-premium`).text(`${formatMoney(extra_cover.premium)}`).removeClass('loadingButton');
+                    });
+                } else {
+                    motor.extra_cover_list.forEach((extra_cover) => {
+                        $(`#${$.escapeSelector(extra_cover.extra_cover_code)}-premium`).text(`${formatMoney(extra_cover.premium)}`).removeClass('loadingButton');
+                    });
+                }
+    
+                // Remove Loading for Next Button
+                $('#btn-next').removeClass('loadingButton');
+    
+                // Remove Loading in Pricing Card
+                $('#pricing-table #basic-premium').removeClass('loadingButton');
+                $('#pricing-table #add-ons-premium').removeClass('loadingButton')
+                $('#pricing-table #gross-premium').removeClass('loadingButton');
+                $('#pricing-table #total-payable').removeClass('loadingButton');
             }
 
             // Remove Loading for Next Button
