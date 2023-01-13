@@ -271,7 +271,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
     /** @return QuotationResponse|Response */
     public function createQuotation(Request $request)
     {
-        $motor = json_decode($request->motor);
+        $motor = toObject($request->motor);
 
         // Get State Details with Postcode
         $postcode = $this->getPostcodeDetails($motor->postcode);
