@@ -376,7 +376,7 @@ class MotorController extends Controller
 
             // Get Selected Extra Covers Details
             $extra_cover = InsuranceExtraCover::where('insurance_id', $insurance->id)
-                ->first();
+                ->get();
 
             // Get Product Details
             $product = Product::with(['insurance_company', 'product_type'])
