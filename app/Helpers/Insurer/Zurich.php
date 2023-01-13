@@ -358,7 +358,7 @@ class Zurich implements InsurerLibraryInterface
         $ci_code = $input->ci_code;
         $eff_date = Carbon::parse($input->eff_date)->format('d/m/Y');
         $exp_date = Carbon::parse($input->exp_date)->format('d/m/Y');
-        if(strtotime($exp_date)<strtotime($eff_date)){
+        if(Carbon::parse($input->eff_date)->format('Y/m/d')>Carbon::parse($input->exp_date)->format('Y/m/d')){
             $exp_date = Carbon::parse($exp_date)->addYear()->format('d/m/Y');
         }
         $new_owned_Veh_ind = $input->new_owned_Veh_ind;

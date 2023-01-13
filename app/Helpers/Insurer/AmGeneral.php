@@ -575,14 +575,14 @@ class AmGeneral implements InsurerLibraryInterface
 		}
 
 		$dob = $dobs[2] . "-" . $dobs[1] . "-" . strval($year);
-
+dump($cParams);
 		$text = array(
 			"newICNo"=>$cParams->id_number,
 			"oldICNo"=>"",
 			"busRegNo"=>"",
 			"vehicleClass"=>"PC",
 			"vehicleNo"=>$cParams->vehicle_number,
-			"brand"=>"A",
+			"brand"=>"",
 			"insuredPostCode"=>$cParams->postcode,
 			"vehiclePostCode"=>$cParams->postcode,
 			"dob"=>$dob,
@@ -599,7 +599,7 @@ class AmGeneral implements InsurerLibraryInterface
         if($response->status){
 			$encrypted = $response->response->responseData;
 			$decrypted = json_decode($this->decrypt($response->response->responseData));
-
+			dd($decrypted);
 			if (empty($decrypted)) {
                 $message = !empty($response->response) ? $response->response : __('api.empty_response', ['company' => $this->company_name]);
 
@@ -687,7 +687,7 @@ class AmGeneral implements InsurerLibraryInterface
         if($response->status){
 			$encrypted = $response->response->responseData;
 			$decrypted = json_decode($this->decrypt($response->response->responseData));
-			
+
 			if (empty($decrypted)) {
                 $message = !empty($response->response) ? $response->response : __('api.empty_response', ['company' => $this->company_name]);
 
@@ -1252,6 +1252,8 @@ class AmGeneral implements InsurerLibraryInterface
 
             $postfield = $data;
             $options['body'] = $postfield;
+			
+dump($options);
         }
 
         $log = APILogs::create([
