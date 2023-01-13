@@ -45,7 +45,7 @@
                     }
                 }
 
-                window.location.href = url;
+                window.location = url;
             });
         });
     </script>
