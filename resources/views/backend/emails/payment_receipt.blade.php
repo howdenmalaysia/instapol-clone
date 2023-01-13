@@ -83,7 +83,7 @@
 
                                         <div style="line-height: 140%; text-align: left; word-wrap: break-word;">
                                             <p style="font-size: 14px; line-height: 140%;">
-                                                The insurance policy will be emailed to you within 1 working day and roadtax (if you renew with us) will be delivered to you within 2 working days.
+                                                Your insurance policy will be emailed to you within 1 business day and roadtax (if you have renewed with us) will be delivered to you within 2 business days.
                                             </p>
                                         </div>
                                     </td>
@@ -329,10 +329,10 @@
                                     <td style="overflow-wrap:break-word;word-break:break-word;padding:40px 25px;font-family:arial,helvetica,sans-serif;" align="left">
                                         <div style="line-height: 150%; text-align: left; word-wrap: break-word;">
                                             <p style="line-height: 150%; font-size: 14px;">
-                                                <em>* If your car insurance and road tax has expired, please ensure that you have received your new policy and road tax from us prior driving out.</em></p>
+                                                <em>* If your car insurance and road tax have expired, please ensure that you have received your new policy and road tax from us before driving.</em></p>
                                             <p style="line-height: 150%; font-size: 14px;"> </p>
                                             <p style="line-height: 150%; font-size: 14px;">
-                                                <em>* Road tax delivery will be longer than usual during the MCO period. Kindly retain road tax receipt as proof of payment.</em>
+                                                <em>* Kindly retain road tax receipt as proof of payment should your road tax takes some time to reach you.</em>
                                             </p>
                                         </div>
                                     </td>

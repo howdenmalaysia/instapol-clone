@@ -22,30 +22,26 @@
     <script>
         $(() => {
             $('.step-trigger').on('click', (e) => {
-                console.log(e.target);
                 let step = $(e.target).data('index') + 1;
-                let url = '';
 
                 switch(step) {
                     case 1: {
-                        url = "{{ route('motor.vehicle-details') }}";
+                        location.href = "{{ route('motor.vehicle-details') }}";
                         break;
                     }
                     case 2: {
-                        url = "{{ route('motor.compare') }}";
+                        location.href = "{{ route('motor.compare') }}";
                         break;
                     }
                     case 3: {
-                        url = "{{ route('motor.add-ons') }}"
+                        location.href = "{{ route('motor.add-ons') }}"
                         break;
                     }
                     case 4: {
-                        url = "{{ route('motor.policy-holder') }}"
+                        location.href = "{{ route('motor.policy-holder') }}"
                         break;
                     }
                 }
-
-                window.location = url;
             });
         });
     </script>
