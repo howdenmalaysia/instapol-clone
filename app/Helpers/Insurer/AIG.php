@@ -27,8 +27,8 @@ class AIG implements InsurerLibraryInterface
 
     private const SOAP_ACTION_DOMAIN = 'https://gtws2.zurich.com.my/ziapps/zurichinsurance/services';
     private const EXTRA_COVERAGE_LIST = ['25','57','89'];
-    private const MIN_SUM_INSURED = 10000;
-    private const MAX_SUM_INSURED = 500000;
+    private const MIN_SUM_INSURED = 11000;
+    private const MAX_SUM_INSURED = 600000;
     private const OCCUPATION = '99';
     private const ANTI_THEFT = 'A';
     private const PIAM_DRIVER = '03'; // All Drivers
