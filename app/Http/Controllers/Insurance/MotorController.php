@@ -245,8 +245,6 @@ class MotorController extends Controller
             foreach(json_decode($request->selected_extra_coverage) as $selected) {
                 foreach($session->extra_cover_list as $extra_cover) {
                     if($extra_cover->extra_cover_code === $selected->extra_cover_code) {
-                        $total_benefit_amount += $selected->premium;
-
                         array_push($selected_extra_cover, (object) [
                             'sum_insured' => $selected->sum_insured ?? $extra_cover->sum_insured,
                             'description' => $extra_cover->extra_cover_description,
