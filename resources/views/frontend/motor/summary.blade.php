@@ -159,7 +159,7 @@
                                                     </div>
                                                     <div class="row">
                                                         <div class="col-12 col-lg-6">
-                                                            <p class="mb-0">{{ __('frontend.motor.payment_summary_page.sum_insured' . ' amount :' . number_format($_extra_cover->sum_insured, 2)) }}</p>
+                                                            <p class="mb-0">{{ __('frontend.motor.payment_summary_page.sum_insured') . ' amount :' . number_format($_extra_cover->sum_insured, 2) }}</p>
                                                         </div>
                                                     </div>
                                                 @endforeach
@@ -194,10 +194,6 @@
                                                         <div class="row">
                                                             <div class="col-12 col-lg-6 fw-bold">{{ __('frontend.motor.add_ons_page.eservice_fee') }}</div>
                                                             <div class="col-12 col-lg-6 text-end">{{ $motor->roadtax->e_service_fee }}</div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-12 col-lg-6 fw-bold">{{ __('frontend.motor.add_ons_page.delivery_fee') }}</div>
-                                                            <div class="col-12 col-lg-6 text-end">{{ $motor->roadtax->delivery_fee }}</div>
                                                         </div>
                                                         <div class="row">
                                                             <div class="col-12 col-lg-6 fw-bold">{{ __('frontend.price_card.service_tax') }}</div>

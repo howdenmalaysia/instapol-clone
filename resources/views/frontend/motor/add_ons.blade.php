@@ -165,7 +165,7 @@
                                                         <option value="saloon">{{ __('frontend.motor.add_ons_page.body_type_modal.saloon') }}</option>
                                                         <option value="non-saloon">{{ __('frontend.motor.add_ons_page.body_type_modal.non_saloon') }}</option>
                                                     </select>
-                                                    <span data-bs-toggle="tooltip" data-bs-placement="top" data-html="true" title="{!! __('frontend.motor.add_ons_page.tooltip.roadtax') !!}">
+                                                    <span data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="{!! __('frontend.motor.add_ons_page.tooltip.roadtax') !!}">
                                                         <i class="fa-solid fa-circle-question text-primary fa-15x"></i>
                                                     </span>
                                                 </div>
@@ -185,12 +185,6 @@
                                         <div class="col-8">{{ __('frontend.motor.add_ons_page.eservice_fee') }}</div>
                                         <div class="col-1 text-end">RM</div>
                                         <div id="eservice-fee-display" class="col-2 text-end">{{ number_format(session('motor')->roadtax->eservice_fee ?? 0, 2) }}</div>
-                                    </div>
-                                    <div class="row align-items-center px-md-3 mt-2">
-                                        <div class="col-1"></div>
-                                        <div class="col-8">{{ __('frontend.motor.add_ons_page.delivery_fee') }}</div>
-                                        <div class="col-1 text-end">RM</div>
-                                        <div id="delivery-fee-display" class="col-2 text-end">{{ number_format(session('motor')->roadtax->delivery_fee ?? 0, 2) }}</div>
                                     </div>
                                     <div class="row align-items-center px-md-3 mt-2">
                                         <div class="col-1"></div>
@@ -408,6 +402,9 @@
         $('.extra-coverage-checkbox').on('change', (e) => {
             if(!$(e.target).parent().parent().find('.premium').hasClass('loadingButton')) {
                 $(e.target).parent().parent().find('.premium').text(' ').toggleClass('loadingButton');
+            }
+            
+            if(!$('#pricing-table #add-ons-premium').hasClass('loadingButton')) {
                 $('#pricing-table #add-ons-premium').text(' ').toggleClass('loadingButton');
                 $('#pricing-table #gross-premium').text(' ').toggleClass('loadingButton');
                 $('#pricing-table #total-payable').text(' ').toggleClass('loadingButton');
@@ -501,39 +498,41 @@
             motor: motor,
             extra_cover: selected_extra_cover,
         }).then((res) => {
-            console.log('refreshPremium', res);
-
-            motor.premium.total_benefit_amount = res.data.total_benefit_amount;
-            motor.premium.gross_premium = res.data.gross_premium;
-            motor.premium.total_payable = res.data.total_payable + parseFloat($('#road-tax').text());
-            $('#motor').val(JSON.stringify(motor));
-
-            // Update Pricing Card
-            $('#basic-premium').text(formatMoney(res.data.basic_premium));
-            $('#add-ons-premium').text(formatMoney(res.data.total_benefit_amount));
-            $('#gross-premium').text(formatMoney(res.data.gross_premium));
-            $('#sst').text(formatMoney(res.data.sst_amount));
-            $('#total-payable').text(formatMoney(res.data.total_payable + parseFloat($('#road-tax').text())));
-
-            // Update Add Ons Pricing
-            if(res.data.extra_cover.length > 0) {
-                res.data.extra_cover.forEach((extra_cover) => {
-                    $(`#${$.escapeSelector(extra_cover.extra_cover_code)}-premium`).text(`${formatMoney(extra_cover.premium)}`).removeClass('loadingButton');
-                });
-            } else {
-                motor.extra_cover_list.forEach((extra_cover) => {
-                    $(`#${$.escapeSelector(extra_cover.extra_cover_code)}-premium`).text(`${formatMoney(extra_cover.premium)}`).removeClass('loadingButton');
-                });
+            if(res.data) {
+                console.log('refreshPremium', res);
+    
+                motor.premium.total_benefit_amount = res.data.total_benefit_amount;
+                motor.premium.gross_premium = res.data.gross_premium;
+                motor.premium.total_payable = res.data.total_payable + parseFloat($('#road-tax').text());
+                $('#motor').val(JSON.stringify(motor));
+    
+                // Update Pricing Card
+                $('#basic-premium').text(formatMoney(res.data.basic_premium));
+                $('#add-ons-premium').text(formatMoney(res.data.total_benefit_amount));
+                $('#gross-premium').text(formatMoney(res.data.gross_premium));
+                $('#sst').text(formatMoney(res.data.sst_amount));
+                $('#total-payable').text(formatMoney(res.data.total_payable + parseFloat($('#road-tax').text())));
+    
+                // Update Add Ons Pricing
+                if(res.data.extra_cover.length > 0) {
+                    res.data.extra_cover.forEach((extra_cover) => {
+                        $(`#${$.escapeSelector(extra_cover.extra_cover_code)}-premium`).text(`${formatMoney(extra_cover.premium)}`).removeClass('loadingButton');
+                    });
+                } else {
+                    motor.extra_cover_list.forEach((extra_cover) => {
+                        $(`#${$.escapeSelector(extra_cover.extra_cover_code)}-premium`).text(`${formatMoney(extra_cover.premium)}`).removeClass('loadingButton');
+                    });
+                }
+    
+                // Remove Loading for Next Button
+                $('#btn-next').removeClass('loadingButton');
+    
+                // Remove Loading in Pricing Card
+                $('#pricing-table #basic-premium').removeClass('loadingButton');
+                $('#pricing-table #add-ons-premium').removeClass('loadingButton')
+                $('#pricing-table #gross-premium').removeClass('loadingButton');
+                $('#pricing-table #total-payable').removeClass('loadingButton');
             }
-
-            // Remove Loading for Next Button
-            $('#btn-next').removeClass('loadingButton');
-
-            // Remove Loading in Pricing Card
-            $('#pricing-table #basic-premium').removeClass('loadingButton');
-            $('#pricing-table #add-ons-premium').removeClass('loadingButton')
-            $('#pricing-table #gross-premium').removeClass('loadingButton');
-            $('#pricing-table #total-payable').removeClass('loadingButton');
         }).catch((err) => {
             console.log(err.response);
             swalAlert(err.response.data.message, () => {
