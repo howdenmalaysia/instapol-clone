@@ -196,10 +196,6 @@
                                                             <div class="col-12 col-lg-6 text-end">{{ $motor->roadtax->e_service_fee }}</div>
                                                         </div>
                                                         <div class="row">
-                                                            <div class="col-12 col-lg-6 fw-bold">{{ __('frontend.motor.add_ons_page.delivery_fee') }}</div>
-                                                            <div class="col-12 col-lg-6 text-end">{{ $motor->roadtax->delivery_fee }}</div>
-                                                        </div>
-                                                        <div class="row">
                                                             <div class="col-12 col-lg-6 fw-bold">{{ __('frontend.price_card.service_tax') }}</div>
                                                             <div class="col-12 col-lg-6 text-end">{{ $motor->roadtax->service_tax }}</div>
                                                         </div>
