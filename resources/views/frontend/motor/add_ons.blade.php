@@ -440,7 +440,8 @@
             $('.extra-coverage-checkbox:checked').each((index, element) => {
                 selected_extra_cover.push({
                     extra_cover_code: $(element).val(),
-                    sum_insured: $(`#sum-insured-${$.escapeSelector($(element).val())}`).val()
+                    sum_insured: $(`#sum-insured-${$.escapeSelector($(element).val())}`).val(),
+                    premium: $(`#${$.escapeSelector($(element).val())}-premium`).text()
                 })
             });
 
