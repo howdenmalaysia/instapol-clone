@@ -289,7 +289,7 @@
                     $('#delivery-info').show();
 
                     $('#delivery-info').find('input').each((index, input) => {
-                        if(['delivery-address-2'].includes($(input).attr('id'))) {
+                        if(!['delivery-address-2'].includes($(input).attr('id'))) {
                             $(input).attr('required', true);
                         }
                     });
