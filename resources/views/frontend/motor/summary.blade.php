@@ -322,7 +322,7 @@
                 <form action="{{ route('payment.store') }}" method="POST" id="payment-form">
                     @csrf
                     <div class="hidden">
-                        <input type="hidden" name="motor" value='@json(session('motor'))' />
+                        <input type="hidden" id="motor" name="motor" value='@json(session('motor'))' />
                         <input type="hidden" name="description" value="{{ $product->product_type->description . ' : ' . $motor->vehicle_number }}" />
                         <input type="hidden" name="total_payable" value="{{ $insurance->amount }}" />
                         <input type="hidden" name="insurance_code" value="{{ $insurance->insurance_code }}" />
