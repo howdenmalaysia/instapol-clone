@@ -126,7 +126,7 @@ class PromoController extends Controller
                 ->update(['use_count' => $code->use_count++]);
     
             // 5. Update to InsurancePromo table
-            $insurance = Insurance::where('insurance_code', $request->insurance_code)->firstOrFail();
+            $insurance = Insurance::where('insurance_code', $motor->insurance_code)->firstOrFail();
             InsurancePromo::where('insurance_id', $insurance->id)->delete();
             InsurancePromo::create([
                 'insurance_id' => $insurance->id,
