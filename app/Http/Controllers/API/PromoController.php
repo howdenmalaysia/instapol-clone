@@ -82,11 +82,11 @@ class PromoController extends Controller
             case 'stamp_duty':
             case 'total_payable': {
                 if($is_percentage) {
-                    $discount_amount = $motor->premium[$code->discount_target] * ($code->discount_percentage / 100);
-                    $motor->premium[$code->discount_target] -= $discount_amount;
+                    $discount_amount = $motor->premium->{$code->discount_target} * ($code->discount_percentage / 100);
+                    $motor->premium->{$code->discount_target} -= $discount_amount;
                 } else {
                     $discount_amount = $code->discount_amount;
-                    $motor->premium[$code->discount_target] -= $discount_amount;
+                    $motor->premium->{$code->discount_target} -= $discount_amount;
                 }
 
                 break;
