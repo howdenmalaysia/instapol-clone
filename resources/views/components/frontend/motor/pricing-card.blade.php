@@ -135,11 +135,11 @@
                     $('#motor').val(JSON.stringify(res.data));
 
                     // Update Pricing Card
-                    $('#basic-premium').text(formatMoney(res.data.premium.basic_premium)).removeClass('toggleButton');
-                    $('#gross-premium').text(formatMoney(res.data.premium.gross_premium)).removeClass('toggleButton');
-                    $('#sst').text(formatMoney(res.data.premium.sst_amount)).removeClass('toggleButton');
-                    $('#road-tax').text(formatMoney(res.data.roadtax.total)).removeClass('toggleButton');
-                    $('#total-payable').text(formatMoney(res.data.premium.total_payable + res.data.roadtax.total)).removeClass('toggleButton');
+                    $('#basic-premium').text(formatMoney(res.data.premium.basic_premium)).removeClass('loadingButton');
+                    $('#gross-premium').text(formatMoney(res.data.premium.gross_premium)).removeClass('loadingButton');
+                    $('#sst').text(formatMoney(res.data.premium.sst_amount)).removeClass('loadingButton');
+                    $('#road-tax').text(formatMoney(res.data.roadtax.total)).removeClass('loadingButton');
+                    $('#total-payable').text(formatMoney(res.data.premium.total_payable + res.data.roadtax.total)).removeClass('loadingButton');
                     $('#promo-amount').text(formatMoney(res.data.premium.discounted_amount || 0.00));
 
                     $('#discount').removeClass('d-none');
