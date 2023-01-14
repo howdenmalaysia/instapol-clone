@@ -22,7 +22,7 @@
     <script>
         $(() => {
             $('.step-trigger').on('click', (e) => {
-                let step = $(e.target).data('index') + 1;
+                let step = $(e.target).parent('button').data('index') + 1;
 
                 switch(step) {
                     case 1: {
