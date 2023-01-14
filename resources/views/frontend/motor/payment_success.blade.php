@@ -1,6 +1,6 @@
 @extends('frontend.layouts.app')
 
-@section('title', implode(' | ', [config('app.name'), '']))
+@section('title', implode(' | ', [config('app.name'), __('frontend.motor.payment_success_page.payment_received')]))
 
 @section('content')
     <section id="payment-success" class="p-0">

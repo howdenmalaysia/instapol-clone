@@ -1,6 +1,6 @@
 @extends('frontend.layouts.app')
 
-@section('title', implode(' | ', [config('app.name'), __()]))
+@section('title', implode(' | ', [config('app.name'), __('frontend.motor.payment_summary_page.payment')]))
     
 @section('content')
     <section id="payment-summary" class="pt-0">

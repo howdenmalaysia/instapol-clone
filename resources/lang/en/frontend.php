@@ -658,6 +658,7 @@ return [
             ]
         ],
         'payment_summary_page' => [
+            'payment' => 'Payment',
             'summary' => 'Summary',
             'policy_holder' => 'Policy Holder',
             'insurer' => 'Insurer',
@@ -680,6 +681,7 @@ return [
             ]
         ],
         'payment_success_page' => [
+            'payment_received' => 'Payment Received',
             'messages' => [
                 'line_1' => 'Thank you for your payment. Your transaction has been successful subject to Anti Money Laundering Act and Sanction screening. The insurance coverage will only take effect upon approval from :insurer.',
                 'line_2' => 'Confirmation of coverage will be issued by :insurer to your email address after the approval process. Full premiums will be refunded by Howden if your application is not approved by :insurer.',
