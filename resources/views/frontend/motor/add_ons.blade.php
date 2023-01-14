@@ -256,6 +256,7 @@
 @push('after-scripts')
 <script>
     let motor = JSON.parse($('#motor').val());
+    var request = 0;
 
     $(() => {
         $('#show-more-add-ons').on('click', () => {
@@ -500,11 +501,22 @@
             }
         });
 
+        const controller = new AbortController();
+        if(request > 1) {
+            controller.abort();
+        }
+
+        request++;
+
         instapol.post("{{ route('motor.api.quote') }}", {
             product_id: motor.product_id,
             motor: motor,
             extra_cover: selected_extra_cover,
+        }, {
+            signal: controller.signal
         }).then((res) => {
+            request--;
+
             if(res.data) {
                 console.log('refreshPremium', res);
     
@@ -541,6 +553,8 @@
                 $('#pricing-table #total-payable').removeClass('loadingButton');
             }
         }).catch((err) => {
+            request--;
+
             console.log(err.response);
             swalAlert(err.response.data.message, () => {
                 window.history.back();

@@ -194,7 +194,7 @@
                     let singleVariant = response.data.variants.length === 1;
 
                     if(!singleVariant) {
-                        populate(response.data, controller);
+                        populate(response.data);
 
                         if(selectedVariant) {
                             controller.abort();

@@ -214,7 +214,7 @@
                                                     </div>
                                                     <div class="row">
                                                         <div class="col-6 col-lg-3 fw-bold">{{ __('frontend.fields.address') }}</div>
-                                                        <div class="col-6 col-lg-3 text-end">{{ '' }}</div>
+                                                        <div class="col-6 col-lg-3 text-end">{{ $motor->roadtax->recipient_address }}</div>
                                                     </div>
                                                 </div>
                                             @else
