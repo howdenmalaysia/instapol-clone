@@ -1,6 +1,6 @@
 @extends('frontend.layouts.app')
 
-@section('title', implode(' | ', [config('app.name'), __()]))
+@section('title', implode(' | ', [config('app.name'), __('frontend.motor.payment_summary_page.payment')]))
     
 @section('content')
     <section id="payment-summary" class="pt-0">
@@ -85,6 +85,7 @@
                                         stamp-duty="{{ session('motor')->quotation->stamp_duty }}"
                                         total-payable="{{ session('motor')->quotation->total_payable }}"
                                         roadtax-total="{{ session('motor')->roadtax->total ?? 0.00 }}"
+                                        promo
                                     />
                                 </div>
                                 <div class="col-12 col-lg-8">
@@ -159,7 +160,7 @@
                                                     </div>
                                                     <div class="row">
                                                         <div class="col-12 col-lg-6">
-                                                            <p class="mb-0">{{ __('frontend.motor.payment_summary_page.sum_insured') . ' amount :' . number_format($_extra_cover->sum_insured, 2) }}</p>
+                                                            <p class="mb-0">{{ __('frontend.motor.payment_summary_page.sum_insured') . ' amount : RM ' . number_format($_extra_cover->sum_insured, 2) }}</p>
                                                         </div>
                                                     </div>
                                                 @endforeach

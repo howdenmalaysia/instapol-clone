@@ -28,4 +28,12 @@ return [
     'invalid_insurance_status' => 'Invalid Insurance Status. (Insurance Status: :status)',
     'insurance_record_not_match' => 'Insurance record not match.',
     'total_payable_not_match' => 'Premium amount not match.',
+    'promo_code_not_found' => 'Promo cpde that you entered doesn\'t exist in our record',
+    'promo_hasnt_start' => 'Promotion is only valid from :start onwards.',
+    'promo_expired' => 'Promo code you entered is expired.',
+    'promo_code_ran_out' => 'Promo code has been fully redeemed.',
+    'promo_domain_not_allowed' => 'Your email address is not entitled to use this promo code. Please WhatsApp us if you think this is wrong.',
+    'promo_zero_discount' => 'Something Went Wrong. Please WhatsApp us for help. (Code: ZERO_DISCOUNT_AMOUNT)',
+    'promo_discount_target_not_found' => 'Invalid discount target for :code.',
+    'promo_min_spend_not_achieved' => 'Spend :amount more to use this promo code',
 ];
