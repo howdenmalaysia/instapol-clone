@@ -11,15 +11,26 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class PromoController extends Controller
 {
     public function usePromoCode(Request $request)
     {
-        $motor = json_decode($request->motor);
+        $validator = Validator::make([
+            'code' => 'string|required',
+            'motor' => 'array|required'
+        ]);
+
+        if($validator->fails()) {
+            return $this->abort($validator->errors());
+        }
+
+        $motor = toObject($request->motor);
 
         // 1. Find the code
-        $code = Promotion::find('code', strtoupper($request->code));
+        $code = Promotion::where('code', strtoupper($request->code))
+            ->first();
 
         if(empty($code)) {
             return $this->abort(__('api.promo_code_not_found'));
@@ -36,7 +47,7 @@ class PromoController extends Controller
         }
 
         /// b. Use Count
-        if($code->use_count === $code->use_max) {
+        if($code->use_count === $code->use_max && $code->use_max != 0) {
             return $this->abort(__('api.promo_code_ran_out'));
         }
 
@@ -58,7 +69,7 @@ class PromoController extends Controller
         }
 
         // 3. Manipulate Premium
-        if($code->discount <= 0 && $code->discount_percentage <= 0) {
+        if($code->discount_amount <= 0 && $code->discount_percentage <= 0) {
             return $this->abort(__('api.promo_zero_discount'));
         }
 
@@ -115,13 +126,15 @@ class PromoController extends Controller
                 ->update(['use_count' => $code->use_count++]);
     
             // 5. Update to InsurancePromo table
-            $insurance = Insurance::where('code', $request->insurance_code)->firstOrFail();
+            $insurance = Insurance::where('insurance_code', $request->insurance_code)->firstOrFail();
             InsurancePromo::where('insurance_id', $insurance->id)->delete();
             InsurancePromo::create([
                 'insurance_id' => $insurance->id,
                 'promo_id' => $code->id,
                 'discount_amount' => $discount_amount,
             ]);
+
+            $motor->premium->discounted_amount = $discount_amount;
 
             DB::commit();
             return $motor;
