@@ -19,7 +19,8 @@ class PromoController extends Controller
         $motor = json_decode($request->motor);
 
         // 1. Find the code
-        $code = Promotion::find('code', strtoupper($request->code));
+        $code = Promotion::where('code', strtoupper($request->code))
+            ->first();
 
         if(empty($code)) {
             return $this->abort(__('api.promo_code_not_found'));
