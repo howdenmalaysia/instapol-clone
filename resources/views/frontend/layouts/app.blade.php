@@ -40,6 +40,32 @@
         <script src="{{ mix('js/manifest.js') }}"></script>
         <script src="{{ mix('js/vendor.js') }}"></script>
         <script src="{{ mix('js/app.js') }}"></script>
+        <script>
+            $(() => {
+                $('.step-trigger').on('click', (e) => {
+                    let step = $(e.target).parent('button').data('index') + 1;
+    
+                    switch(step) {
+                        case 1: {
+                            location.href = "{{ route('motor.vehicle-details') }}";
+                            break;
+                        }
+                        case 2: {
+                            location.href = "{{ route('motor.compare') }}";
+                            break;
+                        }
+                        case 3: {
+                            location.href = "{{ route('motor.add-ons') }}"
+                            break;
+                        }
+                        case 4: {
+                            location.href = "{{ route('motor.policy-holder') }}"
+                            break;
+                        }
+                    }
+                });
+            });
+        </script>
         @stack('after-scripts')
 
         @include('frontend.includes.mb')
