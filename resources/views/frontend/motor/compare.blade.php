@@ -522,6 +522,8 @@
                             default: {
                                 if(!(add_ons.extra_cover_description in add_ons_available)) {
                                     add_ons_available[add_ons.extra_cover_description] = [product_id];
+                                } else {
+                                    add_ons_available[add_ons.extra_cover_description].push(product_id);
                                 }
                             }
                         }
