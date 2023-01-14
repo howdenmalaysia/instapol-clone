@@ -69,7 +69,7 @@ class PromoController extends Controller
         }
 
         // 3. Manipulate Premium
-        if($code->discount <= 0 && $code->discount_percentage <= 0) {
+        if($code->discount_amount <= 0 && $code->discount_percentage <= 0) {
             return $this->abort(__('api.promo_zero_discount'));
         }
 
