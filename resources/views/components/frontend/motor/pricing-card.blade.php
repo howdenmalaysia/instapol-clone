@@ -68,11 +68,11 @@
             </tr>
             @if ($promo)
                 <tr>
-                    <td>
+                    <td colspan="3">
                         <div class="input-group">
-                            <input type="text" id="promo-code" class="form-control" placeholder="{{ __('frontend.motor.payment_summary_page.insert_promo_code') }}">
+                            <input type="text" id="promo-code" class="form-control rounded-start" placeholder="{{ __('frontend.motor.payment_summary_page.insert_promo_code') }}">
                             <div class="input-group-append">
-                                <button id="check-promo" class="btn btn-primary">{{ __('frontend.button.check') }}</button>
+                                <button id="check-promo" class="btn btn-primary text-white rounded-end">{{ __('frontend.button.check') }}</button>
                             </div>
                         </div>
                         <span id="promo-error" class="text-danger fw-bold d-none"></span>
