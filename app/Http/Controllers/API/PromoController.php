@@ -11,12 +11,22 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class PromoController extends Controller
 {
     public function usePromoCode(Request $request)
     {
-        $motor = json_decode($request->motor);
+        $validator = Validator::make([
+            'code' => 'string|required',
+            'motor' => 'array|required'
+        ]);
+
+        if($validator->fails()) {
+            return $this->abort($validator->errors());
+        }
+
+        $motor = toObject($request->motor);
 
         // 1. Find the code
         $code = Promotion::where('code', strtoupper($request->code))
