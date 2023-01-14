@@ -34,7 +34,7 @@ class PricingCard extends Component
         float $stampDuty,
         float $totalPayable,
         float $roadtaxTotal,
-        bool $promo)
+        bool $promo = false)
     {
         $this->insurerLogo = $insurerLogo;
         $this->insurerName = $insurerName;
