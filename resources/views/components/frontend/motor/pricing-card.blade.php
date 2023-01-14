@@ -95,7 +95,7 @@
 @push('after-scripts')
     <script>
         let motor = JSON.parse($('#motor').val());
-        
+
         $(() => {
             $('#check-promo').on('click', (e) => {
                 if(!$('#promo-error').hasClass('d-none')) {
@@ -107,11 +107,11 @@
                     return;
                 }
 
-                $('#basic-premium').toggleClass('loadingButton');
-                $('#gross-premium').toggleClass('loadingButton');
-                $('#sst').toggleClass('loadingButton');
-                $('#road-tax').toggleClass('loadingButton');
-                $('#total-payable').toggleClass('loadingButton');
+                $('#basic-premium').text(' ').toggleClass('loadingButton');
+                $('#gross-premium').text(' ').toggleClass('loadingButton');
+                $('#sst').text(' ').toggleClass('loadingButton');
+                $('#road-tax').text(' ').toggleClass('loadingButton');
+                $('#total-payable').text(' ').toggleClass('loadingButton');
 
                 $(e.target).toggleClass('loadingButton');
 
@@ -134,14 +134,14 @@
                     $('#road-tax').text(formatMoney(res.data.roadtax.total)).removeClass('toggleButton');
                     $('#total-payable').text(formatMoney(res.data.premium.total_payable + res.data.roadtax.total)).removeClass('toggleButton');
 
-                    $(e.target).removeClass('loadingButton');
+                    $('#check-promo').removeClass('loadingButton');
                 }).catch((err) => {
-                    $(e.target).removeClass('loadingButton');
-                    $('#basic-premium').removeClass('loadingButton');
-                    $('#gross-premium').removeClass('loadingButton');
-                    $('#sst').removeClass('loadingButton');
-                    $('#road-tax').removeClass('loadingButton');
-                    $('#total-payable').removeClass('loadingButton');
+                    $('#check-promo').removeClass('loadingButton');
+                    $('#basic-premium').removeClass('loadingButton').text(motor.premium.basic_premium);
+                    $('#gross-premium').removeClass('loadingButton').text(motor.premium.gross_premium);
+                    $('#sst').removeClass('loadingButton').text(motor.premium.sst_amount);
+                    $('#road-tax').removeClass('loadingButton').text(motor.roadtax.total);
+                    $('#total-payable').removeClass('loadingButton').text(motor.premium.total_payable);
 
                     swalAlert(err.message);
                     console.log(err);
