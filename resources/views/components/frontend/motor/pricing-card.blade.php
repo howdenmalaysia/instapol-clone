@@ -101,8 +101,6 @@
 
 @push('after-scripts')
     <script>
-        let motor = JSON.parse($('#motor').val());
-
         $(() => {
             $('#check-promo').on('click', (e) => {
                 if(!$('#promo-error').hasClass('d-none')) {
