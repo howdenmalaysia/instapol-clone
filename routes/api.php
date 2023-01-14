@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\MotorAPIController;
+use App\Http\Controllers\API\PromoController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -25,4 +26,5 @@ Route::prefix('motor')->group(function() {
     Route::post('create-quotation', [MotorAPIController::class, 'createQuotation'])->name('motor.api.create-quotation');
     Route::post('submit-cover-note', [MotorAPIController::class, 'submitCoverNote'])->name('motor.api.submit-cover-note');
     Route::post('calculate-roadtax', [MotorAPIController::class, 'calculateRoadtax'])->name('motor.api.calculate-roadtax');
+    Route::post('check-promo', [PromoController::class, 'PromoController@usePromoCode'])->name('motor.api.use-promo');
 });

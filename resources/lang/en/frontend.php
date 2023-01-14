@@ -671,6 +671,8 @@ return [
             'no_additional_driver' => 'No additional driver',
             'no_roadtax' => 'No road tax renewal service',
             'recipient_info' => 'Recipient Info',
+            'insert_promo_code' => 'Insert your promo code here.',
+            'promo_code_empty' => 'Please insert your promo code before continue.',
             'confirm_modal' => [
                 'title' => 'Confirmation',
                 'line_1' => 'I, :insured_name, confirm that:',
@@ -719,7 +721,8 @@ return [
         'yes_i_want' => 'Yes, I want',
         'edit' => 'Edit',
         'get_quotation' => 'Get Quotation',
-        'view_details' => 'View Details'
+        'view_details' => 'View Details',
+        'check' => 'Check'
     ],
     'fields' => [
         'name' => 'Name',

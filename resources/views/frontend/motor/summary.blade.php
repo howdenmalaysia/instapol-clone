@@ -85,6 +85,7 @@
                                         stamp-duty="{{ session('motor')->quotation->stamp_duty }}"
                                         total-payable="{{ session('motor')->quotation->total_payable }}"
                                         roadtax-total="{{ session('motor')->roadtax->total ?? 0.00 }}"
+                                        promo
                                     />
                                 </div>
                                 <div class="col-12 col-lg-8">
