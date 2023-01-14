@@ -37,7 +37,7 @@ class PromoController extends Controller
         }
 
         /// b. Use Count
-        if($code->use_count === $code->use_max) {
+        if($code->use_count === $code->use_max && $code->use_max != 0) {
             return $this->abort(__('api.promo_code_ran_out'));
         }
 
