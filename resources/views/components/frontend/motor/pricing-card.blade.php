@@ -139,7 +139,7 @@
                     $('#gross-premium').text(formatMoney(res.data.premium.gross_premium)).removeClass('loadingButton');
                     $('#sst').text(formatMoney(res.data.premium.sst_amount)).removeClass('loadingButton');
                     $('#road-tax').text(formatMoney(res.data.roadtax.total)).removeClass('loadingButton');
-                    $('#total-payable').text(formatMoney(res.data.premium.total_payable + res.data.roadtax.total)).removeClass('loadingButton');
+                    $('#total-payable').text(formatMoney(res.data.premium.total_payable)).removeClass('loadingButton');
                     $('#promo-amount').text(formatMoney(res.data.premium.discounted_amount || 0.00));
 
                     $('#discount').removeClass('d-none');
