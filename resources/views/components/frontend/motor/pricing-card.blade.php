@@ -101,7 +101,7 @@
                 }
 
                 if($('#promo-code').val() == '') {
-                    $('#promo-error').text({{ __('frontend.motor.payment_summary_page.promo_code_empty') }}).removeClass('d-none');
+                    $('#promo-error').text('{{ __('frontend.motor.payment_summary_page.promo_code_empty') }}').removeClass('d-none');
                     return;
                 }
 
