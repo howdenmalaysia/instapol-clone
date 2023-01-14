@@ -116,7 +116,7 @@
                                     <td style="overflow-wrap:break-word;word-break:break-word;padding:10px 25px;font-family:arial,helvetica,sans-serif;" align="left">
                                         <div style="line-height: 140%; text-align: left; word-wrap: break-word;">
                                             <p style="font-size: 14px; line-height: 140%;">
-                                                Meanwhile below is the summary for your quick reference: -
+                                                Meanwhile below is the summary for your quick reference:
                                             </p>
                                         </div>
                                     </td>
@@ -296,7 +296,7 @@
                                     <td style="overflow-wrap:break-word;word-break:break-word;padding:20px 25px 10px;font-family:arial,helvetica,sans-serif;" align="left">
                                         <div style="line-height: 140%; text-align: left; word-wrap: break-word;">
                                             <p style="font-size: 14px; line-height: 140%;">
-                                                <strong>Important info: -</strong>
+                                                <strong>Important info:</strong>
                                             </p>
                                         </div>
                                     </td>
