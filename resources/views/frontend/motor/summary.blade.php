@@ -361,6 +361,8 @@
 
 @push('after-scripts')
     <script>
+        let motor = JSON.parse($('#motor').val());
+        
         $(() => {
             $('#btn-pay').on('click', () => {
                 $('#agree-modal').modal('show');
