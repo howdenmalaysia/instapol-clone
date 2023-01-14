@@ -270,6 +270,8 @@
 
                     form.submit();
                 }).catch((err) => {
+                    $(e.target).removeClass('loadingButton');
+                    swalAlert(err.message);
                     console.log(err);
                 });
             });
