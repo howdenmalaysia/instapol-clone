@@ -99,6 +99,20 @@ class ProductMotorBenefitsSeeder extends Seeder
                 'excess' => 'NIL (except for young and inexperienced driver)',
                 'repair_warranty' => '12 Months',
             ],
+            '12' => [
+                'where' => 'Malaysia, Singapore, Brunei',
+                'who' => 'Main driver and One (1) Free Authorised Driver',
+                'workshops' => 'More than 200 authorised panel workshops nationwide',
+                'mobile_accident_response' => [
+                    'Jump start/flat battery replacement',
+                    'Replace your tyres',
+                    'Fuel delivery',
+                    '24-hour towing assistance'
+                ],
+                'young_driver_excess' => 'Compulsory excess of RM 400',
+                'excess' => 'NIL (except for young and inexperienced driver)',
+                'repair_warranty' => '12 Months',
+            ],
             '14' => [
                 'where' => 'Malaysia, Singapore, Brunei',
                 'who' => 'Any authorised drivers',
