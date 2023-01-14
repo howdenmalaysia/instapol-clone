@@ -334,17 +334,6 @@
             motor.vehicle.sum_insured = parseFloat($(e.target).val());
             $('#motor').val(JSON.stringify(motor));
 
-            // Update Tooltip Position
-            let percentage = ((parseFloat($(e.target).val()) - parseFloat($(e.target).attr('min'))) / (parseFloat($(e.target).attr('max')) - parseFloat($(e.target).attr('min'))));
-
-            if(percentage > 0.5) {
-                let position = Math.round(percentage * $(e.target).width());
-            } else {
-                let position = Math.round((percentage * $(e.target).width()) * -1);
-            }
-
-            $('.tooltip').css('left', position + ($(e.target).width() / 2) - 2);
-
             // Set Loading Effect
             if(!$('#pricing-table #basic-premium').hasClass('loadingButton')) {
                 $('#pricing-table #basic-premium').text(' ').toggleClass('loadingButton');
@@ -353,6 +342,24 @@
             }
 
             refreshPremium();
+        });
+
+        $('#sum-insured-slider').on('input', (e) => {
+            // Update Tooltip Position
+            let percentage = (parseFloat($(e.target).val()) - parseFloat($(e.target).attr('min'))) / (parseFloat($(e.target).attr('max')) - parseFloat($(e.target).attr('min')));
+            let correct = Math.round(((percentage - 0.5) * 25 * -1));
+            
+            $('.tooltip .tooltip-inner').text('RM ' + formatMoney($(e.target).val(), 0).replace('.00', ''));
+            $('.tooltip').css('left', Math.ceil((percentage * $(e.target).width()) - ($(e.target).width() / 2) + correct));
+        });
+
+        $('#sum-insured-tooltip').on('shown.bs.tooltip', (e) => {
+            // Update Tooltip Position
+            let percentage = (parseFloat($('#sum-insured-slider').val()) - parseFloat($('#sum-insured-slider').attr('min'))) / (parseFloat($('#sum-insured-slider').attr('max')) - parseFloat($('#sum-insured-slider').attr('min')));
+            let correct = Math.round(((percentage - 0.5) * 25 * -1));
+            
+            $('.tooltip .tooltip-inner').text('RM ' + formatMoney($('#sum-insured-slider').val(), 0).replace('.00', ''));
+            $('.tooltip').css('left', Math.ceil((percentage * $('#sum-insured-slider').width()) - ($('#sum-insured-slider').width() / 2) + correct));
         });
 
         $('#add-additional-driver').on('click', () => {
