@@ -17,7 +17,7 @@ class PromoController extends Controller
 {
     public function usePromoCode(Request $request)
     {
-        $validator = Validator::make([
+        $validator = Validator::make($request->all(), [
             'code' => 'string|required',
             'motor' => 'array|required'
         ]);
