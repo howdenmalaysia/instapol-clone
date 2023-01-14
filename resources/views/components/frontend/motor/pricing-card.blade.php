@@ -66,6 +66,13 @@
                 <td class="text-end">RM</td>
                 <td id="road-tax" class="text-end">{{ $roadtaxTotal }}</td>
             </tr>
+            <tr id="discount" class="d-none">
+                <td>
+                    {{ '- ' . __('frontend.price_card.promo') }}
+                </td>
+                <td class="text-end">RM</td>
+                <td id="promo-amount" class="text-end">-</td>
+            </tr>
             @if ($promo)
                 <tr>
                     <td colspan="3">
@@ -133,6 +140,9 @@
                     $('#sst').text(formatMoney(res.data.premium.sst_amount)).removeClass('toggleButton');
                     $('#road-tax').text(formatMoney(res.data.roadtax.total)).removeClass('toggleButton');
                     $('#total-payable').text(formatMoney(res.data.premium.total_payable + res.data.roadtax.total)).removeClass('toggleButton');
+                    $('#promo-amount').text(formatMoney(res.data.premium.discounted_amount || 0.00));
+
+                    $('#discount').removeClass('d-none');
 
                     $('#check-promo').removeClass('loadingButton');
                 }).catch((err) => {

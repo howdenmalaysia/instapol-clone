@@ -752,6 +752,7 @@ return [
         'stamp_duty' => 'Stamp Duty',
         'road_tax' => 'Road Tax (Incl. Delivery)',
         'total_payable' => 'Total Payable',
+        'promo' => 'Promo',
         'tooltip' => [
             'basic_premium' => 'Basic Premium',
             'ncd' => 'No Claim Discount',

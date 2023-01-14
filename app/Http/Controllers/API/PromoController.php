@@ -134,6 +134,8 @@ class PromoController extends Controller
                 'discount_amount' => $discount_amount,
             ]);
 
+            $motor->premium->discounted_amount = $discount_amount;
+
             DB::commit();
             return $motor;
         } catch (Exception $ex) {
