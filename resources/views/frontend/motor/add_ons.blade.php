@@ -603,7 +603,31 @@
             $('#total-payable').text(formatMoney(motor.premium.total_payable));
 
             // Auto Apply Promo Code
-            checkPromo(true);
+            instapol.post("{{ route('motor.api.use-promo') }}", {
+                motor: motor,
+                isAutoRoadTax: true
+            }).then((res) => {
+                console.log('Auto Apply Promo', res);
+
+                if(res.data !== '') {
+                    $('#motor').val(JSON.stringify(res.data));
+        
+                    // Update Pricing Card
+                    $('#road-tax').text(formatMoney(res.data.roadtax.total)).removeClass('loadingButton');
+                    $('#total-payable').text(formatMoney(res.data.premium.total_payable)).removeClass('loadingButton');
+                    $('#promo-amount').text(formatMoney(res.data.premium.discounted_amount || 0.00));
+        
+                    if(parseFloat($('#promo-amount').text()) > 0) {
+                        $('#discount').removeClass('d-none');
+                    }
+        
+                    $('#promo-code').val(res.data.promo.code);
+                    motor.premium.discounted_amount = res.data.premium.discounted_amount;
+                    $('#motor').val(JSON.stringify(motor));
+                }
+            }).catch((err) => {
+                console.log(err);
+            });
         }).catch((err) => {
             console.log(err.response);
         });
