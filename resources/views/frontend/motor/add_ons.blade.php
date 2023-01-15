@@ -445,7 +445,7 @@
             // Consolidate Add Ons
             $('.extra-coverage-checkbox:checked').each((index, element) => {
                 let sum_insured = $(`#sum-insured-${$.escapeSelector($(element).val())}`).val();
-                
+
                 if($(`#sum-insured-${$.escapeSelector($(element).val())}`).val() == 0) {
                     sum_insured = $('#sum-insured-slider').val();
                 }
@@ -539,6 +539,7 @@
     
                 // Update Pricing Card
                 $('#basic-premium').text(formatMoney(res.data.basic_premium));
+                $('#ncd').text(formatMoney(res.data.ncd_amount));
                 $('#add-ons-premium').text(formatMoney(res.data.total_benefit_amount));
                 $('#gross-premium').text(formatMoney(res.data.gross_premium));
                 $('#sst').text(formatMoney(res.data.sst_amount));
