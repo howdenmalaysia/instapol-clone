@@ -18,7 +18,7 @@ class PromoController extends Controller
     public function usePromoCode(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'code' => 'string|required',
+            'code' => 'string|nullable',
             'motor' => 'array|required'
         ]);
 
@@ -29,8 +29,41 @@ class PromoController extends Controller
         $motor = toObject($request->motor);
 
         // 1. Find the code
-        $code = Promotion::where('code', strtoupper($request->code))
-            ->first();
+        if(!empty($request->code)) {
+            $code = Promotion::where('code', strtoupper($request->code))
+                ->first();
+        } else {
+            $codes = Promotion::where('discount_target', Promotion::DT_ROADTAX)
+                ->where('valid_from', '>=', Carbon::now()->format('Y-m-d H:i:s'))
+                ->where('valid_to', '<=', Carbon::now()->format('Y-m-d H:i:s'))
+                ->get();
+
+            if(empty($codes)) {
+                return;
+            }
+
+            $values = collect([]);
+
+            foreach($codes as $promo) {
+                $discount_amount = 0;
+
+                if($promo->discount_percentage > 0 && $promo->discount_amount === 0) {
+                    $discount_amount = $motor->premium->roadtax * ($promo->discount_percentage / 100);
+                } else {
+                    $discount_amount = $promo->discount_amount;
+                }
+
+                $values->push([
+                    $promo->code => $discount_amount
+                ]);
+            }
+
+            $highest_discount_code = array_keys($values->max())[0];
+
+            $code = $codes->filter(function($_code) use($highest_discount_code) {
+                return $_code->code = $highest_discount_code;
+            });
+        }
 
         if(empty($code)) {
             return $this->abort(__('api.promo_code_not_found'));
@@ -57,7 +90,6 @@ class PromoController extends Controller
                 return $this->abort(__('api.promo_min_spend_not_achieved', ['amount' => floatval($motor->premium->total_payable) - floatval($code->minimum_apend)]));
             }
         }
-
 
         /// d. Domain Restriction
         if($code->restrict_domain) {

@@ -24,4 +24,6 @@ class Promotion extends Model
         'allowed_domain',
         'restrict_domain',
     ];
+
+    const DT_ROADTAX = 'road_tax';
 }
