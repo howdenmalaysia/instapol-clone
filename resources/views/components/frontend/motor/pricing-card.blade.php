@@ -1,4 +1,4 @@
-<div class="border-0 card sticky-top">
+<div class="border-0 card sticky-top pt-5">
     <table id="pricing-table" class="table table-borderless">
         <thead>
             <tr class="align-middle">
