@@ -140,7 +140,9 @@
                     $('#total-payable').text(formatMoney(res.data.premium.total_payable)).removeClass('loadingButton');
                     $('#promo-amount').text(formatMoney(res.data.premium.discounted_amount || 0.00));
 
-                    $('#discount').removeClass('d-none');
+                    if(parseFloat($('#promo-amount').text()) > 0) {
+                        $('#discount').removeClass('d-none');
+                    }
 
                     $('#check-promo').removeClass('loadingButton');
                 }).catch((err) => {
