@@ -408,7 +408,7 @@
             calculateRoadtax();
         });
 
-        $('.extra-coverage-checkbox').on('change', (e) => {
+        $('#extra-coverages').on('change', '.extra-coverage-checkbox', (e) => {
             if(!$(e.target).parent().parent().find('.premium').hasClass('loadingButton')) {
                 $(e.target).parent().parent().find('.premium').text(' ').toggleClass('loadingButton');
             }
