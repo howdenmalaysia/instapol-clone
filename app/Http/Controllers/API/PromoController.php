@@ -34,8 +34,8 @@ class PromoController extends Controller
                 ->first();
         } else {
             $codes = Promotion::where('discount_target', Promotion::DT_ROADTAX)
-                ->where('valid_from', '>=', Carbon::now()->format('Y-m-d H:i:s'))
-                ->where('valid_to', '<=', Carbon::now()->format('Y-m-d H:i:s'))
+                ->where('valid_from', '<=', Carbon::now()->format('Y-m-d H:i:s'))
+                ->where('valid_to', '>=', Carbon::now()->format('Y-m-d H:i:s'))
                 ->get();
 
             if(empty($codes)) {
@@ -54,15 +54,16 @@ class PromoController extends Controller
                 }
 
                 $values->push([
-                    $promo->code => $discount_amount
+                    'code' => $promo->code,
+                    'amount' => $discount_amount
                 ]);
             }
 
-            $highest_discount_code = array_keys($values->max())[0];
+            $highest_discount_code = $values->firstWhere('amount', $values->max('amount'));
 
             $code = $codes->filter(function($_code) use($highest_discount_code) {
-                return $_code->code = $highest_discount_code;
-            });
+                return $_code->code === $highest_discount_code;
+            })->first();
         }
 
         if(empty($code)) {
