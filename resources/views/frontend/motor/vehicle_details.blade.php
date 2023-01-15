@@ -235,8 +235,6 @@
                         swalAlert(error.response.data.response, () => {
                             window.location = "{{ route('motor.index') }}"
                         });
-                    } else {
-                        swalAlert('Something Went Wrong. ' + error.response.data.response);
                     }
                 });
             });

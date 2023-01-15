@@ -18,6 +18,7 @@
                         stamp-duty="{{ $premium->stamp_duty }}"
                         total-payable="{{ $premium->total_payable }}"
                         roadtax-total="{{ $premium->roadtax ?? session('motor')->roadtax->total ?? 0.00 }}"
+                        promo
                     />
                 </div>
                 <div class="col-12 col-lg-8">
@@ -443,9 +444,15 @@
 
             // Consolidate Add Ons
             $('.extra-coverage-checkbox:checked').each((index, element) => {
+                let sum_insured = $(`#sum-insured-${$.escapeSelector($(element).val())}`).val();
+                
+                if($(`#sum-insured-${$.escapeSelector($(element).val())}`).val() == 0) {
+                    sum_insured = $('#sum-insured-slider').val();
+                }
+
                 selected_extra_cover.push({
                     extra_cover_code: $(element).val(),
-                    sum_insured: $(`#sum-insured-${$.escapeSelector($(element).val())}`).val(),
+                    sum_insured: sum_insured,
                     premium: $(`#${$.escapeSelector($(element).val())}-premium`).text()
                 })
             });
@@ -498,6 +505,8 @@
         selected_extra_cover.forEach((extra_cover) => {
             if(extra_cover.option_list) {
                 extra_cover.sum_insured = $(`#sum-insured-${$.escapeSelector(extra_cover.extra_cover_code)}`).val();
+            } else {
+                extra_cover.sum_insured = $('#sum-insured-slider').val();
             }
         });
 
@@ -521,7 +530,10 @@
                 console.log('refreshPremium', res);
     
                 motor.premium.total_benefit_amount = res.data.total_benefit_amount;
+                motor.premium.basic_premium = res.data.basic_premium;
                 motor.premium.gross_premium = res.data.gross_premium;
+                motor.premium.ncd_amount = res.data.ncd_amount;
+                motor.premium.sst_amount = res.data.sst_amount;
                 motor.premium.total_payable = res.data.total_payable + parseFloat($('#road-tax').text());
                 $('#motor').val(JSON.stringify(motor));
     

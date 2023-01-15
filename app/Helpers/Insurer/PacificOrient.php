@@ -362,7 +362,7 @@ class PacificOrient implements InsurerLibraryInterface
             // Revert to premium without extra covers
             $response->excess_amount = $excess_amount;
             $response->basic_premium = $basic_premium;
-            $response->ncd = $ncd_amount;
+            $response->ncd_amount = $ncd_amount;
             $response->gross_premium = $gross_premium;
             $response->stamp_duty = $stamp_duty;
             $response->sst_amount = $sst_amount;
