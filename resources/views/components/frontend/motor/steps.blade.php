@@ -5,7 +5,7 @@
                 <div class="col-12 col-lg-10">
                     <div class="bs-stepper-header">
                         @foreach (array_keys(__('frontend.motor.steps')) as $index => $key)
-                            <div class={{ "step" . ($index === $currentStep ? ' active' : '')}}>
+                            <div class={{ "step" . ($index === --$currentStep ? ' active' : '')}}>
                                 <button type="button" class="step-trigger p-0" role="tab" {{ $index > --$currentStep ? 'disabled' : '' }} data-index="{{ $index }}">
                                     <span class="bg-primary bs-stepper-circle align-items-center">{{ ++$index }}</span>
                                     <span class="position-absolute stepper-label">{{ __("frontend.motor.steps.{$key}") }}</span>
