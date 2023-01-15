@@ -97,6 +97,6 @@ class APIData extends DataTransferObject
     /** @var string|null */
     public $city;
 
-    /** @var object|array */
+    /** @var object|array|null */
     public $promo;
 }
