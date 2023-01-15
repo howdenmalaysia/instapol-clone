@@ -517,7 +517,6 @@ class BerjayaSompo implements InsurerLibraryInterface
             $response->sst_amount = $sst_amount;
             $response->stamp_duty = $stamp_duty;
             $response->excess_amount = $excess_amount;
-            $response->total_contribution = $total_payable;
             $response->total_payable = $total_payable;
             $response->net_premium = $net_premium;
 
