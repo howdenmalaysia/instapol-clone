@@ -307,7 +307,7 @@ class Zurich implements InsurerLibraryInterface
 			'state' => $input->state,
 			'occupation' => $input->occupation,
 		];
-
+//test
 		$result = $this->premiumDetails($data);
 
 		if (!$result->status) {
