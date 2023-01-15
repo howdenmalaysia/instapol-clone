@@ -91,9 +91,10 @@ class PromoController extends Controller
 
                 if($code->discount_target === 'basic_premium') {
                     $motor->premium->gross_premium -= $discount_amount;
+                    $motor->premium->sst_amount = $motor->premium->gross_premium * 0.06;
+                } else if($code->discount_target === 'gross_premium') {
+                    $motor->premium->sst_amount = $motor->premium->gross_premium * 0.06;
                 }
-                
-                $motor->premium->sst_amount = $motor->premium->gross_premium * 0.06;
 
                 break;
             }
