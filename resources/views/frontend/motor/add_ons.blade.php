@@ -504,9 +504,9 @@
 
         selected_extra_cover.forEach((extra_cover) => {
             if(extra_cover.option_list) {
-                extra_cover.sum_insured = $(`#sum-insured-${$.escapeSelector(extra_cover.extra_cover_code)}`).val();
+                extra_cover.sum_insured = parseFloat($(`#sum-insured-${$.escapeSelector(extra_cover.extra_cover_code)}`).val());
             } else {
-                extra_cover.sum_insured = $('#sum-insured-slider').val();
+                extra_cover.sum_insured = parseFloat($('#sum-insured-slider').val());
             }
         });
 
