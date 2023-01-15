@@ -151,7 +151,7 @@
                     $('#road-tax').removeClass('loadingButton').text(motor.roadtax.total);
                     $('#total-payable').removeClass('loadingButton').text(motor.premium.total_payable);
 
-                    swalAlert(err.message);
+                    swalAlert(err.response.data.response || err.message);
                     console.log(err);
                 });
             }
