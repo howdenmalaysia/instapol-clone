@@ -504,9 +504,9 @@
 
         selected_extra_cover.forEach((extra_cover) => {
             if(extra_cover.option_list) {
-                extra_cover.sum_insured = $(`#sum-insured-${$.escapeSelector(extra_cover.extra_cover_code)}`).val();
+                extra_cover.sum_insured = parseFloat($(`#sum-insured-${$.escapeSelector(extra_cover.extra_cover_code)}`).val());
             } else {
-                extra_cover.sum_insured = $('#sum-insured-slider').val();
+                extra_cover.sum_insured = parseFloat($('#sum-insured-slider').val());
             }
         });
 
@@ -602,6 +602,29 @@
 
         }).catch((err) => {
             console.log(err.response);
+        });
+
+        // Auto Apply Promo Code
+        instapol.post("{{ route('motor.api.use-promo') }}", {
+            motor: motor,
+            isRoadTax: true
+        }).then((res) => {
+            if(res.data !== '') {
+                $('#motor').val(JSON.stringify(res.data));
+    
+                // Update Pricing Card
+                $('#road-tax').text(formatMoney(res.data.roadtax.total)).removeClass('loadingButton');
+                $('#total-payable').text(formatMoney(res.data.premium.total_payable)).removeClass('loadingButton');
+                $('#promo-amount').text(formatMoney(res.data.premium.discounted_amount || 0.00));
+    
+                if(parseFloat($('#promo-amount').text()) > 0) {
+                    $('#discount').removeClass('d-none');
+                }
+    
+                $('#promo-code').val(res.data.promo.code).attr('disabled', true);
+            }
+        }).catch((err) => {
+            console.log(err);
         });
     }
 

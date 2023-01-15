@@ -48,9 +48,10 @@ class PacificOrient implements InsurerLibraryInterface
 
     private const SOAP_ACTION_DOMAIN = 'http://tempuri.org';
 
-    public function __construct(string $company_id)
+    public function __construct(string $company_id, string $company_name)
     {
         $this->company_id = $company_id;
+        $this->company_name = $company_name;
         
         $this->agent_code = config('insurer.config.pno.agent_code');
         $this->user_id = config('insurer.config.pno.user_id');
@@ -255,7 +256,7 @@ class PacificOrient implements InsurerLibraryInterface
 
                 switch($_extra_cover_code) {
                     case '89': {
-                        $extra_cover->extra_cover_name = 'Windscreen or Windows';
+                        $extra_cover->extra_cover_description = 'Windscreen or Windows';
 
                         // Options List for Windscreen
                         $option_list = new OptionList([
@@ -830,32 +831,32 @@ class PacificOrient implements InsurerLibraryInterface
 
     private function getExtraCoverDescription(string $extra_cover_code) : string
     {
-        $extra_cover_name = '';
+        $extra_cover_description = '';
 
         switch($extra_cover_code) {
             case '04': {
-                $extra_cover_name = 'L.L.P to Passengers';
+                $extra_cover_description = 'L.L.P to Passengers';
                 break;
             }
             case '25': {
-                $extra_cover_name = 'Strike, Riot & Civil Commotion (S.R.C.C)';
+                $extra_cover_description = 'Strike, Riot & Civil Commotion (S.R.C.C)';
                 break;
             }
             case '89': {
-                $extra_cover_name = 'Windscreen or Windows';
+                $extra_cover_description = 'Windscreen or Windows';
                 break;
             }
             case '72': {
-                $extra_cover_name = 'Tinted Film Screen';
+                $extra_cover_description = 'Tinted Film Screen';
                 break;
             }
             case '111': {
-                $extra_cover_name = 'Current Year NCD relief';
+                $extra_cover_description = 'Current Year NCD relief';
                 break;
             };
         }
 
-        return $extra_cover_name;
+        return $extra_cover_description;
     }
 
     private function sortExtraCoverList(array $extra_cover_list) : array
