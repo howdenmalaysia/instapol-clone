@@ -62,7 +62,7 @@ class PromoController extends Controller
             $highest_discount_code = $values->firstWhere('amount', $values->max('amount'));
 
             $code = $codes->filter(function($_code) use($highest_discount_code) {
-                return $_code->code === $highest_discount_code;
+                return $_code->code === $highest_discount_code['code'];
             })->first();
         }
 
