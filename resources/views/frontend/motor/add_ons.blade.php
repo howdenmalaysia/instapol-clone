@@ -597,34 +597,37 @@
             // Update Pricing Card
             $('#road-tax').text(formatMoney(res.data.total));
             motor.premium.total_payable += parseFloat(res.data.total);
+            motor.premium.roadtax = res.data.total;
+            motor.roadtax = res.data;
             $('#motor').val(JSON.stringify(motor));
             $('#total-payable').text(formatMoney(motor.premium.total_payable));
 
+            // Auto Apply Promo Code
+            instapol.post("{{ route('motor.api.use-promo') }}", {
+                motor: motor,
+                isRoadTax: true
+            }).then((res) => {
+                console.log('Auto Apply Promo', res);
+
+                if(res.data !== '') {
+                    $('#motor').val(JSON.stringify(res.data));
+        
+                    // Update Pricing Card
+                    $('#road-tax').text(formatMoney(res.data.roadtax.total)).removeClass('loadingButton');
+                    $('#total-payable').text(formatMoney(res.data.premium.total_payable)).removeClass('loadingButton');
+                    $('#promo-amount').text(formatMoney(res.data.premium.discounted_amount || 0.00));
+        
+                    if(parseFloat($('#promo-amount').text()) > 0) {
+                        $('#discount').removeClass('d-none');
+                    }
+        
+                    $('#promo-code').val(res.data.promo.code);
+                }
+            }).catch((err) => {
+                console.log(err);
+            });
         }).catch((err) => {
             console.log(err.response);
-        });
-
-        // Auto Apply Promo Code
-        instapol.post("{{ route('motor.api.use-promo') }}", {
-            motor: motor,
-            isRoadTax: true
-        }).then((res) => {
-            if(res.data !== '') {
-                $('#motor').val(JSON.stringify(res.data));
-    
-                // Update Pricing Card
-                $('#road-tax').text(formatMoney(res.data.roadtax.total)).removeClass('loadingButton');
-                $('#total-payable').text(formatMoney(res.data.premium.total_payable)).removeClass('loadingButton');
-                $('#promo-amount').text(formatMoney(res.data.premium.discounted_amount || 0.00));
-    
-                if(parseFloat($('#promo-amount').text()) > 0) {
-                    $('#discount').removeClass('d-none');
-                }
-    
-                $('#promo-code').val(res.data.promo.code).attr('disabled', true);
-            }
-        }).catch((err) => {
-            console.log(err);
         });
     }
 
