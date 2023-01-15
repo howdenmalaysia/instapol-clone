@@ -317,6 +317,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             'address_two' => strtoupper($motor->policy_holder->address_2),
             'city' => strtoupper($motor->policy_holder->city),
             'occupation' => strtoupper($request->occupation ?? ''),
+            'promo' => $motor->promo ?? []
         ]);
 
         // Remove '0' from phone number if exists
@@ -525,9 +526,17 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             ]);
 
             // 12. Delete Insurance Promo Table
-            InsurancePromo::where([
-                'insurance_id' => $insurance->id
-            ])->delete();
+            if(!empty($input->promo)) {
+                InsurancePromo::where([
+                    'insurance_id' => $insurance->id
+                ])->delete();
+
+                InsurancePromo::create([
+                    'insurance_id' => $insurance->id,
+                    'promo_id' => $input->promo->id,
+                    'discount_amount' => $motor->premium->discount_amount,
+                ]);
+            }
 
             // 13. Update or Insert to Insurance Extra Attributes Table
             /// a. Update the value
