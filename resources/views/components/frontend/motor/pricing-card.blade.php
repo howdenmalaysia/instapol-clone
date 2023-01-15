@@ -66,14 +66,14 @@
                 <td class="text-end">RM</td>
                 <td id="road-tax" class="text-end">{{ $roadtaxTotal }}</td>
             </tr>
-            <tr id="discount" class="d-none">
+            <tr id="discount" class="{{ !empty(session('motor')->premium->discounted_amount) ? '' : 'd-none' }}">
                 <td class="fw-bold">
                     {{ '- ' . __('frontend.price_card.promo') }}
                 </td>
                 <td class="text-end fw-bold">RM</td>
                 <td id="promo-amount" class="text-end fw-bold">-</td>
             </tr>
-            @if ($promo)
+            @if ($promo || !empty(session('motor')->promo))
                 <tr>
                     <td colspan="3">
                         <div class="input-group">
@@ -123,28 +123,36 @@
                 checkPromo();
             });
 
-            function checkPromo() {
+            function checkPromo(isAuto = false) {
                 instapol.post("{{ route('motor.api.use-promo') }}", {
                     motor: motor,
-                    code: $('#promo-code').val()
+                    code: $('#promo-code').val(),
+                    isAutoRoadTax: isAuto
                 }).then((res) => {
-                    console.log(res);
+                    console.log('Promo', res);
 
-                    $('#motor').val(JSON.stringify(res.data));
-
-                    // Update Pricing Card
-                    $('#basic-premium').text(formatMoney(res.data.premium.basic_premium)).removeClass('loadingButton');
-                    $('#gross-premium').text(formatMoney(res.data.premium.gross_premium)).removeClass('loadingButton');
-                    $('#sst').text(formatMoney(res.data.premium.sst_amount)).removeClass('loadingButton');
-                    $('#road-tax').text(formatMoney(res.data.roadtax.total)).removeClass('loadingButton');
-                    $('#total-payable').text(formatMoney(res.data.premium.total_payable)).removeClass('loadingButton');
-                    $('#promo-amount').text(formatMoney(res.data.premium.discounted_amount || 0.00));
-
-                    if(parseFloat($('#promo-amount').text()) > 0) {
-                        $('#discount').removeClass('d-none');
+                    if(res.data !== '') {
+                        $('#motor').val(JSON.stringify(res.data));
+    
+                        // Update Pricing Card
+                        $('#basic-premium').text(formatMoney(res.data.premium.basic_premium)).removeClass('loadingButton');
+                        $('#gross-premium').text(formatMoney(res.data.premium.gross_premium)).removeClass('loadingButton');
+                        $('#sst').text(formatMoney(res.data.premium.sst_amount)).removeClass('loadingButton');
+                        $('#road-tax').text(formatMoney(res.data.roadtax.total)).removeClass('loadingButton');
+                        $('#total-payable').text(formatMoney(res.data.premium.total_payable)).removeClass('loadingButton');
+                        $('#promo-amount').text(formatMoney(res.data.premium.discounted_amount || 0.00));
+    
+                        if(parseFloat($('#promo-amount').text()) > 0) {
+                            $('#discount').removeClass('d-none');
+                        }
+    
+                        $('#promo-code').val(res.data.promo.code);
+                        $('#check-promo').removeClass('loadingButton');
+    
+                        motor.premium.discounted_amount = res.data.premium.discounted_amount;
+                        $('#motor').val(JSON.stringify(motor));
                     }
 
-                    $('#check-promo').removeClass('loadingButton');
                 }).catch((err) => {
                     $('#check-promo').removeClass('loadingButton');
                     $('#basic-premium').removeClass('loadingButton').text(motor.premium.basic_premium);
