@@ -433,8 +433,8 @@ class Allianz implements InsurerLibraryInterface
                 'manufacture_year' => $vehicle_vix->response->manufacture_year,
                 'ncd_percentage' => $vehicle_vix->response->ncd_percentage,
                 'coverage' => $vehicle_vix->response->coverage,
-                'inception_date' => $vehicle_vix->response->inception_date,
-                'expiry_date' => $vehicle_vix->response->expiry_date,
+                'inception_date' => Carbon::createFromFormat('d M Y', $vehicle_vix->response->inception_date)->format('Y-m-d'),
+                'expiry_date' => Carbon::createFromFormat('d M Y', $vehicle_vix->response->expiry_date)->format('Y-m-d'),
                 'sum_insured_type' => $vehicle_vix->response->sum_insured_type,
                 'sum_insured' => $vehicle_vix->response->sum_insured,
                 'min_sum_insured' => $vehicle_vix->response->min_sum_insured,
@@ -841,6 +841,8 @@ class Allianz implements InsurerLibraryInterface
             'postcode' => $input->postcode,
             'state' => $input->state,
             'occupation' => $input->occupation,
+			'age' => $input->age,
+			'additional_driver' => $input->additional_driver,
         ];
 
         $result = $this->premiumDetails($data);
@@ -1037,7 +1039,7 @@ class Allianz implements InsurerLibraryInterface
         $method = 'POST';
 		if($type == "token"){
 			$host .= $this->url_token;
-
+            $function = 'getToken';
             $options['headers'] = [
 				'Authorization' => 'Basic ' . base64_encode($this->username . ':' . $this->password),
                 'Content-Type' => 'application/x-www-form-urlencoded',
@@ -1079,7 +1081,7 @@ class Allianz implements InsurerLibraryInterface
             'domain' => $this->url,
             'path' => $function,
             'request_header' => json_encode($options['headers']),
-            'request' => json_encode($options['body'] ?? $options['form_params']),
+            'request' => json_encode($options['body'] ?? json_encode($options['form_params'])),
         ]);
 
         $result = HttpClient::curl($method, $host, $options);

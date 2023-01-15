@@ -286,8 +286,8 @@ class AmGeneral implements InsurerLibraryInterface
                 'manufacture_year' => $vehicle_vix->response->manufacture_year,
                 'ncd_percentage' => $vehicle_vix->response->ncd_percentage,
                 'coverage' => $vehicle_vix->response->coverage,
-                'inception_date' => $vehicle_vix->response->inception_date,
-                'expiry_date' => $vehicle_vix->response->expiry_date,
+                'inception_date' => Carbon::createFromFormat('d M Y', $vehicle_vix->response->inception_date)->format('Y-m-d'),
+                'expiry_date' => Carbon::createFromFormat('d M Y', $vehicle_vix->response->expiry_date)->format('Y-m-d'),
                 'sum_insured_type' => $vehicle_vix->response->sum_insured_type,
                 'sum_insured' => $vehicle_vix->response->sum_insured,
                 'min_sum_insured' => $vehicle_vix->response->min_sum_insured,
@@ -513,7 +513,64 @@ class AmGeneral implements InsurerLibraryInterface
 
     public function submission(object $input) : object
     {
+		// Get Extra Attribute
+        $extra_attribute = json_decode($input->insurance->extra_attribute->value);
 
+        // Generate Selected Extra Cover List
+        $extra_benefits = [];
+        foreach ($input->insurance_motor->extra_cover as $extra_cover) {
+            array_push($extra_benefits, (object) [
+                'extra_cover_code' => $extra_cover->code,
+                'sum_insured' => $extra_cover->sum_insured,
+                'cart_day' => $extra_cover->cart_day,
+                'cart_amount' => $extra_cover->cart_amount
+            ]);
+        }
+
+        $total_payable = formatNumber($input->insurance->premium->total_contribution);
+
+        if (!empty($input->insurance_motor->personal_accident)) {
+            $total_payable += formatNumber($input->insurance_motor->personal_accident->total_payable);
+        }
+
+        $data = (object) [
+            'name' => $input->insurance->policy_holder->name,
+            'id_type' => $input->insurance->policy_holder->id_type_id,
+            'id_number' => $input->insurance->policy_holder->id_number,
+            'gender' => $input->insurance->policy_holder->gender,
+            'marital_status' => $input->insurance->policy_holder->marital_status,
+            'email' => $input->insurance->policy_holder->email,
+            'phone_number' => '0' . $input->insurance->policy_holder->phone_number,
+            'unit_no' => $input->insurance->address->unit_no,
+            'building_name' => $input->insurance->address->building_name,
+            'address_one' => $input->insurance->address->address_one,
+            'address_two' => $input->insurance->address->address_two,
+            'city' => $input->insurance->address->city,
+            'postcode' => $input->insurance->address->postcode,
+            'state' => $input->insurance->address->state,
+            'vehicle_number' => $input->insurance_motor->vehicle_number,
+            'vehicle' => (object) [
+                'nvic' => $input->insurance_motor->nvic,
+                'inception_date' => $input->insurance->inception_date,
+                'expiry_date' => $input->insurance->expiry_date,
+                'extra_attribute' => $extra_attribute,
+                'sum_insured' => $input->insurance_motor->sum_insured
+            ],
+            'extra_cover' => $extra_benefits,
+            'occupation' => $input->insurance->policy_holder->occupation,
+        ];
+
+        $result = $this->Q_GetQuote($data);
+
+        if (!$result->status) {
+            return $this->abort($result->response . ' (Quotation Number: ' . $extra_attribute->quotation_number . ')', $result->code);
+        }
+
+        $response = (object) [
+            'policy_number' => $result->response->COVERNOTE_NO
+        ];
+
+        return (object) ['status' => true, 'response' => $response];
     }
 	
     public function abort(string $message, int $code = 490) : ResponseData
@@ -547,6 +604,8 @@ class AmGeneral implements InsurerLibraryInterface
             'postcode' => $input->postcode,
             'state' => $input->state,
             'occupation' => $input->occupation,
+			'age' => $input->age,
+			'additional_driver' => $input->additional_driver,
         ];
 
         $result = $this->premiumDetails($data);
