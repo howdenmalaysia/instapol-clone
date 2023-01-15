@@ -34,8 +34,8 @@ class PromoController extends Controller
                 ->first();
         } else {
             $codes = Promotion::where('discount_target', Promotion::DT_ROADTAX)
-                ->where('valid_from', '>=', Carbon::now()->format('Y-m-d H:i:s'))
-                ->where('valid_to', '<=', Carbon::now()->format('Y-m-d H:i:s'))
+                ->where('valid_from', '<=', Carbon::now()->format('Y-m-d H:i:s'))
+                ->where('valid_to', '>=', Carbon::now()->format('Y-m-d H:i:s'))
                 ->get();
 
             if(empty($codes)) {
