@@ -427,11 +427,17 @@
             if($(e.target).is(':checked')) {
                 $('#body-type-modal').modal('show');
             } else {
-                $('#roadtax-price-display').removeClass('loadingButton').text(0.00);
-                $('#myeg-fee-display').removeClass('loadingButton').text(0.00);
-                $('#eservice-fee-display').removeClass('loadingButton').text(0.00);
-                $('#delivery-fee-display').removeClass('loadingButton').text(0.00);
-                $('#service-tax-display').removeClass('loadingButton').text(0.00);
+                motor.premium.total_payable -= $('#road-tax').text();
+                delete motor.premium.roadtax;
+                delete motor.roadtax;
+                $('#motor').val(JSON.stringify(motor));
+                
+                $('#roadtax-price-display').removeClass('loadingButton').text('0.00');
+                $('#myeg-fee-display').removeClass('loadingButton').text('0.00');
+                $('#eservice-fee-display').removeClass('loadingButton').text('0.00');
+                $('#delivery-fee-display').removeClass('loadingButton').text('0.00');
+                $('#service-tax-display').removeClass('loadingButton').text('0.00');
+
             }
         });
 
