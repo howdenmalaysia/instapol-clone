@@ -431,13 +431,16 @@
                 delete motor.premium.roadtax;
                 delete motor.roadtax;
                 $('#motor').val(JSON.stringify(motor));
-                
+
                 $('#roadtax-price-display').removeClass('loadingButton').text('0.00');
                 $('#myeg-fee-display').removeClass('loadingButton').text('0.00');
                 $('#eservice-fee-display').removeClass('loadingButton').text('0.00');
                 $('#delivery-fee-display').removeClass('loadingButton').text('0.00');
                 $('#service-tax-display').removeClass('loadingButton').text('0.00');
 
+                $('#road-tax').text('0.00').removeClass('loadingButton');
+                $('#promo-amount').text('0.00').parents('tr').addClass('d-none');
+                $('#total-payable').text(formatMoney(motor.premium.total_payable)).removeClass('loadingButton');
             }
         });
 
