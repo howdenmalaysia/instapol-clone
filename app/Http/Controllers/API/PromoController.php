@@ -32,7 +32,7 @@ class PromoController extends Controller
         if(!empty($request->code)) {
             $code = Promotion::where('code', strtoupper($request->code))
                 ->first();
-        } else {
+        } else if($request->isAutoRoadTax) {
             $codes = Promotion::where('discount_target', Promotion::DT_ROADTAX)
                 ->where('valid_from', '<=', Carbon::now()->format('Y-m-d H:i:s'))
                 ->where('valid_to', '>=', Carbon::now()->format('Y-m-d H:i:s'))
@@ -182,10 +182,9 @@ class PromoController extends Controller
                     'promo_id' => $code->id,
                     'discount_amount' => $discount_amount,
                 ]);
-            } else {
-                $motor->promo = $code;
             }
-
+            
+            $motor->promo = $code;
             $motor->premium->discounted_amount = $discount_amount;
 
             DB::commit();
