@@ -440,6 +440,7 @@
 
                 $('#road-tax').text('0.00').removeClass('loadingButton');
                 $('#promo-amount').text('0.00').parents('tr').addClass('d-none');
+                $('#promo-code').val('');
                 $('#total-payable').text(formatMoney(motor.premium.total_payable)).removeClass('loadingButton');
             }
         });
