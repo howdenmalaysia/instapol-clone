@@ -257,6 +257,9 @@
     var request = 0;
 
     $(() => {
+        // Send Land on Add Ons Page to GA
+        gtag('send', 'l_motor_ao');
+
         $('#show-more-add-ons').on('click', () => {
             let shown = $(this).data('shown');
             
@@ -406,6 +409,9 @@
         });
 
         $('#extra-coverages').on('change', '.extra-coverage-checkbox', (e) => {
+            // Send Selected Add Ons Event to GA
+            gtag('send', 's_ao_add');
+
             if(!$(e.target).parent().parent().find('.premium').hasClass('loadingButton')) {
                 $(e.target).parent().parent().find('.premium').text(' ').toggleClass('loadingButton');
             }
@@ -422,8 +428,14 @@
 
         $('#roadtax-checkbox').on('change', (e) => {
             if($(e.target).is(':checked')) {
+                // Send Selected Roadtax Event to GA
+                gtag('send', 's_ao_rdt');
+
                 $('#body-type-modal').modal('show');
             } else {
+                // Send de-select Roadtax Event to GA
+                gtag('send', 's_ao_rdt_n');
+                
                 motor.premium.total_payable -= $('#road-tax').text();
                 delete motor.premium.roadtax;
                 delete motor.roadtax;
@@ -615,6 +627,8 @@
                 isAutoRoadTax: true
             }).then((res) => {
                 console.log('Auto Apply Promo', res);
+                // Send Use Promo Event to GA
+                gtag('send', 'motor_use_promo');
 
                 if(res.data !== '') {
                     $('#motor').val(JSON.stringify(res.data));

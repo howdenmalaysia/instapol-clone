@@ -364,11 +364,17 @@
         let motor = JSON.parse($('#motor').val());
         
         $(() => {
+            // Send Landing on Payment Summary Page Event to GA
+            gtag('send', 'l_motor_su');
+
             $('#btn-pay').on('click', () => {
                 $('#agree-modal').modal('show');
             });
 
             $('#btn-pay-modal').on('click', () => {
+                // Send Checkout Event to GA
+                gtag('send', 'motor_pay');
+
                 $('#payment-form').submit();
             });
 
