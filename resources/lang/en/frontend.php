@@ -606,7 +606,6 @@ return [
             'service_tax' => 'Service Tax',
             'additional_driver_note' => 'Only named driver will be protected from the policy and it may impacts the premium price under additional coverages. Refer pricing summary (on the left) for details.',
             'add_driver' => 'Add Driver',
-            'mco_note' => 'Please note that during PPN - FASA period, the delivery of roadtax sticker will be delayed and longer than usual delivery time (> 7 days).',
             'tooltip' => [
                 'windscreen' => 'Coverage for damage to the glass only.',
                 'llop' => 'Covers you against legal liability sought by your passengers against you in an event of accident due to your negligence',

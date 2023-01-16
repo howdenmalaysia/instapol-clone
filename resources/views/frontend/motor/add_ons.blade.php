@@ -193,9 +193,6 @@
                                         <div class="col-1 text-end">RM</div>
                                         <div id="service-tax-display" class="col-2 text-end">{{ number_format(session('motor')->roadtax->sst ?? 0, 2) }}</div>
                                     </div>
-                                    <div class="alert alert-success mt-4" role="alert">
-                                        {{ __('frontend.motor.add_ons_page.mco_note') }}
-                                    </div>
                                 </div>
                             </div>
                             <div class="hidden">
