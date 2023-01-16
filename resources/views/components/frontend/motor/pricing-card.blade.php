@@ -67,11 +67,11 @@
                 <td id="road-tax" class="text-end">{{ $roadtaxTotal }}</td>
             </tr>
             <tr id="discount" class="{{ !empty(session('motor')->premium->discounted_amount) ? '' : 'd-none' }}">
-                <td class="fw-bold">
+                <td class="fw-bold text-primary">
                     {{ '- ' . __('frontend.price_card.promo') }}
                 </td>
-                <td class="text-end fw-bold">RM</td>
-                <td id="promo-amount" class="text-end fw-bold">-</td>
+                <td class="text-end text-primary fw-bold">RM</td>
+                <td id="promo-amount" class="text-end text-primary fw-bold">-</td>
             </tr>
             @if ($promo || !empty(session('motor')->promo))
                 <tr>
