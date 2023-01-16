@@ -495,7 +495,7 @@
         });
 
         $('#extra-coverages').on('change', '.option-list', (e) => {
-            $(`#checkbox-${$(e.target).data('extra-cover-code')}`).attr('checked', true).trigger('change');
+            $(`#checkbox-${$.escapeSelector($(e.target).data('extra-cover-code'))}`).attr('checked', true).trigger('change');
         });
 
         $('#body-type-wrapper').on('click', () => {
