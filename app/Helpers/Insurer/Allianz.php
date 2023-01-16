@@ -1085,6 +1085,7 @@ class Allianz implements InsurerLibraryInterface
         ]);
 
         $result = HttpClient::curl($method, $host, $options);
+        dd($options,$result);
 
         // Update the API log
         APILogs::find($log->id)

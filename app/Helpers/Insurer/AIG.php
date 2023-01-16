@@ -269,7 +269,7 @@ class AIG implements InsurerLibraryInterface
                 'vehicle' => $vehicle,
             ];
             $premium = $this->getPremium($data);
-            
+
             $excess_amount = formatNumber($premium->response->excess);
             $ncd_amount = formatNumber($premium->response->ncd_amount);
             $basic_premium = formatNumber($premium->response->gross_premium + $ncd_amount);
@@ -340,7 +340,7 @@ class AIG implements InsurerLibraryInterface
             'vehicle' => $vehicle,
         ];
         $premium = $this->getPremium($data);
-        
+
         if (!$premium->status) {
             return $this->abort($premium->response);
         }
@@ -761,7 +761,6 @@ class AIG implements InsurerLibraryInterface
             'add_driver' => $input->input->additional_driver ?? [],
             'item' => $item,
         ];
-
         // Generate XML from view
         $xml = view('backend.xml.aig.premium')->with($data)->render();
         // Call API
@@ -954,7 +953,7 @@ class AIG implements InsurerLibraryInterface
             'ccardexpdt' => '201903',
             'ccardtype' => 'VISA',
             'channel' => 'TIB',
-            'chassisno' => 'STG4567STH4567',//$input->vehicle->extra_attribute->chassis_number,
+            'chassisno' => $input->vehicle->extra_attribute->chassis_number,
             'claimamt' => doubleval('0'),
             'cncondition' => 'u',
             'cnpaystatus' => 'C',
@@ -992,7 +991,7 @@ class AIG implements InsurerLibraryInterface
             'gstregno' => '',
             'hpcode' => '001319',
             'hphoneno' => '',
-            'insertstmp' => '',//
+            'insertstmp' => '',
             'insref2' => 'RescueCare',
             'last4digit' => '',
             'lessor' => '',
@@ -1000,7 +999,7 @@ class AIG implements InsurerLibraryInterface
             'loadingperc' => doubleval('30'),
             'makecodemajor' => '31',
             'makecodeminor' => '08',
-            'makeyear' => intval('1998'), //$input->vehicle->manufacture_year
+            'makeyear' => intval($input->vehicle->manufacture_year), 
             'maritalstatus' => $input->marital_status,
             'merchantid' => '',
             'name' => $input->name ?? config('app.name'),
@@ -1814,13 +1813,12 @@ class AIG implements InsurerLibraryInterface
         ]);
 
         $result = HttpClient::curl($method, $url, $request_options);
-        
         // Update the API log
-        APILogs::find($log->id)
-            ->update([
-                'response_header' => json_encode($result->response_header),
-                'response' => $result->response
-            ]);
+        // APILogs::find($log->id)
+        //     ->update([
+        //         'response_header' => json_encode($result->response_header),
+        //         'response' => $result->response
+        //     ]);
 
         if($result->status) {
             $cleaned_xml = preg_replace('/(<\/|<)[a-zA-Z]+:([a-zA-Z0-9]+[ =>])/', '$1$2', $result->response);
