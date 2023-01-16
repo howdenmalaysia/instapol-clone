@@ -427,11 +427,21 @@
             if($(e.target).is(':checked')) {
                 $('#body-type-modal').modal('show');
             } else {
-                $('#roadtax-price-display').removeClass('loadingButton').text(0.00);
-                $('#myeg-fee-display').removeClass('loadingButton').text(0.00);
-                $('#eservice-fee-display').removeClass('loadingButton').text(0.00);
-                $('#delivery-fee-display').removeClass('loadingButton').text(0.00);
-                $('#service-tax-display').removeClass('loadingButton').text(0.00);
+                motor.premium.total_payable -= $('#road-tax').text();
+                delete motor.premium.roadtax;
+                delete motor.roadtax;
+                $('#motor').val(JSON.stringify(motor));
+
+                $('#roadtax-price-display').removeClass('loadingButton').text('0.00');
+                $('#myeg-fee-display').removeClass('loadingButton').text('0.00');
+                $('#eservice-fee-display').removeClass('loadingButton').text('0.00');
+                $('#delivery-fee-display').removeClass('loadingButton').text('0.00');
+                $('#service-tax-display').removeClass('loadingButton').text('0.00');
+
+                $('#road-tax').text('0.00').removeClass('loadingButton');
+                $('#promo-amount').text('0.00').parents('tr').addClass('d-none');
+                $('#promo-code').val('');
+                $('#total-payable').text(formatMoney(motor.premium.total_payable)).removeClass('loadingButton');
             }
         });
 
@@ -484,8 +494,8 @@
             }
         });
 
-        $('.option-list').on('change', (e) => {
-            $(`#checkbox-${$(e.target).data('extra-cover-code')}`).attr('checked', true).trigger('change');
+        $('#extra-coverages').on('change', '.option-list', (e) => {
+            $(`#checkbox-${$.escapeSelector($(e.target).data('extra-cover-code'))}`).attr('checked', true).trigger('change');
         });
 
         $('#body-type-wrapper').on('click', () => {
@@ -504,9 +514,9 @@
 
         selected_extra_cover.forEach((extra_cover) => {
             if(extra_cover.option_list) {
-                extra_cover.sum_insured = $(`#sum-insured-${$.escapeSelector(extra_cover.extra_cover_code)}`).val();
+                extra_cover.sum_insured = parseFloat($(`#sum-insured-${$.escapeSelector(extra_cover.extra_cover_code)}`).val());
             } else {
-                extra_cover.sum_insured = $('#sum-insured-slider').val();
+                extra_cover.sum_insured = parseFloat($('#sum-insured-slider').val());
             }
         });
 
@@ -597,9 +607,38 @@
             // Update Pricing Card
             $('#road-tax').text(formatMoney(res.data.total));
             motor.premium.total_payable += parseFloat(res.data.total);
+            motor.premium.roadtax = res.data.total;
+            motor.roadtax = res.data;
             $('#motor').val(JSON.stringify(motor));
             $('#total-payable').text(formatMoney(motor.premium.total_payable));
 
+            // Auto Apply Promo Code
+            instapol.post("{{ route('motor.api.use-promo') }}", {
+                motor: motor,
+                isAutoRoadTax: true
+            }).then((res) => {
+                console.log('Auto Apply Promo', res);
+
+                if(res.data !== '') {
+                    $('#motor').val(JSON.stringify(res.data));
+        
+                    // Update Pricing Card
+                    $('#road-tax').text(formatMoney(res.data.roadtax.total)).removeClass('loadingButton');
+                    $('#total-payable').text(formatMoney(res.data.premium.total_payable)).removeClass('loadingButton');
+                    $('#promo-amount').text(formatMoney(res.data.premium.discounted_amount || 0.00));
+        
+                    if(parseFloat($('#promo-amount').text()) > 0) {
+                        $('#discount').removeClass('d-none');
+                    }
+        
+                    $('#promo-code').val(res.data.promo.code);
+                    motor.premium.discounted_amount = res.data.premium.discounted_amount;
+                    motor.premium.total_payable = res.data.premium.total_payable;
+                    $('#motor').val(JSON.stringify(motor));
+                }
+            }).catch((err) => {
+                console.log(err);
+            });
         }).catch((err) => {
             console.log(err.response);
         });

@@ -484,14 +484,13 @@ class Liberty implements InsurerLibraryInterface
             $response->basic_premium = $basic_premium;
             $response->excess_amount = $excess_amount;
             $response->gross_premium = $gross_premium;
-            $response->ncd = $ncd_amount;
+            $response->ncd_amount = $ncd_amount;
             $response->ncd_percentage = $ncd_percentage;
             $response->net_premium = $net_premium;
             $response->sst_amount = $sst_amount;
             $response->sst_percent = $sst_percent;
             $response->stamp_duty = $stamp_duty;
             $response->total_benefit_amount = 0;
-            $response->total_contribution = $total_payable;
             $response->total_payable = $total_payable;
 
             $response->vehicle = $vehicle;
@@ -992,7 +991,7 @@ class Liberty implements InsurerLibraryInterface
             'company_registration_code' => $input->company_registration_code,
             'cover_code' => self::COVER_CODE,
             'date_of_birth' => formatDateFromIC($input->insurance->holder->id_number),
-            'domain' => $this->domain,
+            'domain' => $this->host,
             'driving_experience' => $input->insurance->holder->age - 18,
             'effective_date' => Carbon::parse($input->insurance->inception_date)->format('Y-m-d'),
             'effective_time' => $effective_time,

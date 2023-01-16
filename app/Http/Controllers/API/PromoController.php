@@ -18,7 +18,7 @@ class PromoController extends Controller
     public function usePromoCode(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'code' => 'string|required',
+            'code' => 'string|nullable',
             'motor' => 'array|required'
         ]);
 
@@ -29,8 +29,42 @@ class PromoController extends Controller
         $motor = toObject($request->motor);
 
         // 1. Find the code
-        $code = Promotion::where('code', strtoupper($request->code))
-            ->first();
+        if(!empty($request->code)) {
+            $code = Promotion::where('code', strtoupper($request->code))
+                ->first();
+        } else if($request->isAutoRoadTax) {
+            $codes = Promotion::where('discount_target', Promotion::DT_ROADTAX)
+                ->where('valid_from', '<=', Carbon::now()->format('Y-m-d H:i:s'))
+                ->where('valid_to', '>=', Carbon::now()->format('Y-m-d H:i:s'))
+                ->get();
+
+            if(empty($codes)) {
+                return;
+            }
+
+            $values = collect([]);
+
+            foreach($codes as $promo) {
+                $discount_amount = 0;
+
+                if($promo->discount_percentage > 0 && $promo->discount_amount === 0) {
+                    $discount_amount = $motor->premium->roadtax * ($promo->discount_percentage / 100);
+                } else {
+                    $discount_amount = $promo->discount_amount;
+                }
+
+                $values->push([
+                    'code' => $promo->code,
+                    'amount' => $discount_amount
+                ]);
+            }
+
+            $highest_discount_code = $values->firstWhere('amount', $values->max('amount'));
+
+            $code = $codes->filter(function($_code) use($highest_discount_code) {
+                return $_code->code === $highest_discount_code['code'];
+            })->first();
+        }
 
         if(empty($code)) {
             return $this->abort(__('api.promo_code_not_found'));
@@ -57,7 +91,6 @@ class PromoController extends Controller
                 return $this->abort(__('api.promo_min_spend_not_achieved', ['amount' => floatval($motor->premium->total_payable) - floatval($code->minimum_apend)]));
             }
         }
-
 
         /// d. Domain Restriction
         if($code->restrict_domain) {
@@ -87,15 +120,6 @@ class PromoController extends Controller
                     $discount_amount = $code->discount_amount;
                 }
 
-                $motor->premium->{$code->discount_target} -= $discount_amount;
-
-                if($code->discount_target === 'basic_premium') {
-                    $motor->premium->gross_premium -= $discount_amount;
-                    $motor->premium->sst_amount = $motor->premium->gross_premium * 0.06;
-                } else if($code->discount_target === 'gross_premium') {
-                    $motor->premium->sst_amount = $motor->premium->gross_premium * 0.06;
-                }
-
                 break;
             }
             case 'service_tax': {
@@ -104,8 +128,6 @@ class PromoController extends Controller
                 } else {
                     $discount_amount = $code->discount_amount;
                 }
-
-                $motor->premium->sst_amount -= $discount_amount;
 
                 break;
             }
@@ -116,9 +138,6 @@ class PromoController extends Controller
                     $discount_amount = $code->discount_amount;
                 }
 
-                $motor->roadtax->total -= $discount_amount;
-                $motor->premium->roadtax -= $discount_amount;
-
                 break;
             }
             default: {
@@ -127,17 +146,17 @@ class PromoController extends Controller
         }
 
         /// Update Total Payable Amount
-        $motor->premium->total_payable = $motor->premium->gross_premium + $motor->premium->sst_amount + $motor->premium->stamp_duty + $motor->premium->roadtax ?? 0;
+        $motor->premium->total_payable -= $discount_amount;
 
         try {
             DB::beginTransaction();
-
-            // 4. Add Use Count
-            Promotion::where('code', $request->code)
-                ->update(['use_count' => $code->use_count++]);
-    
+            
             if(!empty($motor->insurance_code)) {
-                // 5. Update to InsurancePromo table
+                // 4a. Add Use Count
+                Promotion::where('code', $request->code)
+                    ->update(['use_count' => $code->use_count++]);
+
+                // 4b. Update to InsurancePromo table
                 $insurance = Insurance::where('insurance_code', $motor->insurance_code)
                     ->firstOrFail();
 
@@ -149,10 +168,9 @@ class PromoController extends Controller
                     'promo_id' => $code->id,
                     'discount_amount' => $discount_amount,
                 ]);
-            } else {
-                $motor->promo = $code;
             }
-
+            
+            $motor->promo = $code;
             $motor->premium->discounted_amount = $discount_amount;
 
             DB::commit();

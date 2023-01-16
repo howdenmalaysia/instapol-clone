@@ -28,7 +28,7 @@ return [
     'invalid_insurance_status' => 'Invalid Insurance Status. (Insurance Status: :status)',
     'insurance_record_not_match' => 'Insurance record not match.',
     'total_payable_not_match' => 'Premium amount not match.',
-    'promo_code_not_found' => 'Promo cpde that you entered doesn\'t exist in our record',
+    'promo_code_not_found' => 'Promo code that you entered doesn\'t exist in our record',
     'promo_hasnt_start' => 'Promotion is only valid from :start onwards.',
     'promo_expired' => 'Promo code you entered has expired.',
     'promo_code_ran_out' => 'Promo code has been fully redeemed.',
