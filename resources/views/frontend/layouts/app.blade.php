@@ -25,6 +25,9 @@
         <link rel="shortcut icon" href="{{ asset('images/favicon.png') }}" type="image/png">
 
         <link rel="stylesheet" href="{{ mix('css/frontend.css') }}">
+
+        {{-- Google Analytics --}}
+        @include('frontend.includes.ga')
     </head>
     <body class="d-flex flex-column min-vh-100">
         @include('frontend.includes.navbar')
@@ -69,6 +72,5 @@
         @stack('after-scripts')
 
         @include('frontend.includes.mb')
-        @include('frontend.includes.ga')
     </body>
 </html>
