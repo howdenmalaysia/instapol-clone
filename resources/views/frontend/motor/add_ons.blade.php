@@ -494,7 +494,7 @@
             }
         });
 
-        $('.option-list').on('change', (e) => {
+        $('#extra-coverages').on('change', '.option-list', (e) => {
             $(`#checkbox-${$(e.target).data('extra-cover-code')}`).attr('checked', true).trigger('change');
         });
 
