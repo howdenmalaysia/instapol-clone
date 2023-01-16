@@ -231,6 +231,9 @@
         let motor = JSON.parse($('input#motor').val());
 
         $(() => {
+            // Send Land on Motor Page to GA
+            gtag('send', 'l_motor_la');
+
             new Inputmask({mask: '999999-99-9999'}).mask('#id-number');
 
             $('#vehicle-no-continue').on('click', () => {
@@ -265,6 +268,15 @@
                 if(form.parsley().validate()) {
                     $('input[name=id_type]').val($('input[name=id_type]:checked').val());
                     $(e.target).addClass('loadingButton');
+
+                    // Set User Data to GA
+                    gtag('set', 'user_data', {
+                        'email': $('#email-address').val(),
+                        'phone_number': '+6' + $('#phone-number').val().replace('-', ''),
+                        'address': {
+                            'postal_code': $('#postcode').val(),
+                        }
+                    });
 
                     form.submit();
                 } else {

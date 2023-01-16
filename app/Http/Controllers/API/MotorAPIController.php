@@ -187,7 +187,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
                 'ncd_percentage' => $motor->vehicle->ncd_percentage,
                 'coverage' => $motor->vehicle->coverage,
                 'inception_date' => Carbon::parse($motor->vehicle->inception_date)->format('Y-m-d'),
-                'expiry_date' => Carbon::parse($motor->vehicle->inception_date)->subDay()->format('Y-m-d'),
+                'expiry_date' => empty($motor->vehicle->expiry_date) ? Carbon::parse($motor->vehicle->inception_date)->addYear()->subDay()->format('Y-m-d') : Carbon::parse($motor->vehicle->expiry_date)->format('Y-m-d'),
                 'sum_insured_type' => $motor->vehicle->sum_insured_type ?? '',
                 'sum_insured' => $motor->vehicle->sum_insured ?? 0.00,
                 'min_sum_insured' => $motor->vehicle->min_sum_insured ?? 0.00,

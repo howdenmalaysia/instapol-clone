@@ -301,6 +301,9 @@
 
 @push('after-scripts')
     <script>
+        // Send Landing on Comapre Page Event to GA
+        gtag('send', 'l_motor_cm');
+
         let motor = JSON.parse($('#motor').val());
         let products = JSON.parse($('#products').val());
         let premiums = [];
@@ -351,6 +354,9 @@
             });
 
             $('#compare').on('click', '.btn-buy', (e) => {
+                // Send Clicked Buy Button Event to GA
+                gtag('send', 'c_cmp_buy');
+
                 $(e.target).addClass('loadingButton');
 
                 if(controller) {
@@ -376,6 +382,9 @@
             });
 
             $('.btn-compare').on('click', (e) => {
+                // Send Clicked Compare Button Event to GA
+                gtag('send', 'c_cmp_cmp');
+
                 let product_id = $(e.target).data('product_id');
 
                 if(!$(e.target).hasClass('btn-primary text-white')) {
