@@ -120,15 +120,6 @@ class PromoController extends Controller
                     $discount_amount = $code->discount_amount;
                 }
 
-                $motor->premium->{$code->discount_target} -= $discount_amount;
-
-                if($code->discount_target === 'basic_premium') {
-                    $motor->premium->gross_premium -= $discount_amount;
-                    $motor->premium->sst_amount = $motor->premium->gross_premium * 0.06;
-                } else if($code->discount_target === 'gross_premium') {
-                    $motor->premium->sst_amount = $motor->premium->gross_premium * 0.06;
-                }
-
                 break;
             }
             case 'service_tax': {
@@ -138,8 +129,6 @@ class PromoController extends Controller
                     $discount_amount = $code->discount_amount;
                 }
 
-                $motor->premium->sst_amount -= $discount_amount;
-
                 break;
             }
             case 'road_tax': {
@@ -148,9 +137,6 @@ class PromoController extends Controller
                 } else {
                     $discount_amount = $code->discount_amount;
                 }
-
-                $motor->roadtax->total -= $discount_amount;
-                $motor->premium->roadtax -= $discount_amount;
 
                 break;
             }
@@ -164,13 +150,13 @@ class PromoController extends Controller
 
         try {
             DB::beginTransaction();
-
-            // 4. Add Use Count
-            Promotion::where('code', $request->code)
-                ->update(['use_count' => $code->use_count++]);
-    
+            
             if(!empty($motor->insurance_code)) {
-                // 5. Update to InsurancePromo table
+                // 4a. Add Use Count
+                Promotion::where('code', $request->code)
+                    ->update(['use_count' => $code->use_count++]);
+
+                // 4b. Update to InsurancePromo table
                 $insurance = Insurance::where('insurance_code', $motor->insurance_code)
                     ->firstOrFail();
 
