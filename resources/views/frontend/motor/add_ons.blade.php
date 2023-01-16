@@ -633,6 +633,7 @@
         
                     $('#promo-code').val(res.data.promo.code);
                     motor.premium.discounted_amount = res.data.premium.discounted_amount;
+                    motor.premium.total_payable = res.data.premium.total_payable;
                     $('#motor').val(JSON.stringify(motor));
                 }
             }).catch((err) => {
