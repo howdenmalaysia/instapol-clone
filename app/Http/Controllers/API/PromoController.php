@@ -146,7 +146,7 @@ class PromoController extends Controller
         }
 
         /// Update Total Payable Amount
-        $motor->premium->total_payable = $motor->premium->gross_premium + $motor->premium->sst_amount + $motor->premium->stamp_duty + $motor->premium->roadtax ?? 0;
+        $motor->premium->total_payable -= $discount_amount;
 
         try {
             DB::beginTransaction();
