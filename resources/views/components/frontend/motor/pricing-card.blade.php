@@ -71,7 +71,7 @@
                     {{ '- ' . __('frontend.price_card.promo') }}
                 </td>
                 <td class="text-end text-primary fw-bold">RM</td>
-                <td id="promo-amount" class="text-end text-primary fw-bold">-</td>
+                <td id="promo-amount" class="text-end text-primary fw-bold">{{ session('motor')->premium->discounted_amount ?? '-' }}</td>
             </tr>
             @if ($promo || !empty(session('motor')->promo))
                 <tr>
