@@ -218,6 +218,14 @@
         let motor = JSON.parse($('#motor').val());
 
         $(() => {
+            // Send Land on Policy Holder Page Event to GA
+            gtag('send', 'l_motor_ph');
+
+            $('#policy-holder-form').on('change', () => {
+                // Send Start Filling Up Form Event to GA
+                gtag('send', 'fill_form');
+            });
+
             $('#btn-next').on('click', (e) => {
                 let form = $('#policy-holder-form');
 
@@ -272,7 +280,7 @@
                     form.submit();
                 }).catch((err) => {
                     $(e.target).removeClass('loadingButton');
-                    swalAlert(err.message);
+                    swalAlert(err.response.data.message || err.message);
                     console.log(err);
                 });
             });

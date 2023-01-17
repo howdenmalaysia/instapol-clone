@@ -65,3 +65,12 @@
         </x-static-page>
     </section>
 @endsection
+
+@push('after-scripts')
+    <script>
+        $(() => {
+            // Send Land on Payment Success Page Event to GA
+            gtag('send', 'l_motor_suc');
+        });
+    </script>
+@endpush

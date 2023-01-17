@@ -148,6 +148,9 @@
         let motor = JSON.parse($('#motor').val());
 
         $(function() {
+            // Send Land on Vehicle Details Event to GA
+            gtag('send', 'l_motor_vd');
+            
             fetchData();
 
             $('#variants').on('change', function() {
