@@ -302,7 +302,7 @@
 @push('after-scripts')
     <script>
         // Send Landing on Comapre Page Event to GA
-        gtag('send', 'l_motor_cm');
+        gtag('event', 'l_motor_cm', { 'debug_mode': true });
 
         let motor = JSON.parse($('#motor').val());
         let products = JSON.parse($('#products').val());
@@ -355,7 +355,7 @@
 
             $('#compare').on('click', '.btn-buy', (e) => {
                 // Send Clicked Buy Button Event to GA
-                gtag('send', 'c_cmp_buy');
+                gtag('event', 'c_cmp_buy', { 'debug_mode': true });
 
                 $(e.target).addClass('loadingButton');
 
@@ -383,7 +383,7 @@
 
             $('.btn-compare').on('click', (e) => {
                 // Send Clicked Compare Button Event to GA
-                gtag('send', 'c_cmp_cmp');
+                gtag('event', 'c_cmp_cmp', { 'debug_mode': true });
 
                 let product_id = $(e.target).data('product_id');
 

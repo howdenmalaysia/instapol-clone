@@ -258,7 +258,7 @@
 
     $(() => {
         // Send Land on Add Ons Page to GA
-        gtag('send', 'l_motor_ao');
+        gtag('event', 'l_motor_ao', { 'debug_mode': true });
 
         $('#show-more-add-ons').on('click', () => {
             let shown = $(this).data('shown');
@@ -410,7 +410,7 @@
 
         $('#extra-coverages').on('change', '.extra-coverage-checkbox', (e) => {
             // Send Selected Add Ons Event to GA
-            gtag('send', 's_ao_add');
+            gtag('event', 's_ao_add', { 'debug_mode': true });
 
             if(!$(e.target).parent().parent().find('.premium').hasClass('loadingButton')) {
                 $(e.target).parent().parent().find('.premium').text(' ').toggleClass('loadingButton');
@@ -429,12 +429,12 @@
         $('#roadtax-checkbox').on('change', (e) => {
             if($(e.target).is(':checked')) {
                 // Send Selected Roadtax Event to GA
-                gtag('send', 's_ao_rdt');
+                gtag('event', 's_ao_rdt', { 'debug_mode': true });
 
                 $('#body-type-modal').modal('show');
             } else {
                 // Send de-select Roadtax Event to GA
-                gtag('send', 's_ao_rdt_n');
+                gtag('event', 's_ao_rdt_n', { 'debug_mode': true });
                 
                 motor.premium.total_payable -= $('#road-tax').text();
                 delete motor.premium.roadtax;
@@ -628,7 +628,7 @@
             }).then((res) => {
                 console.log('Auto Apply Promo', res);
                 // Send Use Promo Event to GA
-                gtag('send', 'motor_use_promo');
+                gtag('event', 'motor_use_promo', { 'debug_mode': true });
 
                 if(res.data !== '') {
                     $('#motor').val(JSON.stringify(res.data));

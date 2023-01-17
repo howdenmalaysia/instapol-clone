@@ -149,7 +149,7 @@
 
         $(function() {
             // Send Land on Vehicle Details Event to GA
-            gtag('send', 'l_motor_vd');
+            gtag('event', 'l_motor_vd', { 'debug_mode': true });
             
             fetchData();
 
