@@ -125,7 +125,7 @@
 
             function checkPromo(isAuto = false) {
                 // Send Use Promo Event to GA
-                gtag('send', 'motor_use_promo');
+                gtag('event', 'motor_use_promo', { 'debug_mode': true });
                 
                 instapol.post("{{ route('motor.api.use-promo') }}", {
                     motor: motor,

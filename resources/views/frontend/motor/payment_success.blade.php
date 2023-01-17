@@ -70,7 +70,7 @@
     <script>
         $(() => {
             // Send Land on Payment Success Page Event to GA
-            gtag('send', 'l_motor_suc');
+            gtag('event', 'l_motor_suc', { 'debug_mode': true });
         });
     </script>
 @endpush
