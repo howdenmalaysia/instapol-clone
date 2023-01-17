@@ -454,7 +454,7 @@ class Allianz implements InsurerLibraryInterface
                 'vix'=>$vehicle,
             ];
             $motor_premium = $this->getQuotation($get_quotation);
-
+            dd($motor_premium);
             if (!$motor_premium->status) {
                 return $this->abort($motor_premium->response);
             }
@@ -901,6 +901,7 @@ class Allianz implements InsurerLibraryInterface
                 "mvInd": "Y"
             }
         }';
+        // dd($text);
 		$result = $this->cURL("getData", "/quote", $text);
         if(!$result->status) {
             return $this->abort($result->response);
@@ -1046,10 +1047,8 @@ class Allianz implements InsurerLibraryInterface
 			];
 			$options['form_params'] = [
 				'grant_type' => 'client_credentials',
-				'username' => $this->username,
-				'password' => $this->password,
 			];
-
+            $postfield = $options['form_params'];
         }
         else{
             $token = $this->get_token();
@@ -1071,8 +1070,8 @@ class Allianz implements InsurerLibraryInterface
                 $host = $this->host . $function;
             }
 
-            $postfield = $data;
-            $options['body'] = $postfield;
+            $options['body'] = $data;
+            $postfield = $options['body'];
         }
         
         $log = APILogs::create([
@@ -1081,12 +1080,11 @@ class Allianz implements InsurerLibraryInterface
             'domain' => $this->url,
             'path' => $function,
             'request_header' => json_encode($options['headers']),
-            'request' => json_encode($options['body'] ?? json_encode($options['form_params'])),
+            'request' => json_encode($postfield),
         ]);
 
         $result = HttpClient::curl($method, $host, $options);
-        dd($options,$result);
-
+dump($result);
         // Update the API log
         APILogs::find($log->id)
             ->update([

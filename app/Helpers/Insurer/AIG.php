@@ -1785,7 +1785,7 @@ class AIG implements InsurerLibraryInterface
     public function cURL(string $path, string $xml, string $soap_action = null, string $method = 'POST', array $header = []) : ResponseData
     {
         // Concatenate URL
-        $url = $this->url . $path.'?wsdl';
+        $url = $this->url .'/'. $path.'?wsdl';
         
         // Check XML Error
         libxml_use_internal_errors(true);
@@ -1814,12 +1814,11 @@ class AIG implements InsurerLibraryInterface
 
         $result = HttpClient::curl($method, $url, $request_options);
         // Update the API log
-        // APILogs::find($log->id)
-        //     ->update([
-        //         'response_header' => json_encode($result->response_header),
-        //         'response' => $result->response
-        //     ]);
-
+        APILogs::find($log->id)
+            ->update([
+                'response_header' => json_encode($result->response_header),
+                'response' => $result->response
+            ]);
         if($result->status) {
             $cleaned_xml = preg_replace('/(<\/|<)[a-zA-Z]+:([a-zA-Z0-9]+[ =>])/', '$1$2', $result->response);
             $response = simplexml_load_string($cleaned_xml);
