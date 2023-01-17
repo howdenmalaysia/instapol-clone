@@ -7,6 +7,6 @@
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
 
-    gtag('config', "{{ config('setting.ga_tracking_id') }}");
+    gtag('config', "{{ config('setting.ga_tracking_id') }}", { 'debug_mode': true });
   </script>
 @endif
