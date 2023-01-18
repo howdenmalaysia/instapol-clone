@@ -29,6 +29,8 @@ class AIG implements InsurerLibraryInterface
     private const EXTRA_COVERAGE_LIST = ['25','57','89'];
     private const MIN_SUM_INSURED = 11000;
     private const MAX_SUM_INSURED = 600000;
+    private const ADJUSTMENT_RATE_UP = 10;
+    private const ADJUSTMENT_RATE_DOWN = 10;
     private const OCCUPATION = '99';
     private const ANTI_THEFT = 'A';
     private const PIAM_DRIVER = '03'; // All Drivers
@@ -84,6 +86,13 @@ class AIG implements InsurerLibraryInterface
         }
         // 2. Check Sum Insured -> market price
         $sum_insured = formatNumber($vix->response->arrResExtraParam->item[0]->value, 0);
+        if($sum_insured < self::MIN_SUM_INSURED || roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_UP, true) > self::MAX_SUM_INSURED) {
+            return $this->abort(__('api.sum_insured_referred_between', [
+                'min_sum_insured' => self::MIN_SUM_INSURED,
+                'max_sum_insured' => self::MAX_SUM_INSURED
+            ]), config('setting.response_codes.sum_insured_referred'));
+        }
+        
         $sum_insured_type = "Makert Value";
         if ($sum_insured < self::MIN_SUM_INSURED || $sum_insured > self::MAX_SUM_INSURED) {
             return $this->abort(
@@ -117,8 +126,8 @@ class AIG implements InsurerLibraryInterface
                 'model' => null,
                 'model_code' => intval($vix->response->ismmodelcode),
                 'manufacture_year' => intval($vix->response->makeyear),
-                'max_sum_insured' => doubleval(self::MAX_SUM_INSURED),
-                'min_sum_insured' => doubleval(self::MIN_SUM_INSURED),
+                'max_sum_insured' => roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_UP, true, self::MAX_SUM_INSURED),
+                'min_sum_insured' => roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_DOWN, false, self::MIN_SUM_INSURED),
                 'sum_insured' => $sum_insured,
                 'sum_insured_type' => 'Market Value',
                 'ncd_percentage' => floatval($vix->response->ncdperc),

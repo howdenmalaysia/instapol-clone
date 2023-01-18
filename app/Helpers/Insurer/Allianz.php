@@ -25,6 +25,8 @@ class Allianz implements InsurerLibraryInterface
 	private string $password;
     private const MIN_SUM_INSURED = 10000;
     private const MAX_SUM_INSURED = 500000;
+    private const ADJUSTMENT_RATE_UP = 10;
+    private const ADJUSTMENT_RATE_DOWN = 10;
     private const OCCUPATION = '99';
 
     private const EXTRA_COVERAGE_LIST = ['89A', '112', '97A'];
@@ -87,6 +89,13 @@ class Allianz implements InsurerLibraryInterface
 
         // 2. Check Sum Insured -> market price
         $sum_insured = formatNumber($vix->response->nvicList[0]->vehicleMarketValue, 0);
+        if($sum_insured < self::MIN_SUM_INSURED || roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_UP, true) > self::MAX_SUM_INSURED) {
+            return $this->abort(__('api.sum_insured_referred_between', [
+                'min_sum_insured' => self::MIN_SUM_INSURED,
+                'max_sum_insured' => self::MAX_SUM_INSURED
+            ]), config('setting.response_codes.sum_insured_referred'));
+        }
+        
         $sum_insured_type = "Makert Value";
         if ($sum_insured < self::MIN_SUM_INSURED || $sum_insured > self::MAX_SUM_INSURED) {
             return $this->abort(
@@ -140,8 +149,8 @@ class Allianz implements InsurerLibraryInterface
                 'model' => $vix->response->vehicleModel,
                 'model_code' => intval($vix->response->modelCode),
                 'manufacture_year' => intval($vix->response->yearOfManufacture),
-                'max_sum_insured' => doubleval(self::MAX_SUM_INSURED),
-                'min_sum_insured' => doubleval(self::MIN_SUM_INSURED),
+                'max_sum_insured' => roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_UP, true, self::MAX_SUM_INSURED),
+                'min_sum_insured' => roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_DOWN, false, self::MIN_SUM_INSURED),
                 'sum_insured' => $sum_insured,
                 'sum_insured_type' => 'Market Value',
                 'ncd_percentage' => floatval($vix->response->ncdPercentage),
@@ -178,7 +187,7 @@ class Allianz implements InsurerLibraryInterface
         $text = '{
             "ReferenceNo": "'.$quotation->contract->contractNumber.'",
             "ProductCat": "MT",
-            "SourceSystem": "HOWDEN",
+            "SourceSystem": "PARTNER_ID",
             "ClaimsExp": "0",
             "ReconInd": "N",
             "ExcessWaiveInd": "'.$quotation->contract->excessWaiveInd.'",
@@ -445,7 +454,9 @@ class Allianz implements InsurerLibraryInterface
                     'engine_number' => $vehicle_vix->response->engine_number,
                     'seating_capacity' => $vehicle_vix->response->seating_capacity,
                     'contractNumber' => $vehicle_vix->contractNumber,
-                    'avvariant' => $avvariant
+                    'avvariant' => $avvariant,
+                    'make_code' => $vehicle_vix->response->make_code,
+                    'model_code' => $vehicle_vix->response->model_code,
                 ],
             ]);
             // get premium
@@ -454,7 +465,6 @@ class Allianz implements InsurerLibraryInterface
                 'vix'=>$vehicle,
             ];
             $motor_premium = $this->getQuotation($get_quotation);
-            dd($motor_premium);
             if (!$motor_premium->status) {
                 return $this->abort($motor_premium->response);
             }
@@ -474,6 +484,7 @@ class Allianz implements InsurerLibraryInterface
             // Remove Extra Cover which is not entitled
             $available_benefits = self::EXTRA_COVERAGE_LIST;
             
+            $extra_cover_list = [];
             // Generate Extra Cover List
             foreach($available_benefits as $extra_cover_code) {
                 $_sum_insured_amount = $_cart_amount = $_cart_day = 0;
@@ -557,8 +568,10 @@ class Allianz implements InsurerLibraryInterface
                 }
 
                 // Include into $input->extra_cover to get the premium
-                array_push($input->extra_cover, $item);
+                array_push($extra_cover_list, $item);
             }
+            // Include Extra Covers to Get Premium
+            $input->extra_cover = $extra_cover_list;
         }
 
         // get premium
@@ -566,8 +579,7 @@ class Allianz implements InsurerLibraryInterface
             'input'=>$input,
             'vix'=>$vehicle,
         ];
-        $motor_premium = $this->getQuotation($get_quotation);
-        
+        $motor_premium = $this->update_quotation($get_quotation);
         if (!$motor_premium->status) {
             return $this->abort($motor_premium->response);
         }
@@ -578,13 +590,15 @@ class Allianz implements InsurerLibraryInterface
                 foreach($motor_premium->response->additionalCover as $extra) {
                     if((string) $extra->coverCode === $extra_cover->extra_cover_code) {
                         $extra_cover->premium = formatNumber((float) $extra->displayPremium);
-                        $total_benefit_amount += (float) $extra->displayPremium;
-                        $extra_cover->selected = floatval($extra->displayPremium) == 0;
+                        $total_benefit_amount += (float)$extra->displayPremium;
+                        $extra_cover->selected = (float)$extra->displayPremium == 0;
     
                         if(!empty($extra->coverSumInsured)) {
                             $extra_cover->sum_insured = formatNumber((float) $extra->coverSumInsured);
                         }
-                        array_push($new_extracover_list, $extra_cover);
+                        if($extra_cover->premium > 0){
+                            array_push($new_extracover_list, $extra_cover);
+                        }
                     }
                 }
             }
@@ -595,7 +609,7 @@ class Allianz implements InsurerLibraryInterface
             'basic_premium' => formatNumber($motor_premium->response->premium->basicPremium),
             'ncd_percentage' => $motor_premium->response->premium->ncdPct,
             'ncd_amount' => formatNumber($motor_premium->response->premium->ncdAmt),
-            'total_benefit_amount' => 0.00, //formatNumber($motor_premium->response->premium->EXTRACOVERAGE_AMOUNT),
+            'total_benefit_amount' => formatNumber($total_benefit_amount),
             'gross_premium' => formatNumber($motor_premium->response->premium->grossPremium),
             'sst_percent' => formatNumber($motor_premium->response->premium->serviceTaxPercentage),
             'sst_amount' => formatNumber($motor_premium->response->premium->serviceTaxAmount),
@@ -603,7 +617,7 @@ class Allianz implements InsurerLibraryInterface
             'excess_amount' => formatNumber($motor_premium->response->premium->excessAmount),
             'total_payable' => formatNumber($motor_premium->response->premium->premiumDueRoundedAfterPTV),
             'net_premium' => formatNumber($motor_premium->response->premium->premiumDueRoundedAfterPTV - $motor_premium->response->premium->commissionAmount),
-            'extra_cover' => $input->extra_cover,
+            'extra_cover' => $this->sortExtraCoverList($input->extra_cover),
             'personal_accident' => $pa,
             // 'quotation_number' => $motor_premium->response->premium->QUOTATION_NO,
             'sum_insured' => formatNumber($vehicle->sum_insured ?? 0),
@@ -618,8 +632,7 @@ class Allianz implements InsurerLibraryInterface
             $response->basic_premium = $basic_premium;
             $response->ncd_percentage = $ncd_percentage;
             $response->ncd_amount = $ncd_amount;
-            // $response->total_benefit_amount = $total_benefit_amount;
-            $response->total_benefit_amount = 0.00;
+            $response->total_benefit_amount = 0;
             $response->gross_premium = $gross_premium;
             $response->sst_percent = $sst_percent;
             $response->sst_amount = $sst_amount;
@@ -632,6 +645,86 @@ class Allianz implements InsurerLibraryInterface
             $response->vehicle = $vehicle;
         }
         return (object) ['status' => true, 'response' => $response];
+    }
+
+    private function sortExtraCoverList(array $extra_cover_list) : array
+    {
+        foreach ($extra_cover_list as $_extra_cover) {
+            $sequence = 99;
+            switch ((array)$_extra_cover->extra_cover_code) {
+                case 'PAB-ERW': { // Motor Enhanced Road Warrior
+                    $sequence = 1;
+                    break;
+                }
+                case '72': { // Legal Liability Of Passengers for Negligent Acts
+                    $sequence = 2;
+                    break;
+                }
+                case '89': { // Cover for Windscreens, Windows And Sunroof
+                    $sequence = 4;
+                    break;
+                }
+                case '97A': { // Gas Conversion Kit and Tank
+                    $sequence = 5;
+                    break;
+                }
+                case '101': { // Extension of Cover To The Kingdom of Thailand
+                    $sequence = 6;
+                    break;
+                }
+                case '102': { // Extension of Cover to Kalimantan
+                    $sequence = 7;
+                    break;
+                }
+                case '25': { // Strike , Riot , and Civil Commotion
+                    $sequence = 8;
+                    break;
+                }
+                case '100(a)': { // Legal Liability to Passengers
+                    $sequence = 9;
+                    break;
+                }
+                case 'A202': { // Private Hire Car (e-Hailing)
+                    $sequence = 10;
+                    break;
+                }
+                case '57': { // Inclusion of Special Perils
+                    $sequence = 11;
+                    break;
+                }
+                case '11': { // Current Year "NCD" Relief
+                    $sequence = 12;
+                    break;
+                }
+                case '112': { // Compensation For Assessed Repair Time (CART)
+                    $sequence = 13;
+                    break;
+                }
+                case '109': { // Sabah Ferry Transit
+                    $sequence = 14;
+                    break;
+                }
+                case 'A209': { // Car Break-In/Robbery
+                    $sequence = 16;
+                    break;
+                }
+                case 'A206': { // Key Care
+                    $sequence = 17;
+                    break;
+                }
+                case 'PAB3': { // Driver and Passengers Shield
+                    $sequence = 18;
+                    break;
+                }
+            }
+            
+            $_extra_cover->sequence = $sequence;
+        }
+        $sorted = array_values(Arr::sort($extra_cover_list, function ($value) {
+            return $value->sequence;
+        }));
+
+        return $sorted;
     }
 
     private function getExtraCoverDescription(string $extra_cover_code) : string
@@ -742,6 +835,85 @@ class Allianz implements InsurerLibraryInterface
 
     public function submission(object $input) : object
     {
+        // Get Extra Attribute
+        $extra_attribute = json_decode($input->insurance->extra_attribute->value);
+
+        switch($input->id_type) {
+            case config('setting.id_type.company_registration_no'): {
+                $input->company_registration_number = $input->id_number;
+
+                break;
+            }
+            default: {
+                return $this->abort(__('api.unsupported_id_type'), config('setting.response_codes.unsupported_id_types'));
+            }
+        }
+        
+        $input->vehicle = (object) [
+            'inception_date' => $input->insurance->inception_date,
+            'manufacture_year' => $input->insurance_motor->manufacture_year,
+            'ncd_percentage' => $input->insurance_motor->ncd_percentage,
+            'nvic' => $input->insurance_motor->nvic,
+            'sum_insured' => formatNumber($input->insurance_motor->sum_insured),
+            'extra_attribute' => (object) [
+                'chassis_number' => $extra_attribute->chassis_number,
+                'cover_type' => $extra_attribute->cover_type,
+                'engine_number' => $extra_attribute->engine_number,
+                'seating_capacity' => $extra_attribute->seating_capacity,
+                'request_id' => $extra_attribute->request_id,
+            ],
+        ];
+
+        // Generate Additional Drivers List
+        $additional_driver_list = [];
+        foreach($input->insurance_motor->driver as $driver) {
+            array_push($additional_driver_list, (object) [
+                'age' => getAgeFromIC($driver->id_number),
+                'gender' => $this->getGender(getGenderFromIC($driver->id_number)),
+                'id_number' => $driver->id_number,
+                'name' => $driver->name,
+                'relationship' => $driver->relationship_id
+            ]);
+        }
+
+        // Generate Selected Extra Cover
+        $selected_extra_cover = [];
+        foreach($input->insurance->extra_cover as $extra_cover) {
+            array_push($selected_extra_cover, (object) [
+                'code' => $extra_cover->code,
+                'description' => $extra_cover->description,
+                'premium' => $extra_cover->amount,
+                'sum_insured' => $extra_cover->sum_insured ?? 0
+            ]);
+        }
+
+        $input->additional_driver = $additional_driver_list;
+        $input->extra_cover = $selected_extra_cover;
+        
+        $premium_result = $this->getQuotation($input);
+
+        if(!$premium_result->status) {
+            return $this->abort($premium_result->response);
+        }
+
+        $input->premium_details = $premium_result;
+        $input->vehicle->extra_attributes->request_id = $premium_result->request_id;
+        
+        $result = $this->issueCoverNote($input);
+
+        if(!$result->status) {
+            return $this->abort($result->response);
+        }
+
+        return new ResponseData([
+            'response' => (object) [
+                'policy_number' => $result->response->policyNo
+            ]
+        ]);
+    }
+
+    public function Getsubmission(object $input) : object
+    {
         $dobs = str_split($input->id_number, 2);
         $id_number = $dobs[0] . $dobs[1] . $dobs[2] . "-" . $dobs[3] .  "-" . $dobs[4] . $dobs[5];
         $year = intval($dobs[0]);
@@ -819,43 +991,53 @@ class Allianz implements InsurerLibraryInterface
         ]);
     }
 
-    public function quotation(object $qParams) : object
+    public function quotation(object $input) : object
     {
         $data = (object) [
-            'vehicle_number' => $input->vehicle_number,
+            'age' => $input->age,
+            'additional_driver' => $input->additional_driver,
+            'email' => $input->email,
+            'extra_cover' => $input->extra_cover,
+            'gender' => $input->gender,
             'id_type' => $input->id_type,
             'id_number' => $input->id_number,
-            'gender' => $input->gender,
             'marital_status' => $input->marital_status,
-            'region' => $input->region,
-            'vehicle' => $input->vehicle,
-            'extra_cover' => $input->extra_cover,
-            'email' => $input->email,
-            'phone_number' => $input->phone_number,
-            'nvic' => $input->vehicle->nvic,
-            'unit_no' => $input->unit_no ?? '',
-            'building_name' => $input->building_name ?? '',
-            'address_one' => $input->address_one,
-            'address_two' => $input->address_two ?? '',
-            'city' => $input->city,
             'postcode' => $input->postcode,
+            'region' => $input->region,
             'state' => $input->state,
-            'occupation' => $input->occupation,
-			'age' => $input->age,
-			'additional_driver' => $input->additional_driver,
+            'vehicle' => $input->vehicle,
+            'vehicle_number' => $input->vehicle_number,
         ];
 
-        $result = $this->premiumDetails($data);
+        $quotation = $this->premiumDetails($data);
 
-        if (!$result->status) {
-            return $this->abort($result->response);
+        if(!$quotation->status) {
+            return $this->abort($quotation->response);
         }
-
-        $result->response->quotation_number = $result->response->quotation_number;
 
         return (object) [
             'status' => true,
-            'response' => $result->response
+            'response' => new PremiumResponse([
+                'act_premium' => $quotation->response->act_premium,
+                'basic_premium' => $quotation->response->basic_premium,
+                'excess_amount' => $quotation->response->excess_amount,
+                'extra_cover' => $this->sortExtraCoverList($input->extra_cover),
+                'gross_premium' => $quotation->response->gross_premium,
+                'ncd_amount' => $quotation->response->ncd_amount,
+                'net_premium' => $quotation->response->net_premium,
+                'sst_amount' => $quotation->response->sst_amount,
+                'sst_percent' => $quotation->response->sst_percent,
+                'stamp_duty' => $quotation->response->stamp_duty,
+                'total_benefit_amount' => $quotation->response->total_benefit_amount,
+                'total_payable' => $quotation->response->total_payable,
+                'request_id' => $quotation->response->request_id,
+                'loading' => $quotation->response->loading,
+                'sum_insured' => $quotation->response->sum_insured,
+                'sum_insured_type' => $input->vehicle->sum_insured_type,
+                'min_sum_insured' => floatval($input->vehicle->min_sum_insured),
+                'max_sum_insured' => floatval($input->vehicle->max_sum_insured),
+                'named_drivers_needed' => false,
+            ])
         ];
     }
 
@@ -872,7 +1054,7 @@ class Allianz implements InsurerLibraryInterface
 		$dob = strval($year) . "-" . $dobs[1] . "-" . $dobs[2];
         $avcode = $qParams->vix->extra_attribute->avvariant->VariantGrp[0]->AvCode ?? '';
         $text = '{
-            "partnerId": "PARTNERID",
+            "partnerId": "HOWDEN",
             "contractNumber": "'.$qParams->vix->extra_attribute->contractNumber.'",
             "effectiveDate": "'.Carbon::parse($qParams->vix->inception_date)->format('Y-m-d').'",
             "expirationDate": "'.Carbon::parse($qParams->vix->expiry_date)->format('Y-m-d').'",
@@ -881,17 +1063,17 @@ class Allianz implements InsurerLibraryInterface
                 "identityNumber": "'.$qParams->input->id_number.'",
                 "gender": "'.$qParams->input->gender.'",
                 "birthDate": "'.$dob.'",
-                "maritalStatus": "'.$qParams->input->marital_status.'",
+                "maritalStatus": "'.$this->getMaritalStatusCode($qParams->input->marital_status).'",
                 "postalCode": "'.$qParams->input->postcode.'",
                 "noOfClaims": "0"
             },
             "calculateDiscount": {
-                "discountPercentage": ""
+                "discountPercentage": "0"
             },
             "vehicle": {
                 "vehicleLicenseId": "'.$qParams->input->vehicle_number.'",
-                "vehicleMake": "'.$qParams->vix->make.'",
-                "vehicleModel": "'.$qParams->vix->model.'",
+                "vehicleMake": "'.$qParams->vix->extra_attribute->make_code.'",
+                "vehicleModel": "'.$qParams->vix->extra_attribute->model_code.'",
                 "vehicleEngineCC": '.$qParams->vix->engine_capacity.',
                 "yearOfManufacture": "'.$qParams->vix->manufacture_year.'",
                 "occupantsNumber": '.$qParams->vix->extra_attribute->seating_capacity.',
@@ -901,7 +1083,7 @@ class Allianz implements InsurerLibraryInterface
                 "mvInd": "Y"
             }
         }';
-        // dd($text);
+
 		$result = $this->cURL("getData", "/quote", $text);
         if(!$result->status) {
             return $this->abort($result->response);
@@ -915,7 +1097,7 @@ class Allianz implements InsurerLibraryInterface
     public function getVIXNCD(object $input) : object
     {
         $text = '{
-            "sourceSystem": "HOWDEN",
+            "sourceSystem": "PARTNER_ID",
             "vehicleLicenseId": "'.$input->vehicle_number.'",
             "identityType": "NRIC",
             "identityNumber": "'.$input->id_number.'",
@@ -936,42 +1118,46 @@ class Allianz implements InsurerLibraryInterface
     
     public function update_quotation(object $input) : object
     {
-        $postcode_details = $this->postalCode($input->postcode);
-        $get_vehicle_details = (object)[
-            'vehicle_number' => $input->vehicle_number,
-            'id_type' => "NRIC",
-            'id_number' => $input->id_number,
-            'postcode' => $postcode_details->Postcode,
-        ];
-        $vix = $this->vehicleDetails($get_vehicle_details);
-        $get_avvariant = (object)[
-            'region' => $postcode_details->Region,
-            'makeCode' => $vix->response->make,
-            'modelCode' => $vix->response->model,
-            'makeYear' => $vix->response->manufacture_year,
-        ];
-        $avvariant = $this->avVariant($get_avvariant)->response;
-        // "contractNumber": "'.$vix->contractNumber.'",
+        $additional_cover = null;
+        if(!empty($input->input->extra_cover)){
+            $count_ec = count($input->input->extra_cover);
+            $index = 1;
+            foreach($input->input->extra_cover as $extra_cover){
+                $coverCode = $extra_cover->coverCode ?? $extra_cover->extra_cover_code;
+                $coverSumInsured = $extra_cover->coverSumInsured ?? $extra_cover->sum_insured;
+                if($index == $count_ec){
+                    $additional_cover .= '{
+                        "coverCode": "'.$coverCode.'",
+                        "coverSumInsured": "'.$coverSumInsured.'"
+                    }';
+                }
+                else{
+                    $additional_cover .= '{
+                        "coverCode": "'.$coverCode.'",
+                        "coverSumInsured": "'.$coverSumInsured.'"
+                    },';
+                }
+                $index++;
+            }
+        }
+        $name = $input->input->name ?? 'Tan Ai Ling';//config('app.name');
         $text = '{
             "salesChannel": "PTR",
-            "partnerId": "AZOL",
-            "contractNumber": "CNAZ00002325377",
-            "effectiveDate": "'.Carbon::parse($vix->response->inception_date)->format('Y-m-d').'",
-            "expirationDate": "'.Carbon::parse($vix->response->expiry_date)->format('Y-m-d').'",
+            "partnerId": "HOWDEN",
+            "contractNumber": "'.$input->vix->extra_attribute->contractNumber.'",
+            "effectiveDate": "'.Carbon::parse($input->vix->inception_date)->format('Y-m-d').'",
+            "expirationDate": "'.Carbon::parse($input->vix->expiry_date)->format('Y-m-d').'",
             "additionalCover": [
-              {
-                "coverCode": "72",
-                "coverSumInsured": 0
-              }
+              '.$additional_cover.'
             ],
             "calculateDiscount": {
-              "discountPercentage": ""
+              "discountPercentage": "0"
             },
             "unlimitedDriverInd": false,
             "driverDetails": [
               {
-                "fullName": "TAN AI LING",
-                "identityNumber": "'.$input->id_number.'"
+                "fullName": "'.$name.'",
+                "identityNumber": "'.$input->input->id_number.'"
               }
             ],
             "vehicle": {
@@ -980,7 +1166,6 @@ class Allianz implements InsurerLibraryInterface
           }';
 
 		$result = $this->cURL("update", "/quote", $text);
-
         if(!$result->status) {
             return $this->abort($result->response);
         }
@@ -1028,6 +1213,32 @@ class Allianz implements InsurerLibraryInterface
         return $result;
     }
     
+    private function getMaritalStatusCode($marital_status) : int
+    {
+        $code = null;
+
+        switch($marital_status) {
+            case 'S': {
+                $code = 0;
+                break;
+            }
+            case 'M': {
+                $code = 1;
+                break;
+            }
+            case 'D': {
+                $code = 2;
+                break;
+            }
+            case 'O': {
+                $code = 3;
+                break;
+            }
+        }
+
+        return $code;
+    }
+
 	private function cURL($type = null, $function = null, $data = null, $additionals = null){
 		$host = $this->host;
 		$username = $this->username;
@@ -1084,7 +1295,7 @@ class Allianz implements InsurerLibraryInterface
         ]);
 
         $result = HttpClient::curl($method, $host, $options);
-dump($result);
+
         // Update the API log
         APILogs::find($log->id)
             ->update([

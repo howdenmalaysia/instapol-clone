@@ -34,6 +34,8 @@ class Zurich implements InsurerLibraryInterface
     '200','201','202','203','01A'];
     private const MIN_SUM_INSURED = 10000;
     private const MAX_SUM_INSURED = 500000;
+    private const ADJUSTMENT_RATE_UP = 10;
+    private const ADJUSTMENT_RATE_DOWN = 10;
     private const OCCUPATION = '99';
 
 	public function __construct(int $insurer_id, string $insurer_name)
@@ -208,6 +210,13 @@ class Zurich implements InsurerLibraryInterface
 
         // 2. Check Sum Insured -> market price
         $sum_insured = formatNumber($vix->response->MarketValue, 0);
+        if($sum_insured < self::MIN_SUM_INSURED || roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_UP, true) > self::MAX_SUM_INSURED) {
+            return $this->abort(__('api.sum_insured_referred_between', [
+                'min_sum_insured' => self::MIN_SUM_INSURED,
+                'max_sum_insured' => self::MAX_SUM_INSURED
+            ]), config('setting.response_codes.sum_insured_referred'));
+        }
+
         $sum_insured_type = "Makert Value";
         if ($sum_insured < self::MIN_SUM_INSURED || $sum_insured > self::MAX_SUM_INSURED) {
             return $this->abort(
@@ -272,8 +281,8 @@ class Zurich implements InsurerLibraryInterface
                 'model' => $vix->response->VehModel ?? '',
                 'model_code' => null,
                 'manufacture_year' => intval($vix->response->VehMakeYear),
-                'max_sum_insured' => doubleval(self::MAX_SUM_INSURED),
-                'min_sum_insured' => doubleval(self::MIN_SUM_INSURED),
+                'max_sum_insured' => roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_UP, true, self::MAX_SUM_INSURED),
+                'min_sum_insured' => roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_DOWN, false, self::MIN_SUM_INSURED),
                 'sum_insured' => $sum_insured,
                 'sum_insured_type' => 'Market Value',
                 'ncd_percentage' => floatval($vix->response->NCDPct),

@@ -48,6 +48,8 @@ class AmGeneral implements InsurerLibraryInterface
 	private string $encrypt_method = "AES-256-CBC";
     private const MIN_SUM_INSURED = 10000;
     private const MAX_SUM_INSURED = 500000;
+    private const ADJUSTMENT_RATE_UP = 10;
+    private const ADJUSTMENT_RATE_DOWN = 10;
     private const EXTRA_COVERAGE_LIST = ['B101','111','112','25','57','72','72A','89','89(a)','C001','C002'];
     private const CART_AMOUNT_LIST = [50, 100, 200];
     private const CART_DAY_LIST = [7, 14, 21];
@@ -147,6 +149,13 @@ class AmGeneral implements InsurerLibraryInterface
 
         // 2. Check Sum Insured -> market price
         $sum_insured = formatNumber($vix_variant->response->sumInsured, 0);
+        if($sum_insured < self::MIN_SUM_INSURED || roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_UP, true) > self::MAX_SUM_INSURED) {
+            return $this->abort(__('api.sum_insured_referred_between', [
+                'min_sum_insured' => self::MIN_SUM_INSURED,
+                'max_sum_insured' => self::MAX_SUM_INSURED
+            ]), config('setting.response_codes.sum_insured_referred'));
+        }
+        
         $sum_insured_type = "Makert Value";
         if ($sum_insured < self::MIN_SUM_INSURED || $sum_insured > self::MAX_SUM_INSURED) {
             return $this->abort(
@@ -184,8 +193,8 @@ class AmGeneral implements InsurerLibraryInterface
                 'inception_date' => Carbon::parse($inception_date)->format('d M Y'),
                 'make' => $get_make[0],
                 'manufacture_year' => $vix_variant->response->mfgYear,
-                'max_sum_insured' => $vix_variant->response->productList[0]->maxSumInsured,
-                'min_sum_insured' => $vix_variant->response->productList[0]->minSumInsured,
+                'max_sum_insured' => roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_UP, true, self::MAX_SUM_INSURED),
+                'min_sum_insured' => roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_DOWN, false, self::MIN_SUM_INSURED),
                 'model' => $vix_variant->response->modelDesc,
                 'ncd_percentage' => floatval($vix_variant->response->productList[0]->ncdPercent),
                 'seating_capacity' => 0,
@@ -634,7 +643,6 @@ class AmGeneral implements InsurerLibraryInterface
 		}
 
 		$dob = $dobs[2] . "-" . $dobs[1] . "-" . strval($year);
-dump($cParams);
 		$text = array(
 			"newICNo"=>$cParams->id_number,
 			"oldICNo"=>"",
@@ -1264,7 +1272,7 @@ dump($cParams);
 
 	private function cURL($type = null, $function = null, $data = null, $additionals = null){
 		$port = $this->port;
-		$host = $this->host.$port;
+		$host = $this->host.':'.$port;
 		$username = $this->username;
 		$password = $this->password;
 		$options = [
