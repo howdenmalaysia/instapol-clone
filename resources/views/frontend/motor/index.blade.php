@@ -234,7 +234,9 @@
             // Send Land on Motor Page to GA
             gtag('event', 'l_motor_la', { 'debug_mode': true });
 
-            new Inputmask({mask: '999999-99-9999'}).mask('#id-number');
+            if($('input[name=id_type]').val() == 1) {
+                new Inputmask({mask: '999999-99-9999'}).mask('#id-number');
+            }
 
             $('#vehicle-no-continue').on('click', () => {
                 if($('#vehicle-no').val()) {
