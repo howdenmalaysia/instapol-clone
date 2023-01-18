@@ -234,8 +234,10 @@
             // Send Land on Motor Page to GA
             gtag('event', 'l_motor_la', { 'debug_mode': true });
 
-            if($('input[name=id_type]').val() == 1) {
+            if($('input[name=id_type]').val() == "{{ config('setting.id_type.nric_no') }}") {
                 new Inputmask({mask: '999999-99-9999'}).mask('#id-number');
+            } else {
+                Inputmask.remove('#id-number');
             }
 
             $('#vehicle-no-continue').on('click', () => {
