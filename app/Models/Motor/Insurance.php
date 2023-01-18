@@ -20,9 +20,11 @@ class Insurance extends Model
         'inception_date',
         'expiry_date',
         'amount',
-        'policy_number',
         'created_by',
         'updated_by',
+        'policy_number',
+        'cover_note_date',
+        'cover_note_number',
         'quotation_date',
         'channel',
         'updated_at'

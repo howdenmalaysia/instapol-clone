@@ -219,11 +219,11 @@
 
         $(() => {
             // Send Land on Policy Holder Page Event to GA
-            gtag('send', 'l_motor_ph');
+            gtag('event', 'l_motor_ph', { 'debug_mode': true });
 
             $('#policy-holder-form').on('change', () => {
                 // Send Start Filling Up Form Event to GA
-                gtag('send', 'fill_form');
+                gtag('event', 'fill_form', { 'debug_mode': true });
             });
 
             $('#btn-next').on('click', (e) => {

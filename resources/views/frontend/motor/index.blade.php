@@ -232,7 +232,7 @@
 
         $(() => {
             // Send Land on Motor Page to GA
-            gtag('send', 'l_motor_la');
+            gtag('event', 'l_motor_la', { 'debug_mode': true });
 
             new Inputmask({mask: '999999-99-9999'}).mask('#id-number');
 
