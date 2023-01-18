@@ -79,7 +79,7 @@ class MotorController extends Controller
             'vehicle_number' => $request->vehicle_number,
             'postcode' => $request->postcode,
             'policy_holder' => (object) [
-                'id_type' => $request->id_type,
+                'id_type' => intval($request->id_type),
                 'id_number' => formatIC($request->id_number),
                 'email' => $request->email,
                 'phone_number' => Str::startsWith($request->phone_number, '0') ? substr($request->phone_number, 1) : $request->phone_number,
