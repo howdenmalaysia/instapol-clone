@@ -42,7 +42,7 @@ class MotorController extends Controller
     public function index_POST(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'id_type' => ['required', 'numeric', Rule::in([1, 2])],
+            'id_type' => ['required', 'numeric', Rule::in([config('setting.id_type.nric_no'), config('setting.id_type.company_registration_no')])],
             'vehicle_number' => 'required|string',
             'postcode' => 'required|numeric',
             'id_number' => 'required|string',
