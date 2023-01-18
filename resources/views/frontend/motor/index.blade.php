@@ -237,6 +237,7 @@
             if($('input[name=id_type]:checked').val() == "{{ config('setting.id_type.nric_no') }}") {
                 new Inputmask({mask: '999999-99-9999'}).mask('#id-number');
             } else {
+                $('#company-reg').trigger('click');
                 Inputmask.remove('#id-number');
             }
 
