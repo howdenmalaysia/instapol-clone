@@ -234,8 +234,6 @@
             // Send Land on Motor Page to GA
             gtag('event', 'l_motor_la', { 'debug_mode': true });
 
-            $('input[name=id_type]').trigger('change');
-
             $('#vehicle-no-continue').on('click', () => {
                 if($('#vehicle-no').val()) {
                     $('#owner-loacation-details').slideDown();
@@ -288,6 +286,9 @@
                     console.log(form.parsley())
                 }
             });
+
+            // Initialize
+            $('input[name=id_type]').trigger('change');
         });
     </script>
 @endpush
