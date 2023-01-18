@@ -235,6 +235,7 @@ class MotorController extends Controller
         $session = $request->session()->get('motor');
 
         $session->premium = json_decode($request->motor)->premium;
+        $session->vehicle = json_decode($request->motor)->vehicle;
 
         if(!empty($request->selected_extra_coverage)) {
             $selected_extra_cover = [];
