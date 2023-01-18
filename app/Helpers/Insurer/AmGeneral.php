@@ -1295,6 +1295,7 @@ class AmGeneral implements InsurerLibraryInterface
 			];
 
 			$postfield = "grant_type=client_credentials&scope=resource.READ,resource.WRITE";
+			dump($options);
         }
         else{
             $token = $this->get_token();
