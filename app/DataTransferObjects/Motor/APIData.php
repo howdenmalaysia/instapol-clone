@@ -17,7 +17,7 @@ class APIData extends DataTransferObject
     public $product_id;
     
     // Get Vehicle
-    /** @var int|null */
+    /** @var string|null */
     public $id_type;
     
     /** @var string|null */
