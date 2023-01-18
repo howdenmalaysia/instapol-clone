@@ -18,7 +18,6 @@ use App\Helpers\Insurer\Allianz;
 use App\Helpers\Insurer\AIG;
 use App\Helpers\Insurer\Zurich;
 use App\Helpers\Insurer\ZurichTakaful;
-use App\Helpers\HttpClient;
 use App\Http\Controllers\Controller;
 use App\Interfaces\MotorAPIInterface;
 use App\Models\InsuranceAddress;
@@ -45,10 +44,8 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use GuzzleHttp\Client;
 
 class MotorAPIController extends Controller implements MotorAPIInterface
 {
