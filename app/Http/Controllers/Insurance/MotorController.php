@@ -476,7 +476,7 @@ class MotorController extends Controller
         $quote = new QuotationData([
             'vehicle_postcode' => $motor->postcode ?? '',
             'vehicle_no' => $motor->vehicle_number ?? '',
-            'id_type' => $motor->policy_holder->id_type ?? '',
+            'id_type' => intval($motor->policy_holder->id_type) ?? '',
             'id_no' => formatIC($motor->policy_holder->id_number ?? ''),
             'email_address' => $motor->policy_holder->email ?? '',
             'name' => $motor->policy_holder->name ?? '',
