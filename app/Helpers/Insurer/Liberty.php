@@ -508,7 +508,7 @@ class Liberty implements InsurerLibraryInterface
             'additional_driver' => $input->additional_driver,
             'address_one' => $input->address_one,
             'address_two' => $input->address_two,
-            'building_name' => $input->building_name,
+            'building_name' => $input->building_name ?? '',
             'city' => $input->city,
             'date_of_birth' => $input->date_of_birth,
             'email' => $input->email,
