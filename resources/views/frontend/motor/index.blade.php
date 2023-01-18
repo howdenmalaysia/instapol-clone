@@ -252,7 +252,8 @@
                     $('#id-number-label').text("{{ __('frontend.motor.company_resgistration') }}");
                     $('#id-number').attr('placeholder', '1183636-M').removeAttr('pattern').attr('minlength', 8);
 
-                    $('#id-number').inputmask('remove');
+                    $('#company-reg').trigger('click');
+                    Inputmask.remove('#id-number');
                 } else if($('input[name=id_type]:checked').val() == "{{ config('setting.id_type.nric_no') }}") {
                     $('#id-number-label').text("{{ __('frontend.motor.nric') }}");
                     $('#id-number').attr('placeholder', '870312-12-1234').attr('pattern', '\d{2}([0][1-9]|[1][0-2])([0][1-9]|[1-2][0-9]|[3][0-1])-\d{2}-\d{4}')
