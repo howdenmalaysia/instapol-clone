@@ -42,7 +42,7 @@ class MotorController extends Controller
     public function index_POST(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'id_type' => ['required', 'numeric', Rule::in([1, 2])],
+            'id_type' => ['required', 'numeric', Rule::in([config('setting.id_type.nric_no'), config('setting.id_type.company_registration_no')])],
             'vehicle_number' => 'required|string',
             'postcode' => 'required|numeric',
             'id_number' => 'required|string',
@@ -57,21 +57,18 @@ class MotorController extends Controller
         // Extract User Data
         $gender = $marital_status = '';
         $driving_experience = 0;
-        $id_type = null;
 
         switch ($request->id_type) {
-            case 1: {
+            case config('setting.id_type.nric_no'): {
                 $gender = getGenderFromIC($request->id_number);
                 $driving_experience = getAgeFromIC($request->id_number) - 18;
                 $marital_status = 'S';
-                $id_type = config('setting.id_type.nric_no');
                 $dob = formatDateFromIC($request->id_number);
 
                 break;
             }
-            case 2: {
+            case config('setting.id_type.company_registration_no'): {
                 $gender = $marital_status = 'O';
-                $id_type = config('setting.id_type.company_registration_no');
 
                 break;
             }
@@ -82,7 +79,7 @@ class MotorController extends Controller
             'vehicle_number' => $request->vehicle_number,
             'postcode' => $request->postcode,
             'policy_holder' => (object) [
-                'id_type' => $id_type,
+                'id_type' => intval($request->id_type),
                 'id_number' => formatIC($request->id_number),
                 'email' => $request->email,
                 'phone_number' => Str::startsWith($request->phone_number, '0') ? substr($request->phone_number, 1) : $request->phone_number,
@@ -238,6 +235,7 @@ class MotorController extends Controller
         $session = $request->session()->get('motor');
 
         $session->premium = json_decode($request->motor)->premium;
+        $session->vehicle = json_decode($request->motor)->vehicle;
 
         if(!empty($request->selected_extra_coverage)) {
             $selected_extra_cover = [];
@@ -479,7 +477,7 @@ class MotorController extends Controller
         $quote = new QuotationData([
             'vehicle_postcode' => $motor->postcode ?? '',
             'vehicle_no' => $motor->vehicle_number ?? '',
-            'id_type' => $motor->policy_holder->id_type ?? '',
+            'id_type' => intval($motor->policy_holder->id_type) ?? '',
             'id_no' => formatIC($motor->policy_holder->id_number ?? ''),
             'email_address' => $motor->policy_holder->email ?? '',
             'name' => $motor->policy_holder->name ?? '',

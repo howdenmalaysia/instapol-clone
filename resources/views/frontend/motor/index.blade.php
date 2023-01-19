@@ -40,11 +40,11 @@
                                                 <div class="row">
                                                     <div class="col-12 text-center">
                                                         <div class="btn-group rounded" role="group">
-                                                            <input type="radio" id="id-type-1" class="btn-check" name="id_type" value="1" {{ !empty($motor->policy_holder->id_type) && $motor->policy_holder->id_type === config('setting.id_type.nric_no') ? 'checked' : 'checked' }}>
-                                                            <label id="private-reg" class="btn btn-primary text-white rounded-start border active text-uppercase" for="id-type-1">{{ __('frontend.motor.private_registered') }}</label>
+                                                            <input type="radio" id="id-type-1" class="btn-check" name="id_type" value="{{ config('setting.id_type.nric_no') }}" {{ !empty($motor->policy_holder->id_type) && $motor->policy_holder->id_type === config('setting.id_type.nric_no') ? 'checked' : 'checked' }}>
+                                                            <label id="private-reg" class="{{ empty($motor->policy_holder->id_type) || (!empty($motor->policy_holder->id_type) && $motor->policy_holder->id_type === config('setting.id_type.nric_no')) ? "btn btn-primary text-white rounded-start border active text-uppercase" : "btn btn-light rounded-start text-uppercase" }}" for="id-type-1">{{ __('frontend.motor.private_registered') }}</label>
                     
-                                                            <input type="radio" id="id-type-2" class="btn-check" name="id_type" value="2" {{ !empty($motor->policy_holder->id_type) && $motor->policy_holder->id_type === config('setting.id_type.company_registration_no') ? 'checked' : '' }}>
-                                                            <label id="company-reg" class="btn btn-light rounded-end text-uppercase" for="id-type-2">{{ __('frontend.motor.company_registered') }}</label>
+                                                            <input type="radio" id="id-type-2" class="btn-check" name="id_type" value="{{ config('setting.id_type.company_registration_no') }}" {{ !empty($motor->policy_holder->id_type) && $motor->policy_holder->id_type === config('setting.id_type.company_registration_no') ? 'checked' : '' }}>
+                                                            <label id="company-reg" class="{{ !empty($motor->policy_holder->id_type) && $motor->policy_holder->id_type === config('setting.id_type.company_registration_no') ? "btn btn-primary text-white rounded-end border active text-uppercase" : "btn btn-light rounded-end text-uppercase" }}" for="id-type-2">{{ __('frontend.motor.company_registered') }}</label>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -234,10 +234,6 @@
             // Send Land on Motor Page to GA
             gtag('event', 'l_motor_la', { 'debug_mode': true });
 
-            if($('input[name=id_type]').val() == 1) {
-                new Inputmask({mask: '999999-99-9999'}).mask('#id-number');
-            }
-
             $('#vehicle-no-continue').on('click', () => {
                 if($('#vehicle-no').val()) {
                     $('#owner-loacation-details').slideDown();
@@ -252,14 +248,19 @@
             });
 
             $('input[name=id_type]').on('change', () => {
-                if($('input[name=id_type]:checked').val() == 2) {
+                if($('input[name=id_type]:checked').val() == "{{ config('setting.id_type.company_registration_no') }}") {
                     $('#id-number-label').text("{{ __('frontend.motor.company_resgistration') }}");
                     $('#id-number').attr('placeholder', '1183636-M').removeAttr('pattern').attr('minlength', 8);
 
-                    Inputmask.remove('#id-number')
-                } else {
+                    Inputmask.remove('#id-number');
+                    if(motor.policy_holder) {
+                        $('#id-number').val(motor.policy_holder.id_type);
+                    } else {
+                        $('#id-number').val('');
+                    }
+                } else if($('input[name=id_type]:checked').val() == "{{ config('setting.id_type.nric_no') }}") {
                     $('#id-number-label').text("{{ __('frontend.motor.nric') }}");
-                    $('#id-number').attr('placeholder', '870312-12-1234').attr('pattern', '\d{2}([0][1-9]|[1][0-2])([0][1-9]|[1-2][0-9]|[3][0-1])-\d{2}-\d{4}')
+                    $('#id-number').attr('placeholder', '870312-12-1234').attr('pattern', '\\d{2}([0][1-9]|[1][0-2])([0][1-9]|[1-2][0-9]|[3][0-1])-\\d{2}-\\d{4}')
                     new Inputmask({mask: '999999-99-9999'}).mask('#id-number');
                 }
             });
@@ -285,6 +286,9 @@
                     console.log(form.parsley())
                 }
             });
+
+            // Initialize
+            $('input[name=id_type]').trigger('change');
         });
     </script>
 @endpush
