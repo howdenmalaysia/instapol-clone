@@ -306,6 +306,8 @@
                     });
                 }
             });
+
+            $('#use-same-address').trigger('change');
         });
     </script>
 @endpush
