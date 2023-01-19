@@ -529,19 +529,10 @@
             }
         });
 
-        const controller = new AbortController();
-        if(request > 1) {
-            controller.abort();
-        }
-
-        request++;
-
         instapol.post("{{ route('motor.api.quote') }}", {
             product_id: motor.product_id,
             motor: motor,
             extra_cover: selected_extra_cover,
-        }, {
-            signal: controller.signal
         }).then((res) => {
             request--;
 
@@ -553,16 +544,22 @@
                 motor.premium.gross_premium = res.data.gross_premium;
                 motor.premium.ncd_amount = res.data.ncd_amount;
                 motor.premium.sst_amount = res.data.sst_amount;
-                motor.premium.total_payable = res.data.total_payable + parseFloat($('#road-tax').text());
+
+                if(motor.premium.discounted_amount) {
+                    motor.premium.total_payable = res.data.total_payable + parseFloat($('#road-tax').text()) - motor.premium.discounted_amount;
+                } else {
+                    motor.premium.total_payable = res.data.total_payable + parseFloat($('#road-tax').text());
+                }
+
                 $('#motor').val(JSON.stringify(motor));
     
                 // Update Pricing Card
-                $('#basic-premium').text(formatMoney(res.data.basic_premium));
-                $('#ncd').text(formatMoney(res.data.ncd_amount));
-                $('#add-ons-premium').text(formatMoney(res.data.total_benefit_amount));
-                $('#gross-premium').text(formatMoney(res.data.gross_premium));
-                $('#sst').text(formatMoney(res.data.sst_amount));
-                $('#total-payable').text(formatMoney(res.data.total_payable + parseFloat($('#road-tax').text())));
+                $('#basic-premium').text(formatMoney(motor.premium.basic_premium));
+                $('#ncd').text(formatMoney(motor.premium.ncd_amount));
+                $('#add-ons-premium').text(formatMoney(motor.premium.total_benefit_amount));
+                $('#gross-premium').text(formatMoney(motor.premium.gross_premium));
+                $('#sst').text(formatMoney(motor.premium.sst_amount));
+                $('#total-payable').text(formatMoney(motor.premium.total_payable));
     
                 // Update Add Ons Pricing
                 if(res.data.extra_cover.length > 0) {
@@ -585,8 +582,6 @@
                 $('#pricing-table #total-payable').removeClass('loadingButton');
             }
         }).catch((err) => {
-            request--;
-
             console.log(err.response);
             swalAlert(err.response.data.message, () => {
                 window.history.back();

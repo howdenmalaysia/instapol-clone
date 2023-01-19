@@ -291,7 +291,6 @@ class MotorAPIController extends Controller implements MotorAPIInterface
 
 
         $input = new APIData([
-            'age' => getAgeFromIC($motor->policy_holder->id_number),
             'id_type' => $motor->policy_holder->id_type,
             'id_number' => $motor->policy_holder->id_number,
             'vehicle_number' => strtoupper($motor->vehicle_number),
@@ -308,7 +307,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             'vehicle_body_type' => $vehicle_body_type_id ?? null,
             'name' => strtoupper($motor->policy_holder->name),
             'date_of_birth' => $motor->policy_holder->date_of_birth,
-            'age' => $motor->policy_holder->id_type === 1 ? getAgeFromIC($motor->policy_holder->id_number) : null,
+            'age' => $motor->policy_holder->id_type === config('setting.id_type.nric_no') ? getAgeFromIC($motor->policy_holder->id_number) : null,
             'phone_code' => '60',
             'phone_number' => $motor->policy_holder->phone_number,
             'address_one' => strtoupper($motor->policy_holder->address_1),
@@ -332,6 +331,16 @@ class MotorAPIController extends Controller implements MotorAPIInterface
 
         $quotation = $result->response;
         $insurance_code = '';
+
+        // Re-calculate Premium
+        $total_payable = $quotation->total_payable;
+        if(!empty($motor->premium->discounted_amount)) {
+            $total_payable -= floatval($motor->premium->discounted_amount);
+        }
+
+        if(!empty($motor->premium->roadtax)) {
+            $total_payable += floatval($motor->premium->roadtax);
+        }
 
         // Check if the user exists in the system
         $user = User::where('email', $input->email)->first();
@@ -370,7 +379,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
                 'referrer' => $request->referrer,
                 'inception_date' => Carbon::parse($input->vehicle->inception_date) ->format('Y-m-d'),
                 'expiry_date' => Carbon::parse($input->vehicle->expiry_date) ->format('Y-m-d'),
-                'amount' => $quotation->total_payable,
+                'amount' => $total_payable,
                 'quotation_date' => Carbon::now()->format('Y-m-d'),
                 'created_by' => $user->id,
                 'updated_by' => $user->id,
