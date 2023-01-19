@@ -744,26 +744,26 @@ class MotorAPIController extends Controller implements MotorAPIInterface
         $insurer = Product::findOrFail($product_id)->insurance_company;
 
         switch($product_id) {
-            case 2:{
-                return new AmGeneral($insurer->id, $insurer->name);
+            // case 2:{
+            //     return new AmGeneral($insurer->id, $insurer->name);
 
-                break;
-            }
-            case 3:{
-                return new Allianz($insurer->id, $insurer->name);
+            //     break;
+            // }
+            // case 3:{
+            //     return new Allianz($insurer->id, $insurer->name);
 
-                break;
-            }
-            case 6:{
-                return new AIG($insurer->id, $insurer->name);
+            //     break;
+            // }
+            // case 6:{
+            //     return new AIG($insurer->id, $insurer->name);
 
-                break;
-            }
-            case 9: {
-                return new PacificOrient($insurer->id, $insurer->name);
+            //     break;
+            // }
+            // case 9: {
+            //     return new PacificOrient($insurer->id, $insurer->name);
 
-                break;
-            }
+            //     break;
+            // }
             case 10:{
                 return new Zurich($insurer->id, $insurer->name);
 
@@ -811,8 +811,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
         // Get State Details with Postcode
         $postcode = $this->getPostcodeDetails($motor->postcode);
         // Get Product Details
-        $product = $this->getProduct($request->product_id);
-        $insurer = $this->getInsurerClass($product->id);
+        $insurer = $this->getInsurerClass(3);
         $data = new APIData([
             'vehicle_number' => strtoupper($motor->vehicle_number),
             'id_type' => $motor->policy_holder->id_type,
