@@ -379,7 +379,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
                 'referrer' => $request->referrer,
                 'inception_date' => Carbon::parse($input->vehicle->inception_date) ->format('Y-m-d'),
                 'expiry_date' => Carbon::parse($input->vehicle->expiry_date) ->format('Y-m-d'),
-                'amount' => $quotation->total_payable,
+                'amount' => $total_payable,
                 'quotation_date' => Carbon::now()->format('Y-m-d'),
                 'created_by' => $user->id,
                 'updated_by' => $user->id,
