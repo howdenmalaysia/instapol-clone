@@ -333,12 +333,12 @@ class MotorAPIController extends Controller implements MotorAPIInterface
 
         // Re-calculate Premium
         $total_payable = $quotation->total_payable;
-        if(!empty($motor->premium->discount_amount)) {
-            $total_payable -= $motor->premium->discount_amount;
+        if(!empty($motor->premium->discounted_amount)) {
+            $total_payable -= floatval($motor->premium->discounted_amount);
         }
 
         if(!empty($motor->premium->roadtax)) {
-            $total_payable += $motor->premium->roadtax;
+            $total_payable += floatval($motor->premium->roadtax);
         }
 
         // Check if the user exists in the system
