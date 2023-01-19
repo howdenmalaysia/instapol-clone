@@ -27,4 +27,5 @@ Route::prefix('motor')->group(function() {
     Route::post('submit-cover-note', [MotorAPIController::class, 'submitCoverNote'])->name('motor.api.submit-cover-note');
     Route::post('calculate-roadtax', [MotorAPIController::class, 'calculateRoadtax'])->name('motor.api.calculate-roadtax');
     Route::post('check-promo', [PromoController::class, 'usePromoCode'])->name('motor.api.use-promo');
+    Route::post('get-variant', [MotorAPIController::class, 'getVariant'])->name('motor.api.get-variant');
 });

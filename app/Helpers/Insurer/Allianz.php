@@ -387,6 +387,30 @@ class Allianz implements InsurerLibraryInterface
         ]);
     }
 
+    public function getVariant(object $input):object 
+    {
+        $postcode_details = $this->postalCode($input->postcode);
+        $get_vehicle_details = (object)[
+            'vehicle_number' => $input->vehicle_number,
+            'id_type' => $this->id_type($input->id_type),
+            'id_number' => $input->id_number,
+            'postcode' => $postcode_details->Postcode,
+        ];
+        $vehicle_vix = $this->vehicleDetails($get_vehicle_details);
+        if (!$vehicle_vix->status) {
+            return $this->abort($vehicle_vix->response, $vehicle_vix->code);
+        }
+        $get_avvariant = (object)[
+            'region' => $postcode_details->Region,
+            'makeCode' => $vehicle_vix->response->make,
+            'modelCode' => $vehicle_vix->response->model,
+            'makeYear' => $vehicle_vix->response->manufacture_year,
+        ];
+        $avvariant = $this->avVariant($get_avvariant)->response;
+
+        return (object) ['status' => true, 'response' => $avvariant->VariantGrp];
+    }
+
     public function premiumDetails(object $input, $full_quote = false) : object
     {
         $vehicle = $input->vehicle ?? null;

@@ -794,4 +794,27 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             ->where('id', $product_id)
             ->firstOrFail();
     }
+
+    public function getVariant(Request $request)
+    {
+        $motor = toObject($request->motor);
+
+        // Get State Details with Postcode
+        $postcode = $this->getPostcodeDetails($motor->postcode);
+        // Get Product Details
+        $product = $this->getProduct($request->product_id);
+        $insurer = $this->getInsurerClass($product->id);
+        $data = new APIData([
+            'vehicle_number' => strtoupper($motor->vehicle_number),
+            'id_type' => $motor->policy_holder->id_type,
+            'id_number' => $motor->policy_holder->id_number,
+            'postcode' => $postcode->postcode,
+        ]);
+
+        $result = $insurer->getVariant($data);
+        if(!$result->status) {
+            return abort($result->code, $result->response);
+        }
+        return $result;
+    }
 }
