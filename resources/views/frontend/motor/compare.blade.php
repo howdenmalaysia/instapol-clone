@@ -287,7 +287,17 @@
                             <p>{{ __('frontend.motor.compare_page.select_occupation') }}</p>
                             <select id="occupation" data-select>
                                 <option value="">{{ __('frontend.motor.compare_page.please_select') }}</option>
+                                @if (session('motor')->policy_holder->id_type === config('setting.id_type.nric_no'))
+                                    @foreach (__('frontend.motor.compare_page.occupation.private') as $occupation)
+                                        <option value="{{ $occupation }}">{{ $occupation }}</option>
+                                    @endforeach
+                                @else
+                                    @foreach (__('frontend.motor.compare_page.occupation.company') as $occupation)
+                                    <option value="{{ $occupation }}">{{ $occupation }}</option>
+                                    @endforeach
+                                @endif
                             </select>
+                            <p id="occupation-error" class="text-danger fw-bold d-none"></p>
                         </div>
                     </div>
                 </x-slot>
@@ -372,7 +382,26 @@
                 $('#h-gender').val($('input[name=gender]:checked').val());
                 $('#h-marital-status').val($('#marital-status').val());
 
-                $('#product-form').submit();
+                if([15].includes(product_id)) {
+                    $('#occupation-modal').modal('show');
+                } else {
+                    $('#product-form').submit();
+                }
+            });
+
+            $('#occupation-next').on('click', () => {
+                if($('#occupation').val() != '') {
+                    motor.policy_holder.occupation = $('#occupation').val();
+                    $('#motor').val(JSON.stringify(motor));
+
+                    $('#product-form').submit();
+                } else {
+                    $('#occupation-error').text("{{ __('frontend.motor.compare_page.occupation_error') }}").removeClass('d-none');
+                }
+            });
+
+            $('#occupation').on('change', () => {
+                $('#occupation-error').addClass('d-none');
             });
 
             $('.btn-view-details').on('click', (e) => {
