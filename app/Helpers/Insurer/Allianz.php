@@ -96,7 +96,6 @@ class Allianz implements InsurerLibraryInterface
             ]), config('setting.response_codes.sum_insured_referred'));
         }
         
-        $sum_insured_type = "Makert Value";
         if ($sum_insured < self::MIN_SUM_INSURED || $sum_insured > self::MAX_SUM_INSURED) {
             return $this->abort(
                 __('api.sum_insured_referred_between', ['min_sum_insured' => self::MIN_SUM_INSURED, 'max_sum_insured' => self::MAX_SUM_INSURED]),
@@ -152,7 +151,7 @@ class Allianz implements InsurerLibraryInterface
                 'max_sum_insured' => roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_UP, true, self::MAX_SUM_INSURED),
                 'min_sum_insured' => roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_DOWN, false, self::MIN_SUM_INSURED),
                 'sum_insured' => $sum_insured,
-                'sum_insured_type' => 'Market Value',
+                'sum_insured_type' => 'Agreed Value',
                 'ncd_percentage' => floatval($vix->response->ncdPercentage),
                 'seating_capacity' => intval($vix->response->seatingCapacity),
                 'variants' => $variants,
@@ -1080,7 +1079,7 @@ class Allianz implements InsurerLibraryInterface
                 "ncdPercentage": '.$qParams->vix->ncd_percentage.',
                 "sumInsured": "'.$qParams->vix->sum_insured.'",
                 "avCode": "'.$avcode.'",
-                "mvInd": "Y"
+                "mvInd": "N"
             }
         }';
 
@@ -1251,6 +1250,7 @@ class Allianz implements InsurerLibraryInterface
         $method = 'POST';
 		if($type == "token"){
 			$host .= $this->url_token;
+            $domain = $host;
             $function = 'getToken';
             $options['headers'] = [
 				'Authorization' => 'Basic ' . base64_encode($this->username . ':' . $this->password),
@@ -1264,7 +1264,7 @@ class Allianz implements InsurerLibraryInterface
         else{
             $token = $this->get_token();
             $host .= $this->url . $function;
-
+            $domain = $host;
             $options = [];
             $options['headers'] = [
                 'Authorization' => 'Bearer '.$token,
@@ -1288,14 +1288,14 @@ class Allianz implements InsurerLibraryInterface
         $log = APILogs::create([
             'insurance_company_id' => $this->company_id,
             'method' => $method,
-            'domain' => $this->url,
+            'domain' => $domain,
             'path' => $function,
             'request_header' => json_encode($options['headers']),
             'request' => json_encode($postfield),
         ]);
 
         $result = HttpClient::curl($method, $host, $options);
-dd($options,$result);
+
         // Update the API log
         APILogs::find($log->id)
             ->update([
