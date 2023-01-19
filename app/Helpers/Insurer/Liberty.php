@@ -522,7 +522,7 @@ class Liberty implements InsurerLibraryInterface
             'postcode' => $input->postcode,
             'region' => $input->region,
             'state' => $input->state,
-            'unit_no' => $input->unit_no,
+            'unit_no' => $input->unit_no ?? '',
             'vehicle' => $input->vehicle,
             'vehicle_body_type' => $input->vehicle_body_type,
             'vehicle_number' => $input->vehicle_number,
