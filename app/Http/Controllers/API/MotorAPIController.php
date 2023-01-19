@@ -332,6 +332,16 @@ class MotorAPIController extends Controller implements MotorAPIInterface
         $quotation = $result->response;
         $insurance_code = '';
 
+        // Re-calculate Premium
+        $total_payable = $quotation->total_payable;
+        if(!empty($motor->premium->discount_amount)) {
+            $total_payable -= $motor->premium->discount_amount;
+        }
+
+        if(!empty($motor->premium->roadtax)) {
+            $total_payable += $motor->premium->roadtax;
+        }
+
         // Check if the user exists in the system
         $user = User::where('email', $input->email)->first();
 
