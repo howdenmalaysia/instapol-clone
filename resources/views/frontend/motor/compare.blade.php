@@ -719,6 +719,7 @@
                     if(product.id === 3) {
                         instapol.post("{{ route('motor.api.get-variant') }}", {
                             motor: motor,
+                            product_id: product.id,
                         }).then((res) => {
                             console.log('Allianz AvCode', res);
 
