@@ -208,9 +208,11 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             'extra_cover' => toObject($request->extra_cover ?? []),
             'additional_driver' => toObject($request->additional_driver ?? []),
             'vehicle_body_type' => $vehicle_body_type_id ?? null,
-            'phone_number' => $request->phone_number,
-            'occupation' => strtoupper($request->occupation)
+            'phone_number' => $motor->policy_holder->phone_number,
+            'occupation' => strtoupper($motor->policy_holder->occupation ?? '')
         ]);
+
+        Log::info('[GetQuote] Received Request: ' . json_encode($data));
 
         $insurer = $this->getInsurerClass($product->id);
         $result = $insurer->premiumDetails($data, $full_quote);
