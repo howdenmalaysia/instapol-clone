@@ -476,7 +476,7 @@ class Liberty implements InsurerLibraryInterface
             'total_benefit_amount' => formatNumber($total_benefit_amount),
             'total_payable' => formatNumber($motor_premium->response->gross_due),
             'fl_quote_number' => $motor_premium->response->fl_quote_number,
-            'named_drivers_needed' => false
+            'named_drivers_needed' => true
         ]);
 
         if ($full_quote) {
