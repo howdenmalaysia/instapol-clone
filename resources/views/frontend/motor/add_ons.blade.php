@@ -104,6 +104,26 @@
                                                         </div>
                                                     </div>
                                                 @endif
+                                                @if (!empty($_extra_cover->cart_list))
+                                                    <div class="row">
+                                                        <div class="col-5 px-md-3 mb-3 ms-3">
+                                                            <small>{{ __('frontend.motor.add_ons_page.days') . ':' }}</small>
+                                                            <select id="{{ 'cart-day-' .  $_extra_cover->extra_cover_code }}" data-select data-extra-cover-code="{{ $_extra_cover->extra_cover_code }}">
+                                                                @foreach ($_extra_cover->cart_list->cart_day as $cart_day)
+                                                                    <option value="{{ $cart_day }}" {{ $cart_day === 7 ? 'selected' : '' }}>{{ $cart_day }}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-5 px-md-3 mb-3 ms-3">
+                                                            <small>{{ __('frontend.motor.add_ons_page.amount') . ':' }}</small>
+                                                            <select id="{{ 'cart-amount-' .  $_extra_cover->extra_cover_code }}" data-select data-extra-cover-code="{{ $_extra_cover->extra_cover_code }}">
+                                                                @foreach ($_extra_cover->cart_list->cart_amount_list as $cart_amount)
+                                                                    <option value="{{ $cart_amount }}" {{ $cart_amount === 1000 ? 'selected' : '' }}>{{ 'RM ' . $cart_amount }}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                @endif
                                             </div>
                                         @endforeach
                                         <div id="show-more-wrapper"></div>
