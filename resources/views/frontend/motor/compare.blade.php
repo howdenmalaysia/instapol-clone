@@ -285,7 +285,7 @@
                     <div class="row mt-4">
                         <div class="col-12">
                             <p>{{ __('frontend.motor.compare_page.select_occupation') }}</p>
-                            <select id="occupation" data-select>
+                            <select id="occupation">
                                 <option value="">{{ __('frontend.motor.compare_page.please_select') }}</option>
                                 @if (session('motor')->policy_holder->id_type === config('setting.id_type.nric_no'))
                                     @foreach (__('frontend.motor.compare_page.occupation.private') as $occupation)
@@ -435,8 +435,22 @@
 
                 if([15].includes(product_id)) {
                     $('#occupation-modal').modal('show');
+                    $('#occupation').select2({
+                        width: '100%',
+                        theme: 'bootstrap-5',
+                        dropdownParent: '#occupation-modal'
+                    }).on('select2:select', function () {
+                        $(this).parsley().validate();
+                    });
                 } else if([3].includes(product_id)) {
                     $('#avcode-modal').modal('show');
+                    $('#allianz-variant').select2({
+                        width: '100%',
+                        theme: 'bootstrap-5',
+                        dropdownParent: '#avcode-modal'
+                    }).on('select2:select', function () {
+                        $(this).parsley().validate();
+                    });
                 } else {
                     $('#product-form').submit();
                 }
