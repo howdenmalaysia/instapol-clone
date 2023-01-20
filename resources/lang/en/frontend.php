@@ -820,6 +820,8 @@ return [
             'service_tax' => 'Service Tax',
             'additional_driver_note' => 'Only named driver will be protected from the policy and it may impacts the premium price under additional coverages. Refer pricing summary (on the left) for details.',
             'add_driver' => 'Add Driver',
+            'days' => 'Days',
+            'amount' => 'Amount',
             'tooltip' => [
                 'windscreen' => 'Coverage for damage to the glass only.',
                 'llop' => 'Covers you against legal liability sought by your passengers against you in an event of accident due to your negligence',
