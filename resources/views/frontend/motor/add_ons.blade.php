@@ -108,7 +108,7 @@
                                                     <div class="row">
                                                         <div class="col-5 px-md-3 mb-3 ms-3">
                                                             <small>{{ __('frontend.motor.add_ons_page.days') . ':' }}</small>
-                                                            <select id="{{ 'cart-day-' .  $_extra_cover->extra_cover_code }}" data-select data-extra-cover-code="{{ $_extra_cover->extra_cover_code }}">
+                                                            <select id="{{ 'cart-day-' .  $_extra_cover->extra_cover_code }}" class="cart-day" data-select data-extra-cover-code="{{ $_extra_cover->extra_cover_code }}">
                                                                 @foreach ($_extra_cover->cart_list as $cart)
                                                                     <option value="{{ $cart->cart_day }}" {{ $cart->cart_day === 7 ? 'selected' : '' }}>{{ $cart->cart_day }}</option>
                                                                 @endforeach
@@ -116,7 +116,7 @@
                                                         </div>
                                                         <div class="col-5 px-md-3 mb-3 ms-3">
                                                             <small>{{ __('frontend.motor.add_ons_page.amount') . ':' }}</small>
-                                                            <select id="{{ 'cart-amount-' .  $_extra_cover->extra_cover_code }}" data-select data-extra-cover-code="{{ $_extra_cover->extra_cover_code }}">
+                                                            <select id="{{ 'cart-amount-' .  $_extra_cover->extra_cover_code }}" class="cart-amount" data-select data-extra-cover-code="{{ $_extra_cover->extra_cover_code }}">
                                                                 @foreach ($_extra_cover->cart_list[0]->cart_amount_list as $cart_amount)
                                                                     <option value="{{ $cart_amount }}" {{ $cart_amount === 1000 ? 'selected' : '' }}>{{ 'RM ' . $cart_amount }}</option>
                                                                 @endforeach
@@ -527,7 +527,7 @@
             }
         });
 
-        $('#extra-coverages').on('change', '.option-list', (e) => {
+        $('#extra-coverages').on('change', '.option-list, .cart-day, .cart-amount', (e) => {
             $(`#checkbox-${$.escapeSelector($(e.target).data('extra-cover-code'))}`).attr('checked', true).trigger('change');
         });
 
@@ -550,6 +550,11 @@
                 extra_cover.sum_insured = parseFloat($(`#sum-insured-${$.escapeSelector(extra_cover.extra_cover_code)}`).val());
             } else {
                 extra_cover.sum_insured = parseFloat($('#sum-insured-slider').val());
+            }
+
+            if(extra_cover.cart_list) {
+                extra_cover.cart_day = $(`#cart-day-${$.escapeSelector(extra_cover.extra_cover_code)}`).val();
+                extra_cover.cart_amount = $(`#cart-amount-${$.escapeSelector(extra_cover.extra_cover_code)}`).val();
             }
         });
 
