@@ -305,6 +305,57 @@
                     <button type="button" id="occupation-next" class="btn btn-primary text-white text-uppercase rounded">{{ __('frontend.button.get_quotation') }}</button>
                 </x-slot>
             </x-modal>
+            <x-modal id="avcode-modal" maxWidth="md" headerClass="bg-primary text-white">
+                <x-slot name="title">{{ __('frontend.motor.compare_page.need_vehicle_information') }}</x-slot>
+                <x-slot name="body">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="col-12">{{ __('frontend.motor.vehicle_details.car_number') }}</div>
+                                <div class="col-12">{{ session('motor')->vehicle_number }}</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">{{ __('frontend.motor.vehicle_details.make') }}</div>
+                                <div class="col-12">{{ session('motor')->vehicle->make }}</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">{{ __('frontend.motor.vehicle_details.year') }}</div>
+                                <div class="col-12">{{ session('motor')->vehicle->manufacture_year }}</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="col-12">{{ __('frontend.motor.vehicle_details.engine_capacity') }}</div>
+                                <div class="col-12">{{ session('motor')->vehicle->engine_capacity }}</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">{{ __('frontend.motor.vehicle_details.model') }}</div>
+                                <div class="col-12">{{ session('motor')->vehicle->model }}</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">{{ __('frontend.motor.vehicle_details.variant') }}</div>
+                                <div class="col-12">{{ session('motor')->vehicle->variant }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <p>
+                                {{ __('frontend.motor.compare_page.verify_variant') }}
+                                <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('frontend.motor.compare_page.affect_premium') }}">
+                                    <i class="fa-solid fa-circle-question text-primary fa-15x"></i>
+                                </span>
+                            </p>
+                            <select id="allianz-variant">
+                                <option value="">{{ __('frontend.motor.vehicle_details.select_car_specs') }}</option>
+                            </select>
+                        </div>
+                    </div>
+                </x-slot>
+                <x-slot name="footer">
+                    <button type="button" id="avcode-next" class="btn btn-primary text-white text-uppercase rounded">{{ __('frontend.button.get_quotation') }}</button>
+                </x-slot>
+            </x-modal>
         </x-slot>
     </x-motor-layout>
 @endsection
@@ -384,6 +435,8 @@
 
                 if([15].includes(product_id)) {
                     $('#occupation-modal').modal('show');
+                } else if([3].includes(product_id)) {
+                    $('#avcode-modal').modal('show');
                 } else {
                     $('#product-form').submit();
                 }
@@ -661,6 +714,16 @@
                     }
 
                     sortPrice();
+
+                    if(product.id === 3) {
+                        instapol.post("{{ route('motor.api.get-variant') }}", {
+                            motor: motor,
+                        }).then((res) => {
+                            console.log('Allianz AvCode', res);
+
+                            
+                        })
+                    }
                 }).catch((error) => {
                     console.log(error.response);
 
