@@ -83,7 +83,7 @@
                                         gross-premium="{{ session('motor')->quotation->gross_premium }}"
                                         sst-amount="{{ session('motor')->quotation->sst_amount }}"
                                         stamp-duty="{{ session('motor')->quotation->stamp_duty }}"
-                                        total-payable="{{ session('motor')->quotation->total_payable }}"
+                                        total-payable="{{ $insurance->amount }}"
                                         roadtax-total="{{ session('motor')->roadtax->total ?? 0.00 }}"
                                         promo
                                     />
