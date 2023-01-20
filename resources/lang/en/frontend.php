@@ -578,6 +578,9 @@ return [
             'select_occupation' => 'Please select your occupation to obtain the recommended sum insured amount.',
             'please_select' => 'Please Select Your Occupation',
             'occupation_error' => 'Please select an occupation to continue.',
+            'need_vehicle_information' => 'We need more details about your car!',
+            'verify_variant' => 'Please verify your car variant again as below',
+            'affect_premium' => 'The total premium will be affected by your choice of variant and sum insured',
             'compare_details' => [
                 'valuation' => 'Agreed / Market Value',
                 'basic_information' => 'Basic Information',
@@ -969,7 +972,6 @@ return [
             'additional_coverage' => 'Total Price of Selected Add Ons',
             'gross_premium' => 'Gross Premium'
         ]
-
     ],
     'relationships' => [
         'Parent / Parent-In-Law' => 'Parent / Parent-In-Law',
