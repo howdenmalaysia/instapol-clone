@@ -255,34 +255,34 @@
                     <div class="row">
                         <div class="col-6">
                             <div class="row">
-                                <div class="col-12">{{ __('frontend.motor.vehicle_details.car_number') }}</div>
+                                <div class="col-12 fw-bold">{{ __('frontend.motor.vehicle_details.car_number') }}</div>
                                 <div class="col-12">{{ session('motor')->vehicle_number }}</div>
                             </div>
-                            <div class="row">
-                                <div class="col-12">{{ __('frontend.motor.vehicle_details.make') }}</div>
+                            <div class="row my-3">
+                                <div class="col-12 fw-bold">{{ __('frontend.motor.vehicle_details.make') }}</div>
                                 <div class="col-12">{{ session('motor')->vehicle->make }}</div>
                             </div>
                             <div class="row">
-                                <div class="col-12">{{ __('frontend.motor.vehicle_details.year') }}</div>
+                                <div class="col-12 fw-bold">{{ __('frontend.motor.vehicle_details.year') }}</div>
                                 <div class="col-12">{{ session('motor')->vehicle->manufacture_year }}</div>
                             </div>
                         </div>
                         <div class="col-6">
                             <div class="row">
-                                <div class="col-12">{{ __('frontend.motor.vehicle_details.engine_capacity') }}</div>
+                                <div class="col-12 fw-bold">{{ __('frontend.motor.vehicle_details.engine_capacity') }}</div>
                                 <div class="col-12">{{ session('motor')->vehicle->engine_capacity }}</div>
                             </div>
-                            <div class="row">
-                                <div class="col-12">{{ __('frontend.motor.vehicle_details.model') }}</div>
+                            <div class="row my-3">
+                                <div class="col-12 fw-bold">{{ __('frontend.motor.vehicle_details.model') }}</div>
                                 <div class="col-12">{{ session('motor')->vehicle->model }}</div>
                             </div>
                             <div class="row">
-                                <div class="col-12">{{ __('frontend.motor.vehicle_details.variant') }}</div>
+                                <div class="col-12 fw-bold">{{ __('frontend.motor.vehicle_details.variant') }}</div>
                                 <div class="col-12">{{ session('motor')->vehicle->variant }}</div>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row mt-4">
                         <div class="col-12">
                             <p>{{ __('frontend.motor.compare_page.select_occupation') }}</p>
                             <select id="occupation" data-select>
@@ -302,7 +302,7 @@
                     </div>
                 </x-slot>
                 <x-slot name="footer">
-                    <button type="button" id="occupation-next" class="btn btn-primary text-white text-uppercase rounded">{{ __('frontend.button.get_quotation') }}</button>
+                    <button type="button" id="occupation-next" class="btn btn-primary text-white text-uppercase">{{ __('frontend.button.get_quotation') }}</button>
                 </x-slot>
             </x-modal>
             <x-modal id="avcode-modal" maxWidth="md" headerClass="bg-primary text-white">
@@ -311,34 +311,34 @@
                     <div class="row">
                         <div class="col-6">
                             <div class="row">
-                                <div class="col-12">{{ __('frontend.motor.vehicle_details.car_number') }}</div>
+                                <div class="col-12 fw-bold">{{ __('frontend.motor.vehicle_details.car_number') }}</div>
                                 <div class="col-12">{{ session('motor')->vehicle_number }}</div>
                             </div>
-                            <div class="row">
-                                <div class="col-12">{{ __('frontend.motor.vehicle_details.make') }}</div>
+                            <div class="row my-3">
+                                <div class="col-12 fw-bold">{{ __('frontend.motor.vehicle_details.make') }}</div>
                                 <div class="col-12">{{ session('motor')->vehicle->make }}</div>
                             </div>
                             <div class="row">
-                                <div class="col-12">{{ __('frontend.motor.vehicle_details.year') }}</div>
+                                <div class="col-12 fw-bold">{{ __('frontend.motor.vehicle_details.year') }}</div>
                                 <div class="col-12">{{ session('motor')->vehicle->manufacture_year }}</div>
                             </div>
                         </div>
                         <div class="col-6">
                             <div class="row">
-                                <div class="col-12">{{ __('frontend.motor.vehicle_details.engine_capacity') }}</div>
+                                <div class="col-12 fw-bold">{{ __('frontend.motor.vehicle_details.engine_capacity') }}</div>
                                 <div class="col-12">{{ session('motor')->vehicle->engine_capacity }}</div>
                             </div>
-                            <div class="row">
-                                <div class="col-12">{{ __('frontend.motor.vehicle_details.model') }}</div>
+                            <div class="row my-3">
+                                <div class="col-12 fw-bold">{{ __('frontend.motor.vehicle_details.model') }}</div>
                                 <div class="col-12">{{ session('motor')->vehicle->model }}</div>
                             </div>
                             <div class="row">
-                                <div class="col-12">{{ __('frontend.motor.vehicle_details.variant') }}</div>
+                                <div class="col-12 fw-bold">{{ __('frontend.motor.vehicle_details.variant') }}</div>
                                 <div class="col-12">{{ session('motor')->vehicle->variant }}</div>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row mt-4">
                         <div class="col-12">
                             <p>
                                 {{ __('frontend.motor.compare_page.verify_variant') }}
@@ -442,11 +442,12 @@
                 }
             });
 
-            $('#occupation-next').on('click', () => {
+            $('#occupation-next').on('click', async () => {
                 if($('#occupation').val() != '') {
                     motor.policy_holder.occupation = $('#occupation').val();
                     $('#motor').val(JSON.stringify(motor));
 
+                    await getPremium();
                     $('#product-form').submit();
                 } else {
                     $('#occupation-error').text("{{ __('frontend.motor.compare_page.occupation_error') }}").removeClass('d-none');
@@ -721,7 +722,7 @@
                         }).then((res) => {
                             console.log('Allianz AvCode', res);
 
-                            
+
                         })
                     }
                 }).catch((error) => {
