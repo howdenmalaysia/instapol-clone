@@ -117,7 +117,7 @@
                                                         <div class="col-5 px-md-3 mb-3 ms-3">
                                                             <small>{{ __('frontend.motor.add_ons_page.amount') . ':' }}</small>
                                                             <select id="{{ 'cart-amount-' .  $_extra_cover->extra_cover_code }}" data-select data-extra-cover-code="{{ $_extra_cover->extra_cover_code }}">
-                                                                @foreach ($_extra_cover->cart_list->cart_amount_list as $cart_amount)
+                                                                @foreach ($_extra_cover->cart_list[0]->cart_amount_list as $cart_amount)
                                                                     <option value="{{ $cart_amount }}" {{ $cart_amount === 1000 ? 'selected' : '' }}>{{ 'RM ' . $cart_amount }}</option>
                                                                 @endforeach
                                                             </select>
