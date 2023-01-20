@@ -109,8 +109,8 @@
                                                         <div class="col-5 px-md-3 mb-3 ms-3">
                                                             <small>{{ __('frontend.motor.add_ons_page.days') . ':' }}</small>
                                                             <select id="{{ 'cart-day-' .  $_extra_cover->extra_cover_code }}" data-select data-extra-cover-code="{{ $_extra_cover->extra_cover_code }}">
-                                                                @foreach ($_extra_cover->cart_list->cart_day as $cart_day)
-                                                                    <option value="{{ $cart_day }}" {{ $cart_day === 7 ? 'selected' : '' }}>{{ $cart_day }}</option>
+                                                                @foreach ($_extra_cover->cart_list as $cart)
+                                                                    <option value="{{ $cart->cart_day }}" {{ $cart->cart_day === 7 ? 'selected' : '' }}>{{ $cart->cart_day }}</option>
                                                                 @endforeach
                                                             </select>
                                                         </div>
