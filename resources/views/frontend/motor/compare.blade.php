@@ -441,7 +441,7 @@
                         dropdownParent: '#occupation-modal'
                     }).on('select2:select', function () {
                         $(this).parsley().validate();
-                    });
+                    }).attr('required', true);
                 } else if([3].includes(product_id)) {
                     $('#avcode-modal').modal('show');
                     $('#allianz-variant').select2({
@@ -450,7 +450,7 @@
                         dropdownParent: '#avcode-modal'
                     }).on('select2:select', function () {
                         $(this).parsley().validate();
-                    });
+                    }).attr('required', true);
                 } else {
                     $('#product-form').submit();
                 }
@@ -461,7 +461,7 @@
                     motor.policy_holder.occupation = $('#occupation').val();
                     $('#motor').val(JSON.stringify(motor));
 
-                    await getPremium();
+                    await getPremium([motor.product_id]);
                     $('#product-form').submit();
                 } else {
                     $('#occupation-error').text("{{ __('frontend.motor.compare_page.occupation_error') }}").removeClass('d-none');
@@ -684,7 +684,11 @@
             });
         });
 
-        function getPremium() {
+        function getPremium(ids = []) {
+            if(ids.length > 0) {
+                products = ids;
+            }
+
             if(controller) {
                 controller.abort();
             }
@@ -738,7 +742,7 @@
                             console.log('Allianz AvCode', res);
 
                             res.response.data.forEach((variant) => {
-                                $('#allianz-variant').append(`<option value="${variant.AvCode}">${variant.Variant}</option>`);
+                                $('#allianz-variant').append(`<option value="${variant.AvCode}">${variant.Variant}(Sum Insured: ${'RM ' + formatMoney(variant.SumInsured)})</option>`);
                             });
 
                         })
