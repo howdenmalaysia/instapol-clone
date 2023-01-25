@@ -441,7 +441,7 @@
                         dropdownParent: '#occupation-modal'
                     }).on('select2:select', function () {
                         $(this).parsley().validate();
-                    });
+                    }).attr('required', true);
                 } else if([3].includes(product_id)) {
                     $('#avcode-modal').modal('show');
                     $('#allianz-variant').select2({
@@ -450,7 +450,7 @@
                         dropdownParent: '#avcode-modal'
                     }).on('select2:select', function () {
                         $(this).parsley().validate();
-                    });
+                    }).attr('required', true);
                 } else {
                     $('#product-form').submit();
                 }
