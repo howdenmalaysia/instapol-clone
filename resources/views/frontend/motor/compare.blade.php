@@ -249,7 +249,7 @@
                     </table>
                 </div>
             </div>
-            <x-modal id="occupation-modal" maxWidth="md" headerClass="bg-primary text-white">
+            <x-modal id="occupation-modal" maxWidth="md" headerClass="bg-primary text-white" backdrop-static>
                 <x-slot name="title">{{ __('frontend.motor.compare_page.need_occupation') }}</x-slot>
                 <x-slot name="body">
                     <div class="row">
@@ -305,7 +305,7 @@
                     <button type="button" id="occupation-next" class="btn btn-primary text-white text-uppercase">{{ __('frontend.button.get_quotation') }}</button>
                 </x-slot>
             </x-modal>
-            <x-modal id="avcode-modal" maxWidth="md" headerClass="bg-primary text-white">
+            <x-modal id="avcode-modal" maxWidth="md" headerClass="bg-primary text-white" backdrop-static>
                 <x-slot name="title">{{ __('frontend.motor.compare_page.need_vehicle_information') }}</x-slot>
                 <x-slot name="body">
                     <div class="row">
@@ -470,6 +470,18 @@
 
             $('#occupation').on('change', () => {
                 $('#occupation-error').addClass('d-none');
+            });
+
+            $('#avcode-next').on('click', async () => {
+                if($('#allianz-variant').val() != '') {
+                    motor.vehicle.extra_attribute.avcode = $('#allianz-variant').val();
+                    $('#motor').val(JSON.stringify(motor));
+
+                    await getPremium([motor.product_id]);
+                    $('#product-form').submit();
+                } else {
+                    $('#avcode-error').text("{{ __('frontend.motor.compare_page.avcode_error') }}").removeClass('d-none');
+                }
             });
 
             $('.btn-view-details').on('click', (e) => {

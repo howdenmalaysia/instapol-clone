@@ -581,6 +581,7 @@ return [
             'need_vehicle_information' => 'We need more details about your car!',
             'verify_variant' => 'Please verify your car variant again as below',
             'affect_premium' => 'The total premium will be affected by your choice of variant and sum insured',
+            'avcode_error' => 'Please select a variant to continue.',
             'compare_details' => [
                 'valuation' => 'Agreed / Market Value',
                 'basic_information' => 'Basic Information',
