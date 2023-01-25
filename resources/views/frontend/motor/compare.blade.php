@@ -461,7 +461,7 @@
                     motor.policy_holder.occupation = $('#occupation').val();
                     $('#motor').val(JSON.stringify(motor));
 
-                    await getPremium();
+                    await getPremium([motor.product_id]);
                     $('#product-form').submit();
                 } else {
                     $('#occupation-error').text("{{ __('frontend.motor.compare_page.occupation_error') }}").removeClass('d-none');
@@ -684,7 +684,11 @@
             });
         });
 
-        function getPremium() {
+        function getPremium(ids = []) {
+            if(ids.length > 0) {
+                products = ids;
+            }
+
             if(controller) {
                 controller.abort();
             }
