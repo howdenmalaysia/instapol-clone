@@ -737,6 +737,9 @@
                         }).then((res) => {
                             console.log('Allianz AvCode', res);
 
+                            res.response.data.forEach((variant) => {
+                                $('#allianz-variant').append(`<option value="${variant.AvCode}">${variant.Variant}</option>`);
+                            });
 
                         })
                     }
