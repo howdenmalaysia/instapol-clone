@@ -742,7 +742,7 @@
                             console.log('Allianz AvCode', res);
 
                             res.response.data.forEach((variant) => {
-                                $('#allianz-variant').append(`<option value="${variant.AvCode}">${variant.Variant}</option>`);
+                                $('#allianz-variant').append(`<option value="${variant.AvCode}">${variant.Variant}(Sum Insured: ${'RM ' + formatMoney(variant.SumInsured)})</option>`);
                             });
 
                         })
