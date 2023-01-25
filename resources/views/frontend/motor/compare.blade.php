@@ -353,7 +353,7 @@
                     </div>
                 </x-slot>
                 <x-slot name="footer">
-                    <button type="button" id="avcode-next" class="btn btn-primary text-white text-uppercase rounded">{{ __('frontend.button.get_quotation') }}</button>
+                    <button type="button" id="avcode-next" class="btn btn-primary text-white text-uppercase">{{ __('frontend.button.get_quotation') }}</button>
                 </x-slot>
             </x-modal>
         </x-slot>
