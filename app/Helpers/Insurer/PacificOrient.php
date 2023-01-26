@@ -43,8 +43,6 @@ class PacificOrient implements InsurerLibraryInterface
     private const ALLOWED_GAP_IN_COVER = 7; // Days
     private const MIN_SUM_INSURED = 10000;
     private const MAX_SUM_INSURED = 500000;
-    private const ADJUSTMENT_RATE_UP = 10;
-    private const ADJUSTMENT_RATE_DOWN = 10;
 
     private const SOAP_ACTION_DOMAIN = 'http://tempuri.org';
 
@@ -127,8 +125,8 @@ class PacificOrient implements InsurerLibraryInterface
                 'model' => $details->model ?? '',
                 'model_code' => $vix->response->model,
                 'manufacture_year' => $vix->response->manufacturing_year,
-                'max_sum_insured' => roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_UP, true, self::MAX_SUM_INSURED),
-                'min_sum_insured' => roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_DOWN, false, self::MIN_SUM_INSURED),
+                'max_sum_insured' => formatNumber($sum_insured),
+                'min_sum_insured' => formatNumber($sum_insured),
                 'sum_insured' => formatNumber($sum_insured),
                 'sum_insured_type' => 'Agreed Value',
                 'ncd_percentage' => floatval($vix->response->ncd),
