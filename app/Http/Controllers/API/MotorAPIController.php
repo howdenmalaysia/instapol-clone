@@ -682,7 +682,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
         ];
 
         // Check Insurance Status
-        if($insurance->insurance_status !== Insurance::STATUS_NEW_QUOTATION) {
+        if($insurance->insurance_status !== Insurance::STATUS_PAYMENT_ACCEPTED) {
             abort(config('setting.response_codes.invalid_insurance_status'), __('api.invalid_insurance_status', ['status' => getInsuranceStatus($insurance->insurance_status)]));
         }
 
@@ -692,7 +692,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
         }
 
         // Compare Total Payable
-        if(round(floatval($input->payment_amount), 2) !== round(floatval($insurance->total_payable), 2)) {
+        if(round(floatval($input->payment_amount), 2) !== round(floatval($insurance->amount), 2)) {
             abort(config('setting.response_codes.total_payable_not_match'), __('api.total_payable_not_match'));
         }
 

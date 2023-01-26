@@ -20,7 +20,7 @@ class Submission
     public function submission(object $data) : object
     {
         $path = '';
-        $form = [];
+        $param = (object) [];
 
         switch($this->product_type) {
             case 'motor': {
@@ -60,7 +60,7 @@ class Submission
         ];
 
         // API Call
-        $result = HttpClient::curl($method, $this->domain . '/api' . $path, $request_options);
+        $result = HttpClient::curl($method, $path, $request_options);
 
         $response = json_decode($result->response);
 
