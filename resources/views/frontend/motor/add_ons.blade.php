@@ -127,7 +127,7 @@
                                                             <small>{{ __('frontend.motor.add_ons_page.amount') . ':' }}</small>
                                                             <select id="{{ 'cart-amount-' .  $_extra_cover->extra_cover_code }}" class="cart-amount" data-select data-extra-cover-code="{{ $_extra_cover->extra_cover_code }}">
                                                                 @foreach ($_extra_cover->cart_list[0]->cart_amount_list as $cart_amount)
-                                                                    <option value="{{ $cart_amount }}" {{ $cart_amount === 1000 ? 'selected' : '' }}>{{ 'RM ' . $cart_amount }}</option>
+                                                                    <option value="{{ $cart_amount }}" {{ $cart_amount === 100 ? 'selected' : '' }}>{{ 'RM ' . $cart_amount }}</option>
                                                                 @endforeach
                                                             </select>
                                                         </div>
@@ -538,6 +538,22 @@
 
         $('#extra-coverages').on('change', '.option-list, .cart-day, .cart-amount', (e) => {
             $(`#checkbox-${$.escapeSelector($(e.target).data('extra-cover-code'))}`).attr('checked', true).trigger('change');
+        });
+
+        $('.cart-day').on('change', (e) => {
+            $('.cart-amount').empty();
+
+            motor.extra_cover.forEach((add_ons) => {
+                if(add_ons.extra_cover_code === $(this).data('extra-cover-code')) {
+                    add_ons.cart_list.forEach((cart) => {
+                        if(cart.cart_day === $(this).val()) {
+                            cart.cart_amount.forEach((amount, index) => {
+                                $('.cart-amount').append(`<option value="${amount}" ${index === 0 ? 'selected' : ''}>${'RM ' + formatMoney(amount)}</option>`);
+                            });
+                        }
+                    });
+                }
+            });
         });
 
         $('#body-type-wrapper').on('click', () => {
