@@ -104,7 +104,7 @@
                 <d4p1:StampDuty xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $premium_details->stamp_duty }}</d4p1:StampDuty>
                 <d4p1:StateCode xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $state_code }}</d4p1:StateCode>
                 <d4p1:SumInsured xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $sum_insured }}</d4p1:SumInsured>
-                <d4p1:TariffPremium xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ }}</d4p1:TariffPremium>
+                <d4p1:TariffPremium xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $premium_details->tariff_premium }}</d4p1:TariffPremium>
                 <d4p1:TotalPremium xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $total_premium }}</d4p1:TotalPremium>
                 <d4p1:TypeOfCoverCode xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $type_of_cover }}</d4p1:TypeOfCoverCode>
                 <d4p1:YearMake xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $year_make }}</d4p1:YearMake>
