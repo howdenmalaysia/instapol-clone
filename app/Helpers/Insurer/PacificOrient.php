@@ -488,8 +488,8 @@ class PacificOrient implements InsurerLibraryInterface
         $selected_extra_cover = [];
         foreach($input->insurance->extra_cover as $extra_cover) {
             array_push($selected_extra_cover, (object) [
-                'code' => $extra_cover->code,
-                'description' => $extra_cover->description,
+                'extra_cover_code' => $extra_cover->code,
+                'extra_cover_description' => $extra_cover->description,
                 'premium' => $extra_cover->amount,
                 'sum_insured' => $extra_cover->sum_insured ?? 0
             ]);
