@@ -666,7 +666,7 @@ class PacificOrient implements InsurerLibraryInterface
         $path = 'poiapiv2/Insurance.svc';
         $token = $this->getToken();
 
-        $data = (object) [
+        $data = [
             'address_one' => $input->insurance->address->address_one,
             'address_two' => $input->insurance->address->address_two,
             'anti_theft' => self::ANTI_THEFT_DEVICE,
