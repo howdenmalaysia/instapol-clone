@@ -448,6 +448,7 @@ class PacificOrient implements InsurerLibraryInterface
         }
         
         $input->vehicle = (object) [
+            'expiry_date' => $input->insurance->expiry_date,
             'inception_date' => $input->insurance->inception_date,
             'manufacture_year' => $input->insurance_motor->manufacture_year,
             'ncd_percentage' => $input->insurance_motor->ncd_percentage,
