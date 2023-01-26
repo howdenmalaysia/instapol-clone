@@ -250,7 +250,7 @@
             $('input[name=id_type]').on('change', () => {
                 if($('input[name=id_type]:checked').val() == "{{ config('setting.id_type.company_registration_no') }}") {
                     $('#id-number-label').text("{{ __('frontend.motor.company_resgistration') }}");
-                    $('#id-number').attr('placeholder', '1183636-M').removeAttr('pattern').attr('minlength', 8);
+                    $('#id-number').attr('placeholder', '1183636-M').removeAttr('pattern').attr('minlength', 7);
 
                     Inputmask.remove('#id-number');
                     if(motor.policy_holder) {
