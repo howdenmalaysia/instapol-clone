@@ -352,8 +352,8 @@
                                 <select id="${'cart-amount-' +  extra.extra_cover_code}" class="cart-amount" data-select data-extra-cover-code="${extra.extra_cover_code}">
                         `;
 
-                        extra.cart_list.forEach((amount) => {
-                            html += `<option value="${cart_amount}" ${cart_amount === 100 ? 'selected' : ''}>${'RM ' + cart_amount}</option>`;
+                        extra.cart_list[0].cart_amount_list.forEach((amount) => {
+                            html += `<option value="${amount}" ${amount === 100 ? 'selected' : ''}>${'RM ' + amount}</option>`;
                         });
 
                         html += `</select></div></div>`;
