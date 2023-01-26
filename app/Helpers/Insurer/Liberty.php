@@ -277,7 +277,7 @@ class Liberty implements InsurerLibraryInterface
                     'selected' => false,
                     'readonly' => false,
                     'extra_cover_code' => $_extra_cover_code,
-                    'extra_cover_description' => $this->getExtraBenefitDescription($_extra_cover_code),
+                    'extra_cover_description' => $this->getExtraBenefitDescription($_extra_cover_code, $vehicle->engine_capacity),
                     'premium' => 0,
                     'sum_insured' => 0,
                 ]);
@@ -391,7 +391,7 @@ class Liberty implements InsurerLibraryInterface
             if (count($input->additional_driver) > 0 && array_search('07', array_column($input->extra_cover, 'extra_cover_code')) == false) {
                 array_push($input->extra_cover, new ExtraCover([
                     'extra_cover_code' => '07',
-                    'extra_cover_description' => $this->getExtraBenefitDescription('07'),
+                    'extra_cover_description' => $this->getExtraBenefitDescription('07', $vehicle->engine_capacity),
                     'sum_insured' => 0,
                     'unit' => count($input->additional_driver)
                 ]));
@@ -793,7 +793,7 @@ class Liberty implements InsurerLibraryInterface
         if(isset($input->extra_cover)) {
             foreach ($input->extra_cover as $extra_cover) {
                 $extra_cover_code = $extra_cover->extra_cover_code;
-                $extra_cover->extra_cover_description = $this->getExtraBenefitDescription($extra_cover_code);
+                $extra_cover->extra_cover_description = $this->getExtraBenefitDescription($extra_cover_code, $input->vehicle->engine_capacity);
 
                 if($extra_cover->extra_cover_code == '40') {
                     $extra_cover_code = $extra_cover->extra_cover_code . $this->getLltpCode($input->vehicle->engine_capacity);
@@ -948,7 +948,7 @@ class Liberty implements InsurerLibraryInterface
         if(isset($input->extra_cover)) {
             foreach ($input->extra_cover as $extra_cover) {
                 $extra_cover_code = $extra_cover->extra_cover_code;
-                $extra_cover->extra_cover_description = $this->getExtraBenefitDescription($extra_cover_code);
+                $extra_cover->extra_cover_description = $this->getExtraBenefitDescription($extra_cover_code, $input->vehicle->engine_capacity);
 
                 if($extra_cover->extra_cover_code == '40') {
                     $extra_cover_code = $extra_cover->extra_cover_code . $this->getLltpCode($input->vehicle->engine_capacity);
