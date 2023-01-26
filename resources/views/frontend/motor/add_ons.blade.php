@@ -544,11 +544,11 @@
             $('.cart-amount').empty();
 
             motor.extra_cover_list.forEach((add_ons) => {
-                if(add_ons.extra_cover_code == $(this).data('extra-cover-code')) {
+                if(add_ons.extra_cover_code == $(e.target).data('extra-cover-code')) {
                     add_ons.cart_list.forEach((cart) => {
-                        if(cart.cart_day == $(this).val()) {
+                        if(cart.cart_day == $(e.target).val()) {
                             cart.cart_amount_list.forEach((amount, index) => {
-                                $('.cart-amount').append(`<option value="${amount}" ${index === 0 ? 'selected' : ''}>${'RM ' + formatMoney(amount)}</option>`);
+                                $('.cart-amount').append(`<option value="${amount}" ${index === 0 ? 'selected' : ''}>${'RM ' + amount}</option>`);
                             });
                         }
                     });
