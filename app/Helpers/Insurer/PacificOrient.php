@@ -701,7 +701,7 @@ class PacificOrient implements InsurerLibraryInterface
             'nvic' => $input->vehicle->nvic,
             'named_driver' => $input->additional_driver,
             'occupation' => self::OCCUPATION,
-            'permitted_driver' => self::PERMITTED_DRIVERS,
+            'permitted_drivers' => self::PERMITTED_DRIVERS,
             'phone_number' => $input->insurance->holder->phone_code . $input->insurance->holder->phone_number,
             'postcode' => $input->insurance->address->postcode,
             'reference_number' => Str::uuid(),
