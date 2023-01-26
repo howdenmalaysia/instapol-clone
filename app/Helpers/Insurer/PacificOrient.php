@@ -710,7 +710,7 @@ class PacificOrient implements InsurerLibraryInterface
             'token' => $token,
             'type_of_cover' => self::COVER_TYPE,
             'vehicle_number' => $input->vehicle_number,
-            'year_make' => $input->vehicle->manufacturing_year,
+            'year_make' => $input->vehicle->manufacture_year,
             'request_id' => $input->vehicle->extra_attribute->request_id,
             'premium_details' => $input->premium_details
         ];
