@@ -543,7 +543,7 @@
         $('.cart-day').on('change', (e) => {
             $('.cart-amount').empty();
 
-            motor.extra_cover.forEach((add_ons) => {
+            motor.extra_cover_list.forEach((add_ons) => {
                 if(add_ons.extra_cover_code === $(this).data('extra-cover-code')) {
                     add_ons.cart_list.forEach((cart) => {
                         if(cart.cart_day === $(this).val()) {
