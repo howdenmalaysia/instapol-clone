@@ -36,11 +36,11 @@
                                             <input type="range" id="sum-insured-slider" class="form-range" min="{{ session('motor')->vehicle->min_sum_insured }}" max="{{ session('motor')->vehicle->max_sum_insured }}" step="1000">
                                         </div>
                                     @else
-                                        <div class="text-center">
-                                            <h4>
+                                        <div class="text-center mt-4">
+                                            <h4 class="fw-bold text-primary">
                                                 {{ 'RM ' . number_format(session('motor')->vehicle->sum_insured) }}
                                             </h4>
-                                            <h4>{{ '(' . __('frontend.motor.add_ons_page.fixed_value') . ')' }}</h4>
+                                            <h4 class="fw-bold text-primary">{{ '(' . __('frontend.motor.add_ons_page.fixed_value') . ')' }}</h4>
                                         </div>
                                     @endif
                                 </div>
