@@ -339,7 +339,7 @@
                             <div class="row">
                                 <div class="col-5 px-md-3 mb-3 ms-3">
                                     <small>{{ __('frontend.motor.add_ons_page.days') . ':' }}</small>
-                                    <select id="${'cart-day-' .  extra.extra_cover_code}" class="cart-day" data-select data-extra-cover-code="${extra.extra_cover_code}">
+                                    <select id="${'cart-day-' +  extra.extra_cover_code}" class="cart-day" data-select data-extra-cover-code="${extra.extra_cover_code}">
                         `;
                          
                         extra.cart_list.forEach((cart) => {
@@ -349,7 +349,7 @@
                         html += `</select></div>
                             <div class="col-5 px-md-3 mb-3 ms-3">
                                 <small>{{ __('frontend.motor.add_ons_page.amount') . ':' }}</small>
-                                <select id="${'cart-amount-' .  extra.extra_cover_code}" class="cart-amount" data-select data-extra-cover-code="${extra.extra_cover_code}">
+                                <select id="${'cart-amount-' +  extra.extra_cover_code}" class="cart-amount" data-select data-extra-cover-code="${extra.extra_cover_code}">
                         `;
 
                         extra.cart_list.forEach((amount) => {
