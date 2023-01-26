@@ -42,9 +42,9 @@
                     <d4p1:ExtraCoverage xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">
                         @foreach ($extra_coverage as $extra)
                             <extraCoverageSubmissionReq>
-                                <coverageId>{{ $extra['code'] }}</coverageId>
-                                <premium>{{ $extra['premium'] }}</premium>
-                                <sumInsured>{{ $extra['sum_insured'] }}</sumInsured>
+                                <coverageId>{{ $extra->extra_cover_code }}</coverageId>
+                                <premium>{{ $extra->premium }}</premium>
+                                <sumInsured>{{ $extra->sum_insured }}</sumInsured>
                             </extraCoverageSubmissionReq>
                         @endforeach
                     </d4p1:ExtraCoverage>
