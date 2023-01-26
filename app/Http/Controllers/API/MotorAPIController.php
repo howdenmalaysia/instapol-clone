@@ -314,7 +314,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             'address_one' => strtoupper($motor->policy_holder->address_1),
             'address_two' => strtoupper($motor->policy_holder->address_2),
             'city' => strtoupper($motor->policy_holder->city),
-            'occupation' => strtoupper($request->occupation ?? ''),
+            'occupation' => strtoupper($motor->policy_holder->occupation ?? ''),
             'promo' => $motor->promo ?? []
         ]);
 
