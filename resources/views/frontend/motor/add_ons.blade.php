@@ -331,6 +331,32 @@
                         });
 
                         html += `</select></div></div></div>`;
+                    } else if(extra.cart_list) {
+                        new_select_fields.push('cart-day-' + extra.extra_cover_code);
+                        new_select_fields.push('cart-amount-' + extra.extra_cover_code);
+
+                        html += `
+                            <div class="row">
+                                <div class="col-5 px-md-3 mb-3 ms-3">
+                                    <small>{{ __('frontend.motor.add_ons_page.days') . ':' }}</small>
+                                    <select id="${'cart-day-' .  extra.extra_cover_code}" class="cart-day" data-select data-extra-cover-code="${extra.extra_cover_code}">
+                        `;
+                         
+                        extra.cart_list.forEach((cart) => {
+                            html += `<option value="${cart.cart_day}" ${cart.cart_day === 7 ? 'selected' : ''}>${cart.cart_day}</option>`;
+                        });
+
+                        html += `</select></div>
+                            <div class="col-5 px-md-3 mb-3 ms-3">
+                                <small>{{ __('frontend.motor.add_ons_page.amount') . ':' }}</small>
+                                <select id="${'cart-amount-' .  extra.extra_cover_code}" class="cart-amount" data-select data-extra-cover-code="${extra.extra_cover_code}">
+                        `;
+
+                        extra.cart_list.forEach((amount) => {
+                            html += `<option value="${cart_amount}" ${cart_amount === 100 ? 'selected' : ''}>${'RM ' + cart_amount}</option>`;
+                        });
+
+                        html += `</select></div></div>`;
                     } else {
                         html += '</div>';
                     }
@@ -540,7 +566,7 @@
             $(`#checkbox-${$.escapeSelector($(e.target).data('extra-cover-code'))}`).attr('checked', true).trigger('change');
         });
 
-        $('.cart-day').on('change', (e) => {
+        $('#extra-coverages').on('change', '.cart-day', (e) => {
             $('.cart-amount').empty();
 
             motor.extra_cover_list.forEach((add_ons) => {
