@@ -707,7 +707,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             // Insert Log into DB
             InsuranceRemark::create([
                 'insurance_id' => $input->insurance->id,
-                'remark' => "{$product->insurance_company->name} Policy Failure: {json_encode($result->response)}"
+                'remark' => "{$product->insurance_company->name} Policy Failure: {$result->response}"
             ]);
 
             abort($result->code, $result->response);
