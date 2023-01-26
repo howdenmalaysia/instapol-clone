@@ -435,10 +435,17 @@ class PacificOrient implements InsurerLibraryInterface
 
         switch($input->id_type) {
             case config('setting.id_type.nric_no'): {
+                $input->gender = $input->insurance->holder->gender;
+                $input->age = $input->insurance->holder->age;
+                $input->marital_status = $this->getMaritalStatusCode($input->insurance_motor->marital_status);
+
                 break;
             }
             case config('setting.id_type.company_registration_no'): {
                 $input->company_registration_number = $input->id_number;
+                $input->gender = $this->getGender('O');
+                $input->age = 0;
+                $input->marital_status = $this->getMaritalStatusCode('O');
 
                 break;
             }
@@ -446,6 +453,8 @@ class PacificOrient implements InsurerLibraryInterface
                 return $this->abort(__('api.unsupported_id_type'), config('setting.response_codes.unsupported_id_types'));
             }
         }
+
+        $input->postcode = $input->insurance->address->postcode;
         
         $input->vehicle = (object) [
             'expiry_date' => $input->insurance->expiry_date,
@@ -583,7 +592,8 @@ class PacificOrient implements InsurerLibraryInterface
         $data = [
             'all_rider' => 'Y', // Default to Yes,
             'is_company' => $input->id_type === config('setting.id_type.company_registration_no') ? 'Y' : 'N',
-            'company_registration_number' => $input->company_registration_number ?? '','coverage' => self::COVER_TYPE,
+            'company_registration_number' => $input->company_registration_number ?? '',
+            'coverage' => self::COVER_TYPE,
             'effective_date' => $input->vehicle->inception_date,
             'expiry_date' => $input->vehicle->expiry_date,
             'extra_cover' => $input->extra_cover ?? [],
