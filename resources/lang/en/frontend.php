@@ -807,6 +807,7 @@ return [
         'add_ons_page' => [
             'add_ons' => 'Add Ons',
             'sum_insured' => 'Sum Insured',
+            'fixed_value' => 'Fixed Value',
             'sum_insured_amount' => 'Sum Insured Amount',
             'additional_coverage' => 'Additional Coverage',
             'additional_driver' => 'Additional Driver(s)',
