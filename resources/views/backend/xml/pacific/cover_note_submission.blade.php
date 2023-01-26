@@ -93,10 +93,10 @@
                 <d4p1:Occupation xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $occupation }}</d4p1:Occupation>
                 <d4p1:PermittedDrivers xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $permitted_drivers }}</d4p1:PermittedDrivers>
                 <d4p1:PostCode xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $postcode }}</d4p1:PostCode>
-                <d4p1:PremiumBeforeRebate xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $premium_details->premium_before_rebate }}</d4p1:PremiumBeforeRebate>
+                <d4p1:PremiumBeforeRebate xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API"></d4p1:PremiumBeforeRebate>
                 <d4p1:PreviousInsurerRegNo xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API"></d4p1:PreviousInsurerRegNo>
                 <d4p1:Race xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API"></d4p1:Race>
-                <d4p1:RebateAmount xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $premium_details->rebate_amount }}</d4p1:RebateAmount>
+                <d4p1:RebateAmount xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API"></d4p1:RebateAmount>
                 <d4p1:RegistrationNo xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $vehicle_number }}</d4p1:RegistrationNo>
                 <d4p1:SafetyFeatureCode xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $safety_feature_code }}</d4p1:SafetyFeatureCode>
                 <d4p1:SeatCapacity xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $seat_capacity }}</d4p1:SeatCapacity>
