@@ -62,7 +62,7 @@
                                 <div class="row">
                                     <div class="col-12 d-flex justify-content-between">
                                         <h4 class="fw-bold">{{ __('frontend.motor.payment_summary_page.total_payable') }}</h4>
-                                        <h4 class="fw-bold">{{ 'RM ' . $insurance->amount }}</h4>
+                                        <h4 class="fw-bold">{{ 'RM ' . number_format($insurance->amount, 2) }}</h4>
                                     </div>
                                 </div>
                             </div>
