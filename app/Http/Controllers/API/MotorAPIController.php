@@ -662,7 +662,8 @@ class MotorAPIController extends Controller implements MotorAPIInterface
         $product = $this->getProduct($insurance->product_id);
 
         // Check if Insurance Motor Record Exists
-        $insurance_motor = InsuranceMotor::where('insurance_id', $insurance->id);
+        $insurance_motor = InsuranceMotor::where('insurance_id', $insurance->id)
+            ->first();
 
         $input = (object) [
             'insurance_code' => $request->insurance_code,
