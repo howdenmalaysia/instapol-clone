@@ -462,7 +462,7 @@ class PacificOrient implements InsurerLibraryInterface
             'manufacture_year' => $input->insurance_motor->manufacture_year,
             'ncd_percentage' => $input->insurance_motor->ncd_percentage,
             'nvic' => $input->insurance_motor->nvic,
-            'sum_insured' => formatNumber($input->insurance_motor->sum_insured),
+            'sum_insured' => formatNumber($input->insurance_motor->market_value),
             'extra_attribute' => (object) [
                 'chassis_number' => $extra_attribute->chassis_number,
                 'cover_type' => $extra_attribute->cover_type,
