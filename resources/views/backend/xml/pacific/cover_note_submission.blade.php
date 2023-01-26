@@ -79,17 +79,17 @@
                     @if (!empty($additional_driver))
                         @foreach ($additional_driver as $driver)
                             <namedDriverSubmissionReq>
-                                <age>{{ $driver['age'] }}</age>
-                                <gender>{{ $driver['gender'] }}</gender>
-                                <name>{{ $driver['name'] }}</name>
-                                <nricNo>{{ $driver['id_number'] }}</nricNo>
-                                <relation>{{ $driver['relationship'] }}</relation>
+                                <age>{{ $driver->age }}</age>
+                                <gender>{{ $driver->gender }}</gender>
+                                <name>{{ $driver->name }}</name>
+                                <nricNo>{{ $driver->id_number }}</nricNo>
+                                <relation>{{ $driver->relationship }}</relation>
                             </namedDriverSubmissionReq>
                         @endforeach
                     @endif
 
                 </d4p1:NamedDriver>
-                <d4p1:NonActPrem xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API"><?php echo $quotation->nonActPremium ?></d4p1:NonActPrem>
+                <d4p1:NonActPrem xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $premium_details->non_act_premium }}</d4p1:NonActPrem>
                 <d4p1:Occupation xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $occupation }}</d4p1:Occupation>
                 <d4p1:PermittedDrivers xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $permitted_drivers }}</d4p1:PermittedDrivers>
                 <d4p1:PostCode xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $postcode }}</d4p1:PostCode>
