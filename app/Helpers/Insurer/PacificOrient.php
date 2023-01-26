@@ -504,8 +504,8 @@ class PacificOrient implements InsurerLibraryInterface
             return $this->abort($premium_result->response);
         }
 
-        $input->premium_details = $premium_result;
-        $input->vehicle->extra_attributes->request_id = $premium_result->response->request_id;
+        $input->premium_details = $premium_result->response;
+        $input->vehicle->extra_attribute->request_id = $premium_result->response->request_id;
         
         $result = $this->issueCoverNote($input);
 
