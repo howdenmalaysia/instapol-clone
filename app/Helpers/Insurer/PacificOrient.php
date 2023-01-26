@@ -434,6 +434,9 @@ class PacificOrient implements InsurerLibraryInterface
         $extra_attribute = json_decode($input->insurance->extra_attribute->value);
 
         switch($input->id_type) {
+            case config('setting.id_type.nric_no'): {
+                break;
+            }
             case config('setting.id_type.company_registration_no'): {
                 $input->company_registration_number = $input->id_number;
 
