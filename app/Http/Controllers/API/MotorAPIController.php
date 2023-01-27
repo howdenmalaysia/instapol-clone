@@ -472,7 +472,11 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             // 7. Update or Insert to Insurance Motor PA Table
             // 8. Update or Insert to Insurance Motor Roadtax Table
             if(!empty($motor->roadtax)) {
-                $region = Postcode::with(['state'])->findOrFail($input->postcode)->first()->state->region;
+                $region = Postcode::with(['state'])
+                    ->where('postcode', $input->postcode)
+                    ->first()
+                    ->state
+                    ->region;
 
                 if($region === 'East') {
                     $delivery_type = RoadtaxDeliveryType::where('description', RoadtaxDeliveryType::EM)->first();
