@@ -721,7 +721,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
 
             Insurance::find($input->insurance->id)
                 ->update([
-                    'policy_number' => $result->policy_number,
+                    'policy_number' => $result->response->policy_number,
                     'insurance_status' => Insurance::STATUS_POLICY_ISSUED,
                     'cover_note_date' => Carbon::now()->format('Y-m-d')
                 ]);
