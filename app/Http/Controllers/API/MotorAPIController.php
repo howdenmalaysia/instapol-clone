@@ -833,4 +833,101 @@ class MotorAPIController extends Controller implements MotorAPIInterface
         }
         return $result;
     }
+
+public function callback(Request $request) 
+    {
+        // Get Insurance Details
+        $insurance = Insurance::with([
+                'product',
+                'extra_cover',
+                'holder',
+                'motor',
+                'address',
+                'promo',
+                'remark'
+            ])
+            ->where('contract_number', $request->contract_number)
+            ->where('insurance_status', Insurance::STATUS_PAYMENT_ACCEPTED)
+            ->first();
+
+        // Get State Details with Postcode
+        $postcode = $this->getPostcodeDetails($insurance->address->postcode);
+
+        // Get Product Details
+        $product = $this->getProduct($insurance->product_id);
+
+        // Check if Insurance Motor Record Exists
+        $insurance_motor = InsuranceMotor::where('insurance_id', $insurance->id)
+            ->first();
+
+        $input = (object) [
+            'insurance_code' => $request->insurance_code,
+            'company_id' => $product->insurance_company->id,
+            'product_id' => $product->id,
+            'vehicle_number' => strtoupper($request->vehicle_number ?? $insurance->motor->vehicle_number),
+            'id_type' => $insurance->holder->id_type_id,
+            'id_number' => $insurance->holder->id_number,
+            'payment_method' => $request->payment_method,
+            'payment_amount' => formatNumber($request->payment_amount),
+            'payment_date' => Carbon::parse($request->payment_date)->format('Y-m-d'),
+            'transaction_reference' => $request->transaction_reference,
+            'insurance' => $insurance,
+            'insurance_motor' => $insurance_motor,
+            'region' => $postcode->state->region
+        ];
+
+        // Check Insurance Status
+        if($insurance->insurance_status !== Insurance::STATUS_PAYMENT_ACCEPTED) {
+            abort(config('setting.response_codes.invalid_insurance_status'), __('api.invalid_insurance_status', ['status' => getInsuranceStatus($insurance->insurance_status)]));
+        }
+
+        // Compare IC Number
+        if($insurance->holder->id_number !== $input->id_number) {
+            abort(config('setting.response_codes.insurance_record_mismatch'), __('api.insurance_record_not_match'));
+        }
+
+        // Compare Total Payable
+        if(round(floatval($input->payment_amount), 2) !== round(floatval($insurance->amount), 2)) {
+            abort(config('setting.response_codes.total_payable_not_match'), __('api.total_payable_not_match'));
+        }
+
+        $insurer_class = $this->getInsurerClass($input->product_id);
+        $result = $insurer_class->submission($input);
+
+        if(!$result->status) {
+            Insurance::find($input->insurance->id)
+                ->update(['insurance_status', Insurance::STATUS_POLICY_FAILURE]);
+
+            // Insert Log into DB
+            InsuranceRemark::create([
+                'insurance_id' => $input->insurance->id,
+                'remark' => "{$product->insurance_company->name} Policy number updated Failure: {$result->response}"
+            ]);
+
+            abort($result->code, $result->response);
+        }
+
+        try {
+            DB::beginTransaction();
+
+            Insurance::find($input->insurance->id)
+                ->update([
+                    'policy_number' => $result->response->policy_number,
+                    'insurance_status' => Insurance::STATUS_POLICY_ISSUED,
+                    'cover_note_date' => Carbon::now()->format('Y-m-d')
+                ]);
+            
+            InsuranceRemark::create([
+                'insurance_id' => $input->insurance->id,
+                'remark' => "{$product->insurance_company->name} Policy successfully created. (Policy Number: {$result->policy_number})",
+            ]);
+
+            DB::commit();
+           
+        } catch (Exception $ex) {
+            Log::error("[API/Policy number updated] An Error Encountered. {$ex->getMessage()}");
+            abort(500, $ex->getMessage());
+        }
+    }
+
 }
