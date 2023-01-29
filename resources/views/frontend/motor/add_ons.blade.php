@@ -530,11 +530,20 @@
                     sum_insured = $('#sum-insured-slider').val();
                 }
 
-                selected_extra_cover.push({
-                    extra_cover_code: $(element).val(),
-                    sum_insured: sum_insured,
-                    premium: $(`#${$.escapeSelector($(element).val())}-premium`).text()
-                })
+                if($(element).val() != 112) { // CART
+                    selected_extra_cover.push({
+                        extra_cover_code: $(element).val(),
+                        sum_insured: sum_insured,
+                        premium: $(`#${$.escapeSelector($(element).val())}-premium`).text()
+                    });
+                } else {
+                    selected_extra_cover.push({
+                        extra_cover_code: $(element).val(),
+                        cart_amount: sum_insured,
+                        cart_day: $(`#cart-day-${$.escapeSelector($(element).val())}:checked`).val()
+                        premium: $(`#${$.escapeSelector($(element).val())}-premium`).text()
+                    });
+                }
             });
 
             $('#selected-extra-coverage').val(JSON.stringify(selected_extra_cover));
