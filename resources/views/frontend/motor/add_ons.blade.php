@@ -395,6 +395,7 @@
             if(!$('#pricing-table #basic-premium').hasClass('loadingButton')) {
                 $('#pricing-table #basic-premium').text(' ').toggleClass('loadingButton');
                 $('#pricing-table #gross-premium').text(' ').toggleClass('loadingButton');
+                $('#pricing-table #sst').text(' ').toggleClass('loadingButton');
                 $('#pricing-table #total-payable').text(' ').toggleClass('loadingButton');
             }
 
