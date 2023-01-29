@@ -308,7 +308,7 @@
                                     <input type="checkbox" id="${'checkbox-' + extra.extra_cover_code}" class="form-check-input extra-coverage-checkbox" name="extra_coverage[]" value="${extra.extra_cover_code}" ${extra.selected ? 'checked' : ''} />
                                 </div>
                                 <div class="col-8 d-flex justify-content-between">
-                                    <label for="${'#checkbox-' + extra.extra_cover_code}">${extra.extra_cover_description}</label>
+                                    <label for="${'checkbox-' + extra.extra_cover_code}">${extra.extra_cover_description}</label>
                                     
                                     ${getTootip(extra.extra_cover_description)}
                                 </div>
