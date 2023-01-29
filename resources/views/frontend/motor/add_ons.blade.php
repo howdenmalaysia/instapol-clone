@@ -540,7 +540,7 @@
                     selected_extra_cover.push({
                         extra_cover_code: $(element).val(),
                         cart_amount: sum_insured,
-                        cart_day: $(`#cart-day-${$.escapeSelector($(element).val())}:checked`).val()
+                        cart_day: $(`#cart-day-${$.escapeSelector($(element).val())}:checked`).val(),
                         premium: $(`#${$.escapeSelector($(element).val())}-premium`).text()
                     });
                 }
