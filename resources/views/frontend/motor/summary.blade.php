@@ -250,7 +250,7 @@
                                             @else
                                                 <div class="row">
                                                     <div class="col-12 text-center">
-                                                        <p class="mb-0">{{ __('frontend.motor.payment_summary_page.no_add_ons') }}</p>
+                                                        <p class="mb-0">{{ __('frontend.motor.payment_summary_page.no_additional_driver') }}</p>
                                                     </div>
                                                 </div>
                                             @endif
