@@ -308,7 +308,7 @@
                                     <input type="checkbox" id="${'checkbox-' + extra.extra_cover_code}" class="form-check-input extra-coverage-checkbox" name="extra_coverage[]" value="${extra.extra_cover_code}" ${extra.selected ? 'checked' : ''} />
                                 </div>
                                 <div class="col-8 d-flex justify-content-between">
-                                    <label for="${'#checkbox-' + extra.extra_cover_code}">${extra.extra_cover_description}</label>
+                                    <label for="${'checkbox-' + extra.extra_cover_code}">${extra.extra_cover_description}</label>
                                     
                                     ${getTootip(extra.extra_cover_description)}
                                 </div>
@@ -395,6 +395,7 @@
             if(!$('#pricing-table #basic-premium').hasClass('loadingButton')) {
                 $('#pricing-table #basic-premium').text(' ').toggleClass('loadingButton');
                 $('#pricing-table #gross-premium').text(' ').toggleClass('loadingButton');
+                $('#pricing-table #sst').text(' ').toggleClass('loadingButton');
                 $('#pricing-table #total-payable').text(' ').toggleClass('loadingButton');
             }
 
@@ -529,11 +530,20 @@
                     sum_insured = $('#sum-insured-slider').val();
                 }
 
-                selected_extra_cover.push({
-                    extra_cover_code: $(element).val(),
-                    sum_insured: sum_insured,
-                    premium: $(`#${$.escapeSelector($(element).val())}-premium`).text()
-                })
+                if($(element).val() != 112) { // CART
+                    selected_extra_cover.push({
+                        extra_cover_code: $(element).val(),
+                        sum_insured: sum_insured,
+                        premium: $(`#${$.escapeSelector($(element).val())}-premium`).text()
+                    });
+                } else {
+                    selected_extra_cover.push({
+                        extra_cover_code: $(element).val(),
+                        cart_amount: sum_insured,
+                        cart_day: $(`#cart-day-${$.escapeSelector($(element).val())}:checked`).val()
+                        premium: $(`#${$.escapeSelector($(element).val())}-premium`).text()
+                    });
+                }
             });
 
             $('#selected-extra-coverage').val(JSON.stringify(selected_extra_cover));
@@ -660,6 +670,7 @@
                 $('#pricing-table #basic-premium').removeClass('loadingButton');
                 $('#pricing-table #add-ons-premium').removeClass('loadingButton')
                 $('#pricing-table #gross-premium').removeClass('loadingButton');
+                $('#pricing-table #sst').removeClass('loadingButton');
                 $('#pricing-table #total-payable').removeClass('loadingButton');
             }
         }).catch((err) => {
