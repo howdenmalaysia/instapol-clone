@@ -474,6 +474,7 @@
             if(!$('#pricing-table #add-ons-premium').hasClass('loadingButton')) {
                 $('#pricing-table #add-ons-premium').text(' ').toggleClass('loadingButton');
                 $('#pricing-table #gross-premium').text(' ').toggleClass('loadingButton');
+                $('#pricing-table #sst').text(' ').toggleClass('loadingButton');
                 $('#pricing-table #total-payable').text(' ').toggleClass('loadingButton');
                 $('#btn-next').toggleClass('loadingButton');
             }
