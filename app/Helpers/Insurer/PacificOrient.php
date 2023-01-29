@@ -683,7 +683,7 @@ class PacificOrient implements InsurerLibraryInterface
             'customer_category' => self::CUSTOMER_CATEGORY,
             'customer_name' => $input->insurance->holder->name,
             'date_of_birth' => $input->insurance->holder->date_of_birth,
-            'email' => $input->insurance->holder->email,
+            'email' => $input->insurance->holder->email_address,
             'email_aggregator' => 'instapol@my.howdengroup.com',
             'engine_number' => $input->vehicle->extra_attribute->engine_number,
             'extra_coverage' => $input->extra_cover,
