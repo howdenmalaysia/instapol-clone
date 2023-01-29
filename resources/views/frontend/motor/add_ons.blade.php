@@ -424,7 +424,7 @@
                 <div class="row info px-md-3">
                     <div class="col-4">
                         <label for="additional-driver-name" class="form-label">{{ __('frontend.fields.name') }}</label>
-                        <input type="text" id="additional-driver-name" class="form-control" />
+                        <input type="text" id="additional-driver-name" class="form-control text-uppercase" />
                     </div>
                     <div class="col-4">
                         <label for="additional-driver-id-number" class="form-label">{{ __('frontend.fields.id_number') }}</label>
