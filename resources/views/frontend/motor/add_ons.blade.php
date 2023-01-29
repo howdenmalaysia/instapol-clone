@@ -661,6 +661,7 @@
                 $('#pricing-table #basic-premium').removeClass('loadingButton');
                 $('#pricing-table #add-ons-premium').removeClass('loadingButton')
                 $('#pricing-table #gross-premium').removeClass('loadingButton');
+                $('#pricing-table #sst').removeClass('loadingButton');
                 $('#pricing-table #total-payable').removeClass('loadingButton');
             }
         }).catch((err) => {
