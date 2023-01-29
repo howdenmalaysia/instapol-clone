@@ -364,12 +364,24 @@ class MotorController extends Controller
                 $address->state
             ];
 
-            $policy_holder->address = implode(', ', formatAddress($strings));
+            $policy_holder->address = formatAddress($strings);
 
             // Get Vehicle Details
             $motor = InsuranceMotor::with(['driver', 'roadtax'])
                 ->where('insurance_id', $insurance->id)
                 ->first();
+
+            if(!empty($motor->roadtax)) {
+                $strings = [
+                    $motor->roadtax->recipient_address_one,
+                    $motor->roadtax->recipient_address_two,
+                    $motor->roadtax->recipient_city,
+                    $motor->roadtax->recipient_postcode,
+                    $motor->roadtax->recipient_state,
+                ];
+
+                $motor->roadtax->recipient_address = formatAddress($strings);
+            }
 
             // Get Selected Extra Covers Details
             $extra_cover = InsuranceExtraCover::where('insurance_id', $insurance->id)

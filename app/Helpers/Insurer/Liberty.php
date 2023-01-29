@@ -514,6 +514,7 @@ class Liberty implements InsurerLibraryInterface
             'email' => $input->email,
             'extra_cover' => $input->extra_cover,
             'gender' => $input->gender,
+            'id_type' => $input->id_type,
             'id_number' => $input->id_number,
             'marital_status' => $input->marital_status,
             'name' => $input->name,

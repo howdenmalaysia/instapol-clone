@@ -56,5 +56,14 @@ return [
             'merchant_name' => env('EGHL_MERCHANT_NAME'),
             'merchant_password' => env('EGHL_MERCHANT_PASSWORD'),
         ]
+    ],
+    'settlement' => [
+        'howden' => [
+            'bank_code' => 'CIMB Bank Berhad',
+            'bank_account_no' => '8000283395',
+            'email_to' => 'luke.chai@my.howdengroup.com',
+            'email_cc' => 'affinitydept@my.howdengroup.com,fazira.husin@my.howdengroup.com,rachel.lee@my.howdengroup.com,sitisuhaila.baharuddin@my.howdengroup.com',
+        ],
+        'eghl' => empty(env('EGHL_SETTLEMENT')) ? [] : explode(',', env('EGHL_SETTLEMENT'))
     ]
 ];

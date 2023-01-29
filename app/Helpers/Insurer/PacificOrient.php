@@ -354,7 +354,7 @@ class PacificOrient implements InsurerLibraryInterface
             'total_benefit_amount' => formatNumber($total_benefit_amount),
             'total_payable' => formatNumber($premium->response->total_premium),
             'request_id' => $premium->response->request_id,
-            'named_drivers_needed' => true,
+            'named_drivers_needed' => false,
         ]);
 
         if($full_quote) {
@@ -683,7 +683,7 @@ class PacificOrient implements InsurerLibraryInterface
             'customer_category' => self::CUSTOMER_CATEGORY,
             'customer_name' => $input->insurance->holder->name,
             'date_of_birth' => $input->insurance->holder->date_of_birth,
-            'email' => $input->insurance->holder->email,
+            'email' => $input->insurance->holder->email_address,
             'email_aggregator' => 'instapol@my.howdengroup.com',
             'engine_number' => $input->vehicle->extra_attribute->engine_number,
             'extra_coverage' => $input->extra_cover,

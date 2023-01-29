@@ -15,6 +15,11 @@ class InsuranceCompany extends Model
         'logo',
         'sequence',
         'active',
+        'coming_soon',
+        'bank_code',
+        'bank_account_no',
+        'email_to',
+        'email_cc'
     ];
 
     public function __construct()
