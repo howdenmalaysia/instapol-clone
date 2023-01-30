@@ -600,8 +600,8 @@ class Liberty implements InsurerLibraryInterface
             array_push($selected_extra_cover, new ExtraCover([
                 'extra_cover_code' => $extra_cover->code,
                 'extra_cover_description' => $extra_cover->description,
-                'premium' => $extra_cover->amount,
-                'sum_insured' => $extra_cover->sum_insured ?? 0,
+                'premium' => floatval($extra_cover->amount),
+                'sum_insured' => floatval($extra_cover->sum_insured) ?? 0,
                 'cart_amount' => $extra_cover->cart_amount ?? 0,
                 'cart_day' => $extra_cover->cart_day ?? 0,
             ]));
