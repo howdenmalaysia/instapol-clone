@@ -539,8 +539,8 @@
                 } else {
                     selected_extra_cover.push({
                         extra_cover_code: $(element).val(),
-                        cart_amount: sum_insured,
-                        cart_day: $(`#cart-day-${$.escapeSelector($(element).val())}:checked`).val(),
+                        cart_amount: $(`#cart-amount-${$.escapeSelector($(element).val())}`).val(),
+                        cart_day: $(`#cart-day-${$.escapeSelector($(element).val())}`).val(),
                         premium: $(`#${$.escapeSelector($(element).val())}-premium`).text()
                     });
                 }
@@ -613,6 +613,9 @@
         selected_extra_cover.forEach((extra_cover) => {
             if(extra_cover.option_list) {
                 extra_cover.sum_insured = parseFloat($(`#sum-insured-${$.escapeSelector(extra_cover.extra_cover_code)}`).val());
+            } else if(extra_cover.cart_list) {
+                extra_cover.cart_day = $(`#cart-day-${$.escapeSelector($(element).val())}`).val(),
+                extra_cover.cart_amount = $(`#cart-amount-${$.escapeSelector($(element).val())}`).val()
             } else {
                 extra_cover.sum_insured = parseFloat($('#sum-insured-slider').val());
             }
