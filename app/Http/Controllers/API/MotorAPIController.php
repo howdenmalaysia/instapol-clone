@@ -436,6 +436,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
                 'engine_capacity' => $input->vehicle->engine_capacity,
                 'manufactured_year' => $input->vehicle->manufacture_year,
                 'market_value' => $input->vehicle->sum_insured,
+                'sum_insured_type' => $input->vehicle->sum_insured_type,
                 'nvic' => $input->vehicle->nvic,
                 'variant' => $input->vehicle->variant,
                 'ncd_percentage' => $input->vehicle->ncd_percentage,
