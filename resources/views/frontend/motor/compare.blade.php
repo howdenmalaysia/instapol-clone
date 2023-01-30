@@ -80,33 +80,49 @@
                                                             <p>{{ __('frontend.motor.compare_page.gender') }}</p>
                                                         </div>
                                                         <div class="col-7">
-                                                            <div class="d-grid gap-0">
-                                                                <div class="btn-group rounded" role="group">
-                                                                    <input
-                                                                        type="radio"
-                                                                        id="male"
-                                                                        class="btn-check"
-                                                                        name="gender"
-                                                                        value="M"
-                                                                        {{ session('motor')->policy_holder->gender === 'M' ? 'checked' : '' }}
-                                                                    >
-                                                                    <label id="male-label" class="{{ session('motor')->policy_holder->gender === 'M' ? 'btn btn-primary text-white rounded-start border active' : 'btn btn-light rounded-end' }}" for="male">
-                                                                        {{ __('frontend.motor.compare_page.male') }}
-                                                                    </label>
-                            
-                                                                    <input
-                                                                        type="radio"
-                                                                        id="female"
-                                                                        class="btn-check"
-                                                                        name="gender"
-                                                                        value="F"
-                                                                        {{ session('motor')->policy_holder->gender === 'F' ? 'checked' : '' }}
-                                                                    >
-                                                                    <label id="female-label" class="{{ session('motor')->policy_holder->gender === 'F' ? 'btn btn-primary text-white rounded-start border active' : 'btn btn-light rounded-end' }}" for="female">
-                                                                        {{ __('frontend.motor.compare_page.female') }}
-                                                                    </label>
+                                                            @if (session('motor')->policy_holder->id_type === config('setting.id_type.nric_no'))
+                                                                <div class="d-grid gap-0">
+                                                                    <div class="btn-group rounded" role="group">
+                                                                        <input
+                                                                            type="radio"
+                                                                            id="male"
+                                                                            class="btn-check"
+                                                                            name="gender"
+                                                                            value="M"
+                                                                            {{ session('motor')->policy_holder->gender === 'M' ? 'checked' : '' }}
+                                                                        >
+                                                                        <label id="male-label" class="{{ session('motor')->policy_holder->gender === 'M' ? 'btn btn-primary text-white rounded-start border active' : 'btn btn-light rounded-end' }}" for="male">
+                                                                            {{ __('frontend.motor.compare_page.male') }}
+                                                                        </label>
+                                
+                                                                        <input
+                                                                            type="radio"
+                                                                            id="female"
+                                                                            class="btn-check"
+                                                                            name="gender"
+                                                                            value="F"
+                                                                            {{ session('motor')->policy_holder->gender === 'F' ? 'checked' : '' }}
+                                                                        >
+                                                                        <label id="female-label" class="{{ session('motor')->policy_holder->gender === 'F' ? 'btn btn-primary text-white rounded-start border active' : 'btn btn-light rounded-end' }}" for="female">
+                                                                            {{ __('frontend.motor.compare_page.female') }}
+                                                                        </label>
+                                                                    </div>
                                                                 </div>
+                                                            @else
+                                                            <div class="btn-group rounded" role="group">
+                                                                <input
+                                                                    type="radio"
+                                                                    id="company"
+                                                                    class="btn-check"
+                                                                    name="gender"
+                                                                    value="O"
+                                                                    {{ session('motor')->policy_holder->gender === 'O' ? 'checked' : '' }}
+                                                                >
+                                                                <label id="male-label" class="{{ session('motor')->policy_holder->gender === 'O' ? 'btn btn-primary text-white rounded border active' : 'btn btn-light rounded-end' }}" for="company">
+                                                                    {{ __('frontend.motor.compare_page.company') }}
+                                                                </label>
                                                             </div>
+                                                            @endif
                                                         </div>
                                                     </div>
                                                     <div class="row mt-4">

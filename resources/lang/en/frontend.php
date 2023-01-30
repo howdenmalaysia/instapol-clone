@@ -564,6 +564,7 @@ return [
             'marital_status' => 'Marital Status',
             'male' => 'Male',
             'female' => 'Female',
+            'company' => 'Company',
             'marital_status' => 'Marital Status',
             'single' => 'Single',
             'married' => 'Married',
