@@ -6,10 +6,10 @@ use Spatie\DataTransferObject\DataTransferObject;
 
 class ExtraCover extends DataTransferObject
 {
-    /** @var bool */
+    /** @var bool|null */
     public $selected;
 
-    /** @var bool */
+    /** @var bool|null */
     public $readonly;
 
     /** @var string */
