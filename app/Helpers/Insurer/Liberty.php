@@ -277,7 +277,7 @@ class Liberty implements InsurerLibraryInterface
                     'selected' => false,
                     'readonly' => false,
                     'extra_cover_code' => $_extra_cover_code,
-                    'extra_cover_description' => $this->getExtraBenefitDescription($_extra_cover_code),
+                    'extra_cover_description' => $this->getExtraBenefitDescription($_extra_cover_code, $vehicle->engine_capacity),
                     'premium' => 0,
                     'sum_insured' => 0,
                 ]);
@@ -391,7 +391,7 @@ class Liberty implements InsurerLibraryInterface
             if (count($input->additional_driver) > 0 && array_search('07', array_column($input->extra_cover, 'extra_cover_code')) == false) {
                 array_push($input->extra_cover, new ExtraCover([
                     'extra_cover_code' => '07',
-                    'extra_cover_description' => $this->getExtraBenefitDescription('07'),
+                    'extra_cover_description' => $this->getExtraBenefitDescription('07', $vehicle->engine_capacity),
                     'sum_insured' => 0,
                     'unit' => count($input->additional_driver)
                 ]));
@@ -449,8 +449,9 @@ class Liberty implements InsurerLibraryInterface
                 $total_benefit_amount += formatNumber($item->benpremium);
 
                 foreach($input->extra_cover as $extra_cover) {
-                    if((strpos((string) $item->bencode, $extra_cover->extra_cover_code) !== false) ||
-                    ($item->bencode == 'CART' && $extra_cover->extra_cover_code == '112')) {
+                    if((strpos((string) $item->bencode, $extra_cover->extra_cover_code) !== false && strpos((string) $item->bencode, '40') !== false && strpos((string) $extra_cover->extra_cover_code, '40') !== false) ||
+                    ($item->bencode == 'CART' && $extra_cover->extra_cover_code == '112') ||
+                    ($item->bencode == $extra_cover->extra_cover_code)) {
                         $extra_cover->premium = formatNumber($item->benpremium);
                         $extra_cover->selected = floatval($item->benpremium) == 0;
                     }
@@ -476,7 +477,7 @@ class Liberty implements InsurerLibraryInterface
             'total_benefit_amount' => formatNumber($total_benefit_amount),
             'total_payable' => formatNumber($motor_premium->response->gross_due),
             'fl_quote_number' => $motor_premium->response->fl_quote_number,
-            'named_drivers_needed' => true
+            'named_drivers_needed' => false
         ]);
 
         if ($full_quote) {
@@ -514,6 +515,7 @@ class Liberty implements InsurerLibraryInterface
             'email' => $input->email,
             'extra_cover' => $input->extra_cover,
             'gender' => $input->gender,
+            'id_type' => $input->id_type,
             'id_number' => $input->id_number,
             'marital_status' => $input->marital_status,
             'name' => $input->name,
@@ -557,12 +559,12 @@ class Liberty implements InsurerLibraryInterface
         $input->state = $input->insurance->address->state;
         $input->phone_number = $input->insurance->holder->phone_number;
         $input->gender = $input->insurance->holder->gender;
-        $input->marital_status = $input->insurance->holder->marital_status;
+        $input->marital_status = $input->insurance_motor->marital_status;
 
         switch($input->insurance->holder->id_type_id) {
             case config('setting.id_type.nric_no'): {
-                $input->id_number = $input->id_number;
                 $input->ownership_type = 'I'; // Individual
+                $input->company_registration_number = '';
 
                 break;
             }
@@ -595,12 +597,12 @@ class Liberty implements InsurerLibraryInterface
 
         // generate selected extra cover list
         $selected_extra_cover = [];
-        foreach ($input->insurance_motor->extra_cover as $extra_cover) {
+        foreach ($input->insurance->extra_cover as $extra_cover) {
             array_push($selected_extra_cover, new ExtraCover([
                 'extra_cover_code' => $extra_cover->code,
                 'extra_cover_description' => $extra_cover->description,
-                'premium' => $extra_cover->amount,
-                'sum_insured' => $extra_cover->sum_insured ?? 0,
+                'premium' => floatval($extra_cover->amount),
+                'sum_insured' => floatval($extra_cover->sum_insured) ?? 0,
                 'cart_amount' => $extra_cover->cart_amount ?? 0,
                 'cart_day' => $extra_cover->cart_day ?? 0,
             ]));
@@ -608,11 +610,9 @@ class Liberty implements InsurerLibraryInterface
 
         // Create a vehicle object with necessary fields only
         $input->vehicle = new Vehicle([
+            'coverage' => 'Comprehensive',
             'engine_capacity' => $input->insurance_motor->engine_capacity,
-            'inception_date' => $input->insurance->inception_date,
-            'manufacture_year' => $input->insurance_motor->manufacture_year,
-            'ncd_percentage' => $input->insurance_motor->ncd_percentage,
-            'sum_insured' => formatNumber($input->insurance_motor->sum_insured),
+            'expiry_date' => $input->insurance->expiry_date,
             'extra_attribute' => (object) [
                 'body_type_code' => $extra_attribute->body_type_code,
                 'body_type_description' => $extra_attribute->body_type_description,
@@ -626,6 +626,17 @@ class Liberty implements InsurerLibraryInterface
                 'vehicle_use_code' => $extra_attribute->vehicle_use_code,
                 'vehicle_type_code' => $extra_attribute->vehicle_type_code,
             ],
+            'inception_date' => $input->insurance->inception_date,
+            'make' => $input->insurance_motor->make,
+            'manufacture_year' => $input->insurance_motor->manufactured_year,
+            'max_sum_insured' => formatNumber($input->insurance_motor->market_value),
+            'min_sum_insured' => formatNumber($input->insurance_motor->market_value),
+            'model' => $input->insurance_motor->model,
+            'ncd_percentage' => floatval($input->insurance_motor->ncd_percentage),
+            'nvic' => $input->insurance_motor->nvic,
+            'sum_insured_type' => $input->insurance_motor->sum_insured_type,
+            'sum_insured' => formatNumber($input->insurance_motor->market_value),
+            'variant' => $input->insurance_motor->variant
         ]);
 
         // Include the necessary fields to the input for API call
@@ -793,7 +804,7 @@ class Liberty implements InsurerLibraryInterface
         if(isset($input->extra_cover)) {
             foreach ($input->extra_cover as $extra_cover) {
                 $extra_cover_code = $extra_cover->extra_cover_code;
-                $extra_cover->extra_cover_description = $this->getExtraBenefitDescription($extra_cover_code);
+                $extra_cover->extra_cover_description = $this->getExtraBenefitDescription($extra_cover_code, $input->vehicle->engine_capacity);
 
                 if($extra_cover->extra_cover_code == '40') {
                     $extra_cover_code = $extra_cover->extra_cover_code . $this->getLltpCode($input->vehicle->engine_capacity);
@@ -948,7 +959,7 @@ class Liberty implements InsurerLibraryInterface
         if(isset($input->extra_cover)) {
             foreach ($input->extra_cover as $extra_cover) {
                 $extra_cover_code = $extra_cover->extra_cover_code;
-                $extra_cover->extra_cover_description = $this->getExtraBenefitDescription($extra_cover_code);
+                $extra_cover->extra_cover_description = $this->getExtraBenefitDescription($extra_cover_code, $input->vehicle->engine_capacity);
 
                 if($extra_cover->extra_cover_code == '40') {
                     $extra_cover_code = $extra_cover->extra_cover_code . $this->getLltpCode($input->vehicle->engine_capacity);
@@ -980,9 +991,9 @@ class Liberty implements InsurerLibraryInterface
         $data = [
             'act_premium' => $input->premium_details->act_premium,
             'additional_driver' => $input->additional_driver,
-            'address_1' => $input->insurance->address->address_one,
-            'address_2' => empty($input->insurance->address->address_two) ? $input->insurance->address->city . ', ' . $input->insurance->address->state : $input->insurance->address->address_two,
-            'address_3' => empty($input->insurance->address->address_two) ? '' : $input->insurance->address->city . ', ' . $input->insurance->address->state,
+            'address_1' => $input->address_one,
+            'address_2' => empty($input->address_two) ? $input->city . ', ' . $input->state : $input->address_two,
+            'address_3' => empty($input->address_two) ? '' : $input->city . ', ' . $input->state,
             'agent_code' => $this->agent_code,
             'anti_theft' => self::ANTI_THEFT,
             'chassis_number' => $input->vehicle->extra_attribute->chassis_number,
@@ -1002,19 +1013,19 @@ class Liberty implements InsurerLibraryInterface
             'extra_benefit' => $formatted_extra_cover,
             'fl_quote_number' => $input->premium_details->fl_quote_number,
             'garage_code' => self::GARAGE_CODE,
-            'gender' => $input->insurance->holder->gender,
+            'gender' => $input->gender,
             'gross_due' => $input->premium_details->gross_due,
             'gross_due_2' => $input->premium_details->gross_due_2,
             'gross_premium' => $input->premium_details->gross_premium,
-            'phone_number' => $input->insurance->holder->phone_code . $input->insurance->holder->phone_number,
-            'id_number' => $input->insurance->holder->id_number,
+            'phone_number' => $input->phone_number,
+            'id_number' => $input->id_number,
             'loading_amount' => $input->premium_details->loading_amount,
             'loading_percentage' => $input->premium_details->loading_percentage,
             'make_code' => $input->vehicle->extra_attribute->make_code,
             'manufacture_year' => $input->insurance_motor->manufacture_year,
-            'marital_status' => $input->insurance->holder->marital_status,
+            'marital_status' => $input->marital_status,
             'model_code' => $input->vehicle->extra_attribute->liberty_model_code,
-            'name' => $input->insurance->holder->name,
+            'name' => $input->name,
             'ncd_amount' => formatNumber($input->insurance_motor->ncd),
             'ncd_percentage' => $input->insurance_motor->ncd_percentage,
             'net_due' => $input->premium_details->net_due,
@@ -1105,7 +1116,7 @@ class Liberty implements InsurerLibraryInterface
         APILogs::find($log->id)
             ->update([
                 'response_header' => json_encode($result->response_header),
-                'response' => $result->response
+                'response' => is_object($result->response) ? json_encode($result->response) : $result->response
             ]);
 
         if($result->status) {

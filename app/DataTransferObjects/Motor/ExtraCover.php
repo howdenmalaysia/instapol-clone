@@ -6,10 +6,10 @@ use Spatie\DataTransferObject\DataTransferObject;
 
 class ExtraCover extends DataTransferObject
 {
-    /** @var bool */
+    /** @var bool|null */
     public $selected;
 
-    /** @var bool */
+    /** @var bool|null */
     public $readonly;
 
     /** @var string */
@@ -23,6 +23,12 @@ class ExtraCover extends DataTransferObject
 
     /** @var int|float */
     public $premium;
+
+    /** @var int|null */
+    public $cart_day;
+
+    /** @var int|null */
+    public $cart_amount;
 
     /** @var \App\DataTransferObjects\Motor\CartList[]|null */
     public $cart_list;

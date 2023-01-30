@@ -6,7 +6,6 @@ use App\DataTransferObjects\Motor\QuotationData;
 use App\DataTransferObjects\Motor\VehicleData;
 use App\Http\Controllers\Controller;
 use App\Mail\PaymentReceipt;
-use App\Models\InsurancePremium;
 use App\Models\Motor\Insurance;
 use App\Models\Motor\InsuranceAddress;
 use App\Models\Motor\InsuranceCompany;
@@ -243,11 +242,18 @@ class MotorController extends Controller
             foreach(json_decode($request->selected_extra_coverage) as $selected) {
                 foreach($session->extra_cover_list as $extra_cover) {
                     if($extra_cover->extra_cover_code === $selected->extra_cover_code) {
-                        array_push($selected_extra_cover, (object) [
+                        $_add_ons = (object) [
                             'sum_insured' => $selected->sum_insured ?? $extra_cover->sum_insured,
                             'extra_cover_description' => $extra_cover->extra_cover_description,
                             'extra_cover_code' => $selected->extra_cover_code
-                        ]);
+                        ];
+
+                        if(!empty($selected->cart_day) && !empty($selected->cart_amount)) {
+                            $_add_ons->cart_day = $selected->cart_day;
+                            $_add_ons->cart_amount = $selected->cart_amount;
+                        }
+
+                        array_push($selected_extra_cover, $_add_ons);
                     }
                 }
             }
@@ -298,10 +304,12 @@ class MotorController extends Controller
 
         $motor->insurance_code = $request->insurance_code;
         $motor->quotation = json_decode($request->quotation);
+        $motor->vehicle->extra_attribute->quotation_number = $request->quotation_number;
         $request->session()->put('motor', $motor);
 
         $data = (object) [
             'quotation_id' => $motor->quotation_id ?? $motor->quotation->id,
+            'quotation_number' => $request->quotation_number ?? '',
             'insurance_code' => $request->insurance_code,
             'vehicle_number' => $motor->vehicle_number,
             'vehicle' => $motor->vehicle,
@@ -364,12 +372,24 @@ class MotorController extends Controller
                 $address->state
             ];
 
-            $policy_holder->address = implode(', ', formatAddress($strings));
+            $policy_holder->address = formatAddress($strings);
 
             // Get Vehicle Details
             $motor = InsuranceMotor::with(['driver', 'roadtax'])
                 ->where('insurance_id', $insurance->id)
                 ->first();
+
+            if(!empty($motor->roadtax)) {
+                $strings = [
+                    $motor->roadtax->recipient_address_one,
+                    $motor->roadtax->recipient_address_two,
+                    $motor->roadtax->recipient_city,
+                    $motor->roadtax->recipient_postcode,
+                    $motor->roadtax->recipient_state,
+                ];
+
+                $motor->roadtax->recipient_address = formatAddress($strings);
+            }
 
             // Get Selected Extra Covers Details
             $extra_cover = InsuranceExtraCover::where('insurance_id', $insurance->id)

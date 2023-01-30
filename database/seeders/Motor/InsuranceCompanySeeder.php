@@ -21,6 +21,10 @@ class InsuranceCompanySeeder extends Seeder
                 'sequence' => 1,
                 'active' => 1,
                 'coming_soon' => 0,
+                'bank_code' => 'Maybank Islamic Berhad',
+                'bank_account_no' => '550510572306',
+                'email_to' => 'indra.e@etiqa.com.my',
+                'email_cc' => 'azmil.a@etiqa.com.my,yazid.b@etiqa.com.my'
             ],
             [
                 'name' => 'Etiqa',
@@ -28,6 +32,10 @@ class InsuranceCompanySeeder extends Seeder
                 'sequence' => 2,
                 'active' => 1,
                 'coming_soon' => 0,
+                'bank_code' => 'Malayan Banking Berhad',
+                'bank_account_no' => '500511770222',
+                'email_to' => 'indra.e@etiqa.com.my',
+                'email_cc' => 'azmil.a@etiqa.com.my,yazid.b@etiqa.com.my'
             ],
             [
                 'name' => 'AmGeneral',
@@ -35,6 +43,10 @@ class InsuranceCompanySeeder extends Seeder
                 'sequence' => 3,
                 'active' => 1,
                 'coming_soon' => 0,
+                'bank_code' => 'Maybank',
+                'bank_account_no' => '512316305855',
+                'email_to' => 'yong-chai-har@amgeneralinsurance.com,phiang-wei.lim@amgeneralinsurance.com',
+                'email_cc' => 'amgeneral-broking-spst@amgeneralinsurance.com,norhaya-mustapa@amgeneralinsurance.com,geoffery-yeo@amgeneralinsurance.com'
             ],
             [
                 'name' => 'Zurich Takaful',
@@ -42,6 +54,10 @@ class InsuranceCompanySeeder extends Seeder
                 'sequence' => 4,
                 'active' => 1,
                 'coming_soon' => 0,
+                'bank_code' => 'Maybank Islamic Berhad',
+                'bank_account_no' => '564016119094',
+                'email_to' => 'mira.syaliana@zurich.com.my',
+                'email_cc' => 'meiying.tang@zurich.com.my'
             ],
             [
                 'name' => 'Zurich',
@@ -49,6 +65,10 @@ class InsuranceCompanySeeder extends Seeder
                 'sequence' => 5,
                 'active' => 1,
                 'coming_soon' => 0,
+                'bank_code' => 'Standard Chartered Bank (M) Berhad',
+                'bank_account_no' => '312143289665',
+                'email_to' => 'mira.syaliana@zurich.com.my',
+                'email_cc' => 'meiying.tang@zurich.com.my'
             ],
             [
                 'name' => 'RHB',
@@ -56,6 +76,10 @@ class InsuranceCompanySeeder extends Seeder
                 'sequence' => 6,
                 'active' => 1,
                 'coming_soon' => 0,
+                'bank_code' => 'RHB Bank Berhad',
+                'bank_account_no' => '21201300056340',
+                'email_to' => 'carmen.lee@rhbgroup.com',
+                'email_cc' => 'nur.hazura@rhbgroup.com'
             ],
             [
                 'name' => 'Allianz',
@@ -63,6 +87,10 @@ class InsuranceCompanySeeder extends Seeder
                 'sequence' => 7,
                 'active' => 1,
                 'coming_soon' => 0,
+                'bank_code' => 'Citibank Berhad',
+                'bank_account_no' => '7780000100000000',
+                'email_to' => 'siti.kalimah@allianz.com.my',
+                'email_cc' => 'chin.hueylee@allianz.com.my'
             ],
             [
                 'name' => 'Tune Protect',
@@ -70,6 +98,10 @@ class InsuranceCompanySeeder extends Seeder
                 'sequence' => 8,
                 'active' => 1,
                 'coming_soon' => 0,
+                'bank_code' => 'Standard Chartered Bank (M) Berhad',
+                'bank_account_no' => '312130126738',
+                'email_to' => 'yeongchern.lo@tuneprotect.com,solomon.sia@tuneprotect.com,sitifatimah.kimi@tuneprotect.com',
+                'email_cc' => 'sitibahiyah.badrin@tuneprotect.com,colcheng.yeoh@tuneprotect.com,hasnah.bebe@tuneprotect.com'
             ],
             [
                 'name' => 'Pacific & Orient Insurance',
@@ -77,6 +109,10 @@ class InsuranceCompanySeeder extends Seeder
                 'sequence' => 9,
                 'active' => 1,
                 'coming_soon' => 0,
+                'bank_code' => 'Malayan Banking Berhad',
+                'bank_account_no' => '514347992011',
+                'email_to' => 'angie@pacific-orient.com',
+                'email_cc' => 'jennyang@pacific-orient.com'
             ],
             [
                 'name' => 'AIG',
@@ -84,6 +120,10 @@ class InsuranceCompanySeeder extends Seeder
                 'sequence' => 10,
                 'active' => 1,
                 'coming_soon' => 0,
+                'bank_code' => 'HSBC Bank Malaysia Berhad',
+                'bank_account_no' => '301295879101',
+                'email_to' => 'CPS.KL@aig.com',
+                'email_cc' => 'AIGMYACCBRKL@aig.com'
             ],
             [
                 'name' => 'Liberty',
@@ -91,6 +131,10 @@ class InsuranceCompanySeeder extends Seeder
                 'sequence' => 11,
                 'active' => 1,
                 'coming_soon' => 0,
+                'bank_code' => 'Malayan Banking Berhad',
+                'bank_account_no' => '514299125590',
+                'email_to' => 'telagar@libertyinsurance.com.my,norhanam@libertyinsurance.com.my,siew.kokheng@liberyinsurance.com.my',
+                'email_cc' => ''
             ],
             [
                 'name' => 'Berjaya Sompo',
@@ -98,6 +142,10 @@ class InsuranceCompanySeeder extends Seeder
                 'sequence' => 12,
                 'active' => 1,
                 'coming_soon' => 0,
+                'bank_code' => 'Malayan Banking Berhad',
+                'bank_account_no' => '514084510416',
+                'email_to' => 'rosyatimah.selamat@bsompo.com.my,ylten@bsompo.com.my,wongpc@bsompo.com.my',
+                'email_cc' => ''
             ],
             [
                 'name' => 'Lonpac',
@@ -105,6 +153,10 @@ class InsuranceCompanySeeder extends Seeder
                 'sequence' => 13,
                 'active' => 1,
                 'coming_soon' => 0,
+                'bank_code' => 'CIMB Bank Berhad',
+                'bank_account_no' => '98990000000156',
+                'email_to' => 'yhchia@lonpac.com,calvinchui@lonpac.com',
+                'email_cc' => 'mardiana@lonpac.com,mohdzaki@lonpac.com'
             ],
             [
                 'name' => 'Tokio Marine',
@@ -112,6 +164,10 @@ class InsuranceCompanySeeder extends Seeder
                 'sequence' => 14,
                 'active' => 1,
                 'coming_soon' => 1,
+                'bank_code' => '',
+                'bank_account_no' => '',
+                'email_to' => '',
+                'email_cc' => ''
             ],
             [
                 'name' => 'MPI Generali',
@@ -119,6 +175,10 @@ class InsuranceCompanySeeder extends Seeder
                 'sequence' => 15,
                 'active' => 1,
                 'coming_soon' => 1,
+                'bank_code' => '',
+                'bank_account_no' => '',
+                'email_to' => '',
+                'email_cc' => ''
             ]
         ];
 

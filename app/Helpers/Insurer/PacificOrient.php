@@ -22,6 +22,7 @@ use Illuminate\Support\Str;
 class PacificOrient implements InsurerLibraryInterface
 {
     private string $company_id;
+    private string $company_name;
     private string $token;
     private string $agent_code;
     private string $user_id;
@@ -43,8 +44,6 @@ class PacificOrient implements InsurerLibraryInterface
     private const ALLOWED_GAP_IN_COVER = 7; // Days
     private const MIN_SUM_INSURED = 10000;
     private const MAX_SUM_INSURED = 500000;
-    private const ADJUSTMENT_RATE_UP = 10;
-    private const ADJUSTMENT_RATE_DOWN = 10;
 
     private const SOAP_ACTION_DOMAIN = 'http://tempuri.org';
 
@@ -56,14 +55,11 @@ class PacificOrient implements InsurerLibraryInterface
         $this->agent_code = config('insurer.config.pno.agent_code');
         $this->user_id = config('insurer.config.pno.user_id');
         $this->host = config('insurer.config.pno.host');
-
-        $this->token = $this->getToken();
     }
 
     public function vehicleDetails(object $input) : object
     {
         $data = [
-            'token' => $this->token,
             'id_number' => $input->id_number,
             'vehicle_number' => $input->vehicle_number
         ];
@@ -90,7 +86,7 @@ class PacificOrient implements InsurerLibraryInterface
 
         // 2. Check Sum Insured
         $sum_insured = formatNumber($vix->response->sum_insured, 0);
-        if($sum_insured < self::MIN_SUM_INSURED || roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_UP, true) > self::MAX_SUM_INSURED) {
+        if($sum_insured < self::MIN_SUM_INSURED || $sum_insured > self::MAX_SUM_INSURED) {
             return $this->abort(__('api.sum_insured_referred_between', [
                 'min_sum_insured' => self::MIN_SUM_INSURED,
                 'max_sum_insured' => self::MAX_SUM_INSURED
@@ -127,8 +123,8 @@ class PacificOrient implements InsurerLibraryInterface
                 'model' => $details->model ?? '',
                 'model_code' => $vix->response->model,
                 'manufacture_year' => $vix->response->manufacturing_year,
-                'max_sum_insured' => roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_UP, true, self::MAX_SUM_INSURED),
-                'min_sum_insured' => roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_DOWN, false, self::MIN_SUM_INSURED),
+                'max_sum_insured' => formatNumber($sum_insured),
+                'min_sum_insured' => formatNumber($sum_insured),
                 'sum_insured' => formatNumber($sum_insured),
                 'sum_insured_type' => 'Agreed Value',
                 'ncd_percentage' => floatval($vix->response->ncd),
@@ -436,8 +432,18 @@ class PacificOrient implements InsurerLibraryInterface
         $extra_attribute = json_decode($input->insurance->extra_attribute->value);
 
         switch($input->id_type) {
+            case config('setting.id_type.nric_no'): {
+                $input->gender = $input->insurance->holder->gender;
+                $input->age = $input->insurance->holder->age;
+                $input->marital_status = $this->getMaritalStatusCode($input->insurance_motor->marital_status);
+
+                break;
+            }
             case config('setting.id_type.company_registration_no'): {
                 $input->company_registration_number = $input->id_number;
+                $input->gender = $this->getGender('O');
+                $input->age = 0;
+                $input->marital_status = $this->getMaritalStatusCode('O');
 
                 break;
             }
@@ -445,13 +451,16 @@ class PacificOrient implements InsurerLibraryInterface
                 return $this->abort(__('api.unsupported_id_type'), config('setting.response_codes.unsupported_id_types'));
             }
         }
+
+        $input->postcode = $input->insurance->address->postcode;
         
         $input->vehicle = (object) [
+            'expiry_date' => $input->insurance->expiry_date,
             'inception_date' => $input->insurance->inception_date,
             'manufacture_year' => $input->insurance_motor->manufacture_year,
             'ncd_percentage' => $input->insurance_motor->ncd_percentage,
             'nvic' => $input->insurance_motor->nvic,
-            'sum_insured' => formatNumber($input->insurance_motor->sum_insured),
+            'sum_insured' => formatNumber($input->insurance_motor->market_value),
             'extra_attribute' => (object) [
                 'chassis_number' => $extra_attribute->chassis_number,
                 'cover_type' => $extra_attribute->cover_type,
@@ -477,8 +486,8 @@ class PacificOrient implements InsurerLibraryInterface
         $selected_extra_cover = [];
         foreach($input->insurance->extra_cover as $extra_cover) {
             array_push($selected_extra_cover, (object) [
-                'code' => $extra_cover->code,
-                'description' => $extra_cover->description,
+                'extra_cover_code' => $extra_cover->code,
+                'extra_cover_description' => $extra_cover->description,
                 'premium' => $extra_cover->amount,
                 'sum_insured' => $extra_cover->sum_insured ?? 0
             ]);
@@ -493,8 +502,8 @@ class PacificOrient implements InsurerLibraryInterface
             return $this->abort($premium_result->response);
         }
 
-        $input->premium_details = $premium_result;
-        $input->vehicle->extra_attributes->request_id = $premium_result->request_id;
+        $input->premium_details = $premium_result->response;
+        $input->vehicle->extra_attribute->request_id = $premium_result->response->request_id;
         
         $result = $this->issueCoverNote($input);
 
@@ -537,6 +546,7 @@ class PacificOrient implements InsurerLibraryInterface
     private function getVIXNCD(array $input) : ResponseData
     {
         $path = 'getvehicleinfo/GetVehicleInfo.asmx';
+        $input['token'] = $this->getToken();
 
         $xml = view('backend.xml.pacific.vehicle_details')->with($input)->render();
 
@@ -581,7 +591,8 @@ class PacificOrient implements InsurerLibraryInterface
         $data = [
             'all_rider' => 'Y', // Default to Yes,
             'is_company' => $input->id_type === config('setting.id_type.company_registration_no') ? 'Y' : 'N',
-            'company_registration_number' => $input->company_registration_number ?? '','coverage' => self::COVER_TYPE,
+            'company_registration_number' => $input->company_registration_number ?? '',
+            'coverage' => self::COVER_TYPE,
             'effective_date' => $input->vehicle->inception_date,
             'expiry_date' => $input->vehicle->expiry_date,
             'extra_cover' => $input->extra_cover ?? [],
@@ -654,9 +665,10 @@ class PacificOrient implements InsurerLibraryInterface
         $path = 'poiapiv2/Insurance.svc';
         $token = $this->getToken();
 
-        $data = (object) [
+        $data = [
             'address_one' => $input->insurance->address->address_one,
             'address_two' => $input->insurance->address->address_two,
+            'age' => $input->age,
             'anti_theft' => self::ANTI_THEFT_DEVICE,
             'chassis_number' => $input->vehicle->extra_attribute->chassis_number,
             'city' => $input->insurance->address->city,
@@ -670,24 +682,25 @@ class PacificOrient implements InsurerLibraryInterface
             'customer_category' => self::CUSTOMER_CATEGORY,
             'customer_name' => $input->insurance->holder->name,
             'date_of_birth' => $input->insurance->holder->date_of_birth,
-            'email' => $input->insurance->holder->email,
+            'email' => $input->insurance->holder->email_address,
             'email_aggregator' => 'instapol@my.howdengroup.com',
             'engine_number' => $input->vehicle->extra_attribute->engine_number,
             'extra_coverage' => $input->extra_cover,
             'garage_code' => self::GARAGE_CODE,
+            'gender' => $input->gender,
             'id_number' => $input->insurance->holder->id_number,
             'import_type' => self::IMPORT_TYPE,
             'insured_age' => getAgeFromIC($input->insurance->holder->id_number),
             'insured_gender' => $this->getGender($input->insurance->holder->gender),
             'insured_name' => $input->insurance->holder->name,
             'logbook_number' => 'A001',
-            'marital_status' => $input->insurance->holder->marital_status,
+            'marital_status' => $input->marital_status,
             'ncd_amount' => $input->insurance_motor->ncd_amount,
             'ncd_percentage' => $input->vehicle->ncd_percentage,
             'nvic' => $input->vehicle->nvic,
             'named_driver' => $input->additional_driver,
             'occupation' => self::OCCUPATION,
-            'permitted_driver' => self::PERMITTED_DRIVERS,
+            'permitted_drivers' => self::PERMITTED_DRIVERS,
             'phone_number' => $input->insurance->holder->phone_code . $input->insurance->holder->phone_number,
             'postcode' => $input->insurance->address->postcode,
             'reference_number' => Str::uuid(),
@@ -698,7 +711,7 @@ class PacificOrient implements InsurerLibraryInterface
             'token' => $token,
             'type_of_cover' => self::COVER_TYPE,
             'vehicle_number' => $input->vehicle_number,
-            'year_make' => $input->vehicle->manufacturing_year,
+            'year_make' => $input->vehicle->manufacture_year,
             'request_id' => $input->vehicle->extra_attribute->request_id,
             'premium_details' => $input->premium_details
         ];
@@ -747,7 +760,7 @@ class PacificOrient implements InsurerLibraryInterface
         APILogs::find($log->id)
             ->update([
                 'response_header' => json_encode($result->response_header),
-                'response' => $result->response
+                'response' => is_object($result->response) ? json_encode($result->response) : $result->response
             ]);
 
         if($result->status) {

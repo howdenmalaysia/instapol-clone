@@ -42,9 +42,9 @@
                     <d4p1:ExtraCoverage xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">
                         @foreach ($extra_coverage as $extra)
                             <extraCoverageSubmissionReq>
-                                <coverageId>{{ $extra['code'] }}</coverageId>
-                                <premium>{{ $extra['premium'] }}</premium>
-                                <sumInsured>{{ $extra['sum_insured'] }}</sumInsured>
+                                <coverageId>{{ $extra->extra_cover_code }}</coverageId>
+                                <premium>{{ $extra->premium }}</premium>
+                                <sumInsured>{{ $extra->sum_insured }}</sumInsured>
                             </extraCoverageSubmissionReq>
                         @endforeach
                     </d4p1:ExtraCoverage>
@@ -79,24 +79,24 @@
                     @if (!empty($additional_driver))
                         @foreach ($additional_driver as $driver)
                             <namedDriverSubmissionReq>
-                                <age>{{ $driver['age'] }}</age>
-                                <gender>{{ $driver['gender'] }}</gender>
-                                <name>{{ $driver['name'] }}</name>
-                                <nricNo>{{ $driver['id_number'] }}</nricNo>
-                                <relation>{{ $driver['relationship'] }}</relation>
+                                <age>{{ $driver->age }}</age>
+                                <gender>{{ $driver->gender }}</gender>
+                                <name>{{ $driver->name }}</name>
+                                <nricNo>{{ $driver->id_number }}</nricNo>
+                                <relation>{{ $driver->relationship }}</relation>
                             </namedDriverSubmissionReq>
                         @endforeach
                     @endif
 
                 </d4p1:NamedDriver>
-                <d4p1:NonActPrem xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API"><?php echo $quotation->nonActPremium ?></d4p1:NonActPrem>
+                <d4p1:NonActPrem xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $premium_details->non_act_premium }}</d4p1:NonActPrem>
                 <d4p1:Occupation xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $occupation }}</d4p1:Occupation>
                 <d4p1:PermittedDrivers xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $permitted_drivers }}</d4p1:PermittedDrivers>
                 <d4p1:PostCode xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $postcode }}</d4p1:PostCode>
-                <d4p1:PremiumBeforeRebate xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $premium_details->premium_before_rebate }}</d4p1:PremiumBeforeRebate>
+                <d4p1:PremiumBeforeRebate xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API"></d4p1:PremiumBeforeRebate>
                 <d4p1:PreviousInsurerRegNo xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API"></d4p1:PreviousInsurerRegNo>
                 <d4p1:Race xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API"></d4p1:Race>
-                <d4p1:RebateAmount xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $premium_details->rebate_amount }}</d4p1:RebateAmount>
+                <d4p1:RebateAmount xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API"></d4p1:RebateAmount>
                 <d4p1:RegistrationNo xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $vehicle_number }}</d4p1:RegistrationNo>
                 <d4p1:SafetyFeatureCode xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $safety_feature_code }}</d4p1:SafetyFeatureCode>
                 <d4p1:SeatCapacity xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $seat_capacity }}</d4p1:SeatCapacity>
@@ -104,8 +104,8 @@
                 <d4p1:StampDuty xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $premium_details->stamp_duty }}</d4p1:StampDuty>
                 <d4p1:StateCode xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $state_code }}</d4p1:StateCode>
                 <d4p1:SumInsured xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $sum_insured }}</d4p1:SumInsured>
-                <d4p1:TariffPremium xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ }}</d4p1:TariffPremium>
-                <d4p1:TotalPremium xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $total_premium }}</d4p1:TotalPremium>
+                <d4p1:TariffPremium xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $premium_details->tariff_premium }}</d4p1:TariffPremium>
+                <d4p1:TotalPremium xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $premium_details->total_premium }}</d4p1:TotalPremium>
                 <d4p1:TypeOfCoverCode xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $type_of_cover }}</d4p1:TypeOfCoverCode>
                 <d4p1:YearMake xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $year_make }}</d4p1:YearMake>
             </reqData>

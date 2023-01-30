@@ -27,7 +27,8 @@ class Insurance extends Model
         'cover_note_number',
         'quotation_date',
         'channel',
-        'updated_at'
+        'updated_at',
+	'contract_number'
     ];
 
     const STATUS_NEW_QUOTATION = 1;

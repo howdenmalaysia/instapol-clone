@@ -62,7 +62,7 @@
                                 <div class="row">
                                     <div class="col-12 d-flex justify-content-between">
                                         <h4 class="fw-bold">{{ __('frontend.motor.payment_summary_page.total_payable') }}</h4>
-                                        <h4 class="fw-bold">{{ 'RM ' . $insurance->amount }}</h4>
+                                        <h4 class="fw-bold">{{ 'RM ' . number_format($insurance->amount, 2) }}</h4>
                                     </div>
                                 </div>
                             </div>
@@ -83,7 +83,7 @@
                                         gross-premium="{{ session('motor')->quotation->gross_premium }}"
                                         sst-amount="{{ session('motor')->quotation->sst_amount }}"
                                         stamp-duty="{{ session('motor')->quotation->stamp_duty }}"
-                                        total-payable="{{ session('motor')->quotation->total_payable }}"
+                                        total-payable="{{ $insurance->amount }}"
                                         roadtax-total="{{ session('motor')->roadtax->total ?? 0.00 }}"
                                         promo
                                     />
@@ -250,7 +250,7 @@
                                             @else
                                                 <div class="row">
                                                     <div class="col-12 text-center">
-                                                        <p class="mb-0">{{ __('frontend.motor.payment_summary_page.no_add_ons') }}</p>
+                                                        <p class="mb-0">{{ __('frontend.motor.payment_summary_page.no_additional_driver') }}</p>
                                                     </div>
                                                 </div>
                                             @endif

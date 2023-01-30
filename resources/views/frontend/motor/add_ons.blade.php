@@ -29,11 +29,20 @@
                                 <h3 class="card-title fw-bold border-bottom pb-4 px-md-3 mt-3">{{ __('frontend.motor.add_ons_page.sum_insured_amount') }}</h3>
                                 <h5 class="card-text">{{ __('frontend.motor.add_ons_page.sum_insured') }}</h5>
                                 <div class="pb-4 px-md-3">
-                                    <label class="float-left text-primary fw-bold">{{ 'RM ' . number_format(session('motor')->vehicle->min_sum_insured) }}</label>
-                                    <label class="float-end text-primary fw-bold">{{ 'RM ' . number_format(session('motor')->vehicle->max_sum_insured) }}</label>
-                                    <div id="sum-insured-tooltip" class="range" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ 'RM ' . number_format(session('motor')->vehicle->sum_insured) }}">
-                                        <input type="range" id="sum-insured-slider" class="form-range" min="{{ session('motor')->vehicle->min_sum_insured }}" max="{{ session('motor')->vehicle->max_sum_insured }}" step="1000">
-                                    </div>
+                                    @if (session('motor')->vehicle->min_sum_insured !== session('motor')->vehicle->max_sum_insured)
+                                        <label class="float-left text-primary fw-bold">{{ 'RM ' . number_format(session('motor')->vehicle->min_sum_insured) }}</label>
+                                        <label class="float-end text-primary fw-bold">{{ 'RM ' . number_format(session('motor')->vehicle->max_sum_insured) }}</label>
+                                        <div id="sum-insured-tooltip" class="range" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ 'RM ' . number_format(session('motor')->vehicle->sum_insured) }}">
+                                            <input type="range" id="sum-insured-slider" class="form-range" min="{{ session('motor')->vehicle->min_sum_insured }}" max="{{ session('motor')->vehicle->max_sum_insured }}" value="{{ session('motor')->vehicle->sum_insured }}" step="1000">
+                                        </div>
+                                    @else
+                                        <div class="text-center mt-4">
+                                            <h4 class="fw-bold text-primary">
+                                                {{ 'RM ' . number_format(session('motor')->vehicle->sum_insured) }}
+                                            </h4>
+                                            <h4 class="fw-bold text-primary">{{ '(' . __('frontend.motor.add_ons_page.fixed_value') . ')' }}</h4>
+                                        </div>
+                                    @endif
                                 </div>
                                 <div id="extra-coverages">
                                     <h3 class="card-title fw-bold border-bottom py-4 px-md-3">{{ __('frontend.motor.add_ons_page.additional_coverage') }}</h3>
@@ -45,7 +54,7 @@
                                                         <input type="checkbox" id="{{ 'checkbox-' . $_extra_cover->extra_cover_code }}" class="form-check-input extra-coverage-checkbox" name="extra_coverage[]" value="{{ $_extra_cover->extra_cover_code }}" {{ $_extra_cover->selected ? 'checked' : '' }} />
                                                     </div>
                                                     <div class="col-8 d-flex justify-content-between">
-                                                        <label for="{{ '#checkbox-' . $_extra_cover->extra_cover_code }}">{{ $_extra_cover->extra_cover_description }}</label>
+                                                        <label for="{{ 'checkbox-' . $_extra_cover->extra_cover_code }}" id="{{ 'label-checkbox-' . $_extra_cover->extra_cover_code }}">{{ $_extra_cover->extra_cover_description }}</label>
                                                         
                                                         @if (strpos($_extra_cover->extra_cover_description, 'Windscreen') !== false)
                                                             <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('frontend.motor.add_ons_page.tooltip.windscreen') }}">
@@ -99,6 +108,26 @@
                                                             <select id="{{ 'sum-insured-' . $_extra_cover->extra_cover_code }}" class="option-list" data-select data-extra-cover-code="{{ $_extra_cover->extra_cover_code }}">
                                                                 @foreach ($_extra_cover->option_list->values as $option)
                                                                     <option value="{{ $option }}" {{ $option === 1000 ? 'selected' : '' }}>{{ 'RM ' . $option }}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                @endif
+                                                @if (!empty($_extra_cover->cart_list))
+                                                    <div class="row">
+                                                        <div class="col-5 px-md-3 mb-3 ms-3">
+                                                            <small>{{ __('frontend.motor.add_ons_page.days') . ':' }}</small>
+                                                            <select id="{{ 'cart-day-' .  $_extra_cover->extra_cover_code }}" class="cart-day" data-select data-extra-cover-code="{{ $_extra_cover->extra_cover_code }}">
+                                                                @foreach ($_extra_cover->cart_list as $cart)
+                                                                    <option value="{{ $cart->cart_day }}" {{ $cart->cart_day === 7 ? 'selected' : '' }}>{{ $cart->cart_day }}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-5 px-md-3 mb-3 ms-3">
+                                                            <small>{{ __('frontend.motor.add_ons_page.amount') . ':' }}</small>
+                                                            <select id="{{ 'cart-amount-' .  $_extra_cover->extra_cover_code }}" class="cart-amount" data-select data-extra-cover-code="{{ $_extra_cover->extra_cover_code }}">
+                                                                @foreach ($_extra_cover->cart_list[0]->cart_amount_list as $cart_amount)
+                                                                    <option value="{{ $cart_amount }}" {{ $cart_amount === 100 ? 'selected' : '' }}>{{ 'RM ' . $cart_amount }}</option>
                                                                 @endforeach
                                                             </select>
                                                         </div>
@@ -260,12 +289,12 @@
         // Send Land on Add Ons Page to GA
         gtag('event', 'l_motor_ao', { 'debug_mode': true });
 
-        $('#show-more-add-ons').on('click', () => {
-            let shown = $(this).data('shown');
+        $('#show-more-add-ons').on('click', (e) => {
+            let shown = $(e.target).data('shown');
             
             if(!shown) {
-                $(this).data('shown', true);
-                $(this).text("{{ __('frontend.button.show_less') }}");
+                $(e.target).data('shown', true);
+                $(e.target).text("{{ __('frontend.button.show_less') }}");
 
                 let new_select_fields = [];
                 var additional_add_ons = JSON.parse(JSON.stringify(motor.extra_cover_list));
@@ -279,7 +308,7 @@
                                     <input type="checkbox" id="${'checkbox-' + extra.extra_cover_code}" class="form-check-input extra-coverage-checkbox" name="extra_coverage[]" value="${extra.extra_cover_code}" ${extra.selected ? 'checked' : ''} />
                                 </div>
                                 <div class="col-8 d-flex justify-content-between">
-                                    <label for="${'#checkbox-' + extra.extra_cover_code}">${extra.extra_cover_description}</label>
+                                    <label for="${'checkbox-' + extra.extra_cover_code}">${extra.extra_cover_description}</label>
                                     
                                     ${getTootip(extra.extra_cover_description)}
                                 </div>
@@ -302,6 +331,32 @@
                         });
 
                         html += `</select></div></div></div>`;
+                    } else if(extra.cart_list) {
+                        new_select_fields.push('cart-day-' + extra.extra_cover_code);
+                        new_select_fields.push('cart-amount-' + extra.extra_cover_code);
+
+                        html += `
+                            <div class="row">
+                                <div class="col-5 px-md-3 mb-3 ms-3">
+                                    <small>{{ __('frontend.motor.add_ons_page.days') . ':' }}</small>
+                                    <select id="${'cart-day-' +  extra.extra_cover_code}" class="cart-day" data-select data-extra-cover-code="${extra.extra_cover_code}">
+                        `;
+                         
+                        extra.cart_list.forEach((cart) => {
+                            html += `<option value="${cart.cart_day}" ${cart.cart_day === 7 ? 'selected' : ''}>${cart.cart_day}</option>`;
+                        });
+
+                        html += `</select></div>
+                            <div class="col-5 px-md-3 mb-3 ms-3">
+                                <small>{{ __('frontend.motor.add_ons_page.amount') . ':' }}</small>
+                                <select id="${'cart-amount-' +  extra.extra_cover_code}" class="cart-amount" data-select data-extra-cover-code="${extra.extra_cover_code}">
+                        `;
+
+                        extra.cart_list[0].cart_amount_list.forEach((amount) => {
+                            html += `<option value="${amount}" ${amount === 100 ? 'selected' : ''}>${'RM ' + amount}</option>`;
+                        });
+
+                        html += `</select></div></div>`;
                     } else {
                         html += '</div>';
                     }
@@ -323,7 +378,7 @@
                     new bootstrap.Tooltip(element);
                 });
             } else {
-                $(this).data('shown', false);
+                $(e.target).data('shown', false);
                 $('#add-on-item #show-more-wrapper').empty();
             }
         });
@@ -340,6 +395,7 @@
             if(!$('#pricing-table #basic-premium').hasClass('loadingButton')) {
                 $('#pricing-table #basic-premium').text(' ').toggleClass('loadingButton');
                 $('#pricing-table #gross-premium').text(' ').toggleClass('loadingButton');
+                $('#pricing-table #sst').text(' ').toggleClass('loadingButton');
                 $('#pricing-table #total-payable').text(' ').toggleClass('loadingButton');
             }
 
@@ -369,7 +425,7 @@
                 <div class="row info px-md-3">
                     <div class="col-4">
                         <label for="additional-driver-name" class="form-label">{{ __('frontend.fields.name') }}</label>
-                        <input type="text" id="additional-driver-name" class="form-control" />
+                        <input type="text" id="additional-driver-name" class="form-control text-uppercase" />
                     </div>
                     <div class="col-4">
                         <label for="additional-driver-id-number" class="form-label">{{ __('frontend.fields.id_number') }}</label>
@@ -419,8 +475,13 @@
             if(!$('#pricing-table #add-ons-premium').hasClass('loadingButton')) {
                 $('#pricing-table #add-ons-premium').text(' ').toggleClass('loadingButton');
                 $('#pricing-table #gross-premium').text(' ').toggleClass('loadingButton');
+                $('#pricing-table #sst').text(' ').toggleClass('loadingButton');
                 $('#pricing-table #total-payable').text(' ').toggleClass('loadingButton');
                 $('#btn-next').toggleClass('loadingButton');
+            }
+
+            if($(`label-${$(e.target).attr('id')}`).text().includes('All Drivers')) {
+                $('#additional-driver').hide();
             }
 
             refreshPremium();
@@ -436,7 +497,7 @@
                 // Send de-select Roadtax Event to GA
                 gtag('event', 's_ao_rdt_n', { 'debug_mode': true });
                 
-                motor.premium.total_payable -= $('#road-tax').text();
+                motor.premium.total_payable -= motor.premium.roadtax - parseFloat(motor.premium.discounted_amount);
                 delete motor.premium.roadtax;
                 delete motor.roadtax;
                 $('#motor').val(JSON.stringify(motor));
@@ -469,11 +530,20 @@
                     sum_insured = $('#sum-insured-slider').val();
                 }
 
-                selected_extra_cover.push({
-                    extra_cover_code: $(element).val(),
-                    sum_insured: sum_insured,
-                    premium: $(`#${$.escapeSelector($(element).val())}-premium`).text()
-                })
+                if($(element).val() != 112) { // CART
+                    selected_extra_cover.push({
+                        extra_cover_code: $(element).val(),
+                        sum_insured: sum_insured,
+                        premium: $(`#${$.escapeSelector($(element).val())}-premium`).text()
+                    });
+                } else {
+                    selected_extra_cover.push({
+                        extra_cover_code: $(element).val(),
+                        cart_amount: $(`#cart-amount-${$.escapeSelector($(element).val())}`).val(),
+                        cart_day: $(`#cart-day-${$.escapeSelector($(element).val())}`).val(),
+                        premium: $(`#${$.escapeSelector($(element).val())}-premium`).text()
+                    });
+                }
             });
 
             $('#selected-extra-coverage').val(JSON.stringify(selected_extra_cover));
@@ -503,8 +573,30 @@
             }
         });
 
-        $('#extra-coverages').on('change', '.option-list', (e) => {
+        $('#extra-coverages').on('change', '.option-list, .cart-amount', (e) => {
             $(`#checkbox-${$.escapeSelector($(e.target).data('extra-cover-code'))}`).attr('checked', true).trigger('change');
+        });
+
+        $('#extra-coverages').on('change', '.cart-day', (e) => {
+            $('.cart-amount').empty();
+
+            motor.extra_cover_list.forEach((add_ons) => {
+                if(add_ons.extra_cover_code == $(e.target).data('extra-cover-code')) {
+                    add_ons.cart_list.forEach((cart) => {
+                        if(cart.cart_day == $(e.target).val()) {
+                            cart.cart_amount_list.forEach((amount, index) => {
+                                $('.cart-amount').append(`<option value="${amount}">${'RM ' + amount}</option>`);
+
+                                if(index == 0) {
+                                    $('.cart-amount').val(amount);
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+
+            $('.cart-amount').trigger('change');
         });
 
         $('#body-type-wrapper').on('click', () => {
@@ -526,6 +618,11 @@
                 extra_cover.sum_insured = parseFloat($(`#sum-insured-${$.escapeSelector(extra_cover.extra_cover_code)}`).val());
             } else {
                 extra_cover.sum_insured = parseFloat($('#sum-insured-slider').val());
+            }
+
+            if(extra_cover.cart_list) {
+                extra_cover.cart_day = $(`#cart-day-${$.escapeSelector(extra_cover.extra_cover_code)}`).val();
+                extra_cover.cart_amount = $(`#cart-amount-${$.escapeSelector(extra_cover.extra_cover_code)}`).val();
             }
         });
 
@@ -562,13 +659,13 @@
                 $('#total-payable').text(formatMoney(motor.premium.total_payable));
     
                 // Update Add Ons Pricing
+                motor.extra_cover_list.forEach((extra_cover) => {
+                    $(`#${$.escapeSelector(extra_cover.extra_cover_code)}-premium`).text(formatMoney(extra_cover.premium)).removeClass('loadingButton');
+                });
+
                 if(res.data.extra_cover.length > 0) {
                     res.data.extra_cover.forEach((extra_cover) => {
-                        $(`#${$.escapeSelector(extra_cover.extra_cover_code)}-premium`).text(`${formatMoney(extra_cover.premium)}`).removeClass('loadingButton');
-                    });
-                } else {
-                    motor.extra_cover_list.forEach((extra_cover) => {
-                        $(`#${$.escapeSelector(extra_cover.extra_cover_code)}-premium`).text(`${formatMoney(extra_cover.premium)}`).removeClass('loadingButton');
+                        $(`#${$.escapeSelector(extra_cover.extra_cover_code)}-premium`).text(formatMoney(extra_cover.premium)).removeClass('loadingButton');
                     });
                 }
     
@@ -579,6 +676,7 @@
                 $('#pricing-table #basic-premium').removeClass('loadingButton');
                 $('#pricing-table #add-ons-premium').removeClass('loadingButton')
                 $('#pricing-table #gross-premium').removeClass('loadingButton');
+                $('#pricing-table #sst').removeClass('loadingButton');
                 $('#pricing-table #total-payable').removeClass('loadingButton');
             }
         }).catch((err) => {

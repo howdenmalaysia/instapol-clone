@@ -59,7 +59,11 @@
                                                     </div>
                                                     <div class="row mt-4">
                                                         <div class="col-5">
-                                                            <p>{{ __('frontend.motor.nric') }}</p>
+                                                            @if (session('motor')->policy_holder->id_type === config('setting.id_type.nric_no'))
+                                                                <p>{{ __('frontend.motor.nric') }}</p>
+                                                            @else
+                                                                <p>{{ __('frontend.motor.company_resgistration') }}</p>
+                                                            @endif
                                                         </div>
                                                         <div class="col-7">
                                                             <input type="text" id="id-number" class="form-control" value="{{ session('motor')->policy_holder->id_number }}" readonly>
@@ -80,33 +84,49 @@
                                                             <p>{{ __('frontend.motor.compare_page.gender') }}</p>
                                                         </div>
                                                         <div class="col-7">
-                                                            <div class="d-grid gap-0">
-                                                                <div class="btn-group rounded" role="group">
-                                                                    <input
-                                                                        type="radio"
-                                                                        id="male"
-                                                                        class="btn-check"
-                                                                        name="gender"
-                                                                        value="M"
-                                                                        {{ session('motor')->policy_holder->gender === 'M' ? 'checked' : '' }}
-                                                                    >
-                                                                    <label id="male-label" class="{{ session('motor')->policy_holder->gender === 'M' ? 'btn btn-primary text-white rounded-start border active' : 'btn btn-light rounded-end' }}" for="male">
-                                                                        {{ __('frontend.motor.compare_page.male') }}
-                                                                    </label>
-                            
-                                                                    <input
-                                                                        type="radio"
-                                                                        id="female"
-                                                                        class="btn-check"
-                                                                        name="gender"
-                                                                        value="F"
-                                                                        {{ session('motor')->policy_holder->gender === 'F' ? 'checked' : '' }}
-                                                                    >
-                                                                    <label id="female-label" class="{{ session('motor')->policy_holder->gender === 'F' ? 'btn btn-primary text-white rounded-start border active' : 'btn btn-light rounded-end' }}" for="female">
-                                                                        {{ __('frontend.motor.compare_page.female') }}
-                                                                    </label>
+                                                            @if (session('motor')->policy_holder->id_type === config('setting.id_type.nric_no'))
+                                                                <div class="d-grid gap-0">
+                                                                    <div class="btn-group rounded" role="group">
+                                                                        <input
+                                                                            type="radio"
+                                                                            id="male"
+                                                                            class="btn-check"
+                                                                            name="gender"
+                                                                            value="M"
+                                                                            {{ session('motor')->policy_holder->gender === 'M' ? 'checked' : '' }}
+                                                                        >
+                                                                        <label id="male-label" class="{{ session('motor')->policy_holder->gender === 'M' ? 'btn btn-primary text-white rounded-start border active' : 'btn btn-light rounded-end' }}" for="male">
+                                                                            {{ __('frontend.motor.compare_page.male') }}
+                                                                        </label>
+                                
+                                                                        <input
+                                                                            type="radio"
+                                                                            id="female"
+                                                                            class="btn-check"
+                                                                            name="gender"
+                                                                            value="F"
+                                                                            {{ session('motor')->policy_holder->gender === 'F' ? 'checked' : '' }}
+                                                                        >
+                                                                        <label id="female-label" class="{{ session('motor')->policy_holder->gender === 'F' ? 'btn btn-primary text-white rounded-start border active' : 'btn btn-light rounded-end' }}" for="female">
+                                                                            {{ __('frontend.motor.compare_page.female') }}
+                                                                        </label>
+                                                                    </div>
                                                                 </div>
+                                                            @else
+                                                            <div class="btn-group rounded" role="group">
+                                                                <input
+                                                                    type="radio"
+                                                                    id="company"
+                                                                    class="btn-check"
+                                                                    name="gender"
+                                                                    value="O"
+                                                                    {{ session('motor')->policy_holder->gender === 'O' ? 'checked' : '' }}
+                                                                >
+                                                                <label id="male-label" class="{{ session('motor')->policy_holder->gender === 'O' ? 'btn btn-primary text-white rounded border active' : 'btn btn-light rounded-end' }}" for="company">
+                                                                    {{ __('frontend.motor.compare_page.company') }}
+                                                                </label>
                                                             </div>
+                                                            @endif
                                                         </div>
                                                     </div>
                                                     <div class="row mt-4">
@@ -249,50 +269,111 @@
                     </table>
                 </div>
             </div>
-            <x-modal id="occupation-modal" maxWidth="md" headerClass="bg-primary text-white">
+            <x-modal id="occupation-modal" maxWidth="md" headerClass="bg-primary text-white" backdrop-static not-closable>
                 <x-slot name="title">{{ __('frontend.motor.compare_page.need_occupation') }}</x-slot>
                 <x-slot name="body">
                     <div class="row">
                         <div class="col-6">
                             <div class="row">
-                                <div class="col-12">{{ __('frontend.motor.vehicle_details.car_number') }}</div>
+                                <div class="col-12 fw-bold">{{ __('frontend.motor.vehicle_details.car_number') }}</div>
                                 <div class="col-12">{{ session('motor')->vehicle_number }}</div>
                             </div>
-                            <div class="row">
-                                <div class="col-12">{{ __('frontend.motor.vehicle_details.make') }}</div>
+                            <div class="row my-3">
+                                <div class="col-12 fw-bold">{{ __('frontend.motor.vehicle_details.make') }}</div>
                                 <div class="col-12">{{ session('motor')->vehicle->make }}</div>
                             </div>
                             <div class="row">
-                                <div class="col-12">{{ __('frontend.motor.vehicle_details.year') }}</div>
+                                <div class="col-12 fw-bold">{{ __('frontend.motor.vehicle_details.year') }}</div>
                                 <div class="col-12">{{ session('motor')->vehicle->manufacture_year }}</div>
                             </div>
                         </div>
                         <div class="col-6">
                             <div class="row">
-                                <div class="col-12">{{ __('frontend.motor.vehicle_details.engine_capacity') }}</div>
+                                <div class="col-12 fw-bold">{{ __('frontend.motor.vehicle_details.engine_capacity') }}</div>
                                 <div class="col-12">{{ session('motor')->vehicle->engine_capacity }}</div>
                             </div>
-                            <div class="row">
-                                <div class="col-12">{{ __('frontend.motor.vehicle_details.model') }}</div>
+                            <div class="row my-3">
+                                <div class="col-12 fw-bold">{{ __('frontend.motor.vehicle_details.model') }}</div>
                                 <div class="col-12">{{ session('motor')->vehicle->model }}</div>
                             </div>
                             <div class="row">
-                                <div class="col-12">{{ __('frontend.motor.vehicle_details.variant') }}</div>
+                                <div class="col-12 fw-bold">{{ __('frontend.motor.vehicle_details.variant') }}</div>
                                 <div class="col-12">{{ session('motor')->vehicle->variant }}</div>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row mt-4">
                         <div class="col-12">
                             <p>{{ __('frontend.motor.compare_page.select_occupation') }}</p>
-                            <select id="occupation" data-select>
+                            <select id="occupation">
                                 <option value="">{{ __('frontend.motor.compare_page.please_select') }}</option>
+                                @if (session('motor')->policy_holder->id_type === config('setting.id_type.nric_no'))
+                                    @foreach (__('frontend.motor.compare_page.occupation.private') as $occupation)
+                                        <option value="{{ $occupation }}">{{ $occupation }}</option>
+                                    @endforeach
+                                @else
+                                    @foreach (__('frontend.motor.compare_page.occupation.company') as $occupation)
+                                    <option value="{{ $occupation }}">{{ $occupation }}</option>
+                                    @endforeach
+                                @endif
+                            </select>
+                            <p id="occupation-error" class="text-danger fw-bold d-none"></p>
+                        </div>
+                    </div>
+                </x-slot>
+                <x-slot name="footer">
+                    <button type="button" id="occupation-next" class="btn btn-primary text-white text-uppercase">{{ __('frontend.button.get_quotation') }}</button>
+                </x-slot>
+            </x-modal>
+            <x-modal id="avcode-modal" maxWidth="md" headerClass="bg-primary text-white" backdrop-static not-closable>
+                <x-slot name="title">{{ __('frontend.motor.compare_page.need_vehicle_information') }}</x-slot>
+                <x-slot name="body">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="col-12 fw-bold">{{ __('frontend.motor.vehicle_details.car_number') }}</div>
+                                <div class="col-12">{{ session('motor')->vehicle_number }}</div>
+                            </div>
+                            <div class="row my-3">
+                                <div class="col-12 fw-bold">{{ __('frontend.motor.vehicle_details.make') }}</div>
+                                <div class="col-12">{{ session('motor')->vehicle->make }}</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 fw-bold">{{ __('frontend.motor.vehicle_details.year') }}</div>
+                                <div class="col-12">{{ session('motor')->vehicle->manufacture_year }}</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="col-12 fw-bold">{{ __('frontend.motor.vehicle_details.engine_capacity') }}</div>
+                                <div class="col-12">{{ session('motor')->vehicle->engine_capacity }}</div>
+                            </div>
+                            <div class="row my-3">
+                                <div class="col-12 fw-bold">{{ __('frontend.motor.vehicle_details.model') }}</div>
+                                <div class="col-12">{{ session('motor')->vehicle->model }}</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 fw-bold">{{ __('frontend.motor.vehicle_details.variant') }}</div>
+                                <div class="col-12">{{ session('motor')->vehicle->variant }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <p>
+                                {{ __('frontend.motor.compare_page.verify_variant') }}
+                                <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('frontend.motor.compare_page.affect_premium') }}">
+                                    <i class="fa-solid fa-circle-question text-primary fa-15x"></i>
+                                </span>
+                            </p>
+                            <select id="allianz-variant">
+                                <option value="">{{ __('frontend.motor.vehicle_details.select_car_specs') }}</option>
                             </select>
                         </div>
                     </div>
                 </x-slot>
                 <x-slot name="footer">
-                    <button type="button" id="occupation-next" class="btn btn-primary text-white text-uppercase rounded">{{ __('frontend.button.get_quotation') }}</button>
+                    <button type="button" id="avcode-next" class="btn btn-primary text-white text-uppercase">{{ __('frontend.button.get_quotation') }}</button>
                 </x-slot>
             </x-modal>
         </x-slot>
@@ -372,7 +453,55 @@
                 $('#h-gender').val($('input[name=gender]:checked').val());
                 $('#h-marital-status').val($('#marital-status').val());
 
-                $('#product-form').submit();
+                if([15].includes(product_id)) {
+                    $('#occupation-modal').modal('show');
+                    $('#occupation').select2({
+                        width: '100%',
+                        theme: 'bootstrap-5',
+                        dropdownParent: '#occupation-modal'
+                    }).on('select2:select', function () {
+                        $(this).parsley().validate();
+                    }).attr('required', true);
+                } else if([3].includes(product_id)) {
+                    $('#avcode-modal').modal('show');
+                    $('#allianz-variant').select2({
+                        width: '100%',
+                        theme: 'bootstrap-5',
+                        dropdownParent: '#avcode-modal'
+                    }).on('select2:select', function () {
+                        $(this).parsley().validate();
+                    }).attr('required', true);
+                } else {
+                    $('#product-form').submit();
+                }
+            });
+
+            $('#occupation-next').on('click', async () => {
+                if($('#occupation').val() != '') {
+                    motor.policy_holder.occupation = $('#occupation').val();
+                    $('#motor').val(JSON.stringify(motor));
+
+                    await getPremium([motor.product_id]);
+                    $('#product-form').submit();
+                } else {
+                    $('#occupation-error').text("{{ __('frontend.motor.compare_page.occupation_error') }}").removeClass('d-none');
+                }
+            });
+
+            $('#occupation').on('change', () => {
+                $('#occupation-error').addClass('d-none');
+            });
+
+            $('#avcode-next').on('click', async () => {
+                if($('#allianz-variant').val() != '') {
+                    motor.vehicle.extra_attribute.avcode = $('#allianz-variant').val();
+                    $('#motor').val(JSON.stringify(motor));
+
+                    await getPremium([motor.product_id]);
+                    $('#product-form').submit();
+                } else {
+                    $('#avcode-error').text("{{ __('frontend.motor.compare_page.avcode_error') }}").removeClass('d-none');
+                }
             });
 
             $('.btn-view-details').on('click', (e) => {
@@ -587,7 +716,11 @@
             });
         });
 
-        function getPremium() {
+        function getPremium(ids = []) {
+            if(ids.length > 0) {
+                products = ids;
+            }
+
             if(controller) {
                 controller.abort();
             }
@@ -632,6 +765,20 @@
                     }
 
                     sortPrice();
+
+                    if(product.id === 3) {
+                        instapol.post("{{ route('motor.api.get-variant') }}", {
+                            motor: motor,
+                            product_id: product.id,
+                        }).then((res) => {
+                            console.log('Allianz AvCode', res);
+
+                            res.data.response.forEach((variant) => {
+                                $('#allianz-variant').append(`<option value="${variant.AvCode}">${variant.Variant}(Sum Insured: ${'RM ' + formatMoney(variant.SumInsured)})</option>`);
+                            });
+
+                        })
+                    }
                 }).catch((error) => {
                     console.log(error.response);
 

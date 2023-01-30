@@ -571,7 +571,7 @@ class BerjayaSompo implements InsurerLibraryInterface
 
         // Generate Selected Extra Cover List
         $extra_benefits = [];
-        foreach ($input->insurance_motor->extra_cover as $extra_cover) {
+        foreach ($input->insurance->extra_cover as $extra_cover) {
             array_push($extra_benefits, (object) [
                 'extra_cover_code' => $extra_cover->code,
                 'sum_insured' => $extra_cover->sum_insured,
@@ -580,20 +580,20 @@ class BerjayaSompo implements InsurerLibraryInterface
             ]);
         }
 
-        $total_payable = formatNumber($input->insurance->premium->total_contribution);
+        $total_payable = formatNumber($input->insurance->amount);
 
         if (!empty($input->insurance_motor->personal_accident)) {
             $total_payable += formatNumber($input->insurance_motor->personal_accident->total_payable);
         }
 
         $data = (object) [
-            'name' => $input->insurance->policy_holder->name,
-            'id_type' => $input->insurance->policy_holder->id_type_id,
-            'id_number' => $input->insurance->policy_holder->id_number,
-            'gender' => $input->insurance->policy_holder->gender,
-            'marital_status' => $input->insurance->policy_holder->marital_status,
-            'email' => $input->insurance->policy_holder->email,
-            'phone_number' => '0' . $input->insurance->policy_holder->phone_number,
+            'name' => $input->insurance->holder->name,
+            'id_type' => $input->insurance->holder->id_type_id,
+            'id_number' => $input->insurance->holder->id_number,
+            'gender' => $input->insurance->holder->gender,
+            'marital_status' => $input->insurance_motor->marital_status,
+            'email' => $input->insurance->holder->email,
+            'phone_number' => '0' . $input->insurance->holder->phone_number,
             'unit_no' => $input->insurance->address->unit_no,
             'building_name' => $input->insurance->address->building_name,
             'address_one' => $input->insurance->address->address_one,
@@ -610,7 +610,7 @@ class BerjayaSompo implements InsurerLibraryInterface
                 'sum_insured' => $input->insurance_motor->sum_insured
             ],
             'extra_cover' => $extra_benefits,
-            'occupation' => $input->insurance->policy_holder->occupation,
+            'occupation' => $input->insurance->holder->occupation,
         ];
 
         $result = $this->getQuotation($data, 'MCN');

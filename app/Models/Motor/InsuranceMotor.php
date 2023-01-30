@@ -21,6 +21,7 @@ class InsuranceMotor extends Model
         'engine_capacity',
         'manufactured_year',
         'market_value',
+        'sum_insured_type',
         'nvic',
         'variant',
         'ncd_percentage',

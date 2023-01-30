@@ -102,7 +102,7 @@
                                 <p>{{ __('frontend.motor.vehicle_details.coverage') }}</p>
                             </div>
                             <div class="col-6">
-                                <p id="coverage" class="text-decoration-underline">{{ __('frontend.motor.vehicle_details.coverage') }}</p>
+                                <p id="coverage" class="text-decoration-underline">{{ __('frontend.motor.vehicle_details.comprehensive') }}</p>
                             </div>
                         </div>
                         <div class="row">

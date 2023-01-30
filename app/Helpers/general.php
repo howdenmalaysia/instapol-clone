@@ -198,7 +198,7 @@ if(!function_exists('formatAddress')) {
             }
         }
 
-        return $formatted_address;
+        return $length === 0 ? $address : $formatted_address;
     }
 }
 
