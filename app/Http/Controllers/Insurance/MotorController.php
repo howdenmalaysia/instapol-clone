@@ -243,11 +243,18 @@ class MotorController extends Controller
             foreach(json_decode($request->selected_extra_coverage) as $selected) {
                 foreach($session->extra_cover_list as $extra_cover) {
                     if($extra_cover->extra_cover_code === $selected->extra_cover_code) {
-                        array_push($selected_extra_cover, (object) [
+                        $_add_ons = (object) [
                             'sum_insured' => $selected->sum_insured ?? $extra_cover->sum_insured,
                             'extra_cover_description' => $extra_cover->extra_cover_description,
                             'extra_cover_code' => $selected->extra_cover_code
-                        ]);
+                        ];
+
+                        if($selected->cart_day && $selected->cart_amount) {
+                            $_add_ons->cart_day = $selected->cart_day;
+                            $_add_ons->cart_amount = $selected->cart_amount;
+                        }
+
+                        array_push($selected_extra_cover, $_add_ons);
                     }
                 }
             }
