@@ -385,6 +385,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
                 'quotation_date' => Carbon::now()->format('Y-m-d'),
                 'created_by' => $user->id,
                 'updated_by' => $user->id,
+                'contract_number' => $quotation->contract_number ?? null,
             ]);
 
             // 2b. Generate & Update Insurance Code

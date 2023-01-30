@@ -90,4 +90,7 @@ class PremiumResponse extends DataTransferObject
 
     /** @var string|null */
     public $fl_quote_number;
+
+    /** @var string|null */
+    public $contract_number;
 }

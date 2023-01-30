@@ -30,7 +30,7 @@ class Allianz implements InsurerLibraryInterface
     private const OCCUPATION = '99';
 
     private const EXTRA_COVERAGE_LIST = ['PAB-ERW','72','89','97A','101','102','25','100(a)',
-    'A202','57','111','112','109','A201','A206','A209','PAB3'];
+    'A202','57','111','112','109','A206','A209'];
     private const CART_AMOUNT_LIST = [50, 100, 200];
     private const CART_DAY_LIST = [7, 14, 21];
 
@@ -523,7 +523,7 @@ class Allianz implements InsurerLibraryInterface
                 ]);
 
                 switch($extra_cover_code) {
-                    case '89A': { // Windscreen Damage
+                    case '89': {
                         // Generate Options From 500 To 10,000
                         $option_list = new OptionList([
                             'name' => 'sum_insured',
@@ -536,7 +536,7 @@ class Allianz implements InsurerLibraryInterface
                         $item->option_list = $option_list;
 
                         // Default to RM 1,000
-                        $_sum_insured_amount = $option_list->values[1];
+                        $_sum_insured_amount = $option_list->values[0];
 
                         break;
                     }
@@ -622,7 +622,6 @@ class Allianz implements InsurerLibraryInterface
             return $this->abort($motor_premium->response);
         }
 
-        $new_extracover_list = [];
         if(!empty($motor_premium->response->additionalCover)) {
             foreach($input->extra_cover as $extra_cover) {
                 foreach($motor_premium->response->additionalCover as $extra) {
@@ -634,14 +633,10 @@ class Allianz implements InsurerLibraryInterface
                         if(!empty($extra->coverSumInsured)) {
                             $extra_cover->sum_insured = formatNumber((float) $extra->coverSumInsured);
                         }
-                        if($extra_cover->premium > 0){
-                            array_push($new_extracover_list, $extra_cover);
-                        }
                     }
                 }
             }
         }
-        $input->extra_cover = $new_extracover_list;
 
         $response = new PremiumResponse([
             'basic_premium' => formatNumber($motor_premium->response->premium->basicPremium),
@@ -662,7 +657,8 @@ class Allianz implements InsurerLibraryInterface
             'sum_insured_type' => $vehicle->sum_insured_type,
             'min_sum_insured' => formatNumber($vehicle->min_sum_insured),
             'max_sum_insured' => formatNumber($vehicle->max_sum_insured),
-            'named_drivers_needed' => false
+            'named_drivers_needed' => true,
+            'contract_number' => $vehicle->extra_attribute->contractNumber,
         ]);
 
         if ($full_quote) {
@@ -742,20 +738,12 @@ class Allianz implements InsurerLibraryInterface
                     $sequence = 14;
                     break;
                 }
-                case 'A201': { // Waiver of Betterment Contribution
-                    $sequence = 15;
-                    break;
-                }
                 case 'A209': { // Car Break-In/Robbery
                     $sequence = 16;
                     break;
                 }
                 case 'A206': { // Key Care
                     $sequence = 17;
-                    break;
-                }
-                case 'PAB3': { // Driver and Passengers Shield
-                    $sequence = 18;
                     break;
                 }
             }
@@ -826,20 +814,12 @@ class Allianz implements InsurerLibraryInterface
                 $extra_cover_name = 'Sabah Ferry Transit';
                 break;
             }
-            case 'A201': { 
-                $extra_cover_name = 'Waiver of Betterment Contribution';
-                break;
-            }
             case 'A206': { 
                 $extra_cover_name = 'Key Care';
                 break;
             }
             case 'A209': { 
                 $extra_cover_name = 'Car Break-In/Robbery';
-                break;
-            }
-            case 'PAB3': { 
-                $extra_cover_name = 'Driver and Passengers Shield';
                 break;
             }
         }
@@ -1051,6 +1031,7 @@ class Allianz implements InsurerLibraryInterface
                 'min_sum_insured' => floatval($input->vehicle->min_sum_insured),
                 'max_sum_insured' => floatval($input->vehicle->max_sum_insured),
                 'named_drivers_needed' => false,
+                'contract_number' => $quotation->response->contract_number,
             ])
         ];
     }
