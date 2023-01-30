@@ -609,11 +609,9 @@ class Liberty implements InsurerLibraryInterface
 
         // Create a vehicle object with necessary fields only
         $input->vehicle = new Vehicle([
+            'coverage' => 'Comprehensive',
             'engine_capacity' => $input->insurance_motor->engine_capacity,
-            'inception_date' => $input->insurance->inception_date,
-            'manufacture_year' => $input->insurance_motor->manufacture_year,
-            'ncd_percentage' => $input->insurance_motor->ncd_percentage,
-            'sum_insured' => formatNumber($input->insurance_motor->sum_insured),
+            'expiry_date' => $input->insurance->expiry_date,
             'extra_attribute' => (object) [
                 'body_type_code' => $extra_attribute->body_type_code,
                 'body_type_description' => $extra_attribute->body_type_description,
@@ -627,6 +625,17 @@ class Liberty implements InsurerLibraryInterface
                 'vehicle_use_code' => $extra_attribute->vehicle_use_code,
                 'vehicle_type_code' => $extra_attribute->vehicle_type_code,
             ],
+            'inception_date' => $input->insurance->inception_date,
+            'make' => $input->insurance_motor->make,
+            'manufacture_year' => $input->insurance_motor->manufactured_year,
+            'max_sum_insured' => $input->insurance_motor->market_value,
+            'min_sum_insured' => $input->insurance_motor->market_value,
+            'model' => $input->insurance_motor->model,
+            'ncd_percentage' => floatval($input->insurance_motor->ncd_percentage),
+            'nvic' => $input->insurance_motor->nvic,
+            'sum_insured_type' => $input->insurance_motor->sum_insured_type,
+            'sum_insured' => formatNumber($input->insurance_motor->market_value),
+            'variant' => $input->insurance_motor->variant
         ]);
 
         // Include the necessary fields to the input for API call
