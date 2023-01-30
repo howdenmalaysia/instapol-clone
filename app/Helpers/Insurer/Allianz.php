@@ -29,7 +29,8 @@ class Allianz implements InsurerLibraryInterface
     private const ADJUSTMENT_RATE_DOWN = 10;
     private const OCCUPATION = '99';
 
-    private const EXTRA_COVERAGE_LIST = ['89A', '112', '97A'];
+    private const EXTRA_COVERAGE_LIST = ['PAB-ERW','72','89','97A','101','102','25','100(a)',
+    'A202','57','111','112','109','A201','A206','A209','PAB3'];
     private const CART_AMOUNT_LIST = [50, 100, 200];
     private const CART_DAY_LIST = [7, 14, 21];
 
@@ -581,6 +582,20 @@ class Allianz implements InsurerLibraryInterface
 
                         break;
                     }
+                    case 'PAB-ERW': {
+                        $option_list = new OptionList([
+                            'name' => 'sum_insured',
+                            'description' => 'Plan Type',
+                            'values' => ['Plan A', 'Plan B', 'Plan C'],
+                            'any_value' => true,
+                            'increment' => null
+                        ]);
+                        $item->option_list = $option_list;
+
+                        // Default to RM 1,000
+                        $_sum_insured_amount = $option_list->values[0];
+                        break;
+                    }
                 }
 
                 if (!empty($_sum_insured_amount)) {
@@ -727,6 +742,10 @@ class Allianz implements InsurerLibraryInterface
                     $sequence = 14;
                     break;
                 }
+                case 'A201': { // Waiver of Betterment Contribution
+                    $sequence = 15;
+                    break;
+                }
                 case 'A209': { // Car Break-In/Robbery
                     $sequence = 16;
                     break;
@@ -755,100 +774,72 @@ class Allianz implements InsurerLibraryInterface
         $extra_cover_name = '';
 
         switch($extra_cover_code) {
-            case '01': { 
-                $extra_cover_name = 'All Drivers';
-                break;
-            }
-            case '02': { 
-                $extra_cover_name = 'Legal Liability to Passengers';
-                break;
-            }
-            case '03': { 
-                $extra_cover_name = 'All Riders';
-                break;
-            }
-            case '06': { 
-                $extra_cover_name = 'Tuition';
-                break;
-            }
-            case '07': { 
-                $extra_cover_name = 'Additional Drivers';
-                break;
-            }
-            case '101': { 
-                $extra_cover_name = 'Extension of Kindom of Thailand';
-                break;
-            }
-            case '103': { 
-                $extra_cover_name = 'Malicious Damage';
-                break;
-            }
-            case '108': { 
-                $extra_cover_name = 'Passenger Liability Cover';
-                break;
-            }
-            case '109': { 
-                $extra_cover_name = 'Ferry Transit To and/or Sabah And The Federal';
-                break;
-            }
-            case '111': { 
-                $extra_cover_name = 'Current Year NCD Relief (Comp Private Car)';
-                break;
-            }
-            case '112': { 
-                $extra_cover_name = 'Cart';
-                break;
-            }
-            case '19': { 
-                $extra_cover_name = 'Passenger Risk';
-                break;
-            }
-            case '22': { 
-                $extra_cover_name = 'Caravan / Luggage / Trailers (Private Car Only)';
-                break;
-            }
-            case '25': { 
-                $extra_cover_name = 'Strike Riot & Civil Commotion';
-                break;
-            }
-            case '57': { 
-                $extra_cover_name = 'Inclusion Of Special Perils';
+            case 'PAB-ERW': { 
+                $extra_cover_name = 'Motor Enhanced Road Warrior';
                 break;
             }
             case '72': { 
-                $extra_cover_name = 'Legal Liability Of Passengers For Negligent Acts';
+                $extra_cover_name = 'Legal Liability Of Passengers for Negligent Acts';
                 break;
             }
             case '89': { 
-                $extra_cover_name = 'Breakage Of Glass In WindScreen, Window Or Sunroof';
-                break;
-            }
-            case '89A': { 
-                $extra_cover_name = 'Windscreen Damage';
-                break;
-            }
-            case '97': { 
-                $extra_cover_name = 'Vehicle Accessories Endorsement';
+                $extra_cover_name = 'Cover for Windscreens, Windows And Sunroof';
                 break;
             }
             case '97A': { 
-                $extra_cover_name = 'Gas Conversion Kit And Tank';
+                $extra_cover_name = 'Gas Conversion Kit and Tank';
                 break;
             }
-            case '200': { 
-                $extra_cover_name = 'PA Basic';
+            case '101': { 
+                $extra_cover_name = 'Extension of Cover To The Kingdom of Thailand';
                 break;
             }
-            case '201': { 
-                $extra_cover_name = 'Temporary Courtesy Car';
+            case '102': { 
+                $extra_cover_name = 'Extension of Cover to Kalimantan';
                 break;
             }
-            case '202': { 
-                $extra_cover_name = 'Towing And Cleaning Due To Water Damage';
+            case '25': { 
+                $extra_cover_name = 'Strike , Riot , and Civil Commotion';
                 break;
             }
-            case '203': { 
-                $extra_cover_name = 'Key Replacement';
+            case '100(a)': { 
+                $extra_cover_name = 'Legal Liability to Passengers';
+                break;
+            }
+            case 'A202': { 
+                $extra_cover_name = 'Private Hire Car (e-Hailing)';
+                break;
+            }
+            case '57': { 
+                $extra_cover_name = 'Inclusion of Special Perils';
+                break;
+            }
+            case '111': { 
+                $extra_cover_name = 'Current Year "NCD" Relief';
+                break;
+            }
+            case '112': { 
+                $extra_cover_name = 'Compensation For Assessed Repair Time (CART)';
+                break;
+            }
+            case '109': { 
+                $extra_cover_name = 'Sabah Ferry Transit';
+                break;
+            }
+            case 'A201': { 
+                $extra_cover_name = 'Waiver of Betterment Contribution';
+                break;
+            }
+            case 'A206': { 
+                $extra_cover_name = 'Key Care';
+                break;
+            }
+            case 'A209': { 
+                $extra_cover_name = 'Car Break-In/Robbery';
+                break;
+            }
+            case 'PAB3': { 
+                $extra_cover_name = 'Driver and Passengers Shield';
                 break;
             }
         }
@@ -1149,16 +1140,34 @@ class Allianz implements InsurerLibraryInterface
                 $coverCode = $extra_cover->coverCode ?? $extra_cover->extra_cover_code;
                 $coverSumInsured = $extra_cover->coverSumInsured ?? $extra_cover->sum_insured;
                 if($index == $count_ec){
-                    $additional_cover .= '{
-                        "coverCode": "'.$coverCode.'",
-                        "coverSumInsured": "'.$coverSumInsured.'"
-                    }';
+                    if($coverCode == 'PAB-ERW'){
+                        $planCode = "";
+                        $additional_cover .= '{
+                            "coverCode": "'.$coverCode.'",
+                            "planCode": "'.$planCode.'"
+                        }';
+                    }
+                    else{
+                        $additional_cover .= '{
+                            "coverCode": "'.$coverCode.'",
+                            "coverSumInsured": "'.$coverSumInsured.'"
+                        }';
+                    }
                 }
                 else{
-                    $additional_cover .= '{
-                        "coverCode": "'.$coverCode.'",
-                        "coverSumInsured": "'.$coverSumInsured.'"
-                    },';
+                    if($coverCode == 'PAB-ERW'){
+                        $planCode = "";
+                        $additional_cover .= '{
+                            "coverCode": "'.$coverCode.'",
+                            "planCode": "'.$planCode.'"
+                        },';
+                    }
+                    else{
+                        $additional_cover .= '{
+                            "coverCode": "'.$coverCode.'",
+                            "coverSumInsured": "'.$coverSumInsured.'"
+                        },';
+                    }
                 }
                 $index++;
             }
@@ -1189,6 +1198,7 @@ class Allianz implements InsurerLibraryInterface
           }';
 
 		$result = $this->cURL("update", "/quote", $text);
+
         if(!$result->status) {
             return $this->abort($result->response);
         }

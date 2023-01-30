@@ -1,6 +1,6 @@
 <s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
     <s:Body>
-        <CalculatePremium xmlns="https://gtws2.zurich.com.my/ziapps/zurichinsurance">
+        <CalculatePremium xmlns="https://api.zurich.com.my/v1/general/insurance/motor">
             <XmlRequest>
                 <![CDATA[<RequestData>
                     <ParticipantDetails>

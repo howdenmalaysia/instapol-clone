@@ -3,6 +3,7 @@
 namespace App\Helpers\Insurer;
 
 use App\DataTransferObjects\Motor\CartList;
+use App\DataTransferObjects\Motor\OptionList;
 use App\DataTransferObjects\Motor\ExtraCover;
 use App\DataTransferObjects\Motor\VariantData;
 use App\DataTransferObjects\Motor\Vehicle;
@@ -29,15 +30,18 @@ class ZurichTakaful implements InsurerLibraryInterface
     private string $password;
     private string $secret_key;
 
-    private const SOAP_ACTION_DOMAIN = 'https://gtws2.zurich.com.my/zurichtakaful/services';
-    private const EXTRA_COVERAGE_LIST = ['01','02','03','06','07','101','103','108','109','111',
+    private const SOAP_ACTION_DOMAIN = 'https://api.zurich.com.my/v1/takaful/insurance/motor/services';
+    // private const SOAP_ACTION_DOMAIN = 'https://gtws2.zurich.com.my/zurichtakaful/services';
+    private const EXTRA_COVERAGE_LIST = ['01','02','03','06','101','103','108','109','111',
     '112','19','20E','20W','22','25','25E','25W','57','72','89','89A','97','97A','D1','TW1','TW2',
-    '200','201','202','203','01A'];
+    '200','201','202','203','207','221'];
     private const MIN_SUM_INSURED = 10000;
     private const MAX_SUM_INSURED = 500000;
     private const ADJUSTMENT_RATE_UP = 10;
     private const ADJUSTMENT_RATE_DOWN = 10;
     private const OCCUPATION = '99';
+    private const CART_DAY_LIST = [7,14,21];
+    private const CART_AMOUNT_LIST = [50, 100, 200];
     
 	public function __construct(int $insurer_id, string $insurer_name)
     {
@@ -144,7 +148,7 @@ class ZurichTakaful implements InsurerLibraryInterface
         foreach($xml_data as $key => $value){
             if($key == 'Model'){
                 $response['Model'][$index]['sdfVehModelID'] = (string)$value->sdfVehModelID;
-                $response['Model'][$index]['Description'] = (string)$value->Description;
+                $response['Model'][$index]['Description'] = (string)$value->MisDes;
                 $response['Model'][$index]['BodyType'] = (string)$value->BodyType;
                 $response['Model'][$index]['CapacityFrom'] = (string)$value->CapacityFrom;
                 $response['Model'][$index]['CapacityTo'] = (string)$value->CapacityTo;
@@ -236,7 +240,7 @@ class ZurichTakaful implements InsurerLibraryInterface
         ];
         $variants = [];
         $BodyType = '';
-        $uom = '';
+        $uom = 'CC';
         foreach($nvic as $_nvic) {
             // Get Vehicle Details
             $details = $this->getModelDetails($vehInputModel);
@@ -255,6 +259,7 @@ class ZurichTakaful implements InsurerLibraryInterface
                 'variant' => $get_variant,
             ]));
         }
+
         // Get Vehicle Details
         $vehicle_make = $this->vehInputMake($vehInputModel);
         $make = '';
@@ -267,11 +272,12 @@ class ZurichTakaful implements InsurerLibraryInterface
             'status' => true,
             'veh_model_code' => $vix->response->VehModelCode,
             'uom' => $uom,
+            'CoverType' => $vix->response->CoverType,
             'response' => new VIXNCDResponse([
                 'body_type_code' => intval($this->body_type_code($BodyType)) ?? null,
                 'body_type_description' => $BodyType ?? null,
                 'chassis_number' => $vix->response->VehChassisNo,
-                'coverage' => $vix->response->CoverType,
+                'coverage' => 'Comprehensive',
                 'engine_capacity' => intval($vix->response->VehCC),
                 'engine_number' => $vix->response->VehEngineNo,
                 'expiry_date' => Carbon::parse($expiry_date)->format('d M Y'),
@@ -279,7 +285,7 @@ class ZurichTakaful implements InsurerLibraryInterface
                 'make' => $make ?? '',
                 'make_code' => intval($vix->response->VehMake),
                 'model' => $vix->response->VehModel ?? '',
-                'model_code' => null,
+                'model_code' => intval($vix->response->VehVIXModelCode),
                 'manufacture_year' => intval($vix->response->VehMakeYear),
                 'max_sum_insured' => roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_UP, true, self::MAX_SUM_INSURED),
                 'min_sum_insured' => roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_DOWN, false, self::MIN_SUM_INSURED),
@@ -345,11 +351,16 @@ class ZurichTakaful implements InsurerLibraryInterface
         );
         $hashed_signature = $this->generateSignature($signature);
         $getmail = $input->getmail;
-        if(count((array)$getmail)>1){
-            $CNMailId = implode(', ', (array)$getmail);
+        if($getmail != ''){
+            if(count((array)$getmail)>1){
+                $CNMailId = implode(', ', (array)$getmail);
+            }
+            else{
+                $CNMailId = (array)$getmail;
+            }
         }
         else{
-            $CNMailId = (array)$getmail;
+            $CNMailId = $getmail;
         }
         
         $data["participant_code"] = $participant_code;
@@ -526,21 +537,29 @@ class ZurichTakaful implements InsurerLibraryInterface
         $result_data = $result->response->CalculatePremiumResponse->XmlResult;
         $xml_data = simplexml_load_string($result_data);
         //respone
-        $index = 0;
         $MotorExtraCoverDetails = [];
+        $allowed_extcvr = [];
+        if(isset($xml_data->Allowable_Ext_Cvr)){
+            foreach($xml_data->Allowable_Ext_Cvr as $allowed_ext_cvr){
+                if($allowed_ext_cvr->Applicable_Ind == 'Y'){
+                    array_push($allowed_extcvr, (string)$allowed_ext_cvr->Ext_Cvr_Code);
+                }
+            }
+        }
         if(isset($xml_data->ExtraCoverData)){
             foreach($xml_data->ExtraCoverData as $value){
-                $MotorExtraCoverDetails[$index]['ExtCoverCode'] = (string)$value->ExtCoverCode;
-                $MotorExtraCoverDetails[$index]['ExtCoverPrem'] = (string)$value->ExtCoverPrem;
-                $MotorExtraCoverDetails[$index]['ExtCoverSumInsured'] = (string)$value->ExtCoverSumInsured;
-                $MotorExtraCoverDetails[$index]['Compulsory_Ind'] = (string)$value->Compulsory_Ind;
-                $MotorExtraCoverDetails[$index]['sequence'] = '';
-                $index++;
+                array_push($MotorExtraCoverDetails, (object) [
+                    'ExtCoverCode' => (string)$value->ExtCoverCode,
+                    'ExtCoverPrem' => (string)$value->ExtCoverPrem,
+                    'ExtCoverSumInsured' => (string)$value->ExtCoverSumInsured,
+                    'Compulsory_Ind' => (string)$value->Compulsory_Ind,
+                    'sequence' => '',
+                ]);
             }
         }
         $response = (object)[
             'PremiumDetails' => [
-                'BasicPrem' => $xml_data->PremiumDetails->Basic_Premium,
+                'BasicPrem' => $xml_data->PremiumDetails->BasicPrem,
                 'LoadPct' => $xml_data->PremiumDetails->LoadPct,
                 'LoadAmt' => $xml_data->PremiumDetails->LoadAmt,
                 'TuitionLoadPct' => $xml_data->PremiumDetails->TuitionLoadPct,
@@ -592,6 +611,7 @@ class ZurichTakaful implements InsurerLibraryInterface
                 'Rec_SI_Value' => $xml_data->PremiumDetails->Rec_SI_Value,
                 'NCD_Pct' => $xml_data->QuotationInfo->NCDPct,
             ],
+            'allowed_extcvr' => $allowed_extcvr,
             'MotorExtraCoverDetails' => $MotorExtraCoverDetails,
             'ReferralDetails' => [
                 'ReferralCode' => $xml_data->ReferralData->Referral_Decline_Code ?? null,
@@ -983,6 +1003,8 @@ class ZurichTakaful implements InsurerLibraryInterface
 
             // set vehicle
             $vehicle = new Vehicle([
+                'make' => (string)$vehicle_vix->response->make,
+                'model' => (string)$vehicle_vix->response->model,
                 'make' => (string)$vehicle_vix->response->make_code,
                 'model' => (string)$vehicle_vix->veh_model_code,
                 'nvic' => $selected_variant->nvic ?? $input->nvic,
@@ -999,33 +1021,32 @@ class ZurichTakaful implements InsurerLibraryInterface
                 'max_sum_insured' => $vehicle_vix->response->max_sum_insured,
                 'extra_attribute' => (object) [
                     'chassis_number' => $vehicle_vix->response->chassis_number,
-                    'cover_type' => $vehicle_vix->response->cover_type,
+                    'cover_type' => $vehicle_vix->CoverType,
                     'engine_number' => $vehicle_vix->response->engine_number,
                     'seating_capacity' => $vehicle_vix->response->seating_capacity,
+                    'make_code' => (string)$vehicle_vix->response->make_code,
+                    'model_code' => (string)$vehicle_vix->veh_model_code,
                 ],
             ]);
             $quotation = (object)[
                 'request_datetime' => Carbon::now()->format('Y/M/d h:i:s A'),
                 'transaction_ref_no' => $this->participant_code."0000008",//
                 'VehNo' => $input->vehicle_number,
-                'getmail' => [
-                    'support@zurich.com.my',
-                    'noreply@zurich.com.my',
-                ],
+                'getmail' => '',
                 'quotationNo' => '',
                 'trans_type' => 'B',
                 'pre_VehNo' => $vehicle_vix->response->vehicle_number,
                 'product_code' => 'PZ01',
-                'cover_type' => 'V-CO',
+                'cover_type' => $this->getCoverType($vehicle_vix->CoverType),
                 'ci_code' => 'MX1',
                 'eff_date' => Carbon::createFromFormat('d M Y', $vehicle_vix->response->inception_date)->format('Y-m-d'),
                 'exp_date' => Carbon::createFromFormat('d M Y', $vehicle_vix->response->expiry_date)->format('Y-m-d'),
                 'new_owned_Veh_ind' => '',
-                'VehReg_date' => '10/03/2016',
+                'VehReg_date' => '',
                 'ReconInd' => '',
-                'modcarInd' => 'Y',
-                'modperformanceaesthetic' => '0;2',
-                'modfunctional' => '2;128',
+                'modcarInd' => '',
+                'modperformanceaesthetic' => '',
+                'modfunctional' => '',
                 'yearofmake' => $vehicle_vix->response->manufacture_year,
                 'make' => $vehicle_vix->response->make_code,
                 'model' => $vehicle_vix->veh_model_code,
@@ -1039,8 +1060,8 @@ class ZurichTakaful implements InsurerLibraryInterface
                 'no_of_passenger' => $vehicle_vix->response->seating_capacity,
                 'no_of_drivers' => '1',
                 'ins_indicator' => 'P',
-                'name' => $input->name ?? 'TAN AI LING',
-                'ins_nationality' => 'L',
+                'name' => $input->name ?? 'Tan Ai Ling',
+                'ins_nationality' => '',
                 'new_ic' => $id_number,
                 'other_id' => '',
                 'date_of_birth' => $dob,
@@ -1060,7 +1081,7 @@ class ZurichTakaful implements InsurerLibraryInterface
                 'vol_excess' => '',
                 'pac_ind' => 'N',
                 'all_driver_ind' => 'Y',
-                'abisi' => '25000.00',
+                'abisi' => '',
                 'chosen_si_type' => 'REC_SI',
                 'nationality' => 'MAS',
                 'ecd_pac_code' => 'R0075',
@@ -1080,108 +1101,199 @@ class ZurichTakaful implements InsurerLibraryInterface
 
             $extra_cover_list = [];
             foreach(self::EXTRA_COVERAGE_LIST as $_extra_cover_code) {
-                $extra_cover = new ExtraCover([
-                    'selected' => false,
-                    'readonly' => false,
-                    'extra_cover_code' => $_extra_cover_code,
-                    'extra_cover_description' => $this->getExtraCoverDescription($_extra_cover_code),
-                    'premium' => 0,//here
-                    'sum_insured' => 0
-                ]);
-                
-                $sum_insured_amount = 0;
+                foreach($premium->response->allowed_extcvr as $allowed){
+                    if($_extra_cover_code == $allowed){
+                        $extra_cover = new ExtraCover([
+                            'selected' => false,
+                            'readonly' => false,
+                            'extra_cover_code' => $allowed,
+                            'extra_cover_description' => $this->getExtraCoverDescription($allowed),
+                            'premium' => 0,
+                            'sum_insured' => 0
+                        ]);
+                        
+                        $sum_insured_amount = 0;
+        
+                        switch($allowed) {
+                            case '112':{
+                                // Get CART Days & Its Amount
+                                $cart_list = [];
 
-                switch($_extra_cover_code) {
-                    case '01': 
-                    case '02': 
-                    case '03': 
-                    case '06': 
-                    case '07': 
-                    case '101': {
-                        $sum_insured_amount = $vehicle_vix->response->sum_insured;
-                        break;
+                                foreach (self::CART_DAY_LIST as $_cart_day) {
+                                    $cart_amount_list = [];
+
+                                    foreach (self::CART_AMOUNT_LIST as $_cart_amount) {
+                                        array_push($cart_amount_list, $_cart_amount);
+                                    }
+
+                                    array_push($cart_list, new CartList([
+                                        'cart_day' => $_cart_day,
+                                        'cart_amount_list' => $cart_amount_list
+                                    ]));
+                                }
+
+                                $extra_cover->cart_list = $cart_list;
+
+                                // Get The Lowest CART Day & Amount / Day To Get Premium
+                                $_cart_day = $cart_list[0]->cart_day;
+                                $_cart_amount = $cart_list[0]->cart_amount_list[0];
+
+                                break;
+                            } 
+                            case '22': {
+                                // Generate Options From 1000 To 10,000
+                                $option_list = new OptionList([
+                                    'name' => 'sum_insured',
+                                    'description' => 'Sum Insured Amount',
+                                    'values' => generateExtraCoverSumInsured(1000, 10000, 1000),
+                                    'any_value' => true,
+                                    'increment' => 100
+                                ]);
+        
+                                $extra_cover->option_list = $option_list;
+        
+                                // Default to RM 1,000
+                                $sum_insured_amount = $option_list->values[0];
+        
+                                break;
+                            }
+                            case '89A': { // Windscreen Damage
+                                // Generate Options From 1000 To 10,000
+                                $option_list = new OptionList([
+                                    'name' => 'sum_insured',
+                                    'description' => 'Sum Insured Amount',
+                                    'values' => generateExtraCoverSumInsured(1000, 10000, 1000),
+                                    'any_value' => true,
+                                    'increment' => 100
+                                ]);
+        
+                                $extra_cover->option_list = $option_list;
+        
+                                // Default to RM 1,000
+                                $sum_insured_amount = $option_list->values[0];
+        
+                                break;
+                            }
+                            case '97': {
+                                // Generate Options From 1000 To 10,000
+                                $option_list = new OptionList([
+                                    'name' => 'sum_insured',
+                                    'description' => 'Sum Insured Amount',
+                                    'values' => generateExtraCoverSumInsured(1000, 10000, 1000),
+                                    'any_value' => true,
+                                    'increment' => 100
+                                ]);
+        
+                                $extra_cover->option_list = $option_list;
+        
+                                // Default to RM 1,000
+                                $sum_insured_amount = $option_list->values[0];
+        
+                                break;
+                            }
+                            case '97A': {
+                                // Generate Options From 1000 To 10,000
+                                $option_list = new OptionList([
+                                    'name' => 'sum_insured',
+                                    'description' => 'Sum Insured Amount',
+                                    'values' => generateExtraCoverSumInsured(1000, 10000, 1000),
+                                    'any_value' => true,
+                                    'increment' => 100
+                                ]);
+        
+                                $extra_cover->option_list = $option_list;
+        
+                                // Default to RM 1,000
+                                $sum_insured_amount = $option_list->values[0];
+        
+                                break;
+                            }
+                            case '202': {
+                                // Generate Options From 1000 To 10,000
+                                $option_list = new OptionList([
+                                    'name' => 'sum_insured',
+                                    'description' => 'Sum Insured Amount',
+                                    'values' => array_diff(generateExtraCoverSumInsured(1000, 5000, 1000), array(3000,4000)),
+                                    'any_value' => true,
+                                    'increment' => 100
+                                ]);
+        
+                                $extra_cover->option_list = $option_list;
+        
+                                // Default to RM 1,000
+                                $sum_insured_amount = $option_list->values[0];
+        
+                                break;
+                            }
+                            case '203': {
+                                // Generate Options From 1000 To 10,000
+                                $option_list = new OptionList([
+                                    'name' => 'sum_insured',
+                                    'description' => 'Sum Insured Amount',
+                                    'values' => generateExtraCoverSumInsured(1000, 5000, 1000),
+                                    'any_value' => true,
+                                    'increment' => 100
+                                ]);
+        
+                                $extra_cover->option_list = $option_list;
+        
+                                // Default to RM 1,000
+                                $sum_insured_amount = $option_list->values[0];
+        
+                                break;
+                            }
+                        }
+        
+                        if(!empty($sum_insured_amount)) {
+                            $extra_cover->sum_insured = $sum_insured_amount;
+                        }
+        
+                        array_push($extra_cover_list, $extra_cover);
                     }
-                    case '103': 
-                    case '108': 
-                    case '109':
-                    case '111': 
-                    case '112':
-                    case '19':  
-                    case '20E':  
-                    case '20W':  
-                    case '22': {
-                        $sum_insured_amount = 1500;
-                        break;
-                    }
-                    case '25': 
-                    case '25E': 
-                    case '25W': 
-                    case '57': 
-                    case '72': 
-                    case '89': {
-                        $sum_insured_amount = 1000;
-                        break;
-                    }
-                    case '89A': {
-                        $sum_insured_amount = 1000;
-                        break;
-                    }
-                    case '97': {
-                        $sum_insured_amount = 500;
-                        break;
-                    }
-                    case '97A': {
-                        $sum_insured_amount = 2000;
-                        break;
-                    }
-                    case 'D1': 
-                    case 'TW1': 
-                    case 'TW2': 
-                    case '200': 
-                    case '201': 
-                    case '202': {
-                        $sum_insured_amount = 1000;
-                        break;
-                    }
-                    case '203': 
-                    case '01A': 
                 }
-
-                if(!empty($sum_insured_amount)) {
-                    $extra_cover->sum_insured = $sum_insured_amount;
-                }
-
-                array_push($extra_cover_list, $extra_cover);
             }
             // Include Extra Covers to Get Premium
             $input->extra_cover = $extra_cover_list;
         }
+        // Add in Additional Named Driver if applicable
+        if (isset($input->additional_driver)) {
+            if (count($input->additional_driver) > 0 && array_search('07', array_column($input->extra_cover, 'extra_cover_code')) == false) {
+                array_push($input->extra_cover, new ExtraCover([
+                    'extra_cover_code' => '07',
+                    'extra_cover_description' => $this->getExtraCoverDescription('07'),
+                    'sum_insured' => 0,
+                    'unit' => count($input->additional_driver)
+                ]));
+            } else {
+                $index = array_search('07', array_column($input->extra_cover, 'extra_cover_code'));
 
+                if(!empty($index)) {
+                    $input->extra_cover[$index]->unit = count($input->additional_driver);
+                }
+            }
+        }
         $quotation = (object)[
             'request_datetime' => Carbon::now()->format('Y/M/d h:i:s A'),
             'transaction_ref_no' => $this->participant_code."0000008",//
             'VehNo' => $input->vehicle_number,
-            'getmail' => [
-                'support@zurich.com.my',
-                'noreply@zurich.com.my',
-            ],
+            'getmail' => '',
             'quotationNo' => '',
             'trans_type' => 'B',
             'pre_VehNo' => $input->vehicle_number,
             'product_code' => 'PZ01',
-            'cover_type' => 'V-CO',
+            'cover_type' => $this->getCoverType($vehicle->extra_attribute->cover_type),
             'ci_code' => 'MX1',
             'eff_date' => $vehicle->inception_date,
             'exp_date' => $vehicle->expiry_date,
             'new_owned_Veh_ind' => '',
-            'VehReg_date' => '10/03/2016',
+            'VehReg_date' => '',
             'ReconInd' => '',
-            'modcarInd' => 'Y',
-            'modperformanceaesthetic' => 'o',
-            'modfunctional' => '2,128',
+            'modcarInd' => '',
+            'modperformanceaesthetic' => '',
+            'modfunctional' => '',
             'yearofmake' => $input->vehicle->manufacture_year,
-            'make' => $vehicle->make,
-            'model' => $vehicle->model,
+            'make' => $vehicle->extra_attribute->make_code,
+            'model' => $vehicle->extra_attribute->model_code,
             'capacity' => $input->vehicle->engine_capacity,
             'uom' => $input->uom ?? 'CC',
             'engine_no' => $input->vehicle->extra_attribute->engine_number,
@@ -1192,8 +1304,8 @@ class ZurichTakaful implements InsurerLibraryInterface
             'no_of_passenger' => $input->vehicle->extra_attribute->seating_capacity,
             'no_of_drivers' => '1',
             'ins_indicator' => 'P',
-            'name' => $input->name ?? 'TAN AI LING',
-            'ins_nationality' => 'L',
+            'name' => $input->name ?? 'Tan Ai Ling',
+            'ins_nationality' => '',
             'new_ic' => $id_number,
             'other_id' => '',
             'date_of_birth' => $dob,
@@ -1209,13 +1321,13 @@ class ZurichTakaful implements InsurerLibraryInterface
             'state' => $this->getStateCode(ucwords(strtolower($input->state))),
             'country' => 'MAS',
             'sum_insured' => $vehicle->sum_insured,
-            'av_ind' => 'Y',
+            'av_ind' => 'N',
             'vol_excess' => '',
             'pac_ind' => 'N',
-            'pac_type' => 'TAGPLUS PAC',
-            'pac_unit' => '1',
+            'pac_type' => '',
+            'pac_unit' => '',
             'all_driver_ind' => 'Y',
-            'abisi' => '25000.00',
+            'abisi' => '',
             'chosen_si_type' => 'REC_SI',
             'nationality' => 'MAS',
             'extcover' => $input->extra_cover,
@@ -1229,24 +1341,21 @@ class ZurichTakaful implements InsurerLibraryInterface
             return $this->abort($premium->response);
         }
 
-        $new_extracover_list = [];
         if(!empty($premium->response->MotorExtraCoverDetails)) {
             foreach($input->extra_cover as $extra_cover) {
                 foreach($premium->response->MotorExtraCoverDetails as $extra) {
-                    if((string) $extra['ExtCoverCode'] === $extra_cover->extra_cover_code) {
-                        $extra_cover->premium = formatNumber((float) $extra['ExtCoverPrem']);
-                        $total_benefit_amount += (float) $extra['ExtCoverPrem'];
-                        $extra_cover->selected = (float) $extra['ExtCoverPrem'] == 0;
-    
-                        if(!empty($extra['ExtCoverSumInsured'])) {
-                            $extra_cover->sum_insured = formatNumber((float) $extra['ExtCoverSumInsured']);
+                    if((string) $extra->ExtCoverCode === $extra_cover->extra_cover_code) {
+                        $extra_cover->premium = formatNumber((float) $extra->ExtCoverPrem);
+                        $total_benefit_amount += (float) $extra->ExtCoverPrem;
+                        $extra_cover->selected = (float) $extra->ExtCoverPrem == 0;
+
+                        if(!empty($extra->ExtCoverSumInsured)) {
+                            $extra_cover->sum_insured = formatNumber((float) $extra->ExtCoverSumInsured);
                         }
-                        array_push($new_extracover_list, $extra_cover);
                     }
                 }
             }
         }
-        $input->extra_cover = $new_extracover_list;
         $premium_data = $premium->response->PremiumDetails;
         $response = new PremiumResponse([
             'act_premium' => formatNumber($premium_data['ActPrem']),
@@ -1271,7 +1380,7 @@ class ZurichTakaful implements InsurerLibraryInterface
             // 'tariff_premium' => formatNumber($premium_data->tariff_premium),
             'total_benefit_amount' => formatNumber($total_benefit_amount),
             'total_payable' => formatNumber($premium_data['TtlPayablePremium']),
-            'named_drivers_needed' => false,
+            'named_drivers_needed' => true,
         ]);
         
         if($full_quote) {
@@ -1294,6 +1403,27 @@ class ZurichTakaful implements InsurerLibraryInterface
         ];
     }
 
+    private function getCoverType(string $coverType) : string
+    {
+        $get_covertype;
+        switch($coverType) {
+            case 'MOTOR COMPREHENSIVE': { 
+                $get_covertype = 'V-CO';
+                break;
+            }
+            case 'MOTOR THIRD PARTY FIRE AND THEFT': { 
+                $get_covertype = 'V-FT';
+                break;
+            }
+            case 'MOTOR THIRD PARTY': { 
+                $get_covertype = 'V-TP';
+                break;
+            }
+        }
+
+        return $get_covertype;
+    }
+    
     private function getExtraCoverDescription(string $extra_cover_code) : string
     {
         $extra_cover_name = '';
@@ -1304,7 +1434,7 @@ class ZurichTakaful implements InsurerLibraryInterface
                 break;
             }
             case '02': { 
-                $extra_cover_name = 'Legal Liability to Passengers';
+                $extra_cover_name = 'Legal Liability to Passengers (LLTP)';
                 break;
             }
             case '03': { 
@@ -1320,7 +1450,7 @@ class ZurichTakaful implements InsurerLibraryInterface
                 break;
             }
             case '101': { 
-                $extra_cover_name = 'Extension of Kindom of Thailand';
+                $extra_cover_name = 'Extension of Cover To The Kingdom of Thailand';
                 break;
             }
             case '103': { 
@@ -1336,11 +1466,11 @@ class ZurichTakaful implements InsurerLibraryInterface
                 break;
             }
             case '111': { 
-                $extra_cover_name = 'Current Year NCD Relief (Comp Private Car)';
+                $extra_cover_name = 'NCD Relief';
                 break;
             }
             case '112': { 
-                $extra_cover_name = 'Cart';
+                $extra_cover_name = 'Compensation for Assessed Repair Time (CART)';
                 break;
             }
             case '19': { 
@@ -1384,11 +1514,11 @@ class ZurichTakaful implements InsurerLibraryInterface
                 break;
             }
             case '89A': { 
-                $extra_cover_name = 'Breakage Of Glass In WindScreen, Window Sunroof';
+                $extra_cover_name = 'Enhanced Windscreen Damage';
                 break;
             }
             case '97': { 
-                $extra_cover_name = 'Vehicle Accessories Endorsement';
+                $extra_cover_name = 'Vehicle Accessories';
                 break;
             }
             case '97A': { 
@@ -1408,7 +1538,7 @@ class ZurichTakaful implements InsurerLibraryInterface
                 break;
             }
             case '200': { 
-                $extra_cover_name = 'PA Basic';
+                $extra_cover_name = 'Basic Personal Accident';
                 break;
             }
             case '201': { 
@@ -1421,6 +1551,14 @@ class ZurichTakaful implements InsurerLibraryInterface
             }
             case '203': { 
                 $extra_cover_name = 'Key Replacement';
+                break;
+            }
+            case '207': { 
+                $extra_cover_name = 'Waiver of Betterment';
+                break;
+            }
+            case '221': { 
+                $extra_cover_name = 'eHailing Cover - Annual';
                 break;
             }
             case '01A': {
@@ -1563,6 +1701,14 @@ class ZurichTakaful implements InsurerLibraryInterface
                 }
                 case '01A': { // Authorised Driver
                     $sequence = 32;
+                    break;
+                }
+                case '207': {
+                    $sequence = 32;
+                    break;
+                }
+                case '221': {
+                    $sequence = 33;
                     break;
                 }
             }
@@ -2200,7 +2346,7 @@ class ZurichTakaful implements InsurerLibraryInterface
             'MarketValue' => (string) $result_data->MarketValue,
             'NVIC' => (string) $result_data->NVIC,
             'PreInsCode' => (string) $result_data->VIXPreInsCode,
-            'CoverType' => (string) $result_data->VIXCoverType,
+            'CoverType' => (string) $result_data->CoverType,
             'PolExpDate' => (string) $result_data->PolExpDate,
             'BuiltType' => (string) $result_data->BuiltType,
             'NCDPct' => (string) $result_data->NCDPct,
@@ -2212,6 +2358,7 @@ class ZurichTakaful implements InsurerLibraryInterface
             'ISMVIXRespCode' => (string) $result_data->ISMVIXRespCode,
             'NxtPolEffDate' => (string) $result_data->NxtPolEffDate,
             'NxtPolExpDate' => (string) $result_data->NxtPolExpDate,
+            'VehVIXModelCode' => (string) $result_data->VehVIXModelCode,
         ];
 
         return new ResponseData([
@@ -2246,13 +2393,12 @@ class ZurichTakaful implements InsurerLibraryInterface
         ]);
 
         $result = HttpClient::curl($method, $url, $request_options);
-
         // Update the API log
         APILogs::find($log->id)
-            ->update([
-                'response_header' => json_encode($result->response_header),
-                'response' => $result->response
-            ]);
+        ->update([
+            'response_header' => json_encode($result->response_header),
+            'response' => $result->response
+        ]);
 
         if($result->status) {
             $cleaned_xml = preg_replace('/(<\/|<)[a-zA-Z]+:([a-zA-Z0-9]+[ =>])/', '$1$2', $result->response);
