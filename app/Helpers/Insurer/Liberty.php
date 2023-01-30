@@ -558,7 +558,7 @@ class Liberty implements InsurerLibraryInterface
         $input->state = $input->insurance->address->state;
         $input->phone_number = $input->insurance->holder->phone_number;
         $input->gender = $input->insurance->holder->gender;
-        $input->marital_status = $input->insurance->holder->marital_status;
+        $input->marital_status = $input->insurance_motor->marital_status;
 
         switch($input->insurance->holder->id_type_id) {
             case config('setting.id_type.nric_no'): {
