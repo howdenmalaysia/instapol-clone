@@ -571,7 +571,7 @@ class BerjayaSompo implements InsurerLibraryInterface
 
         // Generate Selected Extra Cover List
         $extra_benefits = [];
-        foreach ($input->insurance_motor->extra_cover as $extra_cover) {
+        foreach ($input->insurance->extra_cover as $extra_cover) {
             array_push($extra_benefits, (object) [
                 'extra_cover_code' => $extra_cover->code,
                 'sum_insured' => $extra_cover->sum_insured,
