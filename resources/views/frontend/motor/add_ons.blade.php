@@ -573,7 +573,7 @@
             }
         });
 
-        $('#extra-coverages').on('change', '.option-list, .cart-day, .cart-amount', (e) => {
+        $('#extra-coverages').on('change', '.option-list, .cart-amount', (e) => {
             $(`#checkbox-${$.escapeSelector($(e.target).data('extra-cover-code'))}`).attr('checked', true).trigger('change');
         });
 
@@ -586,6 +586,7 @@
                         if(cart.cart_day == $(e.target).val()) {
                             cart.cart_amount_list.forEach((amount, index) => {
                                 $('.cart-amount').append(`<option value="${amount}">${'RM ' + amount}</option>`);
+
                                 if(index == 0) {
                                     $('.cart-amount').val(amount);
                                 }
@@ -594,6 +595,8 @@
                     });
                 }
             });
+
+            $('.cart-amount').trigger('change');
         });
 
         $('#body-type-wrapper').on('click', () => {
