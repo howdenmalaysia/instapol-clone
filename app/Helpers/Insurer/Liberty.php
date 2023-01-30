@@ -562,8 +562,8 @@ class Liberty implements InsurerLibraryInterface
 
         switch($input->insurance->holder->id_type_id) {
             case config('setting.id_type.nric_no'): {
-                $input->id_number = $input->id_number;
                 $input->ownership_type = 'I'; // Individual
+                $input->company_registration_number = '';
 
                 break;
             }
