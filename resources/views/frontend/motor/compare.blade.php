@@ -59,7 +59,11 @@
                                                     </div>
                                                     <div class="row mt-4">
                                                         <div class="col-5">
-                                                            <p>{{ __('frontend.motor.nric') }}</p>
+                                                            @if (session('motor')->policy_holder->id_type === config('setting.id_type.nric_no'))
+                                                                <p>{{ __('frontend.motor.nric') }}</p>
+                                                            @else
+                                                                <p>{{ __('frontend.motor.company_resgistration') }}</p>
+                                                            @endif
                                                         </div>
                                                         <div class="col-7">
                                                             <input type="text" id="id-number" class="form-control" value="{{ session('motor')->policy_holder->id_number }}" readonly>

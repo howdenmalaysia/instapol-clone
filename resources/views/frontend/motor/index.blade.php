@@ -254,7 +254,7 @@
 
                     Inputmask.remove('#id-number');
                     if(motor.policy_holder) {
-                        $('#id-number').val(motor.policy_holder.id_type);
+                        $('#id-number').val(motor.policy_holder.id_number);
                     } else {
                         $('#id-number').val('');
                     }
