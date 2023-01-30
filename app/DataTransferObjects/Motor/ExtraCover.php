@@ -24,6 +24,12 @@ class ExtraCover extends DataTransferObject
     /** @var int|float */
     public $premium;
 
+    /** @var int|null */
+    public $cart_day;
+
+    /** @var int|null */
+    public $cart_amount;
+
     /** @var \App\DataTransferObjects\Motor\CartList[]|null */
     public $cart_list;
 
