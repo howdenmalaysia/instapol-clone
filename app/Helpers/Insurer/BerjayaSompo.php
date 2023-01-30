@@ -580,7 +580,7 @@ class BerjayaSompo implements InsurerLibraryInterface
             ]);
         }
 
-        $total_payable = formatNumber($input->insurance->premium->total_contribution);
+        $total_payable = formatNumber($input->insurance->amount);
 
         if (!empty($input->insurance_motor->personal_accident)) {
             $total_payable += formatNumber($input->insurance_motor->personal_accident->total_payable);
