@@ -3,6 +3,7 @@
 namespace App\Helpers;
 
 use App\DataTransferObjects\Motor\Response\ResponseData;
+use Illuminate\Support\Facades\Log;
 
 class Submission
 {
@@ -19,6 +20,8 @@ class Submission
 
     public function submission(object $data) : object
     {
+        Log::info("[Submission] Received Submission Request for {$data->insurance_code}. " . json_encode($data));
+
         $path = '';
         $param = (object) [];
 
@@ -38,6 +41,8 @@ class Submission
         }
 
         $result = $this->cURL($path, $param);
+        Log::info("[Submission] Received Submission Response from Insurer for {$data->insurance_code}. " . json_encode($result->response));
+        
         if(!$result->status) {
             return $this->abort($result->response);
         }
@@ -64,14 +69,14 @@ class Submission
 
         $response = json_decode($result->response);
 
-        if($result->status) {
-
-        } else {
+        if(!$result->status) {
             if(empty($response)) {
                 $message = __('api.empty_response', ['company' => $this->insurer]);
             } else {
                 $message = 'An Error Encountered. ' . json_encode($response);
             }
+
+            Log::error("[Submission] {$message}");
 
             return $this->abort($message);
         }
