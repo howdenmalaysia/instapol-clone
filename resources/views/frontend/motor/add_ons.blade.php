@@ -659,12 +659,12 @@
                 $('#total-payable').text(formatMoney(motor.premium.total_payable));
     
                 // Update Add Ons Pricing
+                motor.extra_cover_list.forEach((extra_cover) => {
+                    $(`#${$.escapeSelector(extra_cover.extra_cover_code)}-premium`).text(formatMoney(extra_cover.premium)).removeClass('loadingButton');
+                });
+
                 if(res.data.extra_cover.length > 0) {
                     res.data.extra_cover.forEach((extra_cover) => {
-                        $(`#${$.escapeSelector(extra_cover.extra_cover_code)}-premium`).text(formatMoney(extra_cover.premium)).removeClass('loadingButton');
-                    });
-                } else {
-                    motor.extra_cover_list.forEach((extra_cover) => {
                         $(`#${$.escapeSelector(extra_cover.extra_cover_code)}-premium`).text(formatMoney(extra_cover.premium)).removeClass('loadingButton');
                     });
                 }
