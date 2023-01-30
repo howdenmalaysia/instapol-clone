@@ -249,7 +249,7 @@ class MotorController extends Controller
                             'extra_cover_code' => $selected->extra_cover_code
                         ];
 
-                        if($selected->cart_day && $selected->cart_amount) {
+                        if(!empty($selected->cart_day) && !empty($selected->cart_amount)) {
                             $_add_ons->cart_day = $selected->cart_day;
                             $_add_ons->cart_amount = $selected->cart_amount;
                         }
