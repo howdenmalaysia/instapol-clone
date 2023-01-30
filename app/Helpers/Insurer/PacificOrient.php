@@ -22,6 +22,7 @@ use Illuminate\Support\Str;
 class PacificOrient implements InsurerLibraryInterface
 {
     private string $company_id;
+    private string $company_name;
     private string $token;
     private string $agent_code;
     private string $user_id;
@@ -54,8 +55,6 @@ class PacificOrient implements InsurerLibraryInterface
         $this->agent_code = config('insurer.config.pno.agent_code');
         $this->user_id = config('insurer.config.pno.user_id');
         $this->host = config('insurer.config.pno.host');
-
-        $this->token = $this->getToken();
     }
 
     public function vehicleDetails(object $input) : object
