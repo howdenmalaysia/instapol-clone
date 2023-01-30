@@ -289,12 +289,12 @@
         // Send Land on Add Ons Page to GA
         gtag('event', 'l_motor_ao', { 'debug_mode': true });
 
-        $('#show-more-add-ons').on('click', () => {
-            let shown = $(this).data('shown');
+        $('#show-more-add-ons').on('click', (e) => {
+            let shown = $(e.target).data('shown');
             
             if(!shown) {
-                $(this).data('shown', true);
-                $(this).text("{{ __('frontend.button.show_less') }}");
+                $(e.target).data('shown', true);
+                $(e.target).text("{{ __('frontend.button.show_less') }}");
 
                 let new_select_fields = [];
                 var additional_add_ons = JSON.parse(JSON.stringify(motor.extra_cover_list));
@@ -378,7 +378,7 @@
                     new bootstrap.Tooltip(element);
                 });
             } else {
-                $(this).data('shown', false);
+                $(e.target).data('shown', false);
                 $('#add-on-item #show-more-wrapper').empty();
             }
         });
@@ -614,8 +614,8 @@
             if(extra_cover.option_list) {
                 extra_cover.sum_insured = parseFloat($(`#sum-insured-${$.escapeSelector(extra_cover.extra_cover_code)}`).val());
             } else if(extra_cover.cart_list) {
-                extra_cover.cart_day = $(`#cart-day-${$.escapeSelector($(element).val())}`).val(),
-                extra_cover.cart_amount = $(`#cart-amount-${$.escapeSelector($(element).val())}`).val()
+                extra_cover.cart_day = $(`#cart-day-${$.escapeSelector($(extra_cover.extra_cover_code).val())}`).val(),
+                extra_cover.cart_amount = $(`#cart-amount-${$.escapeSelector($(extra_cover.extra_cover_code).val())}`).val()
             } else {
                 extra_cover.sum_insured = parseFloat($('#sum-insured-slider').val());
             }
