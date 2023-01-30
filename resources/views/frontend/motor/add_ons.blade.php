@@ -497,7 +497,7 @@
                 // Send de-select Roadtax Event to GA
                 gtag('event', 's_ao_rdt_n', { 'debug_mode': true });
                 
-                motor.premium.total_payable -= parseFloat($('#road-tax').text()) - parseFloat($('#promo-amount').text());
+                motor.premium.total_payable -= motor.premium.roadtax - parseFloat(motor.premium.discounted_amount);
                 delete motor.premium.roadtax;
                 delete motor.roadtax;
                 $('#motor').val(JSON.stringify(motor));
