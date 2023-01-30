@@ -585,7 +585,10 @@
                     add_ons.cart_list.forEach((cart) => {
                         if(cart.cart_day == $(e.target).val()) {
                             cart.cart_amount_list.forEach((amount, index) => {
-                                $('.cart-amount').append(`<option value="${amount}" ${index === 0 ? 'selected' : ''}>${'RM ' + amount}</option>`);
+                                $('.cart-amount').append(`<option value="${amount}">${'RM ' + amount}</option>`);
+                                if(index == 0) {
+                                    $('.cart-amount').val(amount);
+                                }
                             });
                         }
                     });

@@ -596,7 +596,7 @@ class Liberty implements InsurerLibraryInterface
 
         // generate selected extra cover list
         $selected_extra_cover = [];
-        foreach ($input->insurance_motor->extra_cover as $extra_cover) {
+        foreach ($input->insurance->extra_cover as $extra_cover) {
             array_push($selected_extra_cover, new ExtraCover([
                 'extra_cover_code' => $extra_cover->code,
                 'extra_cover_description' => $extra_cover->description,
