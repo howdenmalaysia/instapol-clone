@@ -449,8 +449,10 @@ class Liberty implements InsurerLibraryInterface
                 $total_benefit_amount += formatNumber($item->benpremium);
 
                 foreach($input->extra_cover as $extra_cover) {
-                    if((strpos((string) $item->bencode, $extra_cover->extra_cover_code) !== false) ||
-                    ($item->bencode == 'CART' && $extra_cover->extra_cover_code == '112')) {
+                    if((strpos((string) $item->bencode, $extra_cover->extra_cover_code) !== false && $item->bencode != '97' && $item->bencode != '97A') ||
+                    ($item->bencode == 'CART' && $extra_cover->extra_cover_code == '112') ||
+                    ($item->bencode == '97' && $extra_cover->extra_cover_code == '97') ||
+                    ($item->bencode == '97A' && $extra_cover->extra_cover_code == '97A')) {
                         $extra_cover->premium = formatNumber($item->benpremium);
                         $extra_cover->selected = floatval($item->benpremium) == 0;
                     }
