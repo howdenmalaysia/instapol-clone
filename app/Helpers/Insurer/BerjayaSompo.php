@@ -587,13 +587,13 @@ class BerjayaSompo implements InsurerLibraryInterface
         }
 
         $data = (object) [
-            'name' => $input->insurance->policy_holder->name,
-            'id_type' => $input->insurance->policy_holder->id_type_id,
-            'id_number' => $input->insurance->policy_holder->id_number,
-            'gender' => $input->insurance->policy_holder->gender,
-            'marital_status' => $input->insurance->policy_holder->marital_status,
-            'email' => $input->insurance->policy_holder->email,
-            'phone_number' => '0' . $input->insurance->policy_holder->phone_number,
+            'name' => $input->insurance->holder->name,
+            'id_type' => $input->insurance->holder->id_type_id,
+            'id_number' => $input->insurance->holder->id_number,
+            'gender' => $input->insurance->holder->gender,
+            'marital_status' => $input->insurance_motor->marital_status,
+            'email' => $input->insurance->holder->email,
+            'phone_number' => '0' . $input->insurance->holder->phone_number,
             'unit_no' => $input->insurance->address->unit_no,
             'building_name' => $input->insurance->address->building_name,
             'address_one' => $input->insurance->address->address_one,
@@ -610,7 +610,7 @@ class BerjayaSompo implements InsurerLibraryInterface
                 'sum_insured' => $input->insurance_motor->sum_insured
             ],
             'extra_cover' => $extra_benefits,
-            'occupation' => $input->insurance->policy_holder->occupation,
+            'occupation' => $input->insurance->holder->occupation,
         ];
 
         $result = $this->getQuotation($data, 'MCN');
