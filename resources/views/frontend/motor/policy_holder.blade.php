@@ -200,6 +200,7 @@
                                 <input type="hidden" id="motor" name="motor" value='@json(session('motor'))' />
                                 <input type="hidden" id="insurance-code" name="insurance_code" />
                                 <input type="hidden" id="quotation" name="quotation" />
+                                <input type="hidden" id="quotation-number" name="quotation_number">
                             </div>
                         </form>
                     </div>
@@ -274,6 +275,10 @@
 
                     $('#insurance-code').val(res.data.insurance_code);
                     $('#quotation').val(JSON.stringify(res.data.quotation));
+
+                    if(res.data.quotation_number) {
+                        $('#quotation-number').val(res.data.quotation_number);
+                    }
 
                     $(e.target).removeClass('loadingButton');
 

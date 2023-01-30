@@ -6,7 +6,6 @@ use App\DataTransferObjects\Motor\QuotationData;
 use App\DataTransferObjects\Motor\VehicleData;
 use App\Http\Controllers\Controller;
 use App\Mail\PaymentReceipt;
-use App\Models\InsurancePremium;
 use App\Models\Motor\Insurance;
 use App\Models\Motor\InsuranceAddress;
 use App\Models\Motor\InsuranceCompany;
@@ -305,10 +304,12 @@ class MotorController extends Controller
 
         $motor->insurance_code = $request->insurance_code;
         $motor->quotation = json_decode($request->quotation);
+        $motor->vehicle->extra_attribute->quotation_number = $request->quotation_number;
         $request->session()->put('motor', $motor);
 
         $data = (object) [
             'quotation_id' => $motor->quotation_id ?? $motor->quotation->id,
+            'quotation_number' => $request->quotation_number ?? '',
             'insurance_code' => $request->insurance_code,
             'vehicle_number' => $motor->vehicle_number,
             'vehicle' => $motor->vehicle,
