@@ -60,7 +60,6 @@ class PacificOrient implements InsurerLibraryInterface
     public function vehicleDetails(object $input) : object
     {
         $data = [
-            'token' => $this->token,
             'id_number' => $input->id_number,
             'vehicle_number' => $input->vehicle_number
         ];
@@ -547,6 +546,7 @@ class PacificOrient implements InsurerLibraryInterface
     private function getVIXNCD(array $input) : ResponseData
     {
         $path = 'getvehicleinfo/GetVehicleInfo.asmx';
+        $input['token'] = $this->getToken();
 
         $xml = view('backend.xml.pacific.vehicle_details')->with($input)->render();
 
