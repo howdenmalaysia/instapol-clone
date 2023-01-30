@@ -760,7 +760,7 @@ class PacificOrient implements InsurerLibraryInterface
         APILogs::find($log->id)
             ->update([
                 'response_header' => json_encode($result->response_header),
-                'response' => $result->response
+                'response' => is_object($result->response) ? json_encode($result->response) : $result->response
             ]);
 
         if($result->status) {
