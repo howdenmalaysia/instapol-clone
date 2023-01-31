@@ -193,6 +193,7 @@ class ZurichTakaful implements InsurerLibraryInterface
     public function vehicleDetails(object $input) : object
     {
         $data = [
+            'id_type' => $input->id_type,
             'id_number' => $input->id_number,
             'vehicle_number' => $input->vehicle_number
         ];
@@ -202,8 +203,8 @@ class ZurichTakaful implements InsurerLibraryInterface
             return $this->abort($vix->response);
         }
         
-        $get_inception = str_split($vix->response->NxtPolEffDate, 2);
-        $inception_date =  $get_inception[2] . $get_inception[3] . "-" . $get_inception[1] .  "-" . $get_inception[0];
+        $get_inception = str_split($vix->response->NxtNCDEffDate, 2);
+        $inception_date =  Carbon::parse($input->vehicle->inception_date)->format('Y-m-d');
         $get_expiry = str_split($vix->response->NxtPolExpDate, 2);
         $expiry_date =  $get_expiry[2] . $get_expiry[3] . "-" . $get_expiry[1] .  "-" . $get_expiry[0];
         
@@ -405,7 +406,7 @@ class ZurichTakaful implements InsurerLibraryInterface
         $name = $input->name;
         $ins_nationality = $input->ins_nationality;
         $new_ic = $input->new_ic;
-        $other_id = $input->other_id ?? '';
+        $other_id = $input->other_id;
         if($new_ic == ''){
             if($other_id == ''){
                 return 'Others ID cannot be blank if New IC Number is blank';
@@ -966,16 +967,20 @@ class ZurichTakaful implements InsurerLibraryInterface
             $region = 'E';
         }
 
-        $dobs = str_split($input->id_number, 2);
-        $id_number = $dobs[0] . $dobs[1] . $dobs[2] . "-" . $dobs[3] .  "-" . $dobs[4] . $dobs[5];
-        $year = intval($dobs[0]);
-        if ($year >= 10) {
-            $year += 1900;
-        } else {
-            $year += 2000;
+        if($input->id_type == 1){
+            $dobs = str_split($input->id_number, 2);
+            $id_number = $dobs[0] . $dobs[1] . $dobs[2] . "-" . $dobs[3] .  "-" . $dobs[4] . $dobs[5];
+            $year = intval($dobs[0]);
+            if ($year >= 10) {
+                $year += 1900;
+            } else {
+                $year += 2000;
+            }
+            $dob = $dobs[2] . "-" . $dobs[1] . "-" . strval($year);
         }
-        $dob = $dobs[2] . "-" . $dobs[1] . "-" . strval($year);
-        
+        else{
+            $id = $input->id_number;
+        }
 
         if ($full_quote) {
             $vehicle_vix = $this->vehicleDetails($input);
@@ -1062,9 +1067,9 @@ class ZurichTakaful implements InsurerLibraryInterface
                 'ins_indicator' => 'P',
                 'name' => $input->name ?? 'Tan Ai Ling',
                 'ins_nationality' => '',
-                'new_ic' => $id_number,
+                'new_ic' => $id_number ?? '',
                 'other_id' => '',
-                'date_of_birth' => $dob,
+                'date_of_birth' => $dob ?? '',
                 'age' => $input->age,
                 'gender' => $input->gender,
                 'marital_sts' => $input->marital_status,
@@ -1087,6 +1092,11 @@ class ZurichTakaful implements InsurerLibraryInterface
                 'ecd_pac_code' => 'R0075',
                 'ecd_pac_unit' => '1',
             ];
+            if($input->id_type == 4){
+                $quotation->other_id = $id;
+                $quotation->ins_indicator = 'C';
+                $quotation->ci_code = 'MX4';
+            }
             $premium = $this->getQuotation($quotation);
 
             $excess_amount = formatNumber($premium->response->PremiumDetails['ExcessAmt']);
@@ -1306,9 +1316,9 @@ class ZurichTakaful implements InsurerLibraryInterface
             'ins_indicator' => 'P',
             'name' => $input->name ?? 'Tan Ai Ling',
             'ins_nationality' => '',
-            'new_ic' => $id_number,
+            'new_ic' => $id_number ?? '',
             'other_id' => '',
-            'date_of_birth' => $dob,
+            'date_of_birth' => $dob ?? '',
             'age' => $input->age,
             'gender' => $input->gender,
             'marital_sts' => $input->marital_status,
@@ -1335,6 +1345,11 @@ class ZurichTakaful implements InsurerLibraryInterface
             'ecd_pac_unit' => '1',
             'additional_driver' => $input->additional_driver,
         ];
+        if($input->id_type == 4){
+            $quotation->other_id = $id;
+            $quotation->ins_indicator = 'C';
+            $quotation->ci_code = 'MX4';
+        }
         $premium = $this->getQuotation($quotation);
 
         if(!$premium->status) {
@@ -2295,8 +2310,14 @@ class ZurichTakaful implements InsurerLibraryInterface
     {
         $path = 'GetVehicleInfo';
         $request_datetime = Carbon::now()->format('Y-M-d h:i:s A');
-        $dobs = str_split($input['id_number'], 2);
-        $id = $dobs[0] . $dobs[1] . $dobs[2] . "-" . $dobs[3] .  "-" . $dobs[4] . $dobs[5];
+        if($input['id_type'] == 1){
+            $dobs = str_split($input['id_number'], 2);
+            $id = $dobs[0] . $dobs[1] . $dobs[2] . "-" . $dobs[3] .  "-" . $dobs[4] . $dobs[5];
+        }
+        else{
+            $id = $input['id_number'];
+        }
+        
         $VehNo = $input['vehicle_number'];
         $signature = array(
             'request_datetime' => $request_datetime,
