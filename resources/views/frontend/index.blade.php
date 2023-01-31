@@ -14,9 +14,9 @@
                             <div class="col-xl-11 col-12">
                                 <div class="card text-center ps-4 pe-3 py-5 shadow rounded">
                                     <div class="row">
-                                        <a href="" id="motor-link" class="col d-flex align-items-center text-decoration-none">
+                                        <div href="" id="motor-link" class="col d-flex align-items-center text-decoration-none">
                                             <x-product :image-path="asset('images/icons/motor.png')" :alt="__('frontend.products.motor')" :name="__('frontend.products.motor')" />
-                                        </a>
+                                        </div>
                                         <a href="/motor-extended" class="col d-flex align-items-center text-decoration-none">
                                             <x-product :image-path="asset('images/icons/extended-motor.png')" :alt="__('frontend.products.motor_extended')" :name="__('frontend.products.motor_extended')" />
                                         </a>
