@@ -66,7 +66,7 @@ class APIData extends DataTransferObject
     /** @var array|null */
     public $extra_cover;
     
-    /** @var object|null */
+    /** @var array|null */
     public $additional_driver;
     
     /** @var int|null */
