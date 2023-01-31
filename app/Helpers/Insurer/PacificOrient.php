@@ -593,7 +593,7 @@ class PacificOrient implements InsurerLibraryInterface
         $token = $this->getToken();
 
         $data = [
-            'all_rider' => 'Y', // Default to Yes,
+            'all_rider' => 'N', // Default to No,
             'is_company' => $input->id_type === config('setting.id_type.company_registration_no') ? 'Y' : 'N',
             'company_registration_number' => $input->company_registration_number ?? '',
             'coverage' => self::COVER_TYPE,
