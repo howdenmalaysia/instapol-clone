@@ -861,7 +861,7 @@ class BerjayaSompo implements InsurerLibraryInterface
             APILogs::find($log->id)
                 ->update([
                     'response_header' => json_encode($result->response_header),
-                    'response' => $result->response
+                    'response' => json_encode($result->response)
                 ]);
 
             return $this->abort('An Error Encountered. ' . json_encode($result->response));
