@@ -14,7 +14,7 @@
                             <div class="col-xl-11 col-12">
                                 <div class="card text-center ps-4 pe-3 py-5 shadow rounded">
                                     <div class="row">
-                                        <div href="" id="motor-link" class="col d-flex align-items-center text-decoration-none">
+                                        <div id="motor-link" class="col d-flex align-items-center text-decoration-none">
                                             <x-product :image-path="asset('images/icons/motor.png')" :alt="__('frontend.products.motor')" :name="__('frontend.products.motor')" />
                                         </div>
                                         <a href="/motor-extended" class="col d-flex align-items-center text-decoration-none">
@@ -62,7 +62,7 @@
     $(function() {
         $('#landing-banner').modal('show');
 
-        $('#motor-link').on('click' () => {
+        $('#motor-link').on('click', () => {
             swalAlert('instaPol motor portal is under maintenance. We will be right back soon, thank you for staying with us.', null, false, 'error', 'Okay');
         });
     });
