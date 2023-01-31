@@ -386,7 +386,7 @@ class PacificOrient implements InsurerLibraryInterface
             'gender' => $input->gender,
             'id_type' => $input->id_type,
             'id_number' => $input->id_number,
-            'marital_status' => $this->getMaritalStatusCode($input->marital_status),
+            'marital_status' => $input->marital_status,
             'postcode' => $input->postcode,
             'region' => $input->region,
             'state' => $input->state,
