@@ -866,6 +866,10 @@ class PacificOrient implements InsurerLibraryInterface
                 $extra_cover_description = 'All Drivers';
                 break;
             }
+            case '10': {
+                $extra_cover_description = 'Additional Named Drivers';
+                break;
+            }
             case '04': {
                 $extra_cover_description = 'L.L.P to Passengers';
                 break;
@@ -898,6 +902,10 @@ class PacificOrient implements InsurerLibraryInterface
 
             switch ($_extra_cover->extra_cover_code) {
                 case '06': { // All Drivers
+                    $sequence = 1;
+                    break;
+                }
+                case '10': {
                     $sequence = 1;
                     break;
                 }
