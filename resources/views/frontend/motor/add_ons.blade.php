@@ -51,7 +51,15 @@
                                             <div class="mb-2 extra-coverage">
                                                 <div class="row px-md-3">
                                                     <div class="col-1">
-                                                        <input type="checkbox" id="{{ 'checkbox-' . $_extra_cover->extra_cover_code }}" class="form-check-input extra-coverage-checkbox" name="extra_coverage[]" value="{{ $_extra_cover->extra_cover_code }}" {{ $_extra_cover->selected ? 'checked' : '' }} />
+                                                        <input
+                                                            type="checkbox"
+                                                            id="{{ 'checkbox-' . $_extra_cover->extra_cover_code }}"
+                                                            class="form-check-input extra-coverage-checkbox"
+                                                            name="extra_coverage[]"
+                                                            value="{{ $_extra_cover->extra_cover_code }}"
+                                                            {{ $_extra_cover->selected ? 'checked' : '' }}
+                                                            {{ $_extra_cover->readonly ? 'readonly' : '' }}
+                                                        />
                                                     </div>
                                                     <div class="col-8 d-flex justify-content-between">
                                                         <label for="{{ 'checkbox-' . $_extra_cover->extra_cover_code }}" id="{{ 'label-checkbox-' . $_extra_cover->extra_cover_code }}">{{ $_extra_cover->extra_cover_description }}</label>
