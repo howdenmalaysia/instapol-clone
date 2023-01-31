@@ -615,7 +615,7 @@
             $('#body-type-modal').modal('show');
         });
 
-        $('.additional-driver-relationship').on('change', (e) => {
+        $('.card-body').on('change', '.additional-driver-relationship', (e) => {
             refreshPremium(); 
         });
     });
