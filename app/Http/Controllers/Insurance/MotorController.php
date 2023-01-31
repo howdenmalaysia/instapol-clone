@@ -20,6 +20,7 @@ use App\Models\Relationship;
 use App\Models\State;
 use App\Models\User;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -307,6 +308,24 @@ class MotorController extends Controller
         $motor->vehicle->extra_attribute->quotation_number = $request->quotation_number;
         $request->session()->put('motor', $motor);
 
+        $dob = $id_number = '';
+        switch( $motor->policy_holder->id_type) {
+            case config('setting.id_type.nric_no'): {
+                $dob = formatDateFromIC($motor->policy_holder->id_number);
+                $id_number = formatIC($motor->policy_holder->id_number);
+
+                break;
+            }
+            case config('setting.id_type.company_registration_no'): {
+                $id_number = $motor->policy_holder->id_number;
+
+                break;
+            }
+            default: {
+                throw new Exception(__('api.unsupported_id_type'), config('setting.response_codes.unsupported_id_types'));
+            }
+        }
+
         $data = (object) [
             'quotation_id' => $motor->quotation_id ?? $motor->quotation->id,
             'quotation_number' => $request->quotation_number ?? '',
@@ -318,10 +337,10 @@ class MotorController extends Controller
             'postcode' => $motor->postcode,
             'policy_holder' => (object) [
                 'id_type' => $motor->policy_holder->id_type,
-                'id_number' => formatIC($motor->policy_holder->id_number),
+                'id_number' => $id_number,
                 'email' => $request->email ?? $motor->policy_holder->email,
                 'phone_number' => '0' . ($request->phone_number ?? $motor->policy_holder->phone_number),
-                'date_of_birth' => formatDateFromIC($motor->policy_holder->id_number),
+                'date_of_birth' => $dob,
                 'gender' => $motor->policy_holder->gender,
                 'marital_status' => $motor->policy_holder->marital_status,
                 'driving_experience' => $motor->policy_holder->driving_experience,
