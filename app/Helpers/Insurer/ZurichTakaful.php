@@ -234,7 +234,7 @@ class ZurichTakaful implements InsurerLibraryInterface
         $nvic = explode('|', (string) $vix->response->NVIC);
         //getting model
         $vehInputModel = (object)[      
-            'product_code' => "PZ01",
+            'product_code' => "PC01",
             'make_year' => $vix->response->VehMakeYear,
             'make' => $vix->response->VehMake,
             'filter_key' => '',
@@ -1041,7 +1041,7 @@ class ZurichTakaful implements InsurerLibraryInterface
                 'quotationNo' => '',
                 'trans_type' => 'B',
                 'pre_VehNo' => $vehicle_vix->response->vehicle_number,
-                'product_code' => 'PZ01',
+                'product_code' => 'PC01',
                 'cover_type' => $this->getCoverType($vehicle_vix->CoverType),
                 'ci_code' => 'MX1',
                 'eff_date' => Carbon::createFromFormat('d M Y', $vehicle_vix->response->inception_date)->format('Y-m-d'),
@@ -1085,7 +1085,7 @@ class ZurichTakaful implements InsurerLibraryInterface
                 'av_ind' => 'N',
                 'vol_excess' => '',
                 'pac_ind' => 'N',
-                'all_driver_ind' => 'Y',
+                'all_driver_ind' => 'N',
                 'abisi' => '',
                 'chosen_si_type' => 'REC_SI',
                 'nationality' => 'MAS',
@@ -1167,7 +1167,24 @@ class ZurichTakaful implements InsurerLibraryInterface
         
                                 break;
                             }
-                            case '89A': { // Windscreen Damage
+                            case '89': { // Windscreen Damage
+                                // Generate Options From 1000 To 10,000
+                                $option_list = new OptionList([
+                                    'name' => 'sum_insured',
+                                    'description' => 'Sum Insured Amount',
+                                    'values' => generateExtraCoverSumInsured(1000, 10000, 1000),
+                                    'any_value' => true,
+                                    'increment' => 100
+                                ]);
+        
+                                $extra_cover->option_list = $option_list;
+        
+                                // Default to RM 1,000
+                                $sum_insured_amount = $option_list->values[0];
+        
+                                break;
+                            }
+                            case '89A': { // Enhance Windscreen Damage
                                 // Generate Options From 1000 To 10,000
                                 $option_list = new OptionList([
                                     'name' => 'sum_insured',
@@ -1290,7 +1307,7 @@ class ZurichTakaful implements InsurerLibraryInterface
             'quotationNo' => '',
             'trans_type' => 'B',
             'pre_VehNo' => $input->vehicle_number,
-            'product_code' => 'PZ01',
+            'product_code' => 'PC01',
             'cover_type' => $this->getCoverType($vehicle->extra_attribute->cover_type),
             'ci_code' => 'MX1',
             'eff_date' => $vehicle->inception_date,
@@ -1336,7 +1353,7 @@ class ZurichTakaful implements InsurerLibraryInterface
             'pac_ind' => 'N',
             'pac_type' => '',
             'pac_unit' => '',
-            'all_driver_ind' => 'Y',
+            'all_driver_ind' => 'N',
             'abisi' => '',
             'chosen_si_type' => 'REC_SI',
             'nationality' => 'MAS',
@@ -1477,7 +1494,7 @@ class ZurichTakaful implements InsurerLibraryInterface
                 break;
             }
             case '109': { 
-                $extra_cover_name = 'Ferry Transit To and/or Sabah And The Federal';
+                $extra_cover_name = 'Ferry Transit to And/Or From Sabah And The Federal Territory of Labuan';
                 break;
             }
             case '111': { 
@@ -1521,7 +1538,7 @@ class ZurichTakaful implements InsurerLibraryInterface
                 break;
             }
             case '72': { 
-                $extra_cover_name = 'Legal Liability Of Passengers For Negligent Acts';
+                $extra_cover_name = 'Legal Liability of Passengers for Acts of Negligence (LLOP)';
                 break;
             }
             case '89': { 
