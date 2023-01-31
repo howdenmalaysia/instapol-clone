@@ -305,7 +305,11 @@ class MotorController extends Controller
 
         $motor->insurance_code = $request->insurance_code;
         $motor->quotation = json_decode($request->quotation);
-        $motor->vehicle->extra_attribute->quotation_number = $request->quotation_number;
+
+        if(!empty($request->quotation_number)) {
+            $motor->vehicle->extra_attribute->quotation_number = $request->quotation_number;
+        }
+        
         $request->session()->put('motor', $motor);
 
         $dob = $id_number = '';
