@@ -276,7 +276,8 @@ class PacificOrient implements InsurerLibraryInterface
                         break;
                     }
                     case '06': {
-                        $extra_cover->selected = $extra_cover->readonly = true;
+                        $extra_cover->selected = true;
+                        $extra_cover->readonly = true;
 
                         break;
                     }

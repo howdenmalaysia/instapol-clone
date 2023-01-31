@@ -58,7 +58,7 @@
                                                             name="extra_coverage[]"
                                                             value="{{ $_extra_cover->extra_cover_code }}"
                                                             {{ $_extra_cover->selected ? 'checked' : '' }}
-                                                            {{ $_extra_cover->readonly ? 'readonly' : '' }}
+                                                            {{ $_extra_cover->readonly ? 'disabled' : '' }}
                                                         />
                                                     </div>
                                                     <div class="col-8 d-flex justify-content-between">
