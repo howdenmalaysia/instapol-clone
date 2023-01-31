@@ -287,13 +287,17 @@ class PacificOrient implements InsurerLibraryInterface
             // Include Extra Covers to Get Premium
             $input->extra_cover = $extra_cover_list;
         }
+
+        $formatted_extra_cover = array_filter($input->extra_cover, function ($extra_cover) {
+            return $extra_cover->extra_cover_code != '06';
+        });
         
         $data = (object) [
             'age' => $input->age,
             'additional_driver' => $input->additional_driver,
             'company_registration_number' => $company_registration_number,
             'email' => $input->email,
-            'extra_cover' => $input->extra_cover,
+            'extra_cover' => $formatted_extra_cover,
             'gender' => $this->getGender($input->gender),
             'id_type' => $input->id_type,
             'id_number' => $id_number,
@@ -589,7 +593,7 @@ class PacificOrient implements InsurerLibraryInterface
         $token = $this->getToken();
 
         $data = [
-            'all_rider' => 'N', // Default to No,
+            'all_rider' => 'Y', // Default to Yes,
             'is_company' => $input->id_type === config('setting.id_type.company_registration_no') ? 'Y' : 'N',
             'company_registration_number' => $input->company_registration_number ?? '',
             'coverage' => self::COVER_TYPE,
