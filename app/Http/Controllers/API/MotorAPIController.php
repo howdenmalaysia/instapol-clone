@@ -398,7 +398,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
                 'id_type_id' => $input->id_type,
                 'id_number' => $input->id_number,
                 'nationality' => 'MYS',
-                'date_of_birth' => $input->date_of_birth ?? '',
+                'date_of_birth' => $input->date_of_birth,
                 'age' => $input->age,
                 'gender' => $input->gender,
                 'phone_code' => $input->phone_code,
