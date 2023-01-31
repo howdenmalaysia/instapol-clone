@@ -22,9 +22,7 @@
                 <insuredAge xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $age }}</insuredAge>
                 <maritalStatus xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $marital_status }}</maritalStatus>
                 <ncd xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $ncd_percentage }}</ncd>
-                @if ($is_company === 'N')
-                    <noofNamedDriver xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $additional_driver_count }}</noofNamedDriver>
-                @endif
+                <noofNamedDriver xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $additional_driver_count }}</noofNamedDriver>
                 <nricNo xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $id_number }}</nricNo>
                 <onHirePurchase xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $hire_purchase }}</onHirePurchase>
                 <postcode xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $postcode }}</postcode>
