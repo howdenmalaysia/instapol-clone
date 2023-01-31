@@ -139,8 +139,9 @@ class PacificOrient implements InsurerLibraryInterface
     {
         $vehicle = $input->vehicle ?? null;
         $ncd_amount = $basic_premium = $total_benefit_amount = $gross_premium = $sst_percent = $sst_amount = $stamp_duty = $excess_amount = $total_payable = 0;
-
         $id_number = $company_registration_number = '';
+        $all_drivers_allowed = false;
+
         switch($input->id_type) {
             case config('setting.id_type.nric_no'): {
                 $id_number = $input->id_number;
@@ -149,6 +150,7 @@ class PacificOrient implements InsurerLibraryInterface
             }
             case config('setting.id_type.company_registration_no'): {
                 $company_registration_number = $input->id_number;
+                $all_drivers_allowed = true;
 
                 break;
             }
@@ -238,6 +240,11 @@ class PacificOrient implements InsurerLibraryInterface
             $sst_percent = ($sst_amount / $gross_premium) * 100;
 
             $extra_cover_list = [];
+            $available_extra_covers = self::EXTRA_COVERAGE_LIST;
+            if(!$all_drivers_allowed) {
+                $available_extra_covers = array_diff($available_extra_covers, ['06']);
+            }
+
             foreach(self::EXTRA_COVERAGE_LIST as $_extra_cover_code) {
                 $extra_cover = new ExtraCover([
                     'selected' => false,
@@ -252,8 +259,6 @@ class PacificOrient implements InsurerLibraryInterface
 
                 switch($_extra_cover_code) {
                     case '89': {
-                        $extra_cover->extra_cover_description = 'Windscreen or Windows';
-
                         // Options List for Windscreen
                         $option_list = new OptionList([
                             'name' => 'sum_insured',
@@ -267,6 +272,11 @@ class PacificOrient implements InsurerLibraryInterface
 
                         // Default to RM1,000
                         $sum_insured_amount = $option_list->values[1];
+
+                        break;
+                    }
+                    case '06': {
+                        $extra_cover->readonly = true;
 
                         break;
                     }
@@ -287,13 +297,17 @@ class PacificOrient implements InsurerLibraryInterface
             // Include Extra Covers to Get Premium
             $input->extra_cover = $extra_cover_list;
         }
+
+        $formatted_extra_cover = array_filter($input->extra_cover, function ($extra_cover) {
+            return $extra_cover->extra_cover_code != '06';
+        });
         
         $data = (object) [
             'age' => $input->age,
             'additional_driver' => $input->additional_driver,
             'company_registration_number' => $company_registration_number,
             'email' => $input->email,
-            'extra_cover' => $input->extra_cover,
+            'extra_cover' => $formatted_extra_cover,
             'gender' => $this->getGender($input->gender),
             'id_type' => $input->id_type,
             'id_number' => $id_number,

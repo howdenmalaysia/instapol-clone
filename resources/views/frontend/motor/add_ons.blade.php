@@ -151,16 +151,16 @@
                                         </div>
                                         <div class="row info px-md-3">
                                             <div class="col-4">
-                                                <label for="additional-driver-name" class="form-label uppercase">{{ __('frontend.fields.name') }}</label>
-                                                <input type="text" id="additional-driver-name" class="form-control" />
+                                                <label for="driver-name-0" class="form-label uppercase">{{ __('frontend.fields.name') }}</label>
+                                                <input type="text" id="driver-name" class="form-control text-uppercase additional-driver-name" />
                                             </div>
                                             <div class="col-4">
-                                                <label for="additional-driver-id-number" class="form-label">{{ __('frontend.fields.id_number') }}</label>
-                                                <input type="text" id="additional-driver-id-number" class="form-control" />
+                                                <label for="driver-id-number-0" class="form-label">{{ __('frontend.fields.id_number') }}</label>
+                                                <input type="text" id="driver-id-number" class="form-control text-uppercase additional-driver-id-number" />
                                             </div>
                                             <div class="col-3">
-                                                <label for="additional-driver-relationship" class="form-label">{{ __('frontend.fields.relationship') }}</label>
-                                                <select id="additional-driver-relationship" class="form-control" data-select>
+                                                <label for="driver-relationship-0" class="form-label">{{ __('frontend.fields.relationship') }}</label>
+                                                <select id="driver-relationship" class="form-control additional-driver-relationship" data-select>
                                                     <option value=""></option>
                                                     @foreach ($relationships as $relationship)
                                                         <option value="{{ $relationship->id }}">{{ __("frontend.relationships.{$relationship->name}") }}</option>
@@ -421,19 +421,20 @@
         });
 
         $('#add-additional-driver').on('click', () => {
+            let count = $('.additional-driver-name').length + 1;
             let html = `
                 <div class="row info px-md-3">
                     <div class="col-4">
-                        <label for="additional-driver-name" class="form-label">{{ __('frontend.fields.name') }}</label>
-                        <input type="text" id="additional-driver-name" class="form-control text-uppercase" />
+                        <label for="driver-name-${count}" class="form-label">{{ __('frontend.fields.name') }}</label>
+                        <input type="text" id="driver-name-${count}" class="form-control text-uppercase additional-driver-name" />
                     </div>
                     <div class="col-4">
-                        <label for="additional-driver-id-number" class="form-label">{{ __('frontend.fields.id_number') }}</label>
-                        <input type="text" id="additional-driver-id-number" class="form-control" />
+                        <label for="driver-id-number-${count}" class="form-label">{{ __('frontend.fields.id_number') }}</label>
+                        <input type="text" id="driver-id-number-${count}" class="form-control additional-driver-id-number" />
                     </div>
                     <div class="col-3">
-                        <label for="additional-driver-relationship" class="form-label">{{ __('frontend.fields.relationship') }}</label>
-                        <select id="additional-driver-relationship" class="form-control" data-select>
+                        <label for="driver-relationship-${count}" class="form-label">{{ __('frontend.fields.relationship') }}</label>
+                        <select id="driver-relationship-${count}" class="form-control additional-driver-relationship" data-select>
                             <option value=""></option>
                             @foreach ($relationships as $relationship)
                                 <option value="{{ $relationship->id }}">{{ __("frontend.relationships.{$relationship->name}") }}</option>
@@ -448,6 +449,13 @@
                 </div>`;
 
             $(html).insertAfter($('.info').last());
+
+            $('.additional-driver-relationship').select2({
+                width: '100%',
+                theme: 'bootstrap-5'
+            }).on('select2:select', function () {
+                $(this).parsley().validate();
+            });
         });
 
         $('#btn-continue-modal').on('click', () => {
@@ -480,11 +488,11 @@
                 $('#btn-next').toggleClass('loadingButton');
             }
 
-            if($(`label-${$(e.target).attr('id')}`).text().includes('Drivers')) {
-                if(&& $(e.target).is(':checked')) {
-                    $('#additional-driver').hide();
+            if($(`#label-${$(e.target).attr('id')}`).text().includes('Drivers')) {
+                if($(e.target).is(':checked')) {
+                    $('#additional-driver').slideUp('slow');
                 } else {
-                    $('#additional-driver').show();
+                    $('#additional-driver').slideDown('slow');
                 }
             }
 
@@ -606,6 +614,10 @@
         $('#body-type-wrapper').on('click', () => {
             $('#body-type-modal').modal('show');
         });
+
+        $('.additional-driver-relationship').on('change', (e) => {
+            refreshPremium(); 
+        });
     });
 
     function refreshPremium()
@@ -630,10 +642,20 @@
             }
         });
 
+        let additional_driver = [];
+        $('.additional-driver-name').each((index, element) => {
+            additional_driver.push({
+                name: $(element).val(),
+                id_number: $($('.additional-driver-id-number')[index]).val(),
+                relationship: $($('.additional-driver-relationship')[index]).val()
+            });
+        });
+
         instapol.post("{{ route('motor.api.quote') }}", {
             product_id: motor.product_id,
             motor: motor,
             extra_cover: selected_extra_cover,
+            additional_driver: additional_driver
         }).then((res) => {
             request--;
 
