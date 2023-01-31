@@ -825,7 +825,7 @@ class BerjayaSompo implements InsurerLibraryInterface
         return json_decode($jwe->getPayload());
     }
 
-    private function cURL(array $form, string $path = '/nsure/1.0.0/cnap', string $method = 'POST', int $timeout = 120) : ResponseData
+    private function cURL(array $form, string $path = '', string $method = 'POST', int $timeout = 120) : ResponseData
     {
         $payload = (object) [
             'encryptedPayload' => $this->encrypt($form),
