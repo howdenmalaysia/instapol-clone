@@ -31,7 +31,7 @@ class PacificOrient implements InsurerLibraryInterface
     // Settings
     private const PRODUCT = 'PC'; // Private Comprehensive
     // LLtP, SRCC, Windscreen, Tinted Flim, NCD Relief
-    private const EXTRA_COVERAGE_LIST = ['04', '25', '89', '72', '111'];
+    private const EXTRA_COVERAGE_LIST = ['06', '04', '25', '89', '72', '111'];
     private const ANTI_THEFT_DEVICE = '12'; // M / Device - Alarm w Immobilizer
     private const COUNTRY = 'MYS';
     private const CUSTOMER_CATEGORY = 'I'; // Individual
@@ -352,7 +352,7 @@ class PacificOrient implements InsurerLibraryInterface
             'total_benefit_amount' => formatNumber($total_benefit_amount),
             'total_payable' => formatNumber($premium->response->total_premium),
             'request_id' => $premium->response->request_id,
-            'named_drivers_needed' => false,
+            'named_drivers_needed' => true,
         ]);
 
         if($full_quote) {
@@ -386,7 +386,7 @@ class PacificOrient implements InsurerLibraryInterface
             'gender' => $input->gender,
             'id_type' => $input->id_type,
             'id_number' => $input->id_number,
-            'marital_status' => $this->getMaritalStatusCode($input->marital_status),
+            'marital_status' => $input->marital_status,
             'postcode' => $input->postcode,
             'region' => $input->region,
             'state' => $input->state,
@@ -421,7 +421,7 @@ class PacificOrient implements InsurerLibraryInterface
                 'sum_insured_type' => $input->vehicle->sum_insured_type,
                 'min_sum_insured' => floatval($input->vehicle->min_sum_insured),
                 'max_sum_insured' => floatval($input->vehicle->max_sum_insured),
-                'named_drivers_needed' => false,
+                'named_drivers_needed' => true,
             ])
         ];
     }
@@ -589,7 +589,7 @@ class PacificOrient implements InsurerLibraryInterface
         $token = $this->getToken();
 
         $data = [
-            'all_rider' => 'Y', // Default to Yes,
+            'all_rider' => 'N', // Default to No,
             'is_company' => $input->id_type === config('setting.id_type.company_registration_no') ? 'Y' : 'N',
             'company_registration_number' => $input->company_registration_number ?? '',
             'coverage' => self::COVER_TYPE,
@@ -847,6 +847,10 @@ class PacificOrient implements InsurerLibraryInterface
         $extra_cover_description = '';
 
         switch($extra_cover_code) {
+            case '06': {
+                $extra_cover_description = 'All Drivers';
+                break;
+            }
             case '04': {
                 $extra_cover_description = 'L.L.P to Passengers';
                 break;
@@ -878,24 +882,28 @@ class PacificOrient implements InsurerLibraryInterface
             $sequence = 99;
 
             switch ($_extra_cover->extra_cover_code) {
-                case '89': { // Windscreen
+                case '06': { // All Drivers
                     $sequence = 1;
                     break;
                 }
-                case '04': { // Legal Liability to Passengers
+                case '89': { // Windscreen
                     $sequence = 2;
                     break;
                 }
-                case '25': { // Strike Riot & Civil Commotion
+                case '04': { // Legal Liability to Passengers
                     $sequence = 3;
                     break;
                 }
-                case '72': { // Tinted Film Screen
+                case '25': { // Strike Riot & Civil Commotion
                     $sequence = 4;
                     break;
                 }
-                case '111': { // Current Year NCD relief
+                case '72': { // Tinted Film Screen
                     $sequence = 5;
+                    break;
+                }
+                case '111': { // Current Year NCD relief
+                    $sequence = 6;
                     break;
                 }
             }

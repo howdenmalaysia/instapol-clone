@@ -20,6 +20,7 @@ use App\Models\Relationship;
 use App\Models\State;
 use App\Models\User;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -304,8 +305,30 @@ class MotorController extends Controller
 
         $motor->insurance_code = $request->insurance_code;
         $motor->quotation = json_decode($request->quotation);
-        $motor->vehicle->extra_attribute->quotation_number = $request->quotation_number;
+
+        if(!empty($request->quotation_number)) {
+            $motor->vehicle->extra_attribute->quotation_number = $request->quotation_number;
+        }
+        
         $request->session()->put('motor', $motor);
+
+        $dob = $id_number = '';
+        switch( $motor->policy_holder->id_type) {
+            case config('setting.id_type.nric_no'): {
+                $dob = formatDateFromIC($motor->policy_holder->id_number);
+                $id_number = formatIC($motor->policy_holder->id_number);
+
+                break;
+            }
+            case config('setting.id_type.company_registration_no'): {
+                $id_number = $motor->policy_holder->id_number;
+
+                break;
+            }
+            default: {
+                throw new Exception(__('api.unsupported_id_type'), config('setting.response_codes.unsupported_id_types'));
+            }
+        }
 
         $data = (object) [
             'quotation_id' => $motor->quotation_id ?? $motor->quotation->id,
@@ -318,10 +341,10 @@ class MotorController extends Controller
             'postcode' => $motor->postcode,
             'policy_holder' => (object) [
                 'id_type' => $motor->policy_holder->id_type,
-                'id_number' => formatIC($motor->policy_holder->id_number),
+                'id_number' => $id_number,
                 'email' => $request->email ?? $motor->policy_holder->email,
                 'phone_number' => '0' . ($request->phone_number ?? $motor->policy_holder->phone_number),
-                'date_of_birth' => formatDateFromIC($motor->policy_holder->id_number),
+                'date_of_birth' => $dob,
                 'gender' => $motor->policy_holder->gender,
                 'marital_status' => $motor->policy_holder->marital_status,
                 'driving_experience' => $motor->policy_holder->driving_experience,
@@ -565,9 +588,15 @@ class MotorController extends Controller
         $param->id_number = str_replace('-', '', $data->policy_holder->id_number);
         $param->email_address = $data->policy_holder->email ?? '';
         $param->name = $data->policy_holder->name ?? '';
+        $param->gender = $data->policy_holder->gender ?? '';
+        $param->marital_status = $data->policy_holder->marital_status ?? '';
+        $param->dob = $data->policy_holder->date_of_birth ?? '';
+        $param->driving_experience = $data->policy_holder->driving_experience ?? '';
         $param->phone_number = $data->policy_holder->phone_number ?? '';
+        $param->quotation_number = $data->quotation_number ?? '';
+        $param->insurance_code = $data->insurance_code ?? '';
 
-        $quotation->product_type = $data->product_type ?? 2;
+        $quotation->product_type = $data->product_type ?? Product::TYPE_MOTOR;
         $quotation->email_address = $data->policy_holder->email;
         $quotation->request_param = json_encode($param);
         $quotation->save();
