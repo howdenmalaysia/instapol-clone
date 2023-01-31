@@ -15,6 +15,7 @@ class UpdateFieldsNullableInInsuranceHoldersTable extends Migration
     {
         Schema::table('insurance_holders', function (Blueprint $table) {
             $table->dateTime('date_of_birth')->nullable()->change();
+            $table->integer('age')->nullable()->change();
         });
     }
 
@@ -27,6 +28,7 @@ class UpdateFieldsNullableInInsuranceHoldersTable extends Migration
     {
         Schema::table('insurance_holders', function (Blueprint $table) {
             $table->dateTime('date_of_birth')->change();
+            $table->integer('age')->change();
         });
     }
 }
