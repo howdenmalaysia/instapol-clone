@@ -1125,6 +1125,11 @@ class ZurichTakaful implements InsurerLibraryInterface
                         $sum_insured_amount = 0;
         
                         switch($allowed) {
+                            case '01':{
+                                //selected all drivers
+                                $extra_cover->selected = true;
+                                break;
+                            }
                             case '112':{
                                 // Get CART Days & Its Amount
                                 $cart_list = [];
@@ -1372,7 +1377,7 @@ class ZurichTakaful implements InsurerLibraryInterface
         if(!$premium->status) {
             return $this->abort($premium->response);
         }
-
+        $full_ext_prem = 0;
         if(!empty($premium->response->MotorExtraCoverDetails)) {
             foreach($input->extra_cover as $extra_cover) {
                 foreach($premium->response->MotorExtraCoverDetails as $extra) {
@@ -1381,6 +1386,12 @@ class ZurichTakaful implements InsurerLibraryInterface
                         $total_benefit_amount += (float) $extra->ExtCoverPrem;
                         $extra_cover->selected = (float) $extra->ExtCoverPrem == 0;
 
+                        if((string) $extra->ExtCoverCode == '01'){
+                            $full_ext_prem = (float) $extra->ExtCoverPrem;
+                        }
+                        else{
+                            $extra_cover->selected = (float) $extra->ExtCoverPrem == 0;
+                        }
                         if(!empty($extra->ExtCoverSumInsured)) {
                             $extra_cover->sum_insured = formatNumber((float) $extra->ExtCoverSumInsured);
                         }
@@ -1424,7 +1435,7 @@ class ZurichTakaful implements InsurerLibraryInterface
             $response->stamp_duty = $stamp_duty;
             $response->sst_amount = $sst_amount;
             $response->sst_percent = $sst_percent;
-            $response->total_benefit_amount = 0;
+            $response->total_benefit_amount = $full_ext_prem;
             $response->total_payable = $total_payable;
 
             $response->vehicle = $vehicle;
