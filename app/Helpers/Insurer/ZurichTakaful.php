@@ -34,7 +34,7 @@ class ZurichTakaful implements InsurerLibraryInterface
     // private const SOAP_ACTION_DOMAIN = 'https://gtws2.zurich.com.my/zurichtakaful/services';
     private const EXTRA_COVERAGE_LIST = ['01','02','03','06','101','103','108','109','111',
     '112','19','20E','20W','22','25','25E','25W','57','72','89','89A','97','97A','D1','TW1','TW2',
-    '200','201','202','203','207','221'];
+    '200','201','202','203','207','221','01A'];
     private const MIN_SUM_INSURED = 10000;
     private const MAX_SUM_INSURED = 500000;
     private const ADJUSTMENT_RATE_UP = 10;
