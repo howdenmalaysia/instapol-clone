@@ -327,11 +327,12 @@ class PacificOrient implements InsurerLibraryInterface
         }
 
         if(!empty($premium->response->extra_coverage)) {
-            foreach($input->extra_cover as $extra_cover) {
-                foreach($premium->response->extra_coverage as $extra) {
+            foreach($premium->response->extra_coverage as $extra) {
+                $total_benefit_amount += (float) $extra->premium;
+
+                foreach($input->extra_cover as $extra_cover) {
                     if((string) $extra->coverageId === $extra_cover->extra_cover_code) {
                         $extra_cover->premium = formatNumber((float) $extra->premium);
-                        $total_benefit_amount += (float) $extra->premium;
                         $extra_cover->selected = (float) $extra->premium == 0;
     
                         if(!empty($extra->sumInsured)) {
@@ -865,6 +866,10 @@ class PacificOrient implements InsurerLibraryInterface
                 $extra_cover_description = 'All Drivers';
                 break;
             }
+            case '10': {
+                $extra_cover_description = 'Additional Named Drivers';
+                break;
+            }
             case '04': {
                 $extra_cover_description = 'L.L.P to Passengers';
                 break;
@@ -897,6 +902,10 @@ class PacificOrient implements InsurerLibraryInterface
 
             switch ($_extra_cover->extra_cover_code) {
                 case '06': { // All Drivers
+                    $sequence = 1;
+                    break;
+                }
+                case '10': {
                     $sequence = 1;
                     break;
                 }
