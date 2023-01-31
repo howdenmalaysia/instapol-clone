@@ -856,6 +856,17 @@ class BerjayaSompo implements InsurerLibraryInterface
         // API call
         $result = HttpClient::curl($method, $this->host . $path, $request_options);
 
+        if(is_object($result->response)) {
+            // Update the API log
+            APILogs::find($log->id)
+                ->update([
+                    'response_header' => json_encode($result->response_header),
+                    'response' => $result->response
+                ]);
+
+            return $this->abort('An Error Encountered. ' . json_encode($result->response));
+        }
+
         if(!empty(json_decode($result->response)->encryptedPayload)) {
             $decrypted_response = json_decode($this->decrypt(json_decode($result->response)->encryptedPayload, $result->response_header['Encryption-Salt'][0])->text);
 
