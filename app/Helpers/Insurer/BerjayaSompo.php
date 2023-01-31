@@ -547,7 +547,7 @@ class BerjayaSompo implements InsurerLibraryInterface
             'city' => $input->city,
             'postcode' => $input->postcode,
             'state' => $input->state,
-            'occupation' => $input->occupation,
+            'occupation' => $input->occupation ?? 'EXECUTIVE',
         ];
 
         $result = $this->premiumDetails($data);
@@ -1001,12 +1001,12 @@ class BerjayaSompo implements InsurerLibraryInterface
         // Read File Content and Turn Into Collection
         $json = json_decode(file_get_contents($path), true);
 
-        // Search with NVIC
-        $result = collect($json[$type])->firstWhere('occupation', $occupation);
-
-        if (empty($result)) {
+        if (empty($occupation)) {
             // Default to Executive
             $result = collect($json[$type])->firstWhere('occupation', 'EXECUTIVE');
+        } else {    
+            // Search with NVIC
+            $result = collect($json[$type])->firstWhere('occupation', $occupation);
         }
 
         return $result['code'];
