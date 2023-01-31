@@ -588,9 +588,15 @@ class MotorController extends Controller
         $param->id_number = str_replace('-', '', $data->policy_holder->id_number);
         $param->email_address = $data->policy_holder->email ?? '';
         $param->name = $data->policy_holder->name ?? '';
+        $quotation->gender = $data->policy_holder->gender ?? '';
+        $quotation->marital_status = $data->policy_holder->marital_status ?? '';
+        $quotation->dob = $data->policy_holder->date_of_birth ?? '';
+        $quotation->driving_experience = $data->policy_holder->driving_experience ?? '';
         $param->phone_number = $data->policy_holder->phone_number ?? '';
 
-        $quotation->product_type = $data->product_type ?? 2;
+        $quotation->quotation_number = $data->quotation_number ?? '';
+        $quotation->insurance_code = $quotation->insurance_code ?? '';
+        $quotation->product_type = $data->product_type ?? Product::TYPE_MOTOR;
         $quotation->email_address = $data->policy_holder->email;
         $quotation->request_param = json_encode($param);
         $quotation->save();
