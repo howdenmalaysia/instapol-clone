@@ -480,11 +480,11 @@
                 $('#btn-next').toggleClass('loadingButton');
             }
 
-            if($(`label-${$(e.target).attr('id')}`).text().includes('Drivers')) {
+            if($(`#label-${$(e.target).attr('id')}`).text().includes('Drivers')) {
                 if($(e.target).is(':checked')) {
-                    $('#additional-driver').hide();
+                    $('#additional-driver').slideUp('slow');
                 } else {
-                    $('#additional-driver').show();
+                    $('#additional-driver').slideDown('slow');
                 }
             }
 
