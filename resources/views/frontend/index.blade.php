@@ -63,7 +63,12 @@
         $('#landing-banner').modal('show');
 
         $('#motor-link').on('click', () => {
-            swalAlert('instaPol motor portal is under maintenance. We will be right back soon, thank you for staying with us.', null, false, 'error', 'Okay');
+            Swal.fire({
+                title: 'We\'ll be back soon!',
+                text: 'instaPol motor portal is under maintenance. We will be right back soon, thank you for staying with us.',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+            });
         });
     });
 </script>
