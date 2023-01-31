@@ -594,7 +594,7 @@ class MotorController extends Controller
         $param->driving_experience = $data->policy_holder->driving_experience ?? '';
         $param->phone_number = $data->policy_holder->phone_number ?? '';
         $param->quotation_number = $data->quotation_number ?? '';
-        $param->insurance_code = $quotation->insurance_code ?? '';
+        $param->insurance_code = $data->insurance_code ?? '';
 
         $quotation->product_type = $data->product_type ?? Product::TYPE_MOTOR;
         $quotation->email_address = $data->policy_holder->email;
