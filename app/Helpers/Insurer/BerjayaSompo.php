@@ -825,7 +825,7 @@ class BerjayaSompo implements InsurerLibraryInterface
         return json_decode($jwe->getPayload());
     }
 
-    private function cURL(array $form, string $path = '/nsure/1.0.0/cnap', string $method = 'POST', int $timeout = 120) : ResponseData
+    private function cURL(array $form, string $path = '', string $method = 'POST', int $timeout = 120) : ResponseData
     {
         $payload = (object) [
             'encryptedPayload' => $this->encrypt($form),
@@ -855,6 +855,17 @@ class BerjayaSompo implements InsurerLibraryInterface
 
         // API call
         $result = HttpClient::curl($method, $this->host . $path, $request_options);
+
+        if(is_object($result->response)) {
+            // Update the API log
+            APILogs::find($log->id)
+                ->update([
+                    'response_header' => json_encode($result->response_header),
+                    'response' => json_encode($result->response)
+                ]);
+
+            return $this->abort('An Error Encountered. ' . json_encode($result->response));
+        }
 
         if(!empty(json_decode($result->response)->encryptedPayload)) {
             $decrypted_response = json_decode($this->decrypt(json_decode($result->response)->encryptedPayload, $result->response_header['Encryption-Salt'][0])->text);
@@ -990,12 +1001,16 @@ class BerjayaSompo implements InsurerLibraryInterface
         // Read File Content and Turn Into Collection
         $json = json_decode(file_get_contents($path), true);
 
-        // Search with NVIC
-        $result = collect($json[$type])->firstWhere('occupation', $occupation);
-
-        if (empty($result)) {
-            // Default to Executive
-            $result = collect($json[$type])->firstWhere('occupation', 'EXECUTIVE');
+        if (empty($occupation)) {
+            if($type === 'individual') {
+                // Individial - Default to Executive
+                $result = collect($json[$type])->firstWhere('occupation', 'EXECUTIVE');
+            } else {
+                // Business - Default to Retail Trading
+                $result = collect($json[$type])->firstWhere('occupation', 'RETAIL TRADING');
+            }
+        } else {
+            $result = collect($json[$type])->firstWhere('occupation', $occupation);
         }
 
         return $result['code'];

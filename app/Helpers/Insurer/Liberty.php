@@ -703,7 +703,7 @@ class Liberty implements InsurerLibraryInterface
         }
 
         // Get ISM Market Value & Response Code
-        $sum_insured = $min_sum_insured = $max_sum_insured = $min_market_value = $max_market_value = $min_agreed_value = $max_agreed_value = 0;
+        $sum_insured = $min_sum_insured = $max_sum_insured = $min_market_value = $max_market_value = $min_agreed_value = $max_agreed_value = $ism_market_value = 0;
         $ism_response_code = $sum_insured_type = '';
 
         foreach ($result->response->getVixNcdReqReturn->arrResExtraParam->item as $_item) {
@@ -717,6 +717,8 @@ class Liberty implements InsurerLibraryInterface
                 $min_agreed_value = formatNumber($_item->value, 0);
             } else if ($_item->indicator == 'maxagreedvalue') {
                 $max_agreed_value = formatNumber($_item->value, 0);
+            } else if($_item->indicator == 'ismmarketvalue') {
+                $ism_market_value = formatNumber($_item->value, 0);
             }
         }
 
@@ -730,6 +732,10 @@ class Liberty implements InsurerLibraryInterface
             $sum_insured = $min_agreed_value;
             $min_sum_insured = $min_agreed_value;
             $max_sum_insured = $max_agreed_value;
+        }
+
+        if($sum_insured == 0) {
+            $sum_insured = $min_sum_insured = $max_sum_insured = $ism_market_value;
         }
 
         // Get Make & Model
