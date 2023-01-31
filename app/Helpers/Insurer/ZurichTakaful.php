@@ -1294,6 +1294,7 @@ class ZurichTakaful implements InsurerLibraryInterface
                     'extra_cover_code' => '07',
                     'extra_cover_description' => $this->getExtraCoverDescription('07'),
                     'sum_insured' => 0,
+                    'premium' => 0,
                     'unit' => count($input->additional_driver)
                 ]));
             } else {
