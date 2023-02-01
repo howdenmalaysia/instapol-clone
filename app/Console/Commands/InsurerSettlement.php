@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
 
-class HowdenSettlement extends Command
+class InsurerSettlement extends Command
 {
     const DATE_FORMAT = 'Y-m-d';
 
