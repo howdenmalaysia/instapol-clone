@@ -31,7 +31,7 @@ class EGHLReportExport implements FromView, WithColumnFormatting, WithEvents, Sh
     public function columnFormats(): array
     {
         return [
-            'A' => 'RM #,##0.00_-',
+            'A' => '#,##0.00_-',
             'C' => NumberFormat::FORMAT_NUMBER
         ];
     }

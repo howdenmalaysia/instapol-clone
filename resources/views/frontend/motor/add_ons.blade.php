@@ -114,8 +114,12 @@
                                                         <div class="col-5 px-md-3 mb-3 ms-3">
                                                             <small>{{ $_extra_cover->option_list->description . ':' }}</small>
                                                             <select id="{{ 'sum-insured-' . $_extra_cover->extra_cover_code }}" class="option-list" data-select data-extra-cover-code="{{ $_extra_cover->extra_cover_code }}">
-                                                                @foreach ($_extra_cover->option_list->values as $option)
-                                                                    <option value="{{ $option }}" {{ $option === 1000 ? 'selected' : '' }}>{{ 'RM ' . $option }}</option>
+                                                                @foreach ($_extra_cover->option_list->values as $index => $option)
+                                                                    @if (is_string($option))
+                                                                        <option value="{{ $option }}" {{ $index === 0 ? 'selected' : ''}}>{{ $option }}</option>
+                                                                    @else
+                                                                        <option value="{{ $option }}" {{ $option === 1000 ? 'selected' : '' }}>{{ 'RM ' . $option }}</option>
+                                                                    @endif
                                                                 @endforeach
                                                             </select>
                                                         </div>
