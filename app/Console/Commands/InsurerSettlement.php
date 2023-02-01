@@ -86,7 +86,7 @@ class InsurerSettlement extends Command
             if(empty($records)) {
                 $message = 'No Eligible Records Found!';
 
-                Log::error("[Cron - Insurer Settleemnt] {$message}.");
+                Log::error("[Cron - Insurer Settlement] {$message}.");
 
                 CronJobs::create([
                     'description' => 'Send Settlement Report to Insurers',
