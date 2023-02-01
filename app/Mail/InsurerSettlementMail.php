@@ -31,7 +31,7 @@ class InsurerSettlementMail extends Mailable
      */
     public function build()
     {
-        $mail = $this->subject((app()->environment('local', 'development') ? '[Dev] ' : '') .  "[instaPol] Settlement Details for {$this->data['start_date']}")
+        $mail = $this->subject((app()->environment('local', 'development') ? '[Dev] ' : '') .  "[instaPol] Settlement Details for {$this->data['insurer_name']} {$this->data['start_date']}")
         ->view('backend.emails.insurer_settlement', $this->data);
 
         foreach($this->files as $file) {

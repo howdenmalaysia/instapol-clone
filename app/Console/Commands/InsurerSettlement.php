@@ -252,6 +252,7 @@ class InsurerSettlement extends Command
                 }
     
                 $data = [
+                    'insurer_name' => $product->insurance_company->name,
                     'start_date' => $start_date,
                     'total_commission' => $total_commission,
                     'total_eservice_fee' => $total_eservice_fee,
