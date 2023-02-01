@@ -286,11 +286,11 @@ class InsurerSettlement extends Command
         } catch (Exception $ex) {
             CronJobs::updateOrCreate([
                 'description' => 'Send Settlement Report to Insurers',
-                'param' => (object) [
+                'param' => json_encode([
                     'start_date' => $start_date,
                     'end_date' => $end_date,
                     'frequency' => $this->argument('frequency')
-                ]
+                ])
             ]);
 
             Log::error("[Cron - Insurer Settlement] An Error Encountered. {$ex->getMessage()}");
