@@ -134,6 +134,7 @@ class EGHLSettlement extends Command
             Excel::store(new EGHLReportExport($row_data), $filename);
     
             Mail::to(config('setting.settlement.eghl'))
+                ->bcc(config('setting.howden.it_dev_mail'))
                 ->send(new EGHLSettlementMail($filename, $start_date));
     
             CronJobs::create([

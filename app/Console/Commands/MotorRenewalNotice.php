@@ -88,6 +88,7 @@ class MotorRenewalNotice extends Command
 
                     Mail::to($_ins->holder->email)
                         ->cc([config('setting.howden.affinity_team_email'), config('setting.howden.email_cc_list')])
+                        ->bcc(config('setting.howden.it_dev_mail'))
                         ->send(new RenewalNoticeMail($data));
 
                     CronJobs::where('id', $log->id)

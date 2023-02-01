@@ -265,6 +265,7 @@ class HowdenSettlement extends Command
             ];
 
             Mail::to(config('setting.settlement.insurer'))
+                ->bcc(config('setting.howden.it_dev_mail'))
                 ->send(new InsurerSettlementMail($filenames, $data));
 
             Log::info("[Settlement - Howden Internal] {$rows} records processed.");
