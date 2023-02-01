@@ -68,4 +68,7 @@ class OptionList extends DataTransferObject
 
     /** @var int|null */
     public $increment;
+
+    /** @var string|null */
+    public $plan_type;
 }

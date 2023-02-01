@@ -2,6 +2,7 @@
 
 namespace App\Models\Motor;
 
+use App\Models\InsurancePremium;
 use App\Models\InsuranceRemark;
 use App\Models\Motor\InsuranceAddress;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -76,6 +77,11 @@ class Insurance extends Model
     public function remark()
     {
         return $this->hasMany(InsuranceRemark::class);
+    }
+
+    public function premium()
+    {
+        return $this->hasOne(InsurancePremium::class);
     }
 
     public static function findByInsuranceCode(string $insurance_code) : self

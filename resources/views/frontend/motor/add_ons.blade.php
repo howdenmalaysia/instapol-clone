@@ -51,7 +51,15 @@
                                             <div class="mb-2 extra-coverage">
                                                 <div class="row px-md-3">
                                                     <div class="col-1">
-                                                        <input type="checkbox" id="{{ 'checkbox-' . $_extra_cover->extra_cover_code }}" class="form-check-input extra-coverage-checkbox" name="extra_coverage[]" value="{{ $_extra_cover->extra_cover_code }}" {{ $_extra_cover->selected ? 'checked' : '' }} />
+                                                        <input
+                                                            type="checkbox"
+                                                            id="{{ 'checkbox-' . $_extra_cover->extra_cover_code }}"
+                                                            class="form-check-input extra-coverage-checkbox"
+                                                            name="extra_coverage[]"
+                                                            value="{{ $_extra_cover->extra_cover_code }}"
+                                                            {{ $_extra_cover->selected ? 'checked' : '' }}
+                                                            {{ $_extra_cover->readonly ? 'disabled' : '' }}
+                                                        />
                                                     </div>
                                                     <div class="col-8 d-flex justify-content-between">
                                                         <label for="{{ 'checkbox-' . $_extra_cover->extra_cover_code }}" id="{{ 'label-checkbox-' . $_extra_cover->extra_cover_code }}">{{ $_extra_cover->extra_cover_description }}</label>
@@ -106,8 +114,12 @@
                                                         <div class="col-5 px-md-3 mb-3 ms-3">
                                                             <small>{{ $_extra_cover->option_list->description . ':' }}</small>
                                                             <select id="{{ 'sum-insured-' . $_extra_cover->extra_cover_code }}" class="option-list" data-select data-extra-cover-code="{{ $_extra_cover->extra_cover_code }}">
-                                                                @foreach ($_extra_cover->option_list->values as $option)
-                                                                    <option value="{{ $option }}" {{ $option === 1000 ? 'selected' : '' }}>{{ 'RM ' . $option }}</option>
+                                                                @foreach ($_extra_cover->option_list->values as $index => $option)
+                                                                    @if (is_string($option))
+                                                                        <option value="{{ $option }}" {{ $index === 0 ? 'selected' : ''}}>{{ $option }}</option>
+                                                                    @else
+                                                                        <option value="{{ $option }}" {{ $option === 1000 ? 'selected' : '' }}>{{ 'RM ' . $option }}</option>
+                                                                    @endif
                                                                 @endforeach
                                                             </select>
                                                         </div>

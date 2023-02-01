@@ -475,6 +475,7 @@ class MotorController extends Controller
 
         Mail::to($insurance->holder->email_address)
             ->cc($cc_list)
+            ->bcc(config('setting.howden.it_dev_mail'))
             ->send(new PaymentReceipt($data));
 
         return view('frontend.motor.payment_success')

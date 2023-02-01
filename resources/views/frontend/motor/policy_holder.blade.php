@@ -68,7 +68,7 @@
                                 <div class="row mt-3">
                                     <label class="col-form-label col-12 col-sm-3">{{ __('frontend.fields.dob') }}</label>
                                     <div class="col-12 col-md-9">
-                                        <input type="text" id="policy-holder-dob" class="form-control" name="date_of_birth" value="{{ session('motor')->policy_holder->date_of_birth }}" disabled />
+                                        <input type="text" id="policy-holder-dob" class="form-control" name="date_of_birth" value="{{ session('motor')->policy_holder->date_of_birth ?? '-' }}" disabled />
                                     </div>
                                 </div>
                                 <div class="row mt-3">
@@ -78,6 +78,7 @@
                                             <option value=""></option>
                                             <option value="M" {{ session('motor')->policy_holder->gender === 'M' ? 'selected' : '' }}>{{ strtoupper(__('frontend.motor.compare_page.male')) }}</option>
                                             <option value="F" {{ session('motor')->policy_holder->gender === 'F' ? 'selected' : '' }}>{{ strtoupper(__('frontend.motor.compare_page.female')) }}</option>
+                                            <option value="O" {{ session('motor')->policy_holder->gender === 'O' ? 'selected' : '' }}>{{ strtoupper(__('frontend.motor.compare_page.company')) }}</option>
                                         </select>
                                     </div>
                                 </div>
