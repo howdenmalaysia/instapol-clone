@@ -55,12 +55,20 @@ class HowdenSettlement extends Command
         Log::info("[Cron - Insurer Settlement] Start Generating Reports.");
 
         $start_date = $end_date = Carbon::now()->format(self::DATE_FORMAT);
-        if($this->argument('start_date')) {
+        if(!empty($this->argument('start_date')) && !empty($this->argument('end_date'))) {
             $start_date = Carbon::parse($this->argument('start_date'))->format(self::DATE_FORMAT);
-        }
-
-        if($this->argument('end_date')) {
             $end_date = Carbon::parse($this->argument('end_date'))->format(self::DATE_FORMAT);
+        } else if(Carbon::now()->englishDayOfWeek === 'Wednesday') {
+            $start_date = Carbon::parse('last Friday')->startOfDay()->format(self::DATE_FORMAT); // Last Friday 00:00:00
+            $end_date = Carbon::now()->subDay()->endOfDay()->format(self::DATE_FORMAT); // Yesterday 23:59:59
+        } else if (Carbon::now()->englishDayOfWeek === 'Friday') {
+            $start_date = Carbon::parse('last Wednesday')->startOfDay()->format(self::DATE_FORMAT); // Last Wednesday 00:00:00
+            $end_date = Carbon::now()->subDay()->endOfDay()->format(self::DATE_FORMAT); // Yesterday 23:59:59
+        } else {
+            // Throw Error
+            $day = Carbon::now()->englishDayOfWeek;
+            Log::error("[Cron - eGHL Settlement] Shouldn't run settlement today, {$day}.");
+            return;
         }
 
         try {
