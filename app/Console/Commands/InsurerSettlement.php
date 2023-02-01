@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
 
-class HowdenSettlement extends Command
+class InsurerSettlement extends Command
 {
     const DATE_FORMAT = 'Y-m-d';
 
@@ -86,7 +86,7 @@ class HowdenSettlement extends Command
             if(empty($records)) {
                 $message = 'No Eligible Records Found!';
 
-                Log::error("[Cron - Insurer Settleemnt] {$message}.");
+                Log::error("[Cron - Insurer Settlement] {$message}.");
 
                 CronJobs::create([
                     'description' => 'Send Settlement Report to Insurers',
@@ -261,20 +261,22 @@ class HowdenSettlement extends Command
                     'net_transfer_amount_insurer' => $total_premium - $total_commission,
                     'net_transfer_amount' => $total_commission,
                     'total_outstanding' => $total_outstanding,
-                    'details_per_insurer' => [
+                    'details' => [[
                         $product->insurance_company->name,
                         $insurances->count(),
                         $insurer_net_transfer
-                    ]
+                    ]]
                 ];
     
-                Log::info("[Cron - Insurer Settlement] Sending Settlement Report to {$insurer_name} [{$product->insurance_company->email_to},{$product->insurance_company->email_cc}]");
+                Log::info("[Cron - Insurer Settlement] Sending Settlement Report to {$product->insurance_company->name} [{$product->insurance_company->email_to},{$product->insurance_company->email_cc}]");
     
-                Mail::to(config('setting.settlement.insurer'))
+                
+                Mail::to(explode(',', $product->insurance_company_email_to))
+                    ->cc(explode(',', $product->insurance_company->email_cc . ',' . config('setting.howden.affinity_team_email')))
                     ->bcc(config('setting.howden.it_dev_mail'))
                     ->send(new InsurerSettlementMail($filenames, $data));
     
-                Log::info("[Cron - Insurer Settlement] Report to {$insurer_name} sent successfully.");
+                Log::info("[Cron - Insurer Settlement] Report to {$product->insurance_company->name} sent successfully.");
             });
 
 
@@ -284,11 +286,11 @@ class HowdenSettlement extends Command
         } catch (Exception $ex) {
             CronJobs::updateOrCreate([
                 'description' => 'Send Settlement Report to Insurers',
-                'param' => (object) [
+                'param' => json_encode([
                     'start_date' => $start_date,
                     'end_date' => $end_date,
                     'frequency' => $this->argument('frequency')
-                ]
+                ])
             ]);
 
             Log::error("[Cron - Insurer Settlement] An Error Encountered. {$ex->getMessage()}");

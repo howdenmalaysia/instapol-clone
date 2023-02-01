@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Exports\InsurerReportExport;
-use App\Mail\InsurerSettlementMail;
+use App\Mail\HowdenSettlementMail;
 use App\Models\CronJobs;
 use App\Models\EGHLLog;
 use App\Models\Motor\Insurance;
@@ -26,7 +26,7 @@ class HowdenSettlement extends Command
      *
      * @var string
      */
-    protected $signature = 'settlement:insurers {start_date?} {end_date?} {frequency?}';
+    protected $signature = 'settlement:howden {start_date?} {end_date?} {frequency?}';
 
     /**
      * The console command description.
@@ -277,13 +277,13 @@ class HowdenSettlement extends Command
                 'net_transfer_amount_insurer' => $total_premium - $total_commission,
                 'net_transfer_amount' => $total_commission,
                 'total_outstanding' => $total_outstanding,
-                'details_per_insurer' => $details
+                'details' => $details
             ];
 
             Mail::to(explode(',', config('setting.settlement.howden.email_to')))
                 ->cc(explode(',', config('setting.settlement.howden.email_cc')))
                 ->bcc(config('setting.howden.it_dev_mail'))
-                ->send(new InsurerSettlementMail($filenames, $data));
+                ->send(new HowdenSettlementMail($filenames, $data));
 
             Log::info("[Cron - Howden Internal Settlement] {$rows} records processed. [{$start_date} to {$end_date}]");
 
@@ -291,11 +291,11 @@ class HowdenSettlement extends Command
         } catch (Exception $ex) {
             CronJobs::updateOrCreate([
                 'description' => 'Send Settlement Report to Insurers',
-                'param' => (object) [
+                'param' => json_encode([
                     'start_date' => $start_date,
                     'end_date' => $end_date,
                     'frequency' => $this->argument('frequency')
-                ]
+                ])
             ]);
 
             Log::error("[Cron - Howden Internal Settlement] An Error Encountered. {$ex->getMessage()}");
