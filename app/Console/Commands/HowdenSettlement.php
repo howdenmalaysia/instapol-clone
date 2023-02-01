@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Exports\InsurerReportExport;
-use App\Mail\InsurerSettlementMail;
+use App\Mail\HowdenSettlementMail;
 use App\Models\CronJobs;
 use App\Models\EGHLLog;
 use App\Models\Motor\Insurance;
@@ -283,7 +283,7 @@ class HowdenSettlement extends Command
             Mail::to(explode(',', config('setting.settlement.howden.email_to')))
                 ->cc(explode(',', config('setting.settlement.howden.email_cc')))
                 ->bcc(config('setting.howden.it_dev_mail'))
-                ->send(new InsurerSettlementMail($filenames, $data));
+                ->send(new HowdenSettlementMail($filenames, $data));
 
             Log::info("[Cron - Howden Internal Settlement] {$rows} records processed. [{$start_date} to {$end_date}]");
 
