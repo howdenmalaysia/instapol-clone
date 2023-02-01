@@ -64,6 +64,7 @@ return [
             'email_to' => 'luke.chai@my.howdengroup.com',
             'email_cc' => 'affinitydept@my.howdengroup.com,fazira.husin@my.howdengroup.com,rachel.lee@my.howdengroup.com,sitisuhaila.baharuddin@my.howdengroup.com',
         ],
-        'eghl' => empty(env('EGHL_SETTLEMENT')) ? [] : explode(',', env('EGHL_SETTLEMENT'))
+        'eghl' => empty(env('EGHL_SETTLEMENT')) ? [] : explode(',', env('EGHL_SETTLEMENT')),
+        'insurer' => empty(env('INSURER_SETTLEMENT')) ? [] : explode(',', env('INSURER_SETTLEMENT'))
     ]
 ];
