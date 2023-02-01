@@ -51,11 +51,11 @@ class MotorRenewalNotice extends Command
 
         $log = CronJobs::create([
             'description' => 'Send Motor Renewal Notice',
-            'param' => (object) [
+            'param' => json_encode([
                 'first' => $first,
                 'second' => $second,
                 'third' => $third
-            ]
+            ])
         ]);
 
         try {
