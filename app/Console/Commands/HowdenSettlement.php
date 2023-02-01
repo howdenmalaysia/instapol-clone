@@ -84,6 +84,10 @@ class HowdenSettlement extends Command
                 ->groupBy('product_id');
     
             if(empty($records)) {
+                $message = 'No Eligible Records Found!';
+
+                Log::error("[Cron - Howden Internal Settlement] {$message}");
+
                 CronJobs::create([
                     'description' => 'Send Settlement Report to Howden Internal',
                     'param' => json_encode([
@@ -91,8 +95,10 @@ class HowdenSettlement extends Command
                         'end_date' => $end_date
                     ]),
                     'status' => CronJobs::STATUS_FAILED,
-                    'error_message' => 'No Eligible Records Found!'
+                    'error_message' => $message
                 ]);
+
+                return;
             }
     
             $rows = $total_commission = $total_eservice_fee = $total_sst = $total_payment_gateway_charges = $total_premium = $total_outstanding = 0;

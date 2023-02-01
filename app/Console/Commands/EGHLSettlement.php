@@ -76,6 +76,10 @@ class EGHLSettlement extends Command
                 ->get();
     
             if(empty($records)) {
+                $message = 'No Eligible Records Found!';
+
+                Log::error("[Cron - eGHL Settlement] {$message}");
+
                 CronJobs::create([
                     'description' => 'Send Settlement Report to eGHL',
                     'param' => json_encode([
@@ -83,9 +87,10 @@ class EGHLSettlement extends Command
                         'end_date' => $end_date
                     ]),
                     'status' => CronJobs::STATUS_FAILED,
-                    'error_message' => 'No Eligible Records Found'
+                    'error_message' => $message
                 ]);
         
+                return;
             }
     
             $rows = 0;
