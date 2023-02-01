@@ -7,7 +7,7 @@
             <adddrv xmlns="urn:IssueCoverNote">
             @if (!empty($additional_driver))
                 @foreach ($additional_driver as $additional_drivers)
-                    <item xmlns="https://d1.financial-link.com.my/AGS/services/IssueCoverNote">
+                    <item xmlns="https://www-400.aig.com.my/AGS/services/IssueCoverNote">
                         <drvage xmlns="urn:IssueCoverNote">{{ $additional_drivers->drvage }}</drvage>
                         <drvdob xmlns="urn:IssueCoverNote">{{ $additional_drivers->drvdob }}</drvdob>
                         <drvgender xmlns="urn:IssueCoverNote">{{ $additional_drivers->drvgender }}</drvgender>
@@ -32,7 +32,7 @@
             <arrExtraParam xmlns="urn:IssueCoverNote">            
             @if (!empty($item))
                 @foreach ($item as $items)
-                    <item xmlns="https://d1.financial-link.com.my/AGS/services/IssueCoverNote">
+                    <item xmlns="https://www-400.aig.com.my/AGS/services/IssueCoverNote">
                         <paramIndicator xmlns="urn:IssueCoverNote">{{ $items->paramIndicator }}</paramIndicator>
                         <paramRemark xmlns="urn:IssueCoverNote">{{ $items->paramRemark }}</paramRemark>
                         <paramValue xmlns="urn:IssueCoverNote">{{ $items->paramValue }}</paramValue>
@@ -71,7 +71,7 @@
             <extracov xmlns="urn:IssueCoverNote">
             @if (!empty($formatted_extra_cover))
                 @foreach ($formatted_extra_cover as $extra_cover)
-                    <item xmlns="https://d1.financial-link.com.my/AGS/services/IssueCoverNote">
+                    <item xmlns="https://www-400.aig.com.my/AGS/services/IssueCoverNote">
                         <bencode xmlns="urn:IssueCoverNote">{{ $extra_cover->bencode }}</bencode>
                         <bendesc xmlns="urn:IssueCoverNote">{{ $extra_cover->bendesc }}</bendesc>
                         <benpremium xmlns="urn:IssueCoverNote">{{ $extra_cover->benpremium }}</benpremium>

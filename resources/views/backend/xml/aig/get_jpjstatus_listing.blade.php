@@ -5,7 +5,7 @@
             <arrExtraParam xmlns="urn:GetJPJStatusListing">
             @if (!empty($item))
                 @foreach ($item as $items)
-                <item xmlns="https://d1.financial-link.com.my/AGS/services/GetJPJStatusListing">
+                <item xmlns="https://www-400.aig.com.my/AGS/services/GetJPJStatusListing">
                     <paramIndicator xmlns="urn:GetJPJStatusListing">{{ $paramIndicator }}</paramIndicator>
                     <paramRemark xmlns="urn:GetJPJStatusListing">{{ $paramRemark }}</paramRemark>
                     <paramValue xmlns="urn:GetJPJStatusListing">{{ $paramValue }}</paramValue>

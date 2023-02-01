@@ -7,7 +7,7 @@
             <adddrv xmlns="urn:SaveReferredCase">
             @if (!empty($additional_driver))
                 @foreach ($additional_driver as $additional_drivers)
-                <item xmlns="https://d1.financial-link.com.my/AGS/services/SaveReferredCase">
+                <item xmlns="https://www-400.aig.com.my/AGS/services/SaveReferredCase">
                     <drvage xmlns="urn:SaveReferredCase">{{ $drvage }}</drvage>
                     <drvdob xmlns="urn:SaveReferredCase">{{ $drvdob }}</drvdob>
                     <drvgender xmlns="urn:SaveReferredCase">{{ $drvgender }}</drvgender>
@@ -32,7 +32,7 @@
             <arrExtraParam xmlns="urn:SaveReferredCase">
             @if (!empty($item))
                 @foreach ($item as $items)
-                <item xmlns="https://d1.financial-link.com.my/AGS/services/SaveReferredCase">
+                <item xmlns="https://www-400.aig.com.my/AGS/services/SaveReferredCase">
                     <paramIndicator xmlns="urn:SaveReferredCase">{{ $paramIndicator }}</paramIndicator>
                     <paramRemark xmlns="urn:SaveReferredCase">{{ $paramRemark }}</paramRemark>
                     <paramValue xmlns="urn:SaveReferredCase">{{ $paramValue }}</paramValue>
@@ -67,7 +67,7 @@
             <extracov xmlns="urn:SaveReferredCase">
             @if (!empty($formatted_extra_cover))
                 @foreach ($formatted_extra_cover as $extra_cover)
-                <item xmlns="https://d1.financial-link.com.my/AGS/services/SaveReferredCase">
+                <item xmlns="https://www-400.aig.com.my/AGS/services/SaveReferredCase">
                     <bencode xmlns="urn:SaveReferredCase">{{ $bencode }}</bencode>
                     <bendesc xmlns="urn:SaveReferredCase">{{ $bendesc }}</bendesc>
                     <benpremium xmlns="urn:SaveReferredCase">{{ $benpremium }}</benpremium>

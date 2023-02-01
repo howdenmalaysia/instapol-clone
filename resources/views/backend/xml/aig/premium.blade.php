@@ -4,7 +4,7 @@
             <addbendata xmlns="urn:GetPremium">
             @if (!empty($extra_benefit))
                 @foreach ($extra_benefit as $benefits)
-                <item xmlns="https://d1.financial-link.com.my/AGS/services/GetPremium">
+                <item xmlns="https://www-400.aig.com.my/AGS/services/GetPremium">
                     <bencode xmlns="urn:GetPremium">{{ $benefits->extra_cover_code }}</bencode>
                     <bendesc xmlns="urn:GetPremium">{{ $benefits->extra_cover_description }}</bendesc>
                     <benpremium xmlns="urn:GetPremium">{{ $benefits->premium }}</benpremium>
@@ -21,7 +21,7 @@
             <adddrvdata xmlns="urn:GetPremium">
             @if (!empty($add_driver))
                 @foreach ($add_driver as $drivers)
-                <item xmlns="https://d1.financial-link.com.my/AGS/services/GetPremium">
+                <item xmlns="https://www-400.aig.com.my/AGS/services/GetPremium">
                     <drvage xmlns="urn:GetPremium">{{ $drivers->age }}</drvage>
                     <drvdob xmlns="urn:GetPremium">{{ $drivers->dob }}</drvdob>
                     <drvexp xmlns="urn:GetPremium">{{ $drivers->exp }}</drvexp>
@@ -65,7 +65,7 @@
             <extraParam xmlns="urn:GetPremium">
             @if (!empty($item))
                 @foreach ($item as $items)
-                  <item xmlns="https://d1.financial-link.com.my/AGS/services/GetPremium">
+                  <item xmlns="https://www-400.aig.com.my/AGS/services/GetPremium">
                     <paramIndicator xmlns="urn:GetPremium">{{ $items->paramIndicator }}</paramIndicator>
                     <paramRemark xmlns="urn:GetPremium">{{ $items->paramRemark }}</paramRemark>
                     <paramValue xmlns="urn:GetPremium">{{ $items->paramValue }}</paramValue>

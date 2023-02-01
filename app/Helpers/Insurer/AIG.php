@@ -25,8 +25,8 @@ class AIG implements InsurerLibraryInterface
     private string $agent_code;
     private string $password;
 
-    private const SOAP_ACTION_DOMAIN = 'https://gtws2.zurich.com.my/ziapps/zurichinsurance/services';
-    private const EXTRA_COVERAGE_LIST = ['25','57','89'];
+    private const EXTRA_COVERAGE_LIST = ['00080','00112','00091B','00990B','06033A','99999A','21','22','23',
+    '00136','01032','01038','00042','00137','00125','01037','01100','00041','01036','01040'];
     private const MIN_SUM_INSURED = 11000;
     private const MAX_SUM_INSURED = 600000;
     private const ADJUSTMENT_RATE_UP = 10;
@@ -111,6 +111,8 @@ class AIG implements InsurerLibraryInterface
         return (object) [
             'status' => true,
             'usecode' => $vix->response->vehusecode,
+            'vehtypecode' => $vix->response->vehtypecode,
+            'covercode' => $vix->response->covercode,
             'response' => new VIXNCDResponse([
                 'body_type_code' => null,
                 'body_type_description' => null,
@@ -120,9 +122,9 @@ class AIG implements InsurerLibraryInterface
                 'engine_number' => (string) $vix->response->engineno,
                 'expiry_date' => Carbon::parse($expiry_date)->format('d M Y'),
                 'inception_date' => Carbon::parse($inception_date)->format('d M Y'),
-                'make' => null,
+                'make' => $input->vehicle->make,
                 'make_code' => intval($vix->response->ismmakecode),
-                'model' => null,
+                'model' => $input->vehicle->model,
                 'model_code' => intval($vix->response->ismmodelcode),
                 'manufacture_year' => intval($vix->response->makeyear),
                 'max_sum_insured' => roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_UP, true, self::MAX_SUM_INSURED),
@@ -269,7 +271,10 @@ class AIG implements InsurerLibraryInterface
                     'engine_number' => $vehicle_vix->response->engine_number,
                     'seating_capacity' => $vehicle_vix->response->seating_capacity,
                     'vehicle_use_code' => (string)$vehicle_vix->usecode,
-                    'tariff_premium' => '',
+                    'vehtypecode' => (string)$vehicle_vix->vehtypecode,
+                    'covercode' => (string)$vehicle_vix->covercode,
+                    'make_code' => $vehicle_vix->response->make_code,
+                    'model_code' => $vehicle_vix->response->model_code,
                 ],
             ]);
             $data = (object) [
@@ -277,7 +282,6 @@ class AIG implements InsurerLibraryInterface
                 'vehicle' => $vehicle,
             ];
             $premium = $this->getPremium($data);
-
             $excess_amount = formatNumber($premium->response->excess);
             $ncd_amount = formatNumber($premium->response->ncd_amount);
             $basic_premium = formatNumber($premium->response->gross_premium + $ncd_amount);
@@ -303,33 +307,109 @@ class AIG implements InsurerLibraryInterface
                 $sum_insured_amount = 0;
                 
                 switch($_extra_cover_code) { 
-                    case '25': {
-                        $price = ($vehicle_vix->response->sum_insured / 10) * 3;
-                        $sum_insured_amount = $price;
-                        break;
-                    }
-                    case '57': {
-                        $price = ($vehicle_vix->response->sum_insured / 10) * 3;
-                        $sum_insured_amount = $price;
-                        break;
-                    }
-                    case '89': {
-                        $extra_cover->extra_cover_name = 'Windscreen or Windows';
-
-                        // Options List for Windscreen
+                    case '00136': { 
                         $option_list = new OptionList([
                             'name' => 'sum_insured',
-                            'description' => 'Sum Insured Amount',
-                            'values' => generateExtraCoverSumInsured(500, 10000, 1000),
+                            'description' => 'Plan Type',
+                            'values' => ['Plan A', 'Plan B', 'Plan C'],
                             'any_value' => true,
-                            'increment' => 100
+                            'increment' => null
                         ]);
 
                         $extra_cover->option_list = $option_list;
 
-                        // Default to RM1,000
-                        $sum_insured_amount = $option_list->values[1];
+                        // Default to Plan A
+                        $sum_insured_amount = $option_list->values[0];
+                        break;
+                    }
+                    case '01032': { 
+                        $option_list = new OptionList([
+                            'name' => 'sum_insured',
+                            'description' => 'Plan Type',
+                            'values' => ['Plan A', 'Plan B', 'Plan C'],
+                            'any_value' => true,
+                            'increment' => null
+                        ]);
 
+                        $extra_cover->option_list = $option_list;
+
+                        // Default to Plan A
+                        $sum_insured_amount = $option_list->values[0];
+                        break;
+                    }
+                    case '01038': { 
+                        $option_list = new OptionList([
+                            'name' => 'sum_insured',
+                            'description' => 'Plan Type',
+                            'values' => ['Plan A', 'Plan B'],
+                            'any_value' => true,
+                            'increment' => null
+                        ]);
+
+                        $extra_cover->option_list = $option_list;
+
+                        // Default to Plan A
+                        $sum_insured_amount = $option_list->values[0];
+                        break;
+                    }
+                    case '00125': { 
+                        $option_list = new OptionList([
+                            'name' => 'sum_insured',
+                            'description' => 'Plan Type',
+                            'values' => ['Plan A', 'Plan B'],
+                            'any_value' => true,
+                            'increment' => null
+                        ]);
+
+                        $extra_cover->option_list = $option_list;
+
+                        // Default to Plan A
+                        $sum_insured_amount = $option_list->values[0];
+                        break;
+                    }
+                    case '01037': { 
+                        $option_list = new OptionList([
+                            'name' => 'sum_insured',
+                            'description' => 'Plan Type',
+                            'values' => ['Plan A', 'Plan B', 'Plan C'],
+                            'any_value' => true,
+                            'increment' => null
+                        ]);
+
+                        $extra_cover->option_list = $option_list;
+
+                        // Default to Plan A
+                        $sum_insured_amount = $option_list->values[0];
+                        break;
+                    }
+                    case '01036': { 
+                        $option_list = new OptionList([
+                            'name' => 'sum_insured',
+                            'description' => 'Plan Type',
+                            'values' => ['Plan A', 'Plan B'],
+                            'any_value' => true,
+                            'increment' => null
+                        ]);
+
+                        $extra_cover->option_list = $option_list;
+
+                        // Default to Plan A
+                        $sum_insured_amount = $option_list->values[0];
+                        break;
+                    }
+                    case '01040': { 
+                        $option_list = new OptionList([
+                            'name' => 'sum_insured',
+                            'description' => 'Plan Type',
+                            'values' => ['Plan A', 'Plan B'],
+                            'any_value' => true,
+                            'increment' => null
+                        ]);
+
+                        $extra_cover->option_list = $option_list;
+
+                        // Default to Plan A
+                        $sum_insured_amount = $option_list->values[0];
                         break;
                     }
                 }
@@ -343,6 +423,24 @@ class AIG implements InsurerLibraryInterface
             // Include Extra Covers to Get Premium
             $input->extra_cover = $extra_cover_list;
         }
+        // Add in Additional Named Driver if applicable
+        if (isset($input->additional_driver)) {
+            if (count($input->additional_driver) > 0 && array_search('07', array_column($input->extra_cover, 'extra_cover_code')) == false) {
+                array_push($input->extra_cover, new ExtraCover([
+                    'extra_cover_code' => '07',
+                    'extra_cover_description' => 'Named Persons',
+                    'sum_insured' => 0,
+                    'premium' => 0,
+                    'unit' => count($input->additional_driver)
+                ]));
+            } else {
+                $index = array_search('07', array_column($input->extra_cover, 'extra_cover_code'));
+
+                if(!empty($index)) {
+                    $input->extra_cover[$index]->unit = count($input->additional_driver);
+                }
+            }
+        }
         $data = (object) [
             'input' => $input,
             'vehicle' => $vehicle,
@@ -352,22 +450,31 @@ class AIG implements InsurerLibraryInterface
         if (!$premium->status) {
             return $this->abort($premium->response);
         }
-
-        $new_extracover_list = [];
+        $new_extracover_list = [];dd($premium->response->extra_benefit);
         if(isset($premium->response->extra_benefit->item)) {
             foreach($input->extra_cover as $extra_cover) {
                 foreach($premium->response->extra_benefit->item as $item) {
+                    if($item->bencode != '00091B' || $item->bencode != '00990B' || $item->bencode != '06033A' || $item->bencode != '99999A'){
+                        if(strlen($item->bencode) > 5){
+                            $item->bencode = substr($item->bencode, 0, 5);
+                        }
+                    }
                     if((string) $item->bencode === $extra_cover->extra_cover_code) {
-                            $extra_cover->premium = formatNumber($item->benpremium);
-                            $total_benefit_amount += floatval($item->benpremium);
-                            $extra_cover->selected = floatval($item->benpremium) == 0;
+                        $extra_cover->premium = formatNumber($item->benpremium);
+                        $total_benefit_amount += floatval($item->benpremium);
+                        $extra_cover->selected = floatval($item->benpremium) == 0;
 
+                        if(isset($extra_cover->option_list->description) && $extra_cover->option_list->description == "Plan Type"){
+                            $extra_cover->sum_insured = ['Plan A', 'Plan B', 'Plan C'];
+                        }
+                        else{
                             if(!empty($extra->sumInsured)) {
                                 $extra_cover->sum_insured = formatNumber((float) $item->suminsured);
                             }
-                            if($extra_cover->premium > 0){
-                                array_push($new_extracover_list, $extra_cover);
-                            }
+                        }
+                        if($extra_cover->premium > 0){
+                            array_push($new_extracover_list, $extra_cover);
+                        }
                     }
                 }
             }
@@ -423,92 +530,84 @@ class AIG implements InsurerLibraryInterface
         $extra_cover_name = '';
 
         switch($extra_cover_code) {
-            case '01': { 
+            case '00080': { 
                 $extra_cover_name = 'All Drivers';
                 break;
             }
-            case '02': { 
+            case '00112': { 
+                $extra_cover_name = 'Windscreen';
+                break;
+            }
+            case '00091B': { 
                 $extra_cover_name = 'Legal Liability to Passengers';
                 break;
             }
-            case '03': { 
-                $extra_cover_name = 'All Riders';
+            case '00990B': { 
+                $extra_cover_name = 'Legal Liability of Passengers for Acts of Negligence';
                 break;
             }
-            case '06': { 
-                $extra_cover_name = 'Tuition';
+            case '06033A': { 
+                $extra_cover_name = 'Strike Riot Civil Commotion';
                 break;
             }
-            case '07': { 
-                $extra_cover_name = 'Additional Drivers';
+            case '99999A': { 
+                $extra_cover_name = 'Special Perils';
                 break;
             }
-            case '101': { 
-                $extra_cover_name = 'Extension of Kindom of Thailand';
-                break;
-            }
-            case '103': { 
-                $extra_cover_name = 'Malicious Damage';
-                break;
-            }
-            case '108': { 
-                $extra_cover_name = 'Passenger Liability Cover';
-                break;
-            }
-            case '109': { 
-                $extra_cover_name = 'Ferry Transit To and/or Sabah And The Federal';
-                break;
-            }
-            case '111': { 
-                $extra_cover_name = 'Current Year NCD Relief (Comp Private Car)';
-                break;
-            }
-            case '112': { 
-                $extra_cover_name = 'Cart';
-                break;
-            }
-            case '19': { 
-                $extra_cover_name = 'Passenger Risk';
+            case '21': { 
+                $extra_cover_name = 'Smart Auto - Supreme';
                 break;
             }
             case '22': { 
-                $extra_cover_name = 'Caravan / Luggage / Trailers (Private Car Only)';
+                $extra_cover_name = 'Smart Auto - Saver';
                 break;
             }
-            case '25': { 
-                $extra_cover_name = 'Strike Riot & Civil Commotion';
+            case '23': { 
+                $extra_cover_name = 'Smart Auto - Starter';
                 break;
             }
-            case '57': { 
-                $extra_cover_name = 'Inclusion Of Special Perils';
+            case '00136': { 
+                $extra_cover_name = 'Cash Compensation due to Total Loss/Natural Perils';
                 break;
             }
-            case '72': { 
-                $extra_cover_name = 'Legal Liability Of Passengers For Negligent Acts';
+            case '01032': { 
+                $extra_cover_name = 'Daily Cash Allowance';
                 break;
             }
-            case '89': { 
-                $extra_cover_name = 'Breakage Of Glass In WindScreen, Window Or Sunroof';
+            case '01038': { 
+                $extra_cover_name = 'Waiver of Betterment';
                 break;
             }
-            case '97': { 
-                $extra_cover_name = 'Vehicle Accessories Endorsement';
+            case '00042': { 
+                $extra_cover_name = 'Tyres/Rims Repair/Replacement';
                 break;
             }
-            case '200': { 
-                $extra_cover_name = 'PA Basic';
+            case '00137': { 
+                $extra_cover_name = 'Car Loan Support';
                 break;
             }
-            case '201': { 
-                $extra_cover_name = 'Temporary Courtesy Car';
-                break;
-            }
-            case '202': { 
-                $extra_cover_name = 'Towing And Cleaning Due To Water Damage';
-                break;
-            }
-            case '203': { 
+            case '00125': { 
                 $extra_cover_name = 'Key Replacement';
+                break;
+            }
+            case '01037': { 
+                $extra_cover_name = 'Total Car Body Paint';
+                break;
+            }
+            case '01100': { 
+                $extra_cover_name = 'Vehicle Break-in';
+                break;
+            }
+            case '00041': { 
+                $extra_cover_name = 'Transportation Fare';
+                break;
+            }
+            case '01036': { 
+                $extra_cover_name = 'Personal Accident and Passanger Protection';
+                break;
+            }
+            case '01040': { 
+                $extra_cover_name = 'Passenger Protection';
                 break;
             }
         }
@@ -607,44 +706,59 @@ class AIG implements InsurerLibraryInterface
     private function getPremium(object $input) : ResponseData
     {
         $path = 'GetPremium';
-        // $request_id = Str::uuid();
         $request_id = 'D112';
         $effective_time = '00:00:01';
         if(Carbon::parse($input->vehicle->inception_date)->lessThan(Carbon::today())) {
             $effective_time = date('H:i:s', strtotime('now'));
         }
-
+        $occupation = '820';
+        if($input->input->occupation != '' || $input->input->occupation != null){
+            $occupation = $input->input->occupation;
+        }
         // Format list additional driver
+        $additional_drivers = [];
+        $index = 1;
         if(isset($input->input->additional_driver)) {
             foreach ($input->input->additional_driver as $additional_driver) {
-                $additional_driver->age = getAgeFromIC($additional_driver->id_number);
-                $additional_driver->date_of_birth = formatDateFromIC($additional_driver->id_number);
-                $additional_driver->gender = getGenderFromIC($additional_driver->id_number);
-                $additional_driver->driving_exp = $additional_driver->age - 18 < 0 ? 0 : $additional_driver->age - 18;
+                if($additional_driver->id_number != '' || $additional_driver->id_number != null){
+                    $age = getAgeFromIC($additional_driver->id_number);
+                    array_push($additional_drivers, (object) [
+                        'age' => $age,
+                        'dob' => formatDateFromIC($additional_driver->id_number),
+                        'gender' => getGenderFromIC($additional_driver->id_number),
+                        'exp' => $age - 18 < 0 ? 0 : $age - 18,
+                        'marital' => '',
+                        'occup' => '',
+                        'rel' => $additional_driver->relationship,
+                        'icno' => $additional_driver->id_number,
+                        'index' => $index,
+                        'name' => $additional_driver->name,
+                        'oicno' => '',
+                    ]);
+                    $index++;
+                }
             }
         }
-
         // Format Extra Cover Code
         $formatted_extra_cover = [];
         if(isset($input->input->extra_cover)) {
             foreach ($input->input->extra_cover as $extra_cover) {
                 $extra_cover_code = $extra_cover->extra_cover_code;
-                $extra_cover->extra_cover_description = $this->getExtraBenefitDescription($extra_cover_code);
-
-                if($extra_cover->extra_cover_code == '01') {
-                    $extra_cover->sum_insured = 50;
-                } else if($extra_cover->extra_cover_code == '02') {
-                    $extra_cover->sum_insured = ($input->vehicle->extra_attribute->tariff_premium/100)*25;
-                } else if($extra_cover->extra_cover_code == '72') {
-                    $extra_cover->sum_insured = 7.50;
-                } else if($extra_cover->extra_cover_code == '57' || $extra_cover->extra_cover_code == '25') {
-                    $extra_cover->sum_insured = $input->vehicle->sum_insured;
+                $extra_cover->extra_cover_description = $extra_cover->extra_cover_description;
+                if($extra_cover->sum_insured == 'Plan A'){
+                    $extra_cover_code = $extra_cover_code . 'A';
+                }
+                else if($extra_cover->sum_insured == 'Plan B'){
+                    $extra_cover_code = $extra_cover_code . 'B';
+                }
+                else if($extra_cover->sum_insured == 'Plan C' ){
+                    $extra_cover_code = $extra_cover_code . 'C';
                 }
 
                 array_push($formatted_extra_cover, (object) [
                     'extra_cover_code' => $extra_cover_code,
                     'extra_cover_description' => $extra_cover->extra_cover_description,
-                    'sum_insured' => $extra_cover->sum_insured ?? 0,
+                    'sum_insured' => 0,
                     'unit' => $extra_cover->unit ?? 0,
                     'premium' => 0,
                     'commperc' => 0,
@@ -656,7 +770,7 @@ class AIG implements InsurerLibraryInterface
         }
 
         $body_type = $this->getBodyTypeDetails($input->input->vehicle_body_type ?? '');
-        
+
         $dobs = str_split($input->input->id_number, 2);
         $year = intval($dobs[0]);
 		if ($year >= 10) {
@@ -689,11 +803,11 @@ class AIG implements InsurerLibraryInterface
             'channel' => 'TIB',
             'chassisno' => $input->vehicle->extra_attribute->chassis_number,
             'claimamt' => '0',
-            'cncondition' => 'u',
-            'commiperc' => 10,
+            'cncondition' => 'n',
+            'commiperc' => 0,
             'compcode' => '71',
             'country' => '',
-            'covercode' => '01',
+            'covercode' => $input->vehicle->extra_attribute->covercode,
             'discount' => 'NO',
             'discountperc' => 0,
             'driveexp' => getAgeFromIC($input->input->id_number) - 18,
@@ -711,21 +825,21 @@ class AIG implements InsurerLibraryInterface
             'gstregdate' => '',
             'gstregdateend' => '',
             'gstregno' => '',
-            'hpcode' => '001319',
+            'hpcode' => '',
             'hphoneno' => '',
             'lessor' => '',
-            'loadingamt' => '684.45',
-            'loadingperc' => '30',
-            'makecodemajor' => '33',
-            'makecodeminor' => '12',
+            'loadingamt' => '0',
+            'loadingperc' => '0',
+            'makecodemajor' => $input->vehicle->extra_attribute->make_code,
+            'makecodeminor' => $input->vehicle->extra_attribute->model_code,
             'makeyear' => $input->vehicle->manufacture_year,
             'maritalstatus' => $input->input->marital_status,
             'mtcycrider' => 'S',
             'name' => $input->input->name ?? config('app.name'),
             'ncdamt' => 0,
             'ncdperc' => $input->vehicle->ncd_percentage,
-            'newic' => $input->input->id_number, //810323-14-5146
-            'occupmajor' => '11',
+            'newic' => $input->input->id_number,
+            'occupmajor' => $occupation,
             'oldic' => '',
             'ownershiptype' => $input->input->ownership_type ?? 'I',
             'passportno' => '',
@@ -735,7 +849,7 @@ class AIG implements InsurerLibraryInterface
             'preinsname' => '',
             'preinsncd' => 0.00,
             'preinspolno' => '',
-            'preinsregno' => 'STG4567',
+            'preinsregno' => '',
             'prepoleffdate' => '',
             'prepolexpdate' => '',
             'purchasedate' => '',
@@ -743,7 +857,7 @@ class AIG implements InsurerLibraryInterface
             'purpose' => self::PURPOSE,
             'quoteno' => '',
             'region' => strtoupper(substr($input->input->region, 0, 1)),
-            'regno' => 'STG4567',
+            'regno' => $input->input->vehicle_number,
             'renewno' => '',
             'reqdatetime' => '',
             'requestid' => 'D112',
@@ -751,22 +865,22 @@ class AIG implements InsurerLibraryInterface
             'seatcapacity' => $input->input->vehicle->extra_attribute->seating_capacity,
             'signature' => $this->generateSignature('D112'),
             'stampduty' => 10,
-            'statecode' => '017',
+            'statecode' => $this->getStateCode($input->input->state),
             'suminsured' => $input->vehicle->sum_insured,
             'theftclaim' => 0,
             'thirdclaim' => 0,
             'towndesc' => $this->getStateName($input->input->state),
             'trailerno' => '',
             'usecode' => $input->vehicle->extra_attribute->vehicle_use_code,
-            'vehbody' => 'SEDAN',
-            'vehbodycode' => 27,
+            'vehbody' => $body_type->description ?? '',
+            'vehbodycode' => $body_type->code ?? '',
             'vehcapacity' => $input->vehicle->engine_capacity,
             'vehcapacitycode' => self::VEHICLE_CAPACITY_CODE,
             'vehclaim' => 0,
-            'vehtypecode' => 'V010010',
+            'vehtypecode' => $input->vehicle->extra_attribute->vehtypecode,
             'winclaim' => 0,
             'extra_benefit' => $formatted_extra_cover,
-            'add_driver' => $input->input->additional_driver ?? [],
+            'add_driver' => $additional_drivers ?? [],
             'item' => $item,
         ];
         // Generate XML from view
@@ -786,12 +900,12 @@ class AIG implements InsurerLibraryInterface
         }
 
         // 2. Check Refer Risks
-        $refer_code = (string) $result->response->reqdataReturn->refercode;
-        if($refer_code != '') {
-            $message = (string) $result->response->reqdataReturn->referdesc;
+        // $refer_code = (string) $result->response->reqdataReturn->refercode;
+        // if($refer_code != '') {
+        //     $message = (string) $result->response->reqdataReturn->referdesc;
 
-            return $this->abort(__('api.referred_risk', ['company' => $this->company_name, 'reason' => str_replace('^', ', ', $message)]), $refer_code);
-        }
+        //     return $this->abort(__('api.referred_risk', ['company' => $this->company_name, 'reason' => str_replace('^', ', ', $message)]), $refer_code);
+        // }
 
         $response = (object) [
             'act_premium' => formatNumber((float) $result->response->reqdataReturn->actprem),
@@ -867,57 +981,53 @@ class AIG implements InsurerLibraryInterface
         $path = 'IssueCoverNote';
         // Format list additional driver
         $additional_driver = [];
-        $index = 1;
-        if(isset($input->additional_driver)) {
-            foreach ($input->additional_driver as $additional_driver) {
-                array_push($additional_driver, (object)[
-                    'drvage' => intval($additional_driver->age - 18 < 0 ? 0 : $additional_driver->age - 18),
-                    'drvdob' => formatDateFromIC($additional_driver->id_number),
-                    'drvgender' => getGenderFromIC($additional_driver->id_number),
-                    'drvmarital' => $input->marital_status,
-                    'drvoccup' => $input->occupation,
-                    'drvrel' => $input->relation ?? 'I',
-                    'icnumber' => getAgeFromIC($additional_driver->id_number),
-                    'index' => intval($index),
-                    'name' => $input->name,
-                    'oicnumber' => '',
-                ]);
-                $index++;
+        $index = 1;if(isset($input->input->additional_driver)) {
+            foreach ($input->input->additional_driver as $additional_driver) {
+                if($additional_driver->id_number != '' || $additional_driver->id_number != null){
+                    $age = getAgeFromIC($additional_driver->id_number);
+                    array_push($additional_drivers, (object) [
+                        'age' => $age,
+                        'dob' => formatDateFromIC($additional_driver->id_number),
+                        'gender' => getGenderFromIC($additional_driver->id_number),
+                        'exp' => $age - 18 < 0 ? 0 : $age - 18,
+                        'marital' => '',
+                        'occup' => '',
+                        'rel' => $additional_driver->relationship,
+                        'icno' => $additional_driver->id_number,
+                        'index' => $index,
+                        'name' => $additional_driver->name,
+                        'oicno' => '',
+                    ]);
+                    $index++;
+                }
             }
         }
         // Format Extra Cover Code
         $formatted_extra_cover = [];
-        if(isset($input->extra_cover)) {
-            foreach ($input->extra_cover as $extra_cover) {
+        if(isset($input->input->extra_cover)) {
+            foreach ($input->input->extra_cover as $extra_cover) {
                 $extra_cover_code = $extra_cover->extra_cover_code;
-                $extra_cover->extra_cover_description = $this->getExtraBenefitDescription($extra_cover_code);
-
-                if($extra_cover->extra_cover_code == '40') {
-                    $extra_cover_code = $extra_cover->extra_cover_code . $this->getLltpCode($input->vehicle->engine_capacity);
-                } else if($extra_cover->extra_cover_code == '112') {
-                    $extra_cover_code = 'CART';
-                    $extra_cover->sum_insured = $extra_cover->cart_amount;
-                    $extra_cover->unit = $extra_cover->cart_day;
-                } else if($extra_cover->extra_cover_code == 'EZ100A') {
-                    $extra_cover->sum_insured = 10000;
-                } else if($extra_cover->extra_cover_code == 'EZ103') {
-                    $extra_cover->sum_insured = 1500;
-                } else if($extra_cover->extra_cover_code == 'EZ106') {
-                    $extra_cover->sum_insured = 500;
-                } else if($extra_cover->extra_cover_code == 'EZ109') {
-                    $extra_cover->sum_insured = 300;
-                } else if($extra_cover->extra_cover_code == '57' || $extra_cover->extra_cover_code == '25') {
-                    $extra_cover->sum_insured = $input->vehicle->sum_insured;
+                $extra_cover->extra_cover_description = $extra_cover->extra_cover_description;
+                if($extra_cover->sum_insured == 'Plan A'){
+                    $extra_cover_code = $extra_cover_code . 'A';
+                }
+                else if($extra_cover->sum_insured == 'Plan B'){
+                    $extra_cover_code = $extra_cover_code . 'B';
+                }
+                else if($extra_cover->sum_insured == 'Plan C' ){
+                    $extra_cover_code = $extra_cover_code . 'C';
                 }
 
                 array_push($formatted_extra_cover, (object) [
-                    'bencode' => $extra_cover_code,
-                    'bendesc' => $extra_cover->extra_cover_description,
-                    'suminsured' => $extra_cover->sum_insured ?? 0,
+                    'extra_cover_code' => $extra_cover_code,
+                    'extra_cover_description' => $extra_cover->extra_cover_description,
+                    'sum_insured' => 0,
                     'unit' => $extra_cover->unit ?? 0,
-                    'benpremium' => 0,
-                    'cewcommperc' => '',
-                    'cewstampduty' => '',
+                    'premium' => 0,
+                    'commperc' => 0,
+                    'stampduty' => 0,
+                    'name' => '',
+                    'newic' => $input->input->id_number,
                 ]);
             }
         }
@@ -941,11 +1051,15 @@ class AIG implements InsurerLibraryInterface
         if(Carbon::parse($input->vehicle->inception_date)->lessThan(Carbon::today())) {
             $effective_time = date('H:i:s', strtotime('now'));
         }
+        $occupation = '820';
+        if($input->input->occupation != '' || $input->input->occupation != null){
+            $occupation = $input->input->occupation;
+        }
 
         $data = [
             'GPSCertNo' => '',
             'GPSCompName' => '',
-            'actprem' => doubleval('157.95'),
+            'actprem' => doubleval($input->actprem) ?? '',
             'address1' =>($input->address_one ?? '11 FLOOR AIK HUA'),
             'address2' => isset($input->address_two) ? (empty($input->address_two) ? $input->city . ', ' . $input->state : $input->address_two) : '',
             'address3' => isset($input->address_two) ? (empty($input->address_two) ? '' : $input->city . ', ' . $input->state) : '',
@@ -957,20 +1071,20 @@ class AIG implements InsurerLibraryInterface
             'birthdate' => $dob,
             'bizregno' => '',
             'breakdownassist' => '',
-            'campaigncode' => 'TT1',
-            'ccardexpdt' => '201903',
-            'ccardtype' => 'VISA',
+            'campaigncode' => 'NA',
+            'ccardexpdt' => $input->ccardexpdt ?? Carbon::today()->addYears(3)->format('Y-m'),
+            'ccardtype' => $input->ccardtype ?? 'VISA',
             'channel' => 'TIB',
             'chassisno' => $input->vehicle->extra_attribute->chassis_number,
             'claimamt' => doubleval('0'),
-            'cncondition' => 'u',
-            'cnpaystatus' => 'C',
-            'commgstamt' => doubleval('0'),
-            'commiamt' => doubleval('296.59'),
-            'commiperc' => doubleval('10'),
+            'cncondition' => 'n',
+            'cnpaystatus' => $input->cnpaystatus ?? 'R',
+            'commgstamt' => $input->commgstamt ?? doubleval('0'),
+            'commiamt' => $input->commiamt ?? doubleval('0'),
+            'commiperc' => $input->commiperc ?? doubleval('0'),
             'compcode' => '71',
             'country' => '',
-            'covercode' => '01',
+            'covercode' => $input->vehicle->extra_attribute->covercode,
             'discount' => 'NO',
             'discountamt' => doubleval('0'),
             'discountperc' => doubleval('0'),
@@ -978,91 +1092,91 @@ class AIG implements InsurerLibraryInterface
             'effectivedate' => Carbon::parse($input->vehicle->inception_date)->format('Y-m-d'),
             'effectivetime' => $effective_time,
             'email' => $input->email,
-            'engineno' => 'STG4567STG4567',
-            'excess' => doubleval('770'),
+            'engineno' => $input->vehicle->extra_attribute->engine_number,
+            'excess' => $input->excess ?? doubleval('0'),
             'expirydate' => Carbon::parse($input->vehicle->expiry_date)->format('Y-m-d'),
-            'flquoteno' => 'FLTIB000001-001',
+            'flquoteno' => $input->flquoteno ?? '',
             'garage' => 'B',
-            'gender' => 'M',
-            'grossdue' => doubleval('3153.91'),
-            'grossdue2' => doubleval('0'),
-            'grossprem' => doubleval('2965.95'),
-            'gstamt' => doubleval('177.96'),
-            'gstclaimperc' => doubleval('0'),
-            'gstcode' => 'T128',
-            'gstoverwrite' => 'N',
-            'gstperc' => doubleval('6'),
-            'gstpurpose' => 'I',
-            'gstreg' => 'N',
+            'gender' => $input->gender,
+            'grossdue' => $input->grossdue ?? doubleval('0'),
+            'grossdue2' => $input->grossdue2 ?? doubleval('0'),
+            'grossprem' => $input->grossprem ?? doubleval('0'),
+            'gstamt' => $input->gstamt ?? doubleval('0'),
+            'gstclaimperc' => $input->gstclaimperc ?? doubleval('0'),
+            'gstcode' => $input->gstcode ?? '',
+            'gstoverwrite' => $input->gstoverwrite ?? 'N',
+            'gstperc' => $input->gstperc ?? doubleval('0'),
+            'gstpurpose' => $input->gstpurpose ?? '',
+            'gstreg' => $input->gstreg ?? '',
             'gstregdate' => '',
             'gstregdateend' => '',
             'gstregno' => '',
-            'hpcode' => '001319',
+            'hpcode' => '',
             'hphoneno' => '',
             'insertstmp' => '',
-            'insref2' => 'RescueCare',
+            'insref2' => $input->insref2 ?? '',
             'last4digit' => '',
             'lessor' => '',
-            'loadingamt' => doubleval('684.45'),
-            'loadingperc' => doubleval('30'),
-            'makecodemajor' => '31',
-            'makecodeminor' => '08',
+            'loadingamt' => '0',
+            'loadingperc' => '0',
+            'makecodemajor' => $input->vehicle->extra_attribute->make_code,
+            'makecodeminor' => $input->vehicle->extra_attribute->model_code,
             'makeyear' => intval($input->vehicle->manufacture_year), 
             'maritalstatus' => $input->marital_status,
             'merchantid' => '',
             'name' => $input->name ?? config('app.name'),
-            'ncdamt' => doubleval('0'),
+            'ncdamt' => $input->ncdamt ?? doubleval('0'),
             'ncdperc' => doubleval($input->vehicle->ncd_percentage),
-            'netdue' => doubleval('2857.32'),
-            'netdue2' => doubleval('0'),
-            'netprem' => doubleval('2669.36'),
+            'netdue' =>$input->netdue ??  doubleval('0'),
+            'netdue2' => $input->netdue2 ?? doubleval('0'),
+            'netprem' => $input->netprem ?? doubleval('0'),
             'newic' => $id_number,
-            'occupmajor' => '001',
+            'occupmajor' => $occupation,
             'oldic' => '',
-            'ownershiptype' => 'I',
+            'ownershiptype' => $input->input->ownership_type ?? 'I',
             'passportno' => '',
-            'payamt' => '0',
-            'paytype' => 'CC',
-            'piamdrv' => '03',
+            'payamt' => $input->payamt ?? '0',
+            'paytype' => $input->paytype ?? 'CC',
+            'piamdrv' => $input->piamdrv ?? '0',
             'postcode' => $input->postcode,
-            'preinscode' => '',
-            'preinsname' => '',
-            'preinsncd' => doubleval('0.00'),
-            'preinspolno' => '',
-            'preinsregno' => 'STG4567',
-            'prepoleffdate' => '',
-            'prepolexpdate' => '',
-            'pscoreoriloading' => doubleval('30'),
-            'purchasedate' => '',
-            'purchaseprice' => doubleval('0'),
-            'purpose' => 'NB',
-            'quoteno' => '',
-            'receiptno' => '',
-            'redbookdesc' => '',
+            'preinscode' => $input->preinscode ?? '',
+            'preinsname' => $input->preinsname ?? '',
+            'preinsncd' => $input->preinsncd ?? doubleval('0.00'),
+            'preinspolno' => $input->preinspolno ?? '',
+            'preinsregno' => $input->preinsregno ?? '',
+            'prepoleffdate' => $input->prepoleffdate ?? '',
+            'prepolexpdate' => $input->prepolexpdate ?? '',
+            'pscoreoriloading' => $input->pscoreoriloading ?? 0,
+            'purchasedate' => $input->purchasedate ?? '',
+            'purchaseprice' => $input->purchaseprice ?? doubleval('0'),
+            'purpose' => $input->purpose ?? 'NB',
+            'quoteno' => $input->quoteno ?? '',
+            'receiptno' => $input->receiptno ?? '',
+            'redbookdesc' => $input->redbookdesc ?? '',
             'redbooksum' => doubleval('0'),
             'region' => strtoupper(substr($input->region, 0, 1)),
-            'regno' => 'STG4567',
+            'regno' => $input->input->vehicle_number,
             'renewno' => '',
             'requestid' => 'D112',
             'respdatetime' => '',
             'safety' => self::SAFETY_CODE,
             'signature' => $this->generateSignature('D112'),
             'stampduty' => doubleval('10'),
-            'statecode' => '001',
+            'statecode' => $this->getStateCode($input->input->state),
             'suminsured' => doubleval($input->vehicle->sum_insured),
-            'tariffpremium' => doubleval('2281.5'),
-            'theftclaim' => intval('0'),
-            'thirdclaim' => intval('0'),
+            'tariffpremium' => $input->tariffpremium ?? doubleval('0'),
+            'theftclaim' => $input->theftclaim ?? intval('0'),
+            'thirdclaim' => $input->thirdclaim ?? intval('0'),
             'towndesc' => $this->getStateName($input->state),
             'trailerno' => '',
-            'usecode' => '01',
-            'vehbody' => 'SEDAN',
-            'vehbodycode' => '27',
+            'usecode' => $input->usecode ?? '01',
+            'vehbody' => $body_type->description ?? '',
+            'vehbodycode' => $body_type->code ?? '',
             'vehcapacity' => doubleval($input->vehicle->engine_capacity),
             'vehcapacitycode' => self::VEHICLE_CAPACITY_CODE,
-            'vehclaim' => intval('0'),
-            'vehtypecode' => 'V010010',
-            'waiveloading' => '',
+            'vehclaim' => $input->usecode ?? intval('0'),
+            'vehtypecode' => $input->vehicle->extra_attribute->vehtypecode,
+            'waiveloading' => $input->usecode ?? '',
             'winclaim' => intval('0'),
             'additional_driver' => $additional_driver,
             'formatted_extra_cover' => $formatted_extra_cover,
@@ -1088,56 +1202,53 @@ class AIG implements InsurerLibraryInterface
         // Format list additional driver
         $additional_driver = [];
         $index = 1;
-        if(isset($input->additional_driver)) {
-            foreach ($input->additional_driver as $additional_driver) {
-                array_push($additional_driver, (object)[
-                    'drvage' => intval($additional_driver->age - 18 < 0 ? 0 : $additional_driver->age - 18),
-                    'drvdob' => formatDateFromIC($additional_driver->id_number),
-                    'drvgender' => getGenderFromIC($additional_driver->id_number),
-                    'drvmarital' => $input->marital_status,
-                    'drvoccup' => $input->occupation,
-                    'drvrel' => $input->relation ?? 'I',
-                    'icnumber' => getAgeFromIC($additional_driver->id_number),
-                    'index' => intval($index),
-                    'name' => $input->name,
-                    'oicnumber' => '',
-                ]);
-                $index++;
+        $index = 1;if(isset($input->input->additional_driver)) {
+            foreach ($input->input->additional_driver as $additional_driver) {
+                if($additional_driver->id_number != '' || $additional_driver->id_number != null){
+                    $age = getAgeFromIC($additional_driver->id_number);
+                    array_push($additional_drivers, (object) [
+                        'age' => $age,
+                        'dob' => formatDateFromIC($additional_driver->id_number),
+                        'gender' => getGenderFromIC($additional_driver->id_number),
+                        'exp' => $age - 18 < 0 ? 0 : $age - 18,
+                        'marital' => '',
+                        'occup' => '',
+                        'rel' => $additional_driver->relationship,
+                        'icno' => $additional_driver->id_number,
+                        'index' => $index,
+                        'name' => $additional_driver->name,
+                        'oicno' => '',
+                    ]);
+                    $index++;
+                }
             }
         }
         // Format Extra Cover Code
         $formatted_extra_cover = [];
-        if(isset($input->extra_cover)) {
-            foreach ($input->extra_cover as $extra_cover) {
+        if(isset($input->input->extra_cover)) {
+            foreach ($input->input->extra_cover as $extra_cover) {
                 $extra_cover_code = $extra_cover->extra_cover_code;
-                $extra_cover->extra_cover_description = $this->getExtraBenefitDescription($extra_cover_code);
-
-                if($extra_cover->extra_cover_code == '40') {
-                    $extra_cover_code = $extra_cover->extra_cover_code . $this->getLltpCode($input->vehicle->engine_capacity);
-                } else if($extra_cover->extra_cover_code == '112') {
-                    $extra_cover_code = 'CART';
-                    $extra_cover->sum_insured = $extra_cover->cart_amount;
-                    $extra_cover->unit = $extra_cover->cart_day;
-                } else if($extra_cover->extra_cover_code == 'EZ100A') {
-                    $extra_cover->sum_insured = 10000;
-                } else if($extra_cover->extra_cover_code == 'EZ103') {
-                    $extra_cover->sum_insured = 1500;
-                } else if($extra_cover->extra_cover_code == 'EZ106') {
-                    $extra_cover->sum_insured = 500;
-                } else if($extra_cover->extra_cover_code == 'EZ109') {
-                    $extra_cover->sum_insured = 300;
-                } else if($extra_cover->extra_cover_code == '57' || $extra_cover->extra_cover_code == '25') {
-                    $extra_cover->sum_insured = $input->vehicle->sum_insured;
+                $extra_cover->extra_cover_description = $extra_cover->extra_cover_description;
+                if($extra_cover->sum_insured == 'Plan A'){
+                    $extra_cover_code = $extra_cover_code . 'A';
+                }
+                else if($extra_cover->sum_insured == 'Plan B'){
+                    $extra_cover_code = $extra_cover_code . 'B';
+                }
+                else if($extra_cover->sum_insured == 'Plan C' ){
+                    $extra_cover_code = $extra_cover_code . 'C';
                 }
 
                 array_push($formatted_extra_cover, (object) [
-                    'bencode' => $extra_cover_code,
-                    'bendesc' => $extra_cover->extra_cover_description,
-                    'suminsured' => $extra_cover->sum_insured ?? 0,
+                    'extra_cover_code' => $extra_cover_code,
+                    'extra_cover_description' => $extra_cover->extra_cover_description,
+                    'sum_insured' => 0,
                     'unit' => $extra_cover->unit ?? 0,
-                    'benpremium' => 0,
-                    'cewcommperc' => '',
-                    'cewstampduty' => '',
+                    'premium' => 0,
+                    'commperc' => 0,
+                    'stampduty' => 0,
+                    'name' => '',
+                    'newic' => $input->input->id_number,
                 ]);
             }
         }
@@ -1160,10 +1271,15 @@ class AIG implements InsurerLibraryInterface
         if(Carbon::parse($input->vehicle->inception_date)->lessThan(Carbon::today())) {
             $effective_time = date('H:i:s', strtotime('now'));
         }
+        $occupation = '820';
+        if($input->input->occupation != '' || $input->input->occupation != null){
+            $occupation = $input->input->occupation;
+        }
+
         $data = [
             'GPSCertNo' => '',
             'GPSCompName' => '',
-            'actprem' => doubleval('157.95'),
+            'actprem' => doubleval($input->actprem) ?? '',
             'address1' =>($input->address_one ?? '11 FLOOR AIK HUA'),
             'address2' => isset($input->address_two) ? (empty($input->address_two) ? $input->city . ', ' . $input->state : $input->address_two) : '',
             'address3' => isset($input->address_two) ? (empty($input->address_two) ? '' : $input->city . ', ' . $input->state) : '',
@@ -1175,107 +1291,107 @@ class AIG implements InsurerLibraryInterface
             'birthdate' => $dob,
             'bizregno' => '',
             'breakdownassist' => '',
-            'campaigncode' => 'TT1',
+            'campaigncode' => 'NA',
             'channel' => 'TIB',
-            'chassisno' => 'STG4567STH4567',//$input->vehicle->extra_attribute->chassis_number,
+            'chassisno' => $input->vehicle->extra_attribute->chassis_number,
             'claimamt' => doubleval('0'),
-            'commgstamt' => doubleval('0'),
-            'commiamt' => doubleval('296.59'),
-            'commiperc' => doubleval('10'),
+            'commgstamt' => $input->commgstamt ?? doubleval('0'),
+            'commiamt' => $input->commiamt ?? doubleval('0'),
+            'commiperc' => $input->commiperc ?? doubleval('0'),
             'compcode' => '71',
             'country' => '',
-            'covercode' => '01',
+            'covercode' => $input->vehicle->extra_attribute->covercode,
             'discount' => 'NO',
             'discountamt' => doubleval('0'),
             'discountperc' => doubleval('0'),
             'drvexp' => intval(getAgeFromIC($input->id_number) - 18),
-            'effectivedate' => Carbon::parse($input->vehicle->inception_date)->format('d-m-Y'),
+            'effectivedate' => Carbon::parse($input->vehicle->inception_date)->format('Y-m-d'),
             'effectivetime' => $effective_time,
             'email' => $input->email,
-            'engineno' => 'STG4567STG4567',
-            'excess' => doubleval('770'),
-            'expirydate' => Carbon::parse($input->vehicle->expiry_date)->format('d-m-Y'),
-            'flquoteno' => 'FLTIB000001-001',
+            'engineno' => $input->vehicle->extra_attribute->engine_number,
+            'excess' => $input->excess ?? doubleval('0'),
+            'expirydate' => Carbon::parse($input->vehicle->expiry_date)->format('Y-m-d'),
+            'flquoteno' => $input->flquoteno ?? '',
             'garage' => 'B',
-            'gender' => 'M',
-            'grossdue' => doubleval('3153.91'),
-            'grossdue2' => doubleval('0'),
-            'grossprem' => doubleval('2965.95'),
-            'gstamt' => doubleval('177.96'),
-            'gstclaimperc' => doubleval('0'),
-            'gstcode' => 'T128',
-            'gstoverwrite' => 'N',
-            'gstperc' => doubleval('6'),
-            'gstpurpose' => 'I',
-            'gstreg' => 'N',
+            'gender' => $input->gender,
+            'grossdue' => $input->grossdue ?? doubleval('0'),
+            'grossdue2' => $input->grossdue2 ?? doubleval('0'),
+            'grossprem' => $input->grossprem ?? doubleval('0'),
+            'gstamt' => $input->gstamt ?? doubleval('0'),
+            'gstclaimperc' => $input->gstclaimperc ?? doubleval('0'),
+            'gstcode' => $input->gstcode ?? '',
+            'gstoverwrite' => $input->gstoverwrite ?? 'N',
+            'gstperc' => $input->gstperc ?? doubleval('0'),
+            'gstpurpose' => $input->gstpurpose ?? '',
+            'gstreg' => $input->gstreg ?? '',
             'gstregdate' => '',
             'gstregdateend' => '',
-            'hpcode' => '001319',
+            'gstregno' => '',
+            'hpcode' => '',
             'hphoneno' => '',
             'insertstmp' => '',
-            'insref2' => 'RescueCare',
+            'insref2' => $input->insref2 ?? '',
             'lessor' => '',
-            'loadingamt' => doubleval('684.45'),
-            'loadingperc' => doubleval('30'),
-            'makecodemajor' => '31',
-            'makecodeminor' => '08',
-            'makeyear' => intval('1998'), //$input->vehicle->manufacture_year
+            'loadingamt' => '0',
+            'loadingperc' => '0',
+            'makecodemajor' => $input->vehicle->extra_attribute->make_code,
+            'makecodeminor' => $input->vehicle->extra_attribute->model_code,
+            'makeyear' => intval($input->vehicle->manufacture_year), 
             'maritalstatus' => $input->marital_status,
+            'merchantid' => '',
             'name' => $input->name ?? config('app.name'),
-            'ncdamt' => doubleval('0'),
+            'ncdamt' => $input->ncdamt ?? doubleval('0'),
             'ncdperc' => doubleval($input->vehicle->ncd_percentage),
-            'netdue' => doubleval('2857.32'),
-            'netdue2' => doubleval('0'),
-            'netprem' => doubleval('2669.36'),
+            'netdue' =>$input->netdue ??  doubleval('0'),
+            'netdue2' => $input->netdue2 ?? doubleval('0'),
+            'netprem' => $input->netprem ?? doubleval('0'),
             'newic' => $id_number,
-            'occupmajor' => '001',
+            'occupmajor' => $occupation,
             'oldic' => '',
-            'ownershiptype' => 'I',
+            'ownershiptype' => $input->input->ownership_type ?? 'I',
             'passportno' => '',
-            'payamt' => '0',
-            'payno' => '',
-            'piamdrv' => '03',
+            'payamt' => $input->payamt ?? '0',
+            'payno' => $input->payno ?? 'CC',
+            'piamdrv' => $input->piamdrv ?? '0',
             'postcode' => $input->postcode,
-            'preinscode' => '',
-            'preinsname' => '',
-            'preinsncd' => doubleval('0.00'),
-            'preinspolno' => '',
-            'preinsregno' => 'STG4567',
-            'prepoleffdate' => '',
-            'prepolexpdate' => '',
-            'pscoreoriloading' => doubleval('30'),
-            'purchasedate' => '',
-            'purchaseprice' => doubleval('0'),
-            'purpose' => 'NB',
-            'quoteno' => '',
-            'receiptno' => '',
-            'redbookdesc' => '',
+            'preinscode' => $input->preinscode ?? '',
+            'preinsname' => $input->preinsname ?? '',
+            'preinsncd' => $input->preinsncd ?? doubleval('0.00'),
+            'preinspolno' => $input->preinspolno ?? '',
+            'preinsregno' => $input->preinsregno ?? '',
+            'prepoleffdate' => $input->prepoleffdate ?? '',
+            'prepolexpdate' => $input->prepolexpdate ?? '',
+            'pscoreoriloading' => $input->pscoreoriloading ?? 0,
+            'purchasedate' => $input->purchasedate ?? '',
+            'purchaseprice' => $input->purchaseprice ?? doubleval('0'),
+            'purpose' => $input->purpose ?? 'NB',
+            'quoteno' => $input->quoteno ?? '',
+            'receiptno' => $input->receiptno ?? '',
+            'redbookdesc' => $input->redbookdesc ?? '',
             'redbooksum' => doubleval('0'),
-            'refercode' => '',
-            'referdesc' => '',
             'region' => strtoupper(substr($input->region, 0, 1)),
-            'regno' => 'STG4567',
+            'regno' => $input->input->vehicle_number,
             'renewno' => '',
             'requestid' => 'D112',
             'respdatetime' => '',
             'safety' => self::SAFETY_CODE,
             'signature' => $this->generateSignature('D112'),
             'stampduty' => doubleval('10'),
-            'statecode' => '001',
+            'statecode' => $this->getStateCode($input->input->state),
             'suminsured' => doubleval($input->vehicle->sum_insured),
-            'tariffpremium' => doubleval('2281.5'),
-            'theftclaim' => intval('0'),
-            'thirdclaim' => intval('0'),
+            'tariffpremium' => $input->tariffpremium ?? doubleval('0'),
+            'theftclaim' => $input->theftclaim ?? intval('0'),
+            'thirdclaim' => $input->thirdclaim ?? intval('0'),
             'towndesc' => $this->getStateName($input->state),
             'trailerno' => '',
-            'usecode' => '01',
-            'vehbody' => 'SEDAN',
-            'vehbodycode' => '27',
+            'usecode' => $input->usecode ?? '01',
+            'vehbody' => $body_type->description ?? '',
+            'vehbodycode' => $body_type->code ?? '',
             'vehcapacity' => doubleval($input->vehicle->engine_capacity),
             'vehcapacitycode' => self::VEHICLE_CAPACITY_CODE,
-            'vehclaim' => intval('0'),
-            'vehtypecode' => 'V010010',
-            'waiveloading' => '',
+            'vehclaim' => $input->usecode ?? intval('0'),
+            'vehtypecode' => $input->vehicle->extra_attribute->vehtypecode,
+            'waiveloading' => $input->usecode ?? '',
             'winclaim' => intval('0'),
             'additional_driver' => $additional_driver,
             'formatted_extra_cover' => $formatted_extra_cover,
@@ -1337,7 +1453,7 @@ class AIG implements InsurerLibraryInterface
         array_push($item,(object)[
             'paramIndicator' => 'NVIC',
             'paramRemark' => '',
-            'paramValue' => $input->nvic,
+            'paramValue' => $input->input->nvic,
         ]);
 
         $data = [
@@ -1345,7 +1461,7 @@ class AIG implements InsurerLibraryInterface
             'compcode' => '71',
             'requestid' => 'D112',
             'signature' => $this->generateSignature('D112'),
-            'vehregno' => $input->vehicle_number,
+            'vehregno' => $input->input->vehicle_number,
             'flquoteno' => 'FLTIB000001-001',
             'quoteno' => '5745201509211032csfong',
             'respdatetime' => '',
@@ -1420,7 +1536,7 @@ class AIG implements InsurerLibraryInterface
             'signature' => $this->generateSignature('D112'),
             'vehregno' => $input->vehicle_number,
             'chassisno' => $input->vehicle->extra_attribute->chassis_number,
-            'cncondition' => 'u',
+            'cncondition' => 'n',
             'covernoteno' => '300120',
             'engineno' => $input->vehicle->extra_attribute->engine_number,
         ];
@@ -1539,6 +1655,80 @@ class AIG implements InsurerLibraryInterface
         return new ResponseData([
             'response' => $result_data,
         ]);
+    }
+
+    private function getStateCode($state) : string
+    {
+        $state_code = '';
+
+        switch (strtolower($state)) {
+            case 'wilayah persekutuan labuan': {
+                $state_code = '001';
+                break;
+            }
+            case 'johor': {
+                $state_code = '003';
+                break;
+            }
+            case 'kedah': {
+                $state_code = '004';
+                break;
+            }
+            case 'kelantan': {
+                $state_code = '005';
+                break;
+            }
+            case 'wilayah persekutuan putrajaya': {
+                $state_code = '008';
+                break;
+            }
+            case 'perlis': {
+                $state_code = '006';
+                break;
+            }
+            case 'melaka': {
+                $state_code = '007';
+                break;
+            }
+            case 'negeri sembilan': {
+                $state_code = '008';
+                break;
+            }
+            case 'pahang': {
+                $state_code = '009';
+                break;
+            }
+            case 'pulau pinang': {
+                $state_code = '010';
+                break;
+            }
+            case 'perak': {
+                $state_code = '011';
+                break;
+            }
+            case 'selangor': {
+                $state_code = '012';
+                break;
+            }
+            case 'terengganu': {
+                $state_code = '013';
+                break;
+            }
+            case 'sabah': {
+                $state_code = '014';
+                break;
+            }
+            case 'sarawak': {
+                $state_code = '015';
+                break;
+            }
+            case 'wilayah persekutuan kuala lumpur': {
+                $state_code = '017';
+                break;
+            }
+        }
+
+        return $state_code;
     }
 
     private function getStateName($state) : string
@@ -1667,77 +1857,144 @@ class AIG implements InsurerLibraryInterface
         $description = '';
 
         switch ($extra_cover_code) {
-            case '07': {
-                    $description = 'Named Persons';
-                    break;
+            case '00080': { 
+                $extra_cover_name = 'All Drivers';
+                break;
+            }
+            case '00112': { 
+                $extra_cover_name = 'Windscreen';
+                break;
+            }
+            case '00091B': { 
+                $extra_cover_name = 'Legal Liability to Passengers';
+                if($engine_capacity <= 1400) {
+                    $description .= ' (Up To 1400 CC)';
+                } else if($engine_capacity > 1400 && $engine_capacity <= 1650) {
+                    $description .= ' (1401-1650 CC)';
+                } else if($engine_capacity > 1650 && $engine_capacity <= 2200) {
+                    $description .= ' (1651-2200 CC)';
+                } else if($engine_capacity > 2200 && $engine_capacity <= 3050) {
+                    $description .= ' (2201-3050 CC)';
+                } else if($engine_capacity > 3050 && $engine_capacity <= 4100) {
+                    $description .= ' (3051-4400 CC)';
+                } else if($engine_capacity > 4100 && $engine_capacity <= 4250) {
+                    $description .= ' (4101-4250 CC)';
+                } else if($engine_capacity > 4250 && $engine_capacity <= 4400) {
+                    $description .= ' (4251-4400 CC)';
+                } else if($engine_capacity > 4400) {
+                    $description .= ' (Over 4400 CC)';
                 }
-            case '101': {
-                    $description = 'Extension Cover To The Kingdom Of Thailand';
-                    break;
-                }
-            case '105': {
-                    $description = 'Limits Of Liability For Third Party Property Damage';
-                    break;
-                }
-            case '111': {
-                    $description = 'NCD Relief Cover';
-                    break;
-                }
-            case '112': {
-                    $description = 'Compensation for Assessed Repair Time (CART)';
-                    break;
-                }
-            case '25': {
-                    $description = 'Strike, Riot And Civil Commotion';
-                    break;
-                }
-            case '40': {
-                    $description = 'Legal Liability To Passengers';
-                    if($engine_capacity <= 1400) {
-                        $description .= ' (Up To 1400 CC)';
-                    } else if($engine_capacity > 1400 && $engine_capacity <= 1650) {
-                        $description .= ' (1401-1650 CC)';
-                    } else if($engine_capacity > 1650 && $engine_capacity <= 2200) {
-                        $description .= ' (1651-2200 CC)';
-                    } else if($engine_capacity > 2200 && $engine_capacity <= 3050) {
-                        $description .= ' (2201-3050 CC)';
-                    } else if($engine_capacity > 3050 && $engine_capacity <= 4100) {
-                        $description .= ' (3051-4400 CC)';
-                    } else if($engine_capacity > 4100 && $engine_capacity <= 4250) {
-                        $description .= ' (4101-4250 CC)';
-                    } else if($engine_capacity > 4250 && $engine_capacity <= 4400) {
-                        $description .= ' (4251-4400 CC)';
-                    } else if($engine_capacity > 4400) {
-                        $description .= ' (Over 4400 CC)';
-                    }
-                    break;
-                }
-            case '57': {
-                    $description = 'Special Perils';
-                    break;
-                }
-            case '72': {
-                    $description = 'Legal Liability Of Passengers';
-                    break;
-                }
-            case '89': {
-                    $description = 'Windscreen';
-                    break;
-                }
-            case '97': {
-                    $description = 'Multimedia Player Or Other Accessories';
-                    break;
-                }
-            case '97A': {
-                    $description = 'Gas Conversion Kit And Tank';
-                    break;
-                }
-            case '10': {
-                    $description = 'All Drivers';
-                    break;
-                }
+                break;
+            }
+            case '00990B': { 
+                $extra_cover_name = 'Legal Liability of Passengers for Acts of Negligence';
+                break;
+            }
+            case '06033A': { 
+                $extra_cover_name = 'Strike Riot Civil Commotion';
+                break;
+            }
+            case '99999A': { 
+                $extra_cover_name = 'Special Perils';
+                break;
+            }
+            case '21': { 
+                $extra_cover_name = 'Smart Auto - Supreme';
+                break;
+            }
+            case '22': { 
+                $extra_cover_name = 'Smart Auto - Saver';
+                break;
+            }
+            case '23': { 
+                $extra_cover_name = 'Smart Auto - Starter';
+                break;
+            }
+            case '00136A': { 
+                $extra_cover_name = 'Cash Compensation due to Total Loss/Natural Perils';
+                break;
+            }
+            case '00136B': { 
+                $extra_cover_name = 'Cash Compensation due to Total Loss/Natural Perils';
+                break;
+            }
+            case '00136C': { 
+                $extra_cover_name = 'Cash Compensation due to Total Loss/Natural Perils';
+                break;
+            }
+            case '01032A': { 
+                $extra_cover_name = 'Daily Cash Allowance';
+                break;
+            }
+            case '01032B': { 
+                $extra_cover_name = 'Daily Cash Allowance';
+                break;
+            }
+            case '01032C': { 
+                $extra_cover_name = 'Daily Cash Allowance';
+                break;
+            }
+            case '01038A': { 
+                $extra_cover_name = 'Waiver of Betterment';
+                break;
+            }
+            case '01038B': { 
+                $extra_cover_name = 'Waiver of Betterment';
+                break;
+            }
+            case '00042': { 
+                $extra_cover_name = 'Tyres/Rims Repair/Replacement';
+                break;
+            }
+            case '00137': { 
+                $extra_cover_name = 'Car Loan Support';
+                break;
+            }
+            case '00125A': { 
+                $extra_cover_name = 'Key Replacement';
+                break;
+            }
+            case '00125B': { 
+                $extra_cover_name = 'Key Replacement';
+                break;
+            }
+            case '01037A': { 
+                $extra_cover_name = 'Total Car Body Paint';
+                break;
+            }
+            case '01037B': { 
+                $extra_cover_name = 'Total Car Body Paint';
+                break;
+            }
+            case '01037C': { 
+                $extra_cover_name = 'Total Car Body Paint';
+                break;
+            }
+            case '01100': { 
+                $extra_cover_name = 'Vehicle Break-in';
+                break;
+            }
+            case '00041': { 
+                $extra_cover_name = 'Transportation Fare';
+                break;
+            }
+            case '01036A': { 
+                $extra_cover_name = 'Personal Accident and Passanger Protection';
+                break;
+            }
+            case '01036B': { 
+                $extra_cover_name = 'Personal Accident and Passanger Protection';
+                break;
+            }
+            case '01040A': { 
+                $extra_cover_name = 'Passenger Protection';
+                break;
+            }
+            case '01040B': { 
+                $extra_cover_name = 'Passenger Protection';
+                break;
+            }
         }
-        
 
         return $description;
     }
@@ -1746,38 +2003,87 @@ class AIG implements InsurerLibraryInterface
     {
         foreach ($extra_cover_list as $_extra_cover) {
             $sequence = 99;
-
             switch ($_extra_cover->extra_cover_code) {
-                case '10': { // All Drivers
-                        $sequence = 1;
-
-                        break;
-                    }
-                case '89': { // Windscreen
-                        $sequence = 2;
-
-                        break;
-                    }
-                case '40': { // Legal Liability to Passengers
-                        $sequence = 3;
-
-                        break;
-                    }
-                case '72': { // Legal Liability of Passengers for Negligent Acts (LLAN)
-                        $sequence = 4;
-
-                        break;
-                    }
-                case '57': { // Special Perils
-                        $sequence = 5;
-
-                        break;
-                    }
-                case '25': { // Strike Riot & Civil Commotion
-                        $sequence = 6;
-
-                        break;
-                    }
+                case '00080': {
+                    $sequence = 1;
+                    break;
+                }
+                case '00112': { 
+                    $sequence = 2;
+                    break;
+                }
+                case '00091B': { 
+                    $sequence = 3;
+                    break;
+                }
+                case '00990B': { 
+                    $sequence = 4;
+                    break;
+                }
+                case '06033A': { 
+                    $sequence = 5;
+                    break;
+                }
+                case '99999A': { 
+                    $sequence = 6;
+                    break;
+                }
+                case '21': { 
+                    $sequence = 7;
+                    break;
+                }
+                case '22': { 
+                    $sequence = 8;
+                    break;
+                }
+                case '23': { 
+                    $sequence = 9;
+                    break;
+                }
+                case '00136': { 
+                    $sequence = 10;
+                    break;
+                }
+                case '01032': { 
+                    $sequence = 11;
+                    break;
+                }
+                case '01038': { 
+                    $sequence = 12;
+                    break;
+                }
+                case '00042': { 
+                    $sequence = 13;
+                    break;
+                }
+                case '00137': { 
+                    $sequence = 14;
+                    break;
+                }
+                case '00125': { 
+                    $sequence = 15;
+                    break;
+                }
+                case '01037': { 
+                    $sequence = 16;
+                    break;
+                }
+                case '01100': { 
+                    $sequence = 17;
+                    break;
+                }
+                case '00041': { 
+                    $sequence = 18;
+                    break;
+                }
+                case '01036': { 
+                    $sequence = 19;
+                    break;
+                }
+                case '01040': { 
+                    $sequence = 20;
+                    break;
+                }
             }
 
             $_extra_cover->sequence = $sequence;

@@ -5,7 +5,7 @@
             <arrExtraParam xmlns="urn:GetReferredListing">
             @if (!empty($item))
                 @foreach ($item as $items)
-                <item xmlns="https://d1.financial-link.com.my/AGS/services/GetReferredListing">
+                <item xmlns="https://www-400.aig.com.my/AGS/services/GetReferredListing">
                     <paramIndicator xmlns="urn:GetReferredListing">{{ $paramIndicator }}</paramIndicator>
                     <paramRemark xmlns="urn:GetReferredListing">{{ $paramRemark }}</paramRemark>
                     <paramValue xmlns="urn:GetReferredListing">{{ $paramValue }}</paramValue>

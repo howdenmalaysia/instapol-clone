@@ -5,7 +5,7 @@
             <arrExtraParam xmlns="urn:GetRenewalData">
             @if (!empty($item))
                 @foreach ($item as $items)
-                <item xmlns="https://d1.financial-link.com.my/AGS/services/GetRenewalData">
+                <item xmlns="https://www-400.aig.com.my/AGS/services/GetRenewalData">
                     <paramIndicator xmlns="urn:GetRenewalData">{{ $paramIndicator }}</paramIndicator>
                     <paramRemark xmlns="urn:GetRenewalData">{{ $paramRemark }}</paramRemark>
                     <paramValue xmlns="urn:GetRenewalData">{{ $paramValue }}</paramValue>

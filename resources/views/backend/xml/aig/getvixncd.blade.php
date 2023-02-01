@@ -5,7 +5,7 @@
          <arrExtraParam xmlns="urn:GetVIXNCD">
             @if (!empty($item))
                 @foreach ($item as $items)
-                  <item xmlns="https://d1.financial-link.com.my/AGS/services/GetVIXNCD">
+                  <item xmlns="https://www-400.aig.com.my/AGS/services/GetVIXNCD">
                     <paramIndicator xmlns="urn:GetVIXNCD">{{ $items->paramIndicator }}</paramIndicator>
                     <paramRemark xmlns="urn:GetVIXNCD">{{ $items->paramRemark }}</paramRemark>
                     <paramValue xmlns="urn:GetVIXNCD">{{ $items->paramValue }}</paramValue>

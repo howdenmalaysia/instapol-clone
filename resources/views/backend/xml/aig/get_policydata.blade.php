@@ -4,7 +4,7 @@
             <arrExtraParam xmlns="urn:GetPolicyData">
             @if (!empty($item))
                 @foreach ($item as $items)
-                <item xmlns="https://d1.financial-link.com.my/AGS/services/GetPolicyData">
+                <item xmlns="https://www-400.aig.com.my/AGS/services/GetPolicyData">
                     <paramIndicator xmlns="http://model">{{ $paramIndicator }}</paramIndicator>
                     <paramRemark xmlns="http://model">{{ $paramRemark }}</paramRemark>
                     <paramValue xmlns="http://model">{{ $paramValue }}</paramValue>
