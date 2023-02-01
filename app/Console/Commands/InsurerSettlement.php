@@ -261,11 +261,11 @@ class InsurerSettlement extends Command
                     'net_transfer_amount_insurer' => $total_premium - $total_commission,
                     'net_transfer_amount' => $total_commission,
                     'total_outstanding' => $total_outstanding,
-                    'details_per_insurer' => [
+                    'details' => [[
                         $product->insurance_company->name,
                         $insurances->count(),
                         $insurer_net_transfer
-                    ]
+                    ]]
                 ];
     
                 Log::info("[Cron - Insurer Settlement] Sending Settlement Report to {$insurer_name} [{$product->insurance_company->email_to},{$product->insurance_company->email_cc}]");

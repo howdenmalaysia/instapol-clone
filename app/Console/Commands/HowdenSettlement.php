@@ -277,7 +277,7 @@ class HowdenSettlement extends Command
                 'net_transfer_amount_insurer' => $total_premium - $total_commission,
                 'net_transfer_amount' => $total_commission,
                 'total_outstanding' => $total_outstanding,
-                'details_per_insurer' => $details
+                'details' => $details
             ];
 
             Mail::to(explode(',', config('setting.settlement.howden.email_to')))
