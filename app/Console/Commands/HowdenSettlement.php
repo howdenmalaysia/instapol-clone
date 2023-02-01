@@ -33,7 +33,7 @@ class HowdenSettlement extends Command
      *
      * @var string
      */
-    protected $description = 'To Generate & Send Settlement Report to Insurers';
+    protected $description = 'To Generate & Send Settlement Report to Howden Internal';
 
     /**
      * Create a new command instance.
@@ -52,6 +52,8 @@ class HowdenSettlement extends Command
      */
     public function handle()
     {
+        Log::info("[Cron - Howden Internal Settlement] Start Generating Report.");
+
         $start_date = $end_date = Carbon::now()->format(self::DATE_FORMAT);
         if($this->argument('start_date')) {
             $start_date = Carbon::parse($this->argument('start_date'))->format(self::DATE_FORMAT);
@@ -69,14 +71,13 @@ class HowdenSettlement extends Command
                     'premium'
                 ])
                 ->whereBetween('updated_at', [$start_date, $end_date])
-                ->whereNull('settlement_on')
                 ->where('insurance_status', Insurance::STATUS_PAYMENT_ACCEPTED)
                 ->get()
                 ->groupBy('product_id');
     
             if(empty($records)) {
                 CronJobs::create([
-                    'description' => 'Send Settlement Report to Insurers',
+                    'description' => 'Send Settlement Report to Howden Internal',
                     'param' => json_encode([
                         'start_date' => $start_date,
                         'end_date' => $end_date
@@ -84,11 +85,9 @@ class HowdenSettlement extends Command
                     'status' => CronJobs::STATUS_FAILED,
                     'error_message' => 'No Eligible Records Found!'
                 ]);
-        
             }
     
-            $rows = $total_commission = $total_eservice_fee = $total_sst = $total_payment_gateway_charges =
-            $total_premium = $net_transfer_amount_insurer = $net_tranfer_amount = $total_outstanding = 0;
+            $rows = $total_commission = $total_eservice_fee = $total_sst = $total_payment_gateway_charges = $total_premium = $total_outstanding = 0;
             $row_data = $details = [];
 
             $records->each(function($insurances, $product_id) use(
@@ -120,8 +119,8 @@ class HowdenSettlement extends Command
                     &$insurer_net_transfer)
                 {
                     $insurance_motor = InsuranceMotor::with([
-                        'roadtax'
-                    ])
+                            'roadtax'
+                        ])
                         ->where('insurance_id', $insurance->id)
                         ->first();
                     
@@ -153,8 +152,11 @@ class HowdenSettlement extends Command
                         $total_payment_gateway_charges += number_format($insurance->amount * 0.018, 2);
                     }
 
-                    $payable = $insurance->amount - $roadtax_premium;
-                    $total_commission += $payable * 0.1;
+                    $payable = $insurance->premium->gross_premium + $insurance->premium->service_tax_amount + $insurance->premium->stamp_duty;
+                    $commission = $insurance->premium->gross_premium * 0.1;
+                    $net_premium = $insurance->premium->gross_premium - $commission;
+                    $total_transfer = $insurance->premium->service_tax_amount + $insurance->premium->stamp_duty + $net_premium;
+                    $total_commission += $commission;
                     $total_sst += $insurance->premium->service_tax_amount;
                     $total_premium += $payable;
                     $insurer_net_transfer += $payable;
@@ -172,9 +174,9 @@ class HowdenSettlement extends Command
                             $insurance->premium->gross_premium,
                             $insurance->premium->service_tax_amount,
                             $insurance->premium->stamp_duty,
-                            number_format($insurance->amount - floatval($roadtax_premium), 2),
-                            $insurance->premium->net_premium,
-                            $insurance->amount * 0.1,
+                            number_format($payable, 2),
+                            number_format($net_premium, 2),
+                            $total_transfer,
                             $discount_target === 'total_payable' ? $discount_amount : '',
                             $discount_target === 'gross_premium' ? $discount_amount : '',
                             $discount_target === 'roadtax' ? $discount_amount : '',
@@ -206,9 +208,9 @@ class HowdenSettlement extends Command
                             $insurance->premium->gross_premium,
                             $insurance->premium->service_tax_amount,
                             $insurance->premium->stamp_duty,
-                            number_format($insurance->amount - floatval($roadtax_premium), 2),
-                            $insurance->premium->net_premium,
-                            $insurance->amount * 0.1,
+                            number_format($payable, 2),
+                            number_format($net_premium, 2),
+                            $total_transfer,
                             $discount_target === 'total_payable' ? $discount_amount : '',
                             $discount_target === 'gross_premium' ? $discount_amount : '',
                             $discount_target === 'roadtax' ? $discount_amount : '',
@@ -264,11 +266,12 @@ class HowdenSettlement extends Command
                 'details_per_insurer' => $details
             ];
 
-            Mail::to(config('setting.settlement.insurer'))
+            Mail::to(explode(',', config('setting.settlement.howden.email_to')))
+                ->cc(explode(',', config('setting.settlement.howden.email_cc')))
                 ->bcc(config('setting.howden.it_dev_mail'))
                 ->send(new InsurerSettlementMail($filenames, $data));
 
-            Log::info("[Settlement - Howden Internal] {$rows} records processed.");
+            Log::info("[Cron - Howden Internal Settlement] {$rows} records processed. [{$start_date} to {$end_date}]");
 
             $this->info("{$rows} records processed");
         } catch (Exception $ex) {
@@ -281,7 +284,7 @@ class HowdenSettlement extends Command
                 ]
             ]);
 
-            Log::error("[Settlement - Howden Internal] An Error Encountered. {$ex->getMessage()}");
+            Log::error("[Cron - Howden Internal Settlement] An Error Encountered. {$ex->getMessage()}");
         }
 
     }
