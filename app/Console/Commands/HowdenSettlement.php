@@ -26,7 +26,7 @@ class HowdenSettlement extends Command
      *
      * @var string
      */
-    protected $signature = 'settlement:insurers {start_date?} {end_date?} {frequency?}';
+    protected $signature = 'settlement:howden {start_date?} {end_date?} {frequency?}';
 
     /**
      * The console command description.
