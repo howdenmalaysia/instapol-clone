@@ -268,7 +268,7 @@ class InsurerSettlement extends Command
                     ]]
                 ];
     
-                Log::info("[Cron - Insurer Settlement] Sending Settlement Report to {$insurer_name} [{$product->insurance_company->email_to},{$product->insurance_company->email_cc}]");
+                Log::info("[Cron - Insurer Settlement] Sending Settlement Report to {$product->insurance_company->name} [{$product->insurance_company->email_to},{$product->insurance_company->email_cc}]");
     
                 
                 Mail::to(explode(',', $product->insurance_company_email_to))
@@ -276,7 +276,7 @@ class InsurerSettlement extends Command
                     ->bcc(config('setting.howden.it_dev_mail'))
                     ->send(new InsurerSettlementMail($filenames, $data));
     
-                Log::info("[Cron - Insurer Settlement] Report to {$insurer_name} sent successfully.");
+                Log::info("[Cron - Insurer Settlement] Report to {$product->insurance_company->name} sent successfully.");
             });
 
 
