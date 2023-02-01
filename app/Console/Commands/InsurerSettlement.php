@@ -101,21 +101,12 @@ class HowdenSettlement extends Command
                 return;
             }
     
-            $rows = $total_commission = $total_eservice_fee = $total_sst = $total_payment_gateway_charges = $total_premium = $total_outstanding = 0;
-            $row_data = $details = [];
+            $rows = 0;
 
-            $records->each(function($insurances, $product_id) use(
-                &$rows,
-                &$row_data,
-                $start_date,
-                &$total_commission,
-                &$total_eservice_fee,
-                &$total_sst,
-                &$total_discount,
-                &$total_payment_gateway_charges,
-                &$total_premium)
-            {
-                $insurer_net_transfer = 0;
+            $records->each(function($insurances, $product_id) use($start_date, &$rows) {
+                $total_commission = $total_eservice_fee = $total_sst = $total_payment_gateway_charges = $total_premium = $total_outstanding = $insurer_net_transfer = 0;
+                $row_data = [];
+
                 $product = Product::with(['insurance_company'])
                     ->findOrFail($product_id);
     
@@ -248,24 +239,18 @@ class HowdenSettlement extends Command
                     $rows++;
                 });
 
-                array_push($details, [
-                    $product->insurance_company->name,
-                    $insurances->count(),
-                    $insurer_net_transfer
-                ]);
-            });
-
-            $filenames = [];
-            foreach($row_data as $product_id => $values) {
-                $product = Product::with(['insurance_company'])
-                    ->findOrFail($product_id);
-
-                $insurer_name = Str::snake(ucwords($product->insurance_company->name));
-
-                $filename = "{$insurer_name}{$product->insurance_company->id}_settlement_{$start_date}.xlsx";
-                array_push($filenames, $filename);
-                Excel::store(new InsurerReportExport($values), $filename);
-
+                $filenames = [];
+                foreach($row_data as $product_id => $values) {
+                    $product = Product::with(['insurance_company'])
+                        ->findOrFail($product_id);
+    
+                    $insurer_name = Str::snake(ucwords($product->insurance_company->name));
+    
+                    $filename = "{$insurer_name}{$product->insurance_company->id}_settlement_{$start_date}.xlsx";
+                    array_push($filenames, $filename);
+                    Excel::store(new InsurerReportExport($values), $filename);
+                }
+    
                 $data = [
                     'start_date' => $start_date,
                     'total_commission' => $total_commission,
@@ -276,17 +261,22 @@ class HowdenSettlement extends Command
                     'net_transfer_amount_insurer' => $total_premium - $total_commission,
                     'net_transfer_amount' => $total_commission,
                     'total_outstanding' => $total_outstanding,
-                    'details_per_insurer' => $details
+                    'details_per_insurer' => [
+                        $product->insurance_company->name,
+                        $insurances->count(),
+                        $insurer_net_transfer
+                    ]
                 ];
-
+    
                 Log::info("[Cron - Insurer Settlement] Sending Settlement Report to {$insurer_name} [{$product->insurance_company->email_to},{$product->insurance_company->email_cc}]");
     
                 Mail::to(config('setting.settlement.insurer'))
                     ->bcc(config('setting.howden.it_dev_mail'))
                     ->send(new InsurerSettlementMail($filenames, $data));
-
+    
                 Log::info("[Cron - Insurer Settlement] Report to {$insurer_name} sent successfully.");
-            }
+            });
+
 
             Log::info("[Cron - Insurer Settlement] {$rows} records processed. [{$start_date} to {$end_date}]");
 
