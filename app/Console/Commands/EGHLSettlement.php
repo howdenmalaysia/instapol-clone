@@ -49,6 +49,8 @@ class EGHLSettlement extends Command
      */
     public function handle()
     {
+        Log::info("[Cron - eGHL Settlement] Start Generating Report.");
+
         $start_date = $end_date = Carbon::now()->format(self::DATE_FORMAT);
         if($this->argument('start_date')) {
             $start_date = Carbon::parse($this->argument('start_date'))->format(self::DATE_FORMAT);
@@ -151,6 +153,7 @@ class EGHLSettlement extends Command
                     'settlement_on' => Carbon::now()->format(self::DATE_FORMAT)
                 ]);
             
+            Log::info("[Cron - eGHL Settlement] {$rows} records processed. [{$start_date} to {$end_date}]");
             $this->info("{$rows} records processed.");
         } catch (Exception $ex) {
             Log::error("[Cron - eGHL Settlement] An Error Encountered. {$ex->getMessage()}");
