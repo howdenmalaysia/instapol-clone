@@ -25,7 +25,7 @@ class AIG implements InsurerLibraryInterface
     private string $agent_code;
     private string $password;
 
-    private const EXTRA_COVERAGE_LIST = ['00080','00112','00091B','00990B','06033A','99999A','21','22','23',
+    private const EXTRA_COVERAGE_LIST = ['00080','00112','00091B','00990B','06033A','99999A','smart_auto',
     '00136','01032','01038','00042','00137','00125','01037','01100','00041','01036','01040'];
     private const MIN_SUM_INSURED = 11000;
     private const MAX_SUM_INSURED = 600000;
@@ -301,7 +301,8 @@ class AIG implements InsurerLibraryInterface
                     'extra_cover_code' => $_extra_cover_code,
                     'extra_cover_description' => $this->getExtraCoverDescription($_extra_cover_code),
                     'premium' => 0,
-                    'sum_insured' => 0
+                    'sum_insured' => 0,
+                    'plan_type' => ''
                 ]);
                 
                 $sum_insured_amount = 0;
@@ -319,7 +320,7 @@ class AIG implements InsurerLibraryInterface
                         $extra_cover->option_list = $option_list;
 
                         // Default to Plan A
-                        $sum_insured_amount = $option_list->values[0];
+                        $extra_cover->plan_type = $option_list->values[0];
                         break;
                     }
                     case '01032': { 
@@ -334,7 +335,7 @@ class AIG implements InsurerLibraryInterface
                         $extra_cover->option_list = $option_list;
 
                         // Default to Plan A
-                        $sum_insured_amount = $option_list->values[0];
+                        $extra_cover->plan_type = $option_list->values[0];
                         break;
                     }
                     case '01038': { 
@@ -349,7 +350,7 @@ class AIG implements InsurerLibraryInterface
                         $extra_cover->option_list = $option_list;
 
                         // Default to Plan A
-                        $sum_insured_amount = $option_list->values[0];
+                        $extra_cover->plan_type = $option_list->values[0];
                         break;
                     }
                     case '00125': { 
@@ -364,7 +365,7 @@ class AIG implements InsurerLibraryInterface
                         $extra_cover->option_list = $option_list;
 
                         // Default to Plan A
-                        $sum_insured_amount = $option_list->values[0];
+                        $extra_cover->plan_type = $option_list->values[0];
                         break;
                     }
                     case '01037': { 
@@ -379,7 +380,7 @@ class AIG implements InsurerLibraryInterface
                         $extra_cover->option_list = $option_list;
 
                         // Default to Plan A
-                        $sum_insured_amount = $option_list->values[0];
+                        $extra_cover->plan_type = $option_list->values[0];
                         break;
                     }
                     case '01036': { 
@@ -394,7 +395,7 @@ class AIG implements InsurerLibraryInterface
                         $extra_cover->option_list = $option_list;
 
                         // Default to Plan A
-                        $sum_insured_amount = $option_list->values[0];
+                        $extra_cover->plan_type = $option_list->values[0];
                         break;
                     }
                     case '01040': { 
@@ -409,7 +410,22 @@ class AIG implements InsurerLibraryInterface
                         $extra_cover->option_list = $option_list;
 
                         // Default to Plan A
-                        $sum_insured_amount = $option_list->values[0];
+                        $extra_cover->plan_type = $option_list->values[0];
+                        break;
+                    }
+                    case 'smart_auto': { 
+                        $option_list = new OptionList([
+                            'name' => 'sum_insured',
+                            'description' => 'Plan Type',
+                            'values' => ['Starter', 'Saver', 'Supreme'],
+                            'any_value' => true,
+                            'increment' => null
+                        ]);
+
+                        $extra_cover->option_list = $option_list;
+
+                        // Default to Starter
+                        $extra_cover->plan_type = $option_list->values[0];
                         break;
                     }
                 }
@@ -431,7 +447,8 @@ class AIG implements InsurerLibraryInterface
                     'extra_cover_description' => 'Named Persons',
                     'sum_insured' => 0,
                     'premium' => 0,
-                    'unit' => count($input->additional_driver)
+                    'unit' => count($input->additional_driver),
+                    'plan_type' => '',
                 ]));
             } else {
                 $index = array_search('07', array_column($input->extra_cover, 'extra_cover_code'));
@@ -450,24 +467,34 @@ class AIG implements InsurerLibraryInterface
         if (!$premium->status) {
             return $this->abort($premium->response);
         }
-        $new_extracover_list = [];dd($premium->response->extra_benefit);
+        $new_extracover_list = [];
         if(isset($premium->response->extra_benefit->item)) {
-            foreach($input->extra_cover as $extra_cover) {
-                foreach($premium->response->extra_benefit->item as $item) {
-                    if($item->bencode != '00091B' || $item->bencode != '00990B' || $item->bencode != '06033A' || $item->bencode != '99999A'){
-                        if(strlen($item->bencode) > 5){
-                            $item->bencode = substr($item->bencode, 0, 5);
-                        }
+            foreach($premium->response->extra_benefit->item as $item) {
+                if((string)$item->bencode == '21' || (string)$item->bencode == '22' || (string)$item->bencode == '23'){
+                    $item->bencode = 'smart_auto';
+                }
+                else{
+                    if(strlen($item->bencode) > 5 && (string)$item->bencode != '99999A' && 
+                    (string)$item->bencode != '06033A' && (string)$item->bencode != '00990B' &&
+                    (string)$item->bencode != '00091B' && (string)$item->bencode != 'smart_auto'){
+                        $item->bencode = substr($item->bencode, 0, 5);
                     }
-                    if((string) $item->bencode === $extra_cover->extra_cover_code) {
+                }
+                foreach($input->extra_cover as $extra_cover) {
+                    if((string)$item->bencode === $extra_cover->extra_cover_code) {
                         $extra_cover->premium = formatNumber($item->benpremium);
                         $total_benefit_amount += floatval($item->benpremium);
                         $extra_cover->selected = floatval($item->benpremium) == 0;
 
-                        if(isset($extra_cover->option_list->description) && $extra_cover->option_list->description == "Plan Type"){
-                            $extra_cover->sum_insured = ['Plan A', 'Plan B', 'Plan C'];
+                        if(isset($extra_cover->plan_type) && $extra_cover->plan_type !== ''){
+                            if((string)$item->bencode == 'smart_auto'){
+                                $extra_cover->sum_insured = ['Starter', 'Saver', 'Supreme'];
+                            }
+                            else{
+                                $extra_cover->sum_insured = ['Plan A', 'Plan B', 'Plan C'];
+                            }
                         }
-                        else{
+                        else {
                             if(!empty($extra->sumInsured)) {
                                 $extra_cover->sum_insured = formatNumber((float) $item->suminsured);
                             }
@@ -554,16 +581,8 @@ class AIG implements InsurerLibraryInterface
                 $extra_cover_name = 'Special Perils';
                 break;
             }
-            case '21': { 
-                $extra_cover_name = 'Smart Auto - Supreme';
-                break;
-            }
-            case '22': { 
-                $extra_cover_name = 'Smart Auto - Saver';
-                break;
-            }
-            case '23': { 
-                $extra_cover_name = 'Smart Auto - Starter';
+            case 'smart_auto': { 
+                $extra_cover_name = 'AIG Smart Auto';
                 break;
             }
             case '00136': { 
@@ -745,14 +764,24 @@ class AIG implements InsurerLibraryInterface
             foreach ($input->input->extra_cover as $extra_cover) {
                 $extra_cover_code = $extra_cover->extra_cover_code;
                 $extra_cover->extra_cover_description = $extra_cover->extra_cover_description;
-                if($extra_cover->sum_insured == 'Plan A'){
+                $plan_type = $extra_cover->plan_type ?? $extra_cover->sum_insured;
+                if($plan_type == 'Plan A'){
                     $extra_cover_code = $extra_cover_code . 'A';
                 }
-                else if($extra_cover->sum_insured == 'Plan B'){
+                else if($plan_type == 'Plan B'){
                     $extra_cover_code = $extra_cover_code . 'B';
                 }
-                else if($extra_cover->sum_insured == 'Plan C' ){
+                else if($plan_type == 'Plan C' ){
                     $extra_cover_code = $extra_cover_code . 'C';
+                }
+                else if($plan_type == 'Supreme'){
+                    $extra_cover_code = '21';
+                }
+                else if($plan_type == 'Saver'){
+                    $extra_cover_code = '22';
+                }
+                else if($plan_type == 'Starter'){
+                    $extra_cover_code = '23';
                 }
 
                 array_push($formatted_extra_cover, (object) [
@@ -1008,13 +1037,14 @@ class AIG implements InsurerLibraryInterface
             foreach ($input->input->extra_cover as $extra_cover) {
                 $extra_cover_code = $extra_cover->extra_cover_code;
                 $extra_cover->extra_cover_description = $extra_cover->extra_cover_description;
-                if($extra_cover->sum_insured == 'Plan A'){
+                $plan_type = $extra_cover->plan_type ?? $extra_cover->sum_insured;
+                if($plan_type == 'Plan A'){
                     $extra_cover_code = $extra_cover_code . 'A';
                 }
-                else if($extra_cover->sum_insured == 'Plan B'){
+                else if($plan_type == 'Plan B'){
                     $extra_cover_code = $extra_cover_code . 'B';
                 }
-                else if($extra_cover->sum_insured == 'Plan C' ){
+                else if($plan_type == 'Plan C' ){
                     $extra_cover_code = $extra_cover_code . 'C';
                 }
 
@@ -1229,13 +1259,14 @@ class AIG implements InsurerLibraryInterface
             foreach ($input->input->extra_cover as $extra_cover) {
                 $extra_cover_code = $extra_cover->extra_cover_code;
                 $extra_cover->extra_cover_description = $extra_cover->extra_cover_description;
-                if($extra_cover->sum_insured == 'Plan A'){
+                $plan_type = $extra_cover->plan_type ?? $extra_cover->sum_insured;
+                if($plan_type == 'Plan A'){
                     $extra_cover_code = $extra_cover_code . 'A';
                 }
-                else if($extra_cover->sum_insured == 'Plan B'){
+                else if($plan_type == 'Plan B'){
                     $extra_cover_code = $extra_cover_code . 'B';
                 }
-                else if($extra_cover->sum_insured == 'Plan C' ){
+                else if($plan_type == 'Plan C' ){
                     $extra_cover_code = $extra_cover_code . 'C';
                 }
 
@@ -1852,153 +1883,6 @@ class AIG implements InsurerLibraryInterface
         return $body_type;
     }
 
-    private function getExtraBenefitDescription($extra_cover_code, $engine_capacity = null) : string
-    {
-        $description = '';
-
-        switch ($extra_cover_code) {
-            case '00080': { 
-                $extra_cover_name = 'All Drivers';
-                break;
-            }
-            case '00112': { 
-                $extra_cover_name = 'Windscreen';
-                break;
-            }
-            case '00091B': { 
-                $extra_cover_name = 'Legal Liability to Passengers';
-                if($engine_capacity <= 1400) {
-                    $description .= ' (Up To 1400 CC)';
-                } else if($engine_capacity > 1400 && $engine_capacity <= 1650) {
-                    $description .= ' (1401-1650 CC)';
-                } else if($engine_capacity > 1650 && $engine_capacity <= 2200) {
-                    $description .= ' (1651-2200 CC)';
-                } else if($engine_capacity > 2200 && $engine_capacity <= 3050) {
-                    $description .= ' (2201-3050 CC)';
-                } else if($engine_capacity > 3050 && $engine_capacity <= 4100) {
-                    $description .= ' (3051-4400 CC)';
-                } else if($engine_capacity > 4100 && $engine_capacity <= 4250) {
-                    $description .= ' (4101-4250 CC)';
-                } else if($engine_capacity > 4250 && $engine_capacity <= 4400) {
-                    $description .= ' (4251-4400 CC)';
-                } else if($engine_capacity > 4400) {
-                    $description .= ' (Over 4400 CC)';
-                }
-                break;
-            }
-            case '00990B': { 
-                $extra_cover_name = 'Legal Liability of Passengers for Acts of Negligence';
-                break;
-            }
-            case '06033A': { 
-                $extra_cover_name = 'Strike Riot Civil Commotion';
-                break;
-            }
-            case '99999A': { 
-                $extra_cover_name = 'Special Perils';
-                break;
-            }
-            case '21': { 
-                $extra_cover_name = 'Smart Auto - Supreme';
-                break;
-            }
-            case '22': { 
-                $extra_cover_name = 'Smart Auto - Saver';
-                break;
-            }
-            case '23': { 
-                $extra_cover_name = 'Smart Auto - Starter';
-                break;
-            }
-            case '00136A': { 
-                $extra_cover_name = 'Cash Compensation due to Total Loss/Natural Perils';
-                break;
-            }
-            case '00136B': { 
-                $extra_cover_name = 'Cash Compensation due to Total Loss/Natural Perils';
-                break;
-            }
-            case '00136C': { 
-                $extra_cover_name = 'Cash Compensation due to Total Loss/Natural Perils';
-                break;
-            }
-            case '01032A': { 
-                $extra_cover_name = 'Daily Cash Allowance';
-                break;
-            }
-            case '01032B': { 
-                $extra_cover_name = 'Daily Cash Allowance';
-                break;
-            }
-            case '01032C': { 
-                $extra_cover_name = 'Daily Cash Allowance';
-                break;
-            }
-            case '01038A': { 
-                $extra_cover_name = 'Waiver of Betterment';
-                break;
-            }
-            case '01038B': { 
-                $extra_cover_name = 'Waiver of Betterment';
-                break;
-            }
-            case '00042': { 
-                $extra_cover_name = 'Tyres/Rims Repair/Replacement';
-                break;
-            }
-            case '00137': { 
-                $extra_cover_name = 'Car Loan Support';
-                break;
-            }
-            case '00125A': { 
-                $extra_cover_name = 'Key Replacement';
-                break;
-            }
-            case '00125B': { 
-                $extra_cover_name = 'Key Replacement';
-                break;
-            }
-            case '01037A': { 
-                $extra_cover_name = 'Total Car Body Paint';
-                break;
-            }
-            case '01037B': { 
-                $extra_cover_name = 'Total Car Body Paint';
-                break;
-            }
-            case '01037C': { 
-                $extra_cover_name = 'Total Car Body Paint';
-                break;
-            }
-            case '01100': { 
-                $extra_cover_name = 'Vehicle Break-in';
-                break;
-            }
-            case '00041': { 
-                $extra_cover_name = 'Transportation Fare';
-                break;
-            }
-            case '01036A': { 
-                $extra_cover_name = 'Personal Accident and Passanger Protection';
-                break;
-            }
-            case '01036B': { 
-                $extra_cover_name = 'Personal Accident and Passanger Protection';
-                break;
-            }
-            case '01040A': { 
-                $extra_cover_name = 'Passenger Protection';
-                break;
-            }
-            case '01040B': { 
-                $extra_cover_name = 'Passenger Protection';
-                break;
-            }
-        }
-
-        return $description;
-    }
-
     private function sortExtraCoverList(array $extra_cover_list) : array
     {
         foreach ($extra_cover_list as $_extra_cover) {
@@ -2028,60 +1912,52 @@ class AIG implements InsurerLibraryInterface
                     $sequence = 6;
                     break;
                 }
-                case '21': { 
+                case 'smart_auto': { 
                     $sequence = 7;
                     break;
                 }
-                case '22': { 
+                case '00136': { 
                     $sequence = 8;
                     break;
                 }
-                case '23': { 
+                case '01032': { 
                     $sequence = 9;
                     break;
                 }
-                case '00136': { 
+                case '01038': { 
                     $sequence = 10;
                     break;
                 }
-                case '01032': { 
+                case '00042': { 
                     $sequence = 11;
                     break;
                 }
-                case '01038': { 
+                case '00137': { 
                     $sequence = 12;
                     break;
                 }
-                case '00042': { 
+                case '00125': { 
                     $sequence = 13;
                     break;
                 }
-                case '00137': { 
+                case '01037': { 
                     $sequence = 14;
                     break;
                 }
-                case '00125': { 
+                case '01100': { 
                     $sequence = 15;
                     break;
                 }
-                case '01037': { 
+                case '00041': { 
                     $sequence = 16;
                     break;
                 }
-                case '01100': { 
+                case '01036': { 
                     $sequence = 17;
                     break;
                 }
-                case '00041': { 
-                    $sequence = 18;
-                    break;
-                }
-                case '01036': { 
-                    $sequence = 19;
-                    break;
-                }
                 case '01040': { 
-                    $sequence = 20;
+                    $sequence = 18;
                     break;
                 }
             }

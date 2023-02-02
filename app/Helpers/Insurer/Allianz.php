@@ -520,6 +520,7 @@ class Allianz implements InsurerLibraryInterface
                     'extra_cover_description' => $this->getExtraCoverDescription($extra_cover_code),
                     'sum_insured' => 0,
                     'premium' => 0,
+                    'plan_type' => ''
                 ]);
 
                 switch($extra_cover_code) {
@@ -593,7 +594,7 @@ class Allianz implements InsurerLibraryInterface
                         $item->option_list = $option_list;
 
                         // Default to RM 1,000
-                        $_sum_insured_amount = $option_list->values[0];
+                        $item->plan_type = $option_list->values[0];
                         break;
                     }
                 }
@@ -622,6 +623,7 @@ class Allianz implements InsurerLibraryInterface
             return $this->abort($motor_premium->response);
         }
 
+        $new_extracover_list = [];
         if(!empty($motor_premium->response->additionalCover)) {
             foreach($input->extra_cover as $extra_cover) {
                 foreach($motor_premium->response->additionalCover as $extra) {
@@ -629,14 +631,22 @@ class Allianz implements InsurerLibraryInterface
                         $extra_cover->premium = formatNumber((float) $extra->displayPremium);
                         $total_benefit_amount += (float)$extra->displayPremium;
                         $extra_cover->selected = (float)$extra->displayPremium == 0;
-    
-                        if(!empty($extra->coverSumInsured)) {
-                            $extra_cover->sum_insured = formatNumber((float) $extra->coverSumInsured);
+                        if(isset($extra_cover->plan_type) && $extra_cover->plan_type !== ''){
+                            $extra_cover->sum_insured = ['Plan A', 'Plan B', 'Plan C'];
+                        }
+                        else{
+                            if(!empty($extra->coverSumInsured)) {
+                                $extra_cover->sum_insured = formatNumber((float) $extra->coverSumInsured);
+                            }
+                        }
+                        if($extra_cover->premium > 0){
+                            array_push($new_extracover_list, $extra_cover);
                         }
                     }
                 }
             }
         }
+        $input->extra_cover = $new_extracover_list;
 
         $response = new PremiumResponse([
             'basic_premium' => formatNumber($motor_premium->response->premium->basicPremium),
@@ -1122,7 +1132,16 @@ class Allianz implements InsurerLibraryInterface
                 $coverSumInsured = $extra_cover->coverSumInsured ?? $extra_cover->sum_insured;
                 if($index == $count_ec){
                     if($coverCode == 'PAB-ERW'){
-                        $planCode = "";
+                        $plan_type = $extra_cover->plan_type ?? $extra_cover->sum_insured;
+                        if($plan_type == 'Plan A'){
+                            $planCode = "PABERWA";
+                        }
+                        else if($plan_type == 'Plan B'){
+                            $planCode = "PABERWB";
+                        }
+                        else if($plan_type == 'Plan C'){
+                            $planCode = "PABERWC";
+                        }
                         $additional_cover .= '{
                             "coverCode": "'.$coverCode.'",
                             "planCode": "'.$planCode.'"
@@ -1137,7 +1156,16 @@ class Allianz implements InsurerLibraryInterface
                 }
                 else{
                     if($coverCode == 'PAB-ERW'){
-                        $planCode = "";
+                        $plan_type = $extra_cover->plan_type ?? $extra_cover->sum_insured;
+                        if($plan_type == 'Plan A'){
+                            $planCode = "PABERWA";
+                        }
+                        else if($plan_type == 'Plan B'){
+                            $planCode = "PABERWB";
+                        }
+                        else if($plan_type == 'Plan C'){
+                            $planCode = "PABERWC";
+                        }
                         $additional_cover .= '{
                             "coverCode": "'.$coverCode.'",
                             "planCode": "'.$planCode.'"

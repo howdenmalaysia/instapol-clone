@@ -41,6 +41,9 @@ class ExtraCover extends DataTransferObject
 
     /** @var int|null */
     public $unit;
+    
+    /** @var string|null */
+    public $plan_type;
 }
 
 class CartList extends DataTransferObject
@@ -68,7 +71,4 @@ class OptionList extends DataTransferObject
 
     /** @var int|null */
     public $increment;
-
-    /** @var string|null */
-    public $plan_type;
 }

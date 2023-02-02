@@ -1364,6 +1364,7 @@ class Zurich implements InsurerLibraryInterface
             return $this->abort($premium->response);
         }
         $full_ext_prem = 0;
+        $new_extracover_list = [];
         if(!empty($premium->response->MotorExtraCoverDetails)) {
             foreach($input->extra_cover as $extra_cover) {
                 foreach($premium->response->MotorExtraCoverDetails as $extra) {
@@ -1380,10 +1381,14 @@ class Zurich implements InsurerLibraryInterface
                         if(!empty($extra->ExtCoverSumInsured)) {
                             $extra_cover->sum_insured = formatNumber((float) $extra->ExtCoverSumInsured);
                         }
+                        if($extra_cover->premium > 0){
+                            array_push($new_extracover_list, $extra_cover);
+                        }
                     }
                 }
             }
         }
+        $input->extra_cover = $new_extracover_list;
         $premium_data = $premium->response->PremiumDetails;
         $response = new PremiumResponse([
             'act_premium' => formatNumber($premium_data['ActPrem']),

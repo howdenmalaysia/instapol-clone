@@ -339,7 +339,12 @@
                         `;
 
                         Object.values(extra.option_list.values).forEach((option) => {
-                            html += `<option value="${option}" ${option === 1000 ? 'selected' : ''}>${'RM ' + option}</option>`;
+                            if (typeof option === 'string'){
+                                html += `<option value="${option}" ${option === 0 ? 'selected' : ''}>${option}</option>`;
+                            }
+                            else{
+                                html += `<option value="${option}" ${option === 1000 ? 'selected' : ''}>${'RM ' + option}</option>`;
+                            }
                         });
 
                         html += `</select></div></div></div>`;
@@ -643,7 +648,12 @@
 
         selected_extra_cover.forEach((extra_cover) => {
             if(extra_cover.option_list) {
-                extra_cover.sum_insured = parseFloat($(`#sum-insured-${$.escapeSelector(extra_cover.extra_cover_code)}`).val());
+                if(extra_cover.option_list.description == 'Plan Type'){
+                    extra_cover.plan_type = $(`#sum-insured-${$.escapeSelector(extra_cover.extra_cover_code)}`).val();
+                }
+                else{
+                    extra_cover.sum_insured = parseFloat($(`#sum-insured-${$.escapeSelector(extra_cover.extra_cover_code)}`).val());
+                }
             } else {
                 extra_cover.sum_insured = parseFloat($('#sum-insured-slider').val());
             }
