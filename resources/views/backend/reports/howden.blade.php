@@ -15,7 +15,7 @@
             <th>Total Payable</th>
             <th>Net Premium</th>
             <th>Total Commission (10%)</th>
-            <th>Discount (Total Pyable)</th>
+            <th>Discount (Total Payable)</th>
             <th>Discount (Premium Only)</th>
             <th>Discount (Road Tax Only)</th>
             <th>RoaxTax - Renewal Fee</th>
