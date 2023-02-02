@@ -485,7 +485,7 @@ class AIG implements InsurerLibraryInterface
                         $extra_cover->premium = formatNumber($item->benpremium);
                         $total_benefit_amount += floatval($item->benpremium);
                         $extra_cover->selected = floatval($item->benpremium) == 0;
-
+                        //plan type
                         if(isset($extra_cover->plan_type) && $extra_cover->plan_type !== ''){
                             if((string)$item->bencode == 'smart_auto'){
                                 $extra_cover->sum_insured = ['Starter', 'Saver', 'Supreme'];
