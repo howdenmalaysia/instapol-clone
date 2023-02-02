@@ -477,7 +477,7 @@ class PacificOrient implements InsurerLibraryInterface
         $input->vehicle = (object) [
             'expiry_date' => $input->insurance->expiry_date,
             'inception_date' => $input->insurance->inception_date,
-            'manufacture_year' => $input->insurance_motor->manufacture_year,
+            'manufacture_year' => $input->insurance_motor->manufactured_year,
             'ncd_percentage' => $input->insurance_motor->ncd_percentage,
             'nvic' => $input->insurance_motor->nvic,
             'sum_insured' => formatNumber($input->insurance_motor->market_value),
@@ -701,7 +701,7 @@ class PacificOrient implements InsurerLibraryInterface
             'cover_note_expiry_date' => Carbon::parse($input->vehicle->inception_date)->addYear()->subDay()->format('Y-m-d'),
             'customer_category' => self::CUSTOMER_CATEGORY,
             'customer_name' => $input->insurance->holder->name,
-            'date_of_birth' => $input->insurance->holder->date_of_birth,
+            'date_of_birth' => Carbon::parse($input->insurance->holder->date_of_birth)->format('Y-m-d'),
             'email' => $input->insurance->holder->email_address,
             'email_aggregator' => 'instapol@my.howdengroup.com',
             'engine_number' => $input->vehicle->extra_attribute->engine_number,
@@ -723,6 +723,7 @@ class PacificOrient implements InsurerLibraryInterface
             'permitted_drivers' => self::PERMITTED_DRIVERS,
             'phone_number' => $input->insurance->holder->phone_code . $input->insurance->holder->phone_number,
             'postcode' => $input->insurance->address->postcode,
+            'race' => $this->getRaceCode(raceChecker($input->insurance->holder->name)),
             'reference_number' => Str::uuid(),
             'safety_feature_code' => self::SAFETY_FEATURES,
             'seat_capacity' => $input->vehicle->extra_attribute->seating_capacity,
@@ -950,7 +951,7 @@ class PacificOrient implements InsurerLibraryInterface
     {
         $code = '';
 
-        switch($state) {
+        switch(ucwords($state)) {
             case 'Johor':
             case 'Kedah':
             case 'Kelantan':
@@ -1035,5 +1036,26 @@ class PacificOrient implements InsurerLibraryInterface
         }
 
         return $model_details;
+    }
+
+    private function getRaceCode(string $race)
+    {
+        $race_code = '';
+
+        switch($race) {
+            case 'Malay': {
+                $race_code = 'M';
+                break;
+            }
+            case 'Indian': {
+                $race_code = 'I';
+                break;
+            }
+            default: {
+                $race_code = 'C';
+            }
+        }
+
+        return $race_code;
     }
 }
