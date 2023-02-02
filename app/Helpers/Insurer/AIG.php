@@ -751,7 +751,7 @@ class AIG implements InsurerLibraryInterface
         if($input->input->occupation != '' || $input->input->occupation != null){
             $occupation = $input->input->occupation;
         }
-        // Format list additional driver
+        // Format list additional driver charges for third driver
         $additional_drivers = [];
         $index = 1;
         if(isset($input->input->additional_driver)) {
