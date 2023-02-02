@@ -458,9 +458,9 @@ class AIG implements InsurerLibraryInterface
         }
         // Add in Additional Named Driver if applicable
         if (isset($input->additional_driver)) {
-            if (count($input->additional_driver) > 0 && array_search('07', array_column($input->extra_cover, 'extra_cover_code')) == false) {
+            if (count($input->additional_driver) > 0 && array_search('00070', array_column($input->extra_cover, 'extra_cover_code')) == false) {
                 array_push($input->extra_cover, new ExtraCover([
-                    'extra_cover_code' => '07',
+                    'extra_cover_code' => '00070',
                     'extra_cover_description' => 'Named Persons',
                     'sum_insured' => 0,
                     'premium' => 0,
@@ -468,7 +468,7 @@ class AIG implements InsurerLibraryInterface
                     'plan_type' => '',
                 ]));
             } else {
-                $index = array_search('07', array_column($input->extra_cover, 'extra_cover_code'));
+                $index = array_search('00070', array_column($input->extra_cover, 'extra_cover_code'));
 
                 if(!empty($index)) {
                     $input->extra_cover[$index]->unit = count($input->additional_driver);
