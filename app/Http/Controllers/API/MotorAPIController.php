@@ -273,6 +273,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
     /** @return QuotationResponse|Response */
     public function createQuotation(Request $request)
     {
+        Log::info("[API/CreateQuotation] Received Request: " . json_encode($request->input()));
         $motor = toObject($request->motor);
 
         // Get State Details with Postcode
@@ -292,7 +293,6 @@ class MotorAPIController extends Controller implements MotorAPIInterface
         $motor->vehicle->variant = array_values(array_filter($motor->variants, function($variant) use($motor) {
             return $variant->nvic === $motor->vehicle->nvic;
         }))[0]->variant;
-
 
         $input = new APIData([
             'id_type' => $motor->policy_holder->id_type,

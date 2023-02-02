@@ -245,7 +245,7 @@ class PacificOrient implements InsurerLibraryInterface
                 $available_extra_covers = array_diff($available_extra_covers, ['06']);
             }
 
-            foreach(self::EXTRA_COVERAGE_LIST as $_extra_cover_code) {
+            foreach($available_extra_covers as $_extra_cover_code) {
                 $extra_cover = new ExtraCover([
                     'selected' => false,
                     'readonly' => false,
@@ -334,7 +334,9 @@ class PacificOrient implements InsurerLibraryInterface
                 foreach($input->extra_cover as $extra_cover) {
                     if((string) $extra->coverageId === $extra_cover->extra_cover_code) {
                         $extra_cover->premium = formatNumber((float) $extra->premium);
-                        $extra_cover->selected = (float) $extra->premium == 0;
+                        if($extra_cover->extra_cover_code != '06') {
+                            $extra_cover->selected = (float) $extra->premium == 0;
+                        }
     
                         if(!empty($extra->sumInsured)) {
                             $extra_cover->sum_insured = formatNumber((float) $extra->sumInsured);
@@ -380,7 +382,9 @@ class PacificOrient implements InsurerLibraryInterface
             $response->stamp_duty = $stamp_duty;
             $response->sst_amount = $sst_amount;
             $response->sst_percent = $sst_percent;
-            $response->total_benefit_amount = 0;
+            $response->total_benefit_amount = array_filter($input->extra_cover, function ($extra_cover) {
+                return $extra_cover->extra_cover_code == '06';
+            })[0]->premium ?? 0;
             $response->total_payable = $total_payable;
 
             $response->vehicle = $vehicle;
