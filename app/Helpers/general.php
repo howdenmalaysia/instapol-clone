@@ -213,3 +213,14 @@ if (!function_exists('getPreVehicleNCD')) {
     }
 }
 
+if(!function_exists('raceChecker')) {
+    function raceChecker(string $name) {
+        if(strpos($name, 'A/L') !== false || strpos($name, 'A/P') !== false) {
+            return 'Indian';
+        } else if(strpos($name, 'bin') !== false || strpos($name, 'binti') !== false) {
+            return 'Malay';
+        } else {
+            return 'Chinese';
+        }
+    }
+}
