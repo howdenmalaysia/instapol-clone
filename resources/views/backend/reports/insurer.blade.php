@@ -1,10 +1,8 @@
 <table>
     <thead>
         <tr>
-            <th>Settlement</th>
-            <th>Insurance ID</th>
-            <th>Insurance Name</th>
-            <th>Transaction Date</th>
+            <th>Transaction ID</th>
+            <th>Transaction Date & Time</th>
             <th>Policy Start Date</th>
             <th>Policy Number</th>
             <th>Vehicle Number</th>
@@ -14,24 +12,7 @@
             <th>Stamp Duty</th>
             <th>Total Payable</th>
             <th>Net Premium</th>
-            <th>Total Commission (10%)</th>
-            <th>Discount (Total Pyable)</th>
-            <th>Discount (Premium Only)</th>
-            <th>Discount (Road Tax Only)</th>
-            <th>RoaxTax - Renewal Fee</th>
-            <th>RoadTax - MYEG Fee</th>
-            <th>RoadTax - Delivery Fee</th>
-            <th>RoadTax - eService Fee</th>
-            <th>Roadtax - Service Tax</th>
-            <th>Total Payable (incl Road Tax)</th>
-            <th>Payment Gateway (Online Transfer)</th>
-            <th>Payment Gateway (Credit Card)</th>
-            <th>Outstanding (eGHL)</th>
-            <th>Net Transfer Amount (Insurer)</th>
-            <th>Net Transfer Amount (Howden)</th>
-            <th>Referrer</th>
-            <th>Email Domain</th>
-            <th>Promo Code</th>
+            <th>Net Transfer Amount</th>
         </tr>
     </thead>
     <tbody>

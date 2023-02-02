@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\Settlement;
 
-use App\Exports\InsurerReportExport;
-use App\Mail\InsurerSettlementMail;
+use App\Exports\HowdenReportExport;
+use App\Mail\HowdenSettlementMail;
 use App\Models\CronJobs;
 use App\Models\EGHLLog;
 use App\Models\Motor\Insurance;
@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
 
-class InsurerSettlement extends Command
+class MonthlySettlement extends Command
 {
     const DATE_FORMAT = 'Y-m-d';
 
@@ -26,14 +26,14 @@ class InsurerSettlement extends Command
      *
      * @var string
      */
-    protected $signature = 'settlement:insurers {start_date?} {end_date?} {frequency?}';
+    protected $signature = 'settlement:monthly {start_date?} {end_date?}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'To Generate & Send Settlement Report to Insurers';
+    protected $description = 'To Generate & Send Monthly Settlement Report to Howden';
 
     /**
      * Create a new command instance.
@@ -52,22 +52,19 @@ class InsurerSettlement extends Command
      */
     public function handle()
     {
-        Log::info("[Cron - Insurer Settlement] Start Generating Reports.");
-
+        Log::info("[Cron - Monthly Settlement] Start Generating Reports.");
+        
         $start_date = $end_date = Carbon::now()->format(self::DATE_FORMAT);
         if(!empty($this->argument('start_date')) && !empty($this->argument('end_date'))) {
             $start_date = Carbon::parse($this->argument('start_date'))->format(self::DATE_FORMAT);
             $end_date = Carbon::parse($this->argument('end_date'))->format(self::DATE_FORMAT);
-        } else if(Carbon::now()->englishDayOfWeek === 'Wednesday') {
-            $start_date = Carbon::parse('last Friday')->startOfDay()->format(self::DATE_FORMAT); // Last Friday 00:00:00
-            $end_date = Carbon::now()->subDay()->endOfDay()->format(self::DATE_FORMAT); // Yesterday 23:59:59
-        } else if (Carbon::now()->englishDayOfWeek === 'Friday') {
-            $start_date = Carbon::parse('last Wednesday')->startOfDay()->format(self::DATE_FORMAT); // Last Wednesday 00:00:00
-            $end_date = Carbon::now()->subDay()->endOfDay()->format(self::DATE_FORMAT); // Yesterday 23:59:59
+        } else if(Carbon::now()->day === 1) {
+            $start_date = Carbon::now()->subDay()->startOfMonth()->format(self::DATE_FORMAT); // 1st of Last Month 00:00:00
+            $end_date = Carbon::now()->subDay()->endOfMonth()->format(self::DATE_FORMAT); // Yesterday 23:59:59
         } else {
             // Throw Error
-            $day = Carbon::now()->englishDayOfWeek;
-            Log::error("[Cron - eGHL Settlement] Shouldn't run settlement today, {$day}.");
+            $day = Carbon::now()->format(self::DATE_FORMAT);
+            Log::error("[Cron - Monthly Settlement] Shouldn't run settlement today, {$day}.");
             return;
         }
 
@@ -86,10 +83,10 @@ class InsurerSettlement extends Command
             if(empty($records)) {
                 $message = 'No Eligible Records Found!';
 
-                Log::error("[Cron - Insurer Settlement] {$message}.");
+                Log::error("[Cron - Howden Internal Settlement] {$message}");
 
                 CronJobs::create([
-                    'description' => 'Send Settlement Report to Insurers',
+                    'description' => 'Send Settlement Report to Howden Internal',
                     'param' => json_encode([
                         'start_date' => $start_date,
                         'end_date' => $end_date
@@ -101,12 +98,21 @@ class InsurerSettlement extends Command
                 return;
             }
     
-            $rows = 0;
+            $rows = $total_commission = $total_eservice_fee = $total_sst = $total_payment_gateway_charges = $total_premium = $total_outstanding = 0;
+            $row_data = $details = [];
 
-            $records->each(function($insurances, $product_id) use($start_date, &$rows) {
-                $total_commission = $total_eservice_fee = $total_sst = $total_payment_gateway_charges = $total_premium = $total_outstanding = $insurer_net_transfer = 0;
-                $row_data = [];
-
+            $records->each(function($insurances, $product_id) use(
+                &$rows,
+                &$row_data,
+                $start_date,
+                &$total_commission,
+                &$total_eservice_fee,
+                &$total_sst,
+                &$total_discount,
+                &$total_payment_gateway_charges,
+                &$total_premium)
+            {
+                $insurer_net_transfer = 0;
                 $product = Product::with(['insurance_company'])
                     ->findOrFail($product_id);
     
@@ -239,49 +245,44 @@ class InsurerSettlement extends Command
                     $rows++;
                 });
 
-                $filenames = [];
-                foreach($row_data as $product_id => $values) {
-                    $product = Product::with(['insurance_company'])
-                        ->findOrFail($product_id);
-    
-                    $insurer_name = Str::snake(ucwords($product->insurance_company->name));
-    
-                    $filename = "{$insurer_name}{$product->insurance_company->id}_settlement_{$start_date}.xlsx";
-                    array_push($filenames, $filename);
-                    Excel::store(new InsurerReportExport($values), $filename);
-                }
-    
-                $data = [
-                    'insurer_name' => $product->insurance_company->name,
-                    'start_date' => $start_date,
-                    'total_commission' => $total_commission,
-                    'total_eservice_fee' => $total_eservice_fee,
-                    'total_sst' => $total_sst,
-                    'total_discount' => $total_discount,
-                    'total_payment_gateway_charges' => $total_payment_gateway_charges,
-                    'net_transfer_amount_insurer' => $total_premium - $total_commission,
-                    'net_transfer_amount' => $total_commission,
-                    'total_outstanding' => $total_outstanding,
-                    'details' => [[
-                        $product->insurance_company->name,
-                        $insurances->count(),
-                        $insurer_net_transfer
-                    ]]
-                ];
-    
-                Log::info("[Cron - Insurer Settlement] Sending Settlement Report to {$product->insurance_company->name} [{$product->insurance_company->email_to},{$product->insurance_company->email_cc}]");
-    
-                
-                Mail::to(explode(',', $product->insurance_company_email_to))
-                    ->cc(explode(',', $product->insurance_company->email_cc . ',' . config('setting.howden.affinity_team_email')))
-                    ->bcc(config('setting.howden.it_dev_mail'))
-                    ->send(new InsurerSettlementMail($filenames, $data));
-    
-                Log::info("[Cron - Insurer Settlement] Report to {$product->insurance_company->name} sent successfully.");
+                array_push($details, [
+                    $product->insurance_company->name,
+                    $insurances->count(),
+                    $insurer_net_transfer
+                ]);
             });
 
+            $filenames = [];
+            foreach($row_data as $product_id => $values) {
+                $product = Product::with(['insurance_company'])
+                    ->findOrFail($product_id);
 
-            Log::info("[Cron - Insurer Settlement] {$rows} records processed. [{$start_date} to {$end_date}]");
+                $insurer_name = Str::snake(ucwords($product->insurance_company->name));
+
+                $filename = "{$insurer_name}{$product->insurance_company->id}_settlement_{$start_date}.xlsx";
+                array_push($filenames, $filename);
+                Excel::store(new HowdenReportExport($values), $filename);
+            }
+
+            $data = [
+                'start_date' => $start_date,
+                'total_commission' => $total_commission,
+                'total_eservice_fee' => $total_eservice_fee,
+                'total_sst' => $total_sst,
+                'total_discount' => $total_discount,
+                'total_payment_gateway_charges' => $total_payment_gateway_charges,
+                'net_transfer_amount_insurer' => $total_premium - $total_commission,
+                'net_transfer_amount' => $total_commission,
+                'total_outstanding' => $total_outstanding,
+                'details' => $details
+            ];
+
+            Mail::to(explode(',', config('setting.settlement.howden.email_to')))
+                ->cc(explode(',', config('setting.settlement.howden.email_cc')))
+                ->bcc(config('setting.howden.it_dev_mail'))
+                ->send(new HowdenSettlementMail($filenames, $data));
+
+            Log::info("[Cron - Howden Internal Settlement] {$rows} records processed. [{$start_date} to {$end_date}]");
 
             $this->info("{$rows} records processed");
         } catch (Exception $ex) {
@@ -294,8 +295,7 @@ class InsurerSettlement extends Command
                 ])
             ]);
 
-            Log::error("[Cron - Insurer Settlement] An Error Encountered. {$ex->getMessage()}");
+            Log::error("[Cron - Howden Internal Settlement] An Error Encountered. {$ex->getMessage()}");
         }
-
     }
 }
