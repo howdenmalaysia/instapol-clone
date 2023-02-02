@@ -650,7 +650,7 @@
 
         selected_extra_cover.forEach((extra_cover) => {
             if(extra_cover.option_list) {
-                if(extra_cover.option_list.description == 'Plan Type'){
+                if(extra_cover.plan_type != ''){
                     extra_cover.plan_type = $(`#sum-insured-${$.escapeSelector(extra_cover.extra_cover_code)}`).val();
                 }
                 else{
