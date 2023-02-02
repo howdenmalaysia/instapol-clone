@@ -723,7 +723,7 @@ class PacificOrient implements InsurerLibraryInterface
             'permitted_drivers' => self::PERMITTED_DRIVERS,
             'phone_number' => $input->insurance->holder->phone_code . $input->insurance->holder->phone_number,
             'postcode' => $input->insurance->address->postcode,
-            'race' => $this->getRaceCode(raceChecker($input->insurance->holder->name)),
+            'race' => $input->insurance->holder->id_type_id === config('setting.id_type.nric_no') ? strtoupper(raceChecker($input->insurance->holder->name)) : 'CORPORATE',
             'reference_number' => Str::uuid(),
             'safety_feature_code' => self::SAFETY_FEATURES,
             'seat_capacity' => $input->vehicle->extra_attribute->seating_capacity,
@@ -1036,26 +1036,5 @@ class PacificOrient implements InsurerLibraryInterface
         }
 
         return $model_details;
-    }
-
-    private function getRaceCode(string $race)
-    {
-        $race_code = '';
-
-        switch($race) {
-            case 'Malay': {
-                $race_code = 'M';
-                break;
-            }
-            case 'Indian': {
-                $race_code = 'I';
-                break;
-            }
-            default: {
-                $race_code = 'C';
-            }
-        }
-
-        return $race_code;
     }
 }
