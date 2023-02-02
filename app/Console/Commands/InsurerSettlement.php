@@ -168,9 +168,7 @@ class InsurerSettlement extends Command
 
                     if(array_key_exists($product->id, $row_data)) {
                         array_push($row_data[$product->id], [
-                            $start_date,
                             $insurance->id,
-                            $product->insurance_company->name,
                             $insurance->updated_at->format(self::DATE_FORMAT),
                             $insurance->inception_date,
                             $insurance->policy_number,
@@ -181,30 +179,11 @@ class InsurerSettlement extends Command
                             $insurance->premium->stamp_duty,
                             number_format($payable, 2),
                             number_format($net_premium, 2),
-                            $total_transfer,
-                            $discount_target === 'total_payable' ? $discount_amount : '',
-                            $discount_target === 'gross_premium' ? $discount_amount : '',
-                            $discount_target === 'roadtax' ? $discount_amount : '',
-                            $insurance_motor->roadtax->roadtax_renewal_fee ?? '',
-                            $insurance_motor->roadtax->myeg_fee ?? '',
-                            '',
-                            $insurance_motor->roadtax->e_service_fee ?? '',
-                            $insurance_motor->roadtax->service_tax ?? '',
-                            $insurance->amount,
-                            $eghl_log->service_id === 'CBI' ? number_format($insurance->amount * 0.015, 2) : '',
-                            $eghl_log->service_id === 'CBH' ? number_format($insurance->amount * 0.018, 2) : '',
-                            'N/A',
-                            ($insurance->amount - $roadtax_premium) * 0.9,
-                            ($insurance->amount - $roadtax_premium) * 0.1 + $roadtax_premium,
-                            $insurance->referrer,
-                            Str::afterLast($insurance->holder->email_address, '@'),
-                            !empty($insurance->promo) ? $insurance->promo->promo->code : ''
+                            $total_transfer
                         ]);
                     } else {
                         $row_data[$product->id][] = [
-                            $start_date,
                             $insurance->id,
-                            $product->insurance_company->name,
                             $insurance->updated_at->format(self::DATE_FORMAT),
                             $insurance->inception_date,
                             $insurance->policy_number,
@@ -215,24 +194,7 @@ class InsurerSettlement extends Command
                             $insurance->premium->stamp_duty,
                             number_format($payable, 2),
                             number_format($net_premium, 2),
-                            $total_transfer,
-                            $discount_target === 'total_payable' ? $discount_amount : '',
-                            $discount_target === 'gross_premium' ? $discount_amount : '',
-                            $discount_target === 'roadtax' ? $discount_amount : '',
-                            $insurance_motor->roadtax->roadtax_renewal_fee ?? '',
-                            $insurance_motor->roadtax->myeg_fee ?? '',
-                            '',
-                            $insurance_motor->roadtax->e_service_fee ?? '',
-                            $insurance_motor->roadtax->service_tax ?? '',
-                            $insurance->amount,
-                            $eghl_log->service_id === 'CBI' ? number_format($insurance->amount * 0.015, 2) : '',
-                            $eghl_log->service_id === 'CBH' ? number_format($insurance->amount * 0.018, 2) : '',
-                            'N/A',
-                            ($insurance->amount - $roadtax_premium) * 0.9,
-                            ($insurance->amount - $roadtax_premium) * 0.1 + $roadtax_premium,
-                            $insurance->referrer,
-                            Str::afterLast($insurance->holder->email_address, '@'),
-                            !empty($insurance->promo) ? $insurance->promo->promo->code : ''
+                            $total_transfer
                         ];
                     }
     

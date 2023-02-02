@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Exports\InsurerReportExport;
+use App\Exports\HowdenReportExport;
 use App\Mail\HowdenSettlementMail;
 use App\Models\CronJobs;
 use App\Models\EGHLLog;
@@ -264,7 +264,7 @@ class HowdenSettlement extends Command
 
                 $filename = "{$insurer_name}{$product->insurance_company->id}_settlement_{$start_date}.xlsx";
                 array_push($filenames, $filename);
-                Excel::store(new InsurerReportExport($values), $filename);
+                Excel::store(new HowdenReportExport($values), $filename);
             }
 
             $data = [
