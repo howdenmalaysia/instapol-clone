@@ -57,7 +57,7 @@ class OptionList extends DataTransferObject
     /** @var string */
     public $name;
 
-    /** @var string */
+    /** @var string|null */
     public $description;
 
     /** @var array */

@@ -112,7 +112,9 @@
                                                 @if (!empty($_extra_cover->option_list))
                                                     <div class="row">
                                                         <div class="col-5 px-md-3 mb-3 ms-3">
-                                                            <small>{{ $_extra_cover->option_list->description . ':' }}</small>
+                                                            @if (!empty($_extra_cover->option_list->description))
+                                                                <small>{{ $_extra_cover->option_list->description . ':' }}</small>
+                                                            @endif
                                                             <select id="{{ 'sum-insured-' . $_extra_cover->extra_cover_code }}" class="option-list" data-select data-extra-cover-code="{{ $_extra_cover->extra_cover_code }}">
                                                                 @foreach ($_extra_cover->option_list->values as $index => $option)
                                                                     @if (is_string($option))
