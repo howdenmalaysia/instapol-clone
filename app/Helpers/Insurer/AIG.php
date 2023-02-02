@@ -328,7 +328,7 @@ class AIG implements InsurerLibraryInterface
                     case '00136': { 
                         $option_list = new OptionList([
                             'name' => 'sum_insured',
-                            'description' => '',
+                            'description' => 'Option List',
                             'values' => ['Plan A', 'Plan B', 'Plan C'],
                             'any_value' => true,
                             'increment' => null
@@ -343,7 +343,7 @@ class AIG implements InsurerLibraryInterface
                     case '01032': { 
                         $option_list = new OptionList([
                             'name' => 'sum_insured',
-                            'description' => '',
+                            'description' => 'Option List',
                             'values' => ['Plan A', 'Plan B', 'Plan C'],
                             'any_value' => true,
                             'increment' => null
@@ -358,7 +358,7 @@ class AIG implements InsurerLibraryInterface
                     case '01038': { 
                         $option_list = new OptionList([
                             'name' => 'sum_insured',
-                            'description' => '',
+                            'description' => 'Option List',
                             'values' => ['Plan A', 'Plan B'],
                             'any_value' => true,
                             'increment' => null
@@ -373,7 +373,7 @@ class AIG implements InsurerLibraryInterface
                     case '00125': { 
                         $option_list = new OptionList([
                             'name' => 'sum_insured',
-                            'description' => '',
+                            'description' => 'Option List',
                             'values' => ['Plan A', 'Plan B'],
                             'any_value' => true,
                             'increment' => null
@@ -388,7 +388,7 @@ class AIG implements InsurerLibraryInterface
                     case '01037': { 
                         $option_list = new OptionList([
                             'name' => 'sum_insured',
-                            'description' => '',
+                            'description' => 'Option List',
                             'values' => ['Plan A', 'Plan B', 'Plan C'],
                             'any_value' => true,
                             'increment' => null
@@ -403,7 +403,7 @@ class AIG implements InsurerLibraryInterface
                     case '01036': { 
                         $option_list = new OptionList([
                             'name' => 'sum_insured',
-                            'description' => '',
+                            'description' => 'Option List',
                             'values' => ['Plan A', 'Plan B'],
                             'any_value' => true,
                             'increment' => null
@@ -418,7 +418,7 @@ class AIG implements InsurerLibraryInterface
                     case '01040': { 
                         $option_list = new OptionList([
                             'name' => 'sum_insured',
-                            'description' => '',
+                            'description' => 'Option List',
                             'values' => ['Plan A', 'Plan B'],
                             'any_value' => true,
                             'increment' => null
@@ -433,7 +433,7 @@ class AIG implements InsurerLibraryInterface
                     case 'smart_auto': { 
                         $option_list = new OptionList([
                             'name' => 'sum_insured',
-                            'description' => '',
+                            'description' => 'Option List',
                             'values' => ['Starter', 'Saver', 'Supreme'],
                             'any_value' => true,
                             'increment' => null
