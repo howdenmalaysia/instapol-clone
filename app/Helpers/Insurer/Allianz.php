@@ -586,7 +586,7 @@ class Allianz implements InsurerLibraryInterface
                     case 'PAB-ERW': {
                         $option_list = new OptionList([
                             'name' => 'sum_insured',
-                            'description' => 'Plan Type',
+                            'description' => 'Option List',
                             'values' => ['Plan A', 'Plan B', 'Plan C'],
                             'any_value' => true,
                             'increment' => null
