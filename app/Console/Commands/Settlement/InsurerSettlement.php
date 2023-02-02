@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\Settlement;
 
 use App\Exports\InsurerReportExport;
 use App\Mail\InsurerSettlementMail;
@@ -67,7 +67,7 @@ class InsurerSettlement extends Command
         } else {
             // Throw Error
             $day = Carbon::now()->englishDayOfWeek;
-            Log::error("[Cron - eGHL Settlement] Shouldn't run settlement today, {$day}.");
+            Log::error("[Cron - Insurer Settlement] Shouldn't run settlement today, {$day}.");
             return;
         }
 

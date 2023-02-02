@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\Settlement;
 
 use App\Exports\HowdenReportExport;
 use App\Mail\HowdenSettlementMail;
@@ -300,6 +300,5 @@ class HowdenSettlement extends Command
 
             Log::error("[Cron - Howden Internal Settlement] An Error Encountered. {$ex->getMessage()}");
         }
-
     }
 }
