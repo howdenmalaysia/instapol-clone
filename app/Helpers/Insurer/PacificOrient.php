@@ -382,7 +382,7 @@ class PacificOrient implements InsurerLibraryInterface
             $response->stamp_duty = $stamp_duty;
             $response->sst_amount = $sst_amount;
             $response->sst_percent = $sst_percent;
-            $response->total_benefit_amount = 0;
+            $response->total_benefit_amount = $total_benefit_amount;
             $response->total_payable = $total_payable;
 
             $response->vehicle = $vehicle;
