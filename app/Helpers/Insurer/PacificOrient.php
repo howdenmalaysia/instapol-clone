@@ -382,7 +382,9 @@ class PacificOrient implements InsurerLibraryInterface
             $response->stamp_duty = $stamp_duty;
             $response->sst_amount = $sst_amount;
             $response->sst_percent = $sst_percent;
-            $response->total_benefit_amount = $total_benefit_amount;
+            $response->total_benefit_amount = array_filter($input->extra_cover, function ($extra_cover) {
+                return $extra_cover->extra_cover_code == '06';
+            })[0]->premium ?? 0;
             $response->total_payable = $total_payable;
 
             $response->vehicle = $vehicle;
