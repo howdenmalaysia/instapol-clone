@@ -307,7 +307,24 @@ class AIG implements InsurerLibraryInterface
                 
                 $sum_insured_amount = 0;
                 
-                switch($_extra_cover_code) { 
+                switch($_extra_cover_code) {
+                    case '00112': {
+                        // Generate Options From 500 To 10,000
+                        $option_list = new OptionList([
+                            'name' => 'sum_insured',
+                            'description' => 'Sum Insured Amount',
+                            'values' => generateExtraCoverSumInsured(500, 10000, 1000),
+                            'any_value' => true,
+                            'increment' => 100
+                        ]);
+
+                        $extra_cover->option_list = $option_list;
+
+                        // Default to RM1,000 to Get Premium
+                        $sum_insured_amount = $option_list->values[1];
+
+                        break;
+                    }
                     case '00136': { 
                         $option_list = new OptionList([
                             'name' => 'sum_insured',
@@ -783,11 +800,13 @@ class AIG implements InsurerLibraryInterface
                 else if($plan_type == 'Starter'){
                     $extra_cover_code = '23';
                 }
-
+                if($extra_cover_code == '00112'){
+                    $sum_insured_amount = $extra_cover->sum_insured;
+                }
                 array_push($formatted_extra_cover, (object) [
                     'extra_cover_code' => $extra_cover_code,
                     'extra_cover_description' => $extra_cover->extra_cover_description,
-                    'sum_insured' => 0,
+                    'sum_insured' => $sum_insured_amount ?? 0,
                     'unit' => $extra_cover->unit ?? 0,
                     'premium' => 0,
                     'commperc' => 0,
@@ -860,7 +879,7 @@ class AIG implements InsurerLibraryInterface
             'loadingamt' => '0',
             'loadingperc' => '0',
             'makecodemajor' => $input->vehicle->extra_attribute->make_code,
-            'makecodeminor' => $input->vehicle->extra_attribute->model_code,
+            'makecodeminor' => str_pad($input->vehicle->extra_attribute->model_code, 2, '0', STR_PAD_LEFT),
             'makeyear' => $input->vehicle->manufacture_year,
             'maritalstatus' => $input->input->marital_status,
             'mtcycrider' => 'S',
