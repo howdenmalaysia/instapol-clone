@@ -38,13 +38,13 @@ class AmGeneral implements InsurerLibraryInterface
 	private string $password;
 	private string $java_loc;
 	private string $channel_token;
-	private const master_data = '';
 
 	private string $encrypt_password;
 	private string $encrypt_salt;
 	private string $encrypt_iv;
 	private int $encrypt_pswd_iterations;
 	private int $encrypt_key_size;
+	private string $brand;
 	private string $encrypt_method = "AES-256-CBC";
     private const MIN_SUM_INSURED = 10000;
     private const MAX_SUM_INSURED = 500000;
@@ -73,6 +73,7 @@ class AmGeneral implements InsurerLibraryInterface
 		$this->encrypt_pswd_iterations = config('insurer.config.am_config.encrypt_pswd_iterations');
 		$this->encrypt_key_size = config('insurer.config.am_config.encrypt_key_size');
 		$this->channel_token = config('insurer.config.am_config.channel_token');
+		$this->brand = config('insurer.config.am_config.brand');
 	}
 
 	public function get_token(){
@@ -434,7 +435,7 @@ class AmGeneral implements InsurerLibraryInterface
 			"newICNo"=>$input->id_number,
 			"vehicleClass"=>$vehicle->extra_attribute->vehicleClass,
 			"vehicleNo"=>$input->vehicle_number,
-			"brand"=>'Kurnia',
+			"brand"=>$this->brand,
 			"dob"=>$dob,
 			"clientName"=>$input->name ?? config('app.name'),
 			"genderCode"=>$input->gender,
@@ -649,7 +650,7 @@ class AmGeneral implements InsurerLibraryInterface
 			"busRegNo"=>"",
 			"vehicleClass"=>"PC",
 			"vehicleNo"=>$cParams->vehicle_number,
-			"brand"=>"",
+			"brand"=>$this->brand,
 			"insuredPostCode"=>$cParams->postcode,
 			"vehiclePostCode"=>$cParams->postcode,
 			"dob"=>$dob,
@@ -852,7 +853,7 @@ class AmGeneral implements InsurerLibraryInterface
 			"newICNo"=>$cParams->id_number,
 			"vehicleClass"=>'PC',
 			"vehicleNo"=>$cParams->vehicle_number,
-			"brand"=>'Kurnia',
+			"brand"=>$this->brand,
 			"dob"=>$dob,
 			"clientName"=>$cParams->name ?? config('app.name'),
 			"genderCode"=>$cParams->gender,
@@ -1295,7 +1296,6 @@ class AmGeneral implements InsurerLibraryInterface
 			];
 
 			$postfield = "grant_type=client_credentials&scope=resource.READ,resource.WRITE";
-			dump($options);
         }
         else{
             $token = $this->get_token();
@@ -1334,6 +1334,7 @@ dump($options);
         ]);
 
 		$result = HttpClient::curl('POST', $host, $options);
+		dump($result);
 
         // Update the API log
         APILogs::find($log->id)

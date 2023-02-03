@@ -36,6 +36,7 @@ return [
             'encrypt_pswd_iterations' => 10,
             'encrypt_key_size' => 32,
             'channel_token' => env('AMGEN_MOTOR_API_CHANNEL_TOKEN'),
+            'brand' => env('AMGEN_MOTOR_API_BRAND'),
         ],
         'zurich_config'=> [
             'host_vix' => env('ZURICH_MOTOR_API_HOST_VIX'),

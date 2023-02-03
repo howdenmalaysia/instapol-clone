@@ -171,12 +171,33 @@ class AIG implements InsurerLibraryInterface
 			return $this->abort($result->response);
 		}
 
-		$result->response->quotation_number = $result->response->quotation_number;
-
-		return (object) [
-			'status' => true,
-			'response' => $result->response
-		];
+        return (object) [
+            'status' => true,
+            'response' => new PremiumResponse([
+                'act_premium' => $result->response->act_premium,
+                'basic_premium' => $result->response->basic_premium,
+                'excess_amount' => $result->response->excess_amount,
+                'extra_cover' => $this->sortExtraCoverList($input->extra_cover),
+                'gross_premium' => $result->response->gross_premium,
+                'ncd_amount' => $result->response->ncd_amount,
+                'ncd_percentage' => $result->response->ncd_percentage,
+                'net_premium' => $result->response->net_premium,
+                'sst_amount' => $result->response->sst_amount,
+                'sst_percent' => $result->response->sst_percent,
+                'stamp_duty' => $result->response->stamp_duty,
+                'tariff_premium' => $result->response->tariff_premium,
+                'total_benefit_amount' => $result->response->total_benefit_amount,
+                'total_payable' => $result->response->total_payable,
+                'request_id' => $result->response->request_id,
+                'loading' => $result->response->loading,
+                'sum_insured' => $result->response->sum_insured,
+                'sum_insured_type' => $input->vehicle->sum_insured_type,
+                'min_sum_insured' => floatval($input->vehicle->min_sum_insured),
+                'max_sum_insured' => floatval($input->vehicle->max_sum_insured),
+                'fl_quote_number' => $result->response->fl_quote_number,
+                'named_drivers_needed' => true,
+            ])
+        ];
     }
 
     public function cover_note(object $input) : object
@@ -464,7 +485,7 @@ class AIG implements InsurerLibraryInterface
                     'extra_cover_description' => 'Named Persons',
                     'sum_insured' => 0,
                     'premium' => 0,
-                    'unit' => count($input->additional_driver),
+                    'unit' => count($input->additional_driver) - 2,
                     'plan_type' => '',
                 ]));
             } else {
@@ -501,7 +522,6 @@ class AIG implements InsurerLibraryInterface
                     if((string)$item->bencode === $extra_cover->extra_cover_code) {
                         $extra_cover->premium = formatNumber($item->benpremium);
                         $total_benefit_amount += floatval($item->benpremium);
-                        $extra_cover->selected = floatval($item->benpremium) == 0;
                         //plan type
                         if(isset($extra_cover->plan_type) && $extra_cover->plan_type !== ''){
                             if((string)$item->bencode == 'smart_auto'){
@@ -512,10 +532,14 @@ class AIG implements InsurerLibraryInterface
                             }
                         }
                         else {
-                            if(!empty($extra->sumInsured)) {
+                            if(is_string($extra_cover->sum_insured) || formatNumber($extra_cover->sum_insured) > 0 ){
+                                $extra_cover->sum_insured = formatNumber((float) $item->suminsured);
+                            }
+                            else if(!empty($extra_cover->sumInsured)) {
                                 $extra_cover->sum_insured = formatNumber((float) $item->suminsured);
                             }
                         }
+                        $extra_cover->selected = (float) $item->benpremium == 0;
                         if($extra_cover->premium > 0){
                             array_push($new_extracover_list, $extra_cover);
                         }
@@ -753,27 +777,36 @@ class AIG implements InsurerLibraryInterface
         }
         // Format list additional driver charges for third driver
         $additional_drivers = [];
+        $drivers_count = 1;
         $index = 1;
         if(isset($input->input->additional_driver)) {
             foreach ($input->input->additional_driver as $additional_driver) {
                 if($additional_driver->id_number != '' || $additional_driver->id_number != null){
                     $age = getAgeFromIC($additional_driver->id_number);
-                    array_push($additional_drivers, (object) [
-                        'age' => $age,
-                        'dob' => formatDateFromIC($additional_driver->id_number),
-                        'gender' => getGenderFromIC($additional_driver->id_number),
-                        'exp' => $age - 18 < 0 ? 0 : $age - 18,
-                        'marital' => '',
-                        'occup' => '',
-                        'rel' => $additional_driver->relationship,
-                        'icno' => $additional_driver->id_number,
-                        'index' => $index,
-                        'name' => $additional_driver->name,
-                        'oicno' => '',
-                    ]);
-                    $index++;
+                    if($drivers_count > 2){
+                        array_push($additional_drivers, (object) [
+                            'age' => $age,
+                            'dob' => formatDateFromIC($additional_driver->id_number),
+                            'gender' => getGenderFromIC($additional_driver->id_number),
+                            'exp' => $age - 18 < 0 ? 0 : $age - 18,
+                            'marital' => '',
+                            'occup' => '',
+                            'rel' => $additional_driver->relationship,
+                            'icno' => $additional_driver->id_number,
+                            'index' => $index,
+                            'name' => $additional_driver->name,
+                            'oicno' => '',
+                        ]);
+                        $index++;
+                    }
+                    $drivers_count++;
                 }
             }
+        }
+        if(! count($additional_drivers) > 0){
+            $input->input->extra_cover = array_filter($input->input->extra_cover, function ($extra_cover) {
+                return $extra_cover->extra_cover_code != '00070';
+            });
         }
         // Format Extra Cover Code
         $formatted_extra_cover = [];
@@ -782,31 +815,35 @@ class AIG implements InsurerLibraryInterface
                 $extra_cover_code = $extra_cover->extra_cover_code;
                 $extra_cover->extra_cover_description = $extra_cover->extra_cover_description;
                 $plan_type = $extra_cover->plan_type ?? $extra_cover->sum_insured;
-                if($plan_type == 'Plan A'){
-                    $extra_cover_code = $extra_cover_code . 'A';
-                }
-                else if($plan_type == 'Plan B'){
-                    $extra_cover_code = $extra_cover_code . 'B';
-                }
-                else if($plan_type == 'Plan C' ){
-                    $extra_cover_code = $extra_cover_code . 'C';
-                }
-                else if($plan_type == 'Supreme'){
-                    $extra_cover_code = '21';
-                }
-                else if($plan_type == 'Saver'){
-                    $extra_cover_code = '22';
-                }
-                else if($plan_type == 'Starter'){
-                    $extra_cover_code = '23';
-                }
+                $sum_insured_amount = 0;
+                
                 if($extra_cover_code == '00112'){
                     $sum_insured_amount = $extra_cover->sum_insured;
+                }
+                else{
+                    if($plan_type == 'Plan A' && is_numeric($plan_type) == false){
+                        $extra_cover_code = $extra_cover_code . 'A';
+                    }
+                    else if($plan_type == 'Plan B' && is_numeric($plan_type) == false){
+                        $extra_cover_code = $extra_cover_code . 'B';
+                    }
+                    else if($plan_type == 'Plan C' && is_numeric($plan_type) == false){
+                        $extra_cover_code = $extra_cover_code . 'C';
+                    }
+                    else if($plan_type == 'Supreme' && is_numeric($plan_type) == false){
+                        $extra_cover_code = '21';
+                    }
+                    else if($plan_type == 'Saver' && is_numeric($plan_type) == false){
+                        $extra_cover_code = '22';
+                    }
+                    else if($plan_type == 'Starter' && is_numeric($plan_type) == false){
+                        $extra_cover_code = '23';
+                    }
                 }
                 array_push($formatted_extra_cover, (object) [
                     'extra_cover_code' => $extra_cover_code,
                     'extra_cover_description' => $extra_cover->extra_cover_description,
-                    'sum_insured' => $sum_insured_amount ?? 0,
+                    'sum_insured' => $sum_insured_amount,
                     'unit' => $extra_cover->unit ?? 0,
                     'premium' => 0,
                     'commperc' => 0,
@@ -1028,8 +1065,9 @@ class AIG implements InsurerLibraryInterface
     {
         $path = 'IssueCoverNote';
         // Format list additional driver
-        $additional_driver = [];
-        $index = 1;if(isset($input->input->additional_driver)) {
+        $additional_drivers = [];
+        $index = 1;
+        if(isset($input->input->additional_driver)) {
             foreach ($input->input->additional_driver as $additional_driver) {
                 if($additional_driver->id_number != '' || $additional_driver->id_number != null){
                     $age = getAgeFromIC($additional_driver->id_number);
@@ -1050,6 +1088,11 @@ class AIG implements InsurerLibraryInterface
                 }
             }
         }
+        if(! count($additional_drivers) > 0){
+            $input->input->extra_cover = array_filter($input->input->extra_cover, function ($extra_cover) {
+                return $extra_cover->extra_cover_code != '00070';
+            });
+        }
         // Format Extra Cover Code
         $formatted_extra_cover = [];
         if(isset($input->input->extra_cover)) {
@@ -1057,20 +1100,34 @@ class AIG implements InsurerLibraryInterface
                 $extra_cover_code = $extra_cover->extra_cover_code;
                 $extra_cover->extra_cover_description = $extra_cover->extra_cover_description;
                 $plan_type = $extra_cover->plan_type ?? $extra_cover->sum_insured;
-                if($plan_type == 'Plan A'){
-                    $extra_cover_code = $extra_cover_code . 'A';
+                $sum_insured_amount = 0;
+                if($extra_cover_code == '00112'){
+                    $sum_insured_amount = $extra_cover->sum_insured;
                 }
-                else if($plan_type == 'Plan B'){
-                    $extra_cover_code = $extra_cover_code . 'B';
+                else{
+                    if($plan_type == 'Plan A' && is_numeric($plan_type) == false){
+                        $extra_cover_code = $extra_cover_code . 'A';
+                    }
+                    else if($plan_type == 'Plan B' && is_numeric($plan_type) == false){
+                        $extra_cover_code = $extra_cover_code . 'B';
+                    }
+                    else if($plan_type == 'Plan C' && is_numeric($plan_type) == false){
+                        $extra_cover_code = $extra_cover_code . 'C';
+                    }
+                    else if($plan_type == 'Supreme' && is_numeric($plan_type) == false){
+                        $extra_cover_code = '21';
+                    }
+                    else if($plan_type == 'Saver' && is_numeric($plan_type) == false){
+                        $extra_cover_code = '22';
+                    }
+                    else if($plan_type == 'Starter' && is_numeric($plan_type) == false){
+                        $extra_cover_code = '23';
+                    }
                 }
-                else if($plan_type == 'Plan C' ){
-                    $extra_cover_code = $extra_cover_code . 'C';
-                }
-
                 array_push($formatted_extra_cover, (object) [
                     'extra_cover_code' => $extra_cover_code,
                     'extra_cover_description' => $extra_cover->extra_cover_description,
-                    'sum_insured' => 0,
+                    'sum_insured' => $sum_insured_amount,
                     'unit' => $extra_cover->unit ?? 0,
                     'premium' => 0,
                     'commperc' => 0,
@@ -1249,9 +1306,9 @@ class AIG implements InsurerLibraryInterface
     {
         $path = 'SaveReferredCase';
         // Format list additional driver
-        $additional_driver = [];
+        $additional_drivers = [];
         $index = 1;
-        $index = 1;if(isset($input->input->additional_driver)) {
+        if(isset($input->input->additional_driver)) {
             foreach ($input->input->additional_driver as $additional_driver) {
                 if($additional_driver->id_number != '' || $additional_driver->id_number != null){
                     $age = getAgeFromIC($additional_driver->id_number);
@@ -1272,6 +1329,11 @@ class AIG implements InsurerLibraryInterface
                 }
             }
         }
+        if(! count($additional_drivers) > 0){
+            $input->input->extra_cover = array_filter($input->input->extra_cover, function ($extra_cover) {
+                return $extra_cover->extra_cover_code != '00070';
+            });
+        }
         // Format Extra Cover Code
         $formatted_extra_cover = [];
         if(isset($input->input->extra_cover)) {
@@ -1279,20 +1341,34 @@ class AIG implements InsurerLibraryInterface
                 $extra_cover_code = $extra_cover->extra_cover_code;
                 $extra_cover->extra_cover_description = $extra_cover->extra_cover_description;
                 $plan_type = $extra_cover->plan_type ?? $extra_cover->sum_insured;
-                if($plan_type == 'Plan A'){
-                    $extra_cover_code = $extra_cover_code . 'A';
+                $sum_insured_amount = 0;
+                if($extra_cover_code == '00112'){
+                    $sum_insured_amount = $extra_cover->sum_insured;
                 }
-                else if($plan_type == 'Plan B'){
-                    $extra_cover_code = $extra_cover_code . 'B';
+                else{
+                    if($plan_type == 'Plan A' && is_numeric($plan_type) == false){
+                        $extra_cover_code = $extra_cover_code . 'A';
+                    }
+                    else if($plan_type == 'Plan B' && is_numeric($plan_type) == false){
+                        $extra_cover_code = $extra_cover_code . 'B';
+                    }
+                    else if($plan_type == 'Plan C' && is_numeric($plan_type) == false){
+                        $extra_cover_code = $extra_cover_code . 'C';
+                    }
+                    else if($plan_type == 'Supreme' && is_numeric($plan_type) == false){
+                        $extra_cover_code = '21';
+                    }
+                    else if($plan_type == 'Saver' && is_numeric($plan_type) == false){
+                        $extra_cover_code = '22';
+                    }
+                    else if($plan_type == 'Starter' && is_numeric($plan_type) == false){
+                        $extra_cover_code = '23';
+                    }
                 }
-                else if($plan_type == 'Plan C' ){
-                    $extra_cover_code = $extra_cover_code . 'C';
-                }
-
                 array_push($formatted_extra_cover, (object) [
                     'extra_cover_code' => $extra_cover_code,
                     'extra_cover_description' => $extra_cover->extra_cover_description,
-                    'sum_insured' => 0,
+                    'sum_insured' => $sum_insured_amount,
                     'unit' => $extra_cover->unit ?? 0,
                     'premium' => 0,
                     'commperc' => 0,
