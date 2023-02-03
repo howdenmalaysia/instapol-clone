@@ -20,6 +20,7 @@ use Maatwebsite\Excel\Facades\Excel;
 class HowdenSettlement extends Command
 {
     const DATE_FORMAT = 'Y-m-d';
+    const DATETIME_FORMAT = 'Y-m-d H:i:s';
 
     /**
      * The name and signature of the console command.
@@ -54,16 +55,16 @@ class HowdenSettlement extends Command
     {
         Log::info("[Cron - Howden Internal Settlement] Start Generating Report.");
 
-        $start_date = $end_date = Carbon::now()->format(self::DATE_FORMAT);
+        $start_date = $end_date = Carbon::now()->format(self::DATETIME_FORMAT);
         if(!empty($this->argument('start_date')) && !empty($this->argument('end_date'))) {
-            $start_date = Carbon::parse($this->argument('start_date'))->format(self::DATE_FORMAT);
-            $end_date = Carbon::parse($this->argument('end_date'))->format(self::DATE_FORMAT);
+            $start_date = Carbon::parse($this->argument('start_date'))->startOfDay()->format(self::DATETIME_FORMAT);
+            $end_date = Carbon::parse($this->argument('end_date'))->endOfDay()->format(self::DATETIME_FORMAT);
         } else if(Carbon::now()->englishDayOfWeek === 'Wednesday') {
-            $start_date = Carbon::parse('last Friday')->startOfDay()->format(self::DATE_FORMAT); // Last Friday 00:00:00
-            $end_date = Carbon::now()->subDay()->endOfDay()->format(self::DATE_FORMAT); // Yesterday 23:59:59
+            $start_date = Carbon::parse('last Friday')->startOfDay()->format(self::DATETIME_FORMAT); // Last Friday 00:00:00
+            $end_date = Carbon::now()->subDay()->endOfDay()->format(self::DATETIME_FORMAT); // Yesterday 23:59:59
         } else if (Carbon::now()->englishDayOfWeek === 'Friday') {
-            $start_date = Carbon::parse('last Wednesday')->startOfDay()->format(self::DATE_FORMAT); // Last Wednesday 00:00:00
-            $end_date = Carbon::now()->subDay()->endOfDay()->format(self::DATE_FORMAT); // Yesterday 23:59:59
+            $start_date = Carbon::parse('last Wednesday')->startOfDay()->format(self::DATETIME_FORMAT); // Last Wednesday 00:00:00
+            $end_date = Carbon::now()->subDay()->endOfDay()->format(self::DATETIME_FORMAT); // Yesterday 23:59:59
         } else {
             // Throw Error
             $day = Carbon::now()->englishDayOfWeek;
@@ -176,7 +177,7 @@ class HowdenSettlement extends Command
                             $start_date,
                             $insurance->id,
                             $product->insurance_company->name,
-                            $insurance->updated_at->format(self::DATE_FORMAT),
+                            $insurance->updated_at->format(self::DATETIME_FORMAT),
                             $insurance->inception_date,
                             $insurance->policy_number,
                             $insurance_motor->vehicle_number,
@@ -214,7 +215,7 @@ class HowdenSettlement extends Command
                             $start_date,
                             $insurance->id,
                             $product->insurance_company->name,
-                            $insurance->updated_at->format(self::DATE_FORMAT),
+                            $insurance->updated_at->format(self::DATETIME_FORMAT),
                             $insurance->inception_date,
                             $insurance->policy_number,
                             $insurance_motor->vehicle_number,
@@ -259,13 +260,14 @@ class HowdenSettlement extends Command
                 ]);
             });
 
+            $start_date = Carbon::parse($start_date)->format(self::DATE_FORMAT);
+
             $filenames = [];
             foreach($row_data as $product_id => $values) {
                 $product = Product::with(['insurance_company'])
                     ->findOrFail($product_id);
 
                 $insurer_name = Str::snake(ucwords($product->insurance_company->name));
-
                 $filename = "{$insurer_name}{$product->insurance_company->id}_settlement_{$start_date}.xlsx";
                 array_push($filenames, $filename);
                 Excel::store(new HowdenReportExport($values), $filename);
