@@ -634,7 +634,13 @@
         });
 
         $('.card-body').on('click', '.btn-delete-driver', (e) => {
-            $(`.row.driver-${$(e.target).data('id')}`).remove();
+            if($(e.target).data('id') != 0) {
+                $(`.row.driver-${$(e.target).data('id')}`).remove();
+            } else {
+                $(`#driver-name-${$(e.target).data('id')}`).val('');
+                $(`#driver-id-number-${$(e.target).data('id')}`).val('');
+                $(`#driver-relationship-${$(e.target).data('id')}`).val('');
+            }
 
             // Remove in Additional Driver List
             refreshPremium();
