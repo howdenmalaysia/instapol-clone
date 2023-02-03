@@ -183,7 +183,7 @@
                                             </div>
                                             <div class="col-1 align-self-end">
                                                 <button type="button" class="btn btn-danger text-white btn-delete-driver" data-id="0">
-                                                    <i class="fa-solid fa-trash"></i>
+                                                    <i class="fa-solid fa-trash" data-id="0"></i>
                                                 </button>
                                             </div>
                                         </div>
@@ -462,7 +462,7 @@
                     </div>
                     <div class="col-1 align-self-end">
                         <button type="button" class="btn btn-danger text-white btn-delete-driver" data-id="${count}">
-                            <i class="fa-solid fa-trash"></i>
+                            <i class="fa-solid fa-trash" data-id="${count}"></i>
                         </button>
                     </div>
                 </div>`;
@@ -639,7 +639,13 @@
         });
 
         $('.card-body').on('click', '.btn-delete-driver', (e) => {
-            $(`.row.driver-${$(e.target).data('id')}`).remove();
+            if($(e.target).data('id') != 0) {
+                $(`.row.driver-${$(e.target).data('id')}`).remove();
+            } else {
+                $(`#driver-name-${$(e.target).data('id')}`).val('');
+                $(`#driver-id-number-${$(e.target).data('id')}`).val('');
+                $(`#driver-relationship-${$(e.target).data('id')}`).val('');
+            }
 
             // Remove in Additional Driver List
             refreshPremium();
