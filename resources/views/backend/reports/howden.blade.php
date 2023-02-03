@@ -10,7 +10,7 @@
             <th>Vehicle Number</th>
             <th>Policy Holder Name</th>
             <th>Policy Holder NRIC</th>
-            <th>Policy Holder Phone NUmber</th>
+            <th>Policy Holder Phone Number</th>
             <th>Policy Holder Email</th>
             <th>Gross Premium</th>
             <th>Service Tax</th>
