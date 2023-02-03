@@ -284,9 +284,9 @@ class HowdenSettlement extends Command
                 'details' => $details
             ];
 
-            Mail::to('davidchoy98@gmail.com')
-                // ->cc(explode(',', config('setting.settlement.howden.email_cc')))
-                // ->bcc(config('setting.howden.it_dev_mail'))
+            Mail::to(explode(',', config('setting.settlement.howden.email_to')))
+                ->cc(explode(',', config('setting.settlement.howden.email_cc')))
+                ->bcc(config('setting.howden.it_dev_mail'))
                 ->send(new HowdenSettlementMail($filenames, $data));
 
             Log::info("[Cron - Howden Internal Settlement] {$rows} records processed. [{$start_date} to {$end_date}]");
