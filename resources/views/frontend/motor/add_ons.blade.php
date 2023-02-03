@@ -183,7 +183,7 @@
                                             </div>
                                             <div class="col-1 align-self-end">
                                                 <button type="button" class="btn btn-danger text-white btn-delete-driver" data-id="0">
-                                                    <i class="fa-solid fa-trash"></i>
+                                                    <i class="fa-solid fa-trash" data-id="0"></i>
                                                 </button>
                                             </div>
                                         </div>
@@ -457,7 +457,7 @@
                     </div>
                     <div class="col-1 align-self-end">
                         <button type="button" class="btn btn-danger text-white btn-delete-driver" data-id="${count}">
-                            <i class="fa-solid fa-trash"></i>
+                            <i class="fa-solid fa-trash" data-id="${count}"></i>
                         </button>
                     </div>
                 </div>`;
