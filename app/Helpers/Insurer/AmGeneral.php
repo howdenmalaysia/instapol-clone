@@ -73,7 +73,7 @@ class AmGeneral implements InsurerLibraryInterface
 		$this->encrypt_pswd_iterations = config('insurer.config.am_config.encrypt_pswd_iterations');
 		$this->encrypt_key_size = config('insurer.config.am_config.encrypt_key_size');
 		$this->channel_token = config('insurer.config.am_config.channel_token');
-		$this->brand = config('insurer.config.am_config.brand');
+		$this->brand = 'A';
 	}
 
 	public function get_token(){
@@ -667,7 +667,6 @@ class AmGeneral implements InsurerLibraryInterface
         if($response->status){
 			$encrypted = $response->response->responseData;
 			$decrypted = json_decode($this->decrypt($response->response->responseData));
-			dd($decrypted);
 			if (empty($decrypted)) {
                 $message = !empty($response->response) ? $response->response : __('api.empty_response', ['company' => $this->company_name]);
 
@@ -1320,8 +1319,6 @@ class AmGeneral implements InsurerLibraryInterface
 
             $postfield = $data;
             $options['body'] = $postfield;
-			
-dump($options);
         }
 
         $log = APILogs::create([
@@ -1334,7 +1331,6 @@ dump($options);
         ]);
 
 		$result = HttpClient::curl('POST', $host, $options);
-		dump($result);
 
         // Update the API log
         APILogs::find($log->id)
