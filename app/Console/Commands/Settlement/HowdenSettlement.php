@@ -162,7 +162,7 @@ class HowdenSettlement extends Command
                         ->first();
 
                     $commission = $insurance->premium->gross_premium * 0.1;
-                    $net_premium = $insurance->premium->gross_premium - $commission;
+                    $net_premium = $insurance->premium->gross_premium + $insurance->premium->service_tax_amount + $insurance->premium->stamp_duty - $commission;
                     $total_commission += $commission;
                     $total_sst += $insurance->premium->service_tax_amount;
                     $total_premium += $insurance->amount;
