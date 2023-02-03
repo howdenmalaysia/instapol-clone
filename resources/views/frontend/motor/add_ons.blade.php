@@ -642,9 +642,7 @@
             $(`.row.driver-${$(e.target).data('id')}`).remove();
 
             // Remove in Additional Driver List
-            additional_driver = additional_driver.filter((driver) => {
-                return driver.name !== $(`#driver-name-${count}`).val();
-            });
+            refreshPremium();
         });
     });
 
