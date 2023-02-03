@@ -224,3 +224,21 @@ if(!function_exists('raceChecker')) {
         }
     }
 }
+
+if(!function_exists('getGatewayCharges')) {
+    function getGatewayCharges(float $amount, string $service_id, string $payment_method) {
+        $gateway_charges = 0;
+        
+        if($service_id === 'CBI') {
+            $gateway_charges = 0.8;
+        } else if($service_id === 'CBH') {
+            if($payment_method === 'CC') {
+                $gateway_charges = number_format($amount * 0.018, 2);
+            } else if($payment_method === 'WA') {
+                $gateway_charges = number_format($amount * 0.015, 2);
+            }
+        }
+
+        return $gateway_charges;
+    }
+}

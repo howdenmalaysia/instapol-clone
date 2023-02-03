@@ -5,7 +5,9 @@ namespace App\Console\Commands\Settlement;
 use App\Exports\EGHLReportExport;
 use App\Mail\EGHLSettlementMail;
 use App\Models\CronJobs;
+use App\Models\EGHLLog;
 use App\Models\Motor\Insurance;
+use App\Models\Motor\InsuranceMotor;
 use App\Models\Motor\Product;
 use Carbon\Carbon;
 use Exception;
@@ -93,14 +95,40 @@ class EGHLSettlement extends Command
                 return;
             }
     
-            $rows = 0;
+            $rows = $total_roadtax = $total_gateway_charges = 0;
             $total_amount = $row_data = [];
-            $records->map(function($insurance) use(&$rows, &$total_amount) {
-                if(array_key_exists($insurance->product_id, $total_amount)) {
-                    $total_amount[$insurance->product_id] += floatval($insurance->amount);
-                } else {
-                    $total_amount[$insurance->product_id] = floatval($insurance->amount);
+            $records->map(function($insurance) use(&$rows, &$total_amount, &$total_roadtax, &$total_gateway_charges) {
+                // Roadtax Amount
+                $insurance_motor = InsuranceMotor::with([
+                        'roadtax'
+                    ])
+                    ->where('insurance_id', $insurance->id)
+                    ->first();
+
+                $roadtax_premium = 0;
+                if(!empty($insurance_motor->roadtax)) {
+                    $roadtax_premium = floatval($insurance_motor->roadtax->roadtax_renewal_fee) +
+                        floatval($insurance_motor->roadtax->myeg_fee) +
+                        floatval($insurance_motor->roadtax->e_service_fee) +
+                        floatval($insurance_motor->roadtax->service_tax);
                 }
+
+                $total_roadtax += $roadtax_premium;
+
+                // Total Payable
+                if(array_key_exists($insurance->product_id, $total_amount)) {
+                    $total_amount[$insurance->product_id] += floatval($insurance->amount) - $roadtax_premium;
+                } else {
+                    $total_amount[$insurance->product_id] = floatval($insurance->amount) - $roadtax_premium;
+                }
+
+                // Payment Gateway Charges
+                $eghl_log = EGHLLog::where('payment_id', 'LIKE', '%' . $insurance->code . '%')
+                    ->where('txn_status', 0)
+                    ->latest()
+                    ->first();
+                
+                $total_gateway_charges += getGatewayCharges($insurance->amount, $eghl_log->service_id, $eghl_log->payment_method);
     
                 $rows++;
             });
@@ -135,7 +163,7 @@ class EGHLSettlement extends Command
     
             // Howden's Comms
             array_push($row_data, [
-                $total_commissions,
+                $total_commissions + $total_roadtax + $total_gateway_charges,
                 config('setting.settlement.howden.bank_code'),
                 config('setting.settlement.howden.bank_account_no'),
                 $start_date,

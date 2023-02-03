@@ -9,6 +9,9 @@
             <th>Policy Number</th>
             <th>Vehicle Number</th>
             <th>Policy Holder Name</th>
+            <th>Policy Holder NRIC</th>
+            <th>Policy Holder Phone NUmber</th>
+            <th>Policy Holder Email</th>
             <th>Gross Premium</th>
             <th>Service Tax</th>
             <th>Stamp Duty</th>
@@ -20,12 +23,13 @@
             <th>Discount (Road Tax Only)</th>
             <th>RoaxTax - Renewal Fee</th>
             <th>RoadTax - MYEG Fee</th>
-            <th>RoadTax - Delivery Fee</th>
             <th>RoadTax - eService Fee</th>
             <th>Roadtax - Service Tax</th>
+            <th>Total Payable (Road Tax)</th>
             <th>Total Payable (incl Road Tax)</th>
             <th>Payment Gateway (Online Transfer)</th>
             <th>Payment Gateway (Credit Card)</th>
+            <th>Payment Gateway (e-Wallet)</th>
             <th>Outstanding (eGHL)</th>
             <th>Net Transfer Amount (Insurer)</th>
             <th>Net Transfer Amount (Howden)</th>

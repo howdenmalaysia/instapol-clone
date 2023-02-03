@@ -26,7 +26,7 @@ class HowdenSettlement extends Command
      *
      * @var string
      */
-    protected $signature = 'settlement:howden {start_date?} {end_date?} {frequency?}';
+    protected $signature = 'settlement:howden {start_date?} {end_date?}';
 
     /**
      * The console command description.
@@ -113,7 +113,8 @@ class HowdenSettlement extends Command
                 &$total_sst,
                 &$total_discount,
                 &$total_payment_gateway_charges,
-                &$total_premium)
+                &$total_premium,
+                &$details)
             {
                 $insurer_net_transfer = 0;
                 $product = Product::with(['insurance_company'])
@@ -160,20 +161,15 @@ class HowdenSettlement extends Command
                         ->latest()
                         ->first();
 
-                    if($eghl_log->service_id === 'CBI') {
-                        $total_payment_gateway_charges += number_format($insurance->amount * 0.015, 2);
-                    } else if($eghl_log->service_id === 'CBH') {
-                        $total_payment_gateway_charges += number_format($insurance->amount * 0.018, 2);
-                    }
-
-                    $payable = $insurance->premium->gross_premium + $insurance->premium->service_tax_amount + $insurance->premium->stamp_duty;
                     $commission = $insurance->premium->gross_premium * 0.1;
                     $net_premium = $insurance->premium->gross_premium - $commission;
-                    $total_transfer = $insurance->premium->service_tax_amount + $insurance->premium->stamp_duty + $net_premium;
                     $total_commission += $commission;
                     $total_sst += $insurance->premium->service_tax_amount;
-                    $total_premium += $payable;
-                    $insurer_net_transfer += $payable;
+                    $total_premium += $insurance->amount;
+                    $insurer_net_transfer += $insurance->amount;
+
+                    $gateway_charges = getGatewayCharges($insurance->amount, $eghl_log->service_id, $eghl_log->payment_method);
+                    $total_payment_gateway_charges += getGatewayCharges($insurance->amount, $eghl_log->service_id, $eghl_log->payment_method);
 
                     if(array_key_exists($product->id, $row_data)) {
                         array_push($row_data[$product->id], [
@@ -185,26 +181,30 @@ class HowdenSettlement extends Command
                             $insurance->policy_number,
                             $insurance_motor->vehicle_number,
                             $insurance->holder->name,
+                            $insurance->holder->id_number,
+                            $insurance->holder->phone_code . $insurance->holder->phone_number,
+                            $insurance->holder->email_address,
                             $insurance->premium->gross_premium,
                             $insurance->premium->service_tax_amount,
                             $insurance->premium->stamp_duty,
-                            number_format($payable, 2),
+                            $insurance->amount,
                             number_format($net_premium, 2),
-                            $total_transfer,
+                            $commission,
                             $discount_target === 'total_payable' ? $discount_amount : '',
                             $discount_target === 'gross_premium' ? $discount_amount : '',
                             $discount_target === 'roadtax' ? $discount_amount : '',
                             $insurance_motor->roadtax->roadtax_renewal_fee ?? '',
                             $insurance_motor->roadtax->myeg_fee ?? '',
-                            '',
                             $insurance_motor->roadtax->e_service_fee ?? '',
                             $insurance_motor->roadtax->service_tax ?? '',
+                            $roadtax_premium,
                             $insurance->amount,
-                            $eghl_log->service_id === 'CBI' ? number_format($insurance->amount * 0.015, 2) : '',
-                            $eghl_log->service_id === 'CBH' ? number_format($insurance->amount * 0.018, 2) : '',
+                            $eghl_log->service_id === 'CBI' ? $gateway_charges : '',
+                            $eghl_log->payment_method === 'CC' ? $gateway_charges : '',
+                            $eghl_log->payment_method === 'WA' ? $gateway_charges : '',
                             'N/A',
-                            ($insurance->amount - $roadtax_premium) * 0.9,
-                            ($insurance->amount - $roadtax_premium) * 0.1 + $roadtax_premium,
+                            number_format($net_premium, 2),
+                            number_format($commission + $roadtax_premium + $gateway_charges),
                             $insurance->referrer,
                             Str::afterLast($insurance->holder->email_address, '@'),
                             !empty($insurance->promo) ? $insurance->promo->promo->code : ''
@@ -219,26 +219,30 @@ class HowdenSettlement extends Command
                             $insurance->policy_number,
                             $insurance_motor->vehicle_number,
                             $insurance->holder->name,
+                            $insurance->holder->id_number,
+                            $insurance->holder->phone_code . $insurance->holder->phone_number,
+                            $insurance->holder->email_address,
                             $insurance->premium->gross_premium,
                             $insurance->premium->service_tax_amount,
                             $insurance->premium->stamp_duty,
-                            number_format($payable, 2),
+                            $insurance->amount,
                             number_format($net_premium, 2),
-                            $total_transfer,
+                            $commission,
                             $discount_target === 'total_payable' ? $discount_amount : '',
                             $discount_target === 'gross_premium' ? $discount_amount : '',
                             $discount_target === 'roadtax' ? $discount_amount : '',
                             $insurance_motor->roadtax->roadtax_renewal_fee ?? '',
                             $insurance_motor->roadtax->myeg_fee ?? '',
-                            '',
                             $insurance_motor->roadtax->e_service_fee ?? '',
                             $insurance_motor->roadtax->service_tax ?? '',
+                            $roadtax_premium,
                             $insurance->amount,
-                            $eghl_log->service_id === 'CBI' ? number_format($insurance->amount * 0.015, 2) : '',
-                            $eghl_log->service_id === 'CBH' ? number_format($insurance->amount * 0.018, 2) : '',
+                            $eghl_log->service_id === 'CBI' ? $gateway_charges : '',
+                            $eghl_log->payment_method === 'CC' ? $gateway_charges : '',
+                            $eghl_log->payment_method === 'WA' ? $gateway_charges : '',
                             'N/A',
-                            ($insurance->amount - $roadtax_premium) * 0.9,
-                            ($insurance->amount - $roadtax_premium) * 0.1 + $roadtax_premium,
+                            number_format($net_premium, 2),
+                            number_format($commission + $roadtax_premium + $gateway_charges),
                             $insurance->referrer,
                             Str::afterLast($insurance->holder->email_address, '@'),
                             !empty($insurance->promo) ? $insurance->promo->promo->code : ''
@@ -280,9 +284,9 @@ class HowdenSettlement extends Command
                 'details' => $details
             ];
 
-            Mail::to(explode(',', config('setting.settlement.howden.email_to')))
-                ->cc(explode(',', config('setting.settlement.howden.email_cc')))
-                ->bcc(config('setting.howden.it_dev_mail'))
+            Mail::to('davidchoy98@gmail.com')
+                // ->cc(explode(',', config('setting.settlement.howden.email_cc')))
+                // ->bcc(config('setting.howden.it_dev_mail'))
                 ->send(new HowdenSettlementMail($filenames, $data));
 
             Log::info("[Cron - Howden Internal Settlement] {$rows} records processed. [{$start_date} to {$end_date}]");
@@ -294,8 +298,8 @@ class HowdenSettlement extends Command
                 'param' => json_encode([
                     'start_date' => $start_date,
                     'end_date' => $end_date,
-                    'frequency' => $this->argument('frequency')
-                ])
+                ]),
+                'error_message' => $ex->getMessage()
             ]);
 
             Log::error("[Cron - Howden Internal Settlement] An Error Encountered. {$ex->getMessage()}");
