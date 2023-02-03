@@ -255,7 +255,7 @@ class HowdenSettlement extends Command
                 array_push($details, [
                     $product->insurance_company->name,
                     $insurances->count(),
-                    $insurer_net_transfer
+                    number_format($insurer_net_transfer, 2)
                 ]);
             });
 
