@@ -30,7 +30,7 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 window.instapol = window.axios.create({
     baseURL: process.env.MIX_HOWDEN_API_DOMAIN,
-    timeout: 60000,
+    timeout: 90000,
     headers: {
         'Accept': 'application/json'
     }
