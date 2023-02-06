@@ -2,7 +2,7 @@
     <thead>
         <tr>
             <th>Transaction ID</th>
-            <th>Transaction Date & Time</th>
+            <th>Transaction Date &amp; Time</th>
             <th>Policy Start Date</th>
             <th>Policy Number</th>
             <th>Vehicle Number</th>
