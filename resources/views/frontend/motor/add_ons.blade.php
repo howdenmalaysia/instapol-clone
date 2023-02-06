@@ -163,18 +163,18 @@
                                         <div class="alert alert-success mx-md-3" role="alert">
                                             {{ __('frontend.motor.add_ons_page.additional_driver_note') }}
                                         </div>
-                                        <div class="row info px-md-3">
+                                        <div class="row info px-md-3 driver-0">
                                             <div class="col-4">
                                                 <label for="driver-name-0" class="form-label uppercase">{{ __('frontend.fields.name') }}</label>
-                                                <input type="text" id="driver-name" class="form-control text-uppercase additional-driver-name" />
+                                                <input type="text" id="driver-name-0" class="form-control text-uppercase additional-driver-name" />
                                             </div>
                                             <div class="col-4">
                                                 <label for="driver-id-number-0" class="form-label">{{ __('frontend.fields.id_number') }}</label>
-                                                <input type="text" id="driver-id-number" class="form-control text-uppercase additional-driver-id-number" />
+                                                <input type="text" id="driver-id-number-0" class="form-control text-uppercase additional-driver-id-number" />
                                             </div>
                                             <div class="col-3">
                                                 <label for="driver-relationship-0" class="form-label">{{ __('frontend.fields.relationship') }}</label>
-                                                <select id="driver-relationship" class="form-control additional-driver-relationship" data-select>
+                                                <select id="driver-relationship-0" class="form-control additional-driver-relationship" data-select>
                                                     <option value=""></option>
                                                     @foreach ($relationships as $relationship)
                                                         <option value="{{ $relationship->id }}">{{ __("frontend.relationships.{$relationship->name}") }}</option>
@@ -182,8 +182,8 @@
                                                 </select>
                                             </div>
                                             <div class="col-1 align-self-end">
-                                                <button type="button" id="btn-delete" class="btn btn-danger text-white">
-                                                    <i class="fa-solid fa-trash"></i>
+                                                <button type="button" class="btn btn-danger text-white btn-delete-driver" data-id="0">
+                                                    <i class="fa-solid fa-trash" data-id="0"></i>
                                                 </button>
                                             </div>
                                         </div>
@@ -442,7 +442,7 @@
         $('#add-additional-driver').on('click', () => {
             let count = $('.additional-driver-name').length + 1;
             let html = `
-                <div class="row info px-md-3">
+                <div class="row info px-md-3 driver-${count}">
                     <div class="col-4">
                         <label for="driver-name-${count}" class="form-label">{{ __('frontend.fields.name') }}</label>
                         <input type="text" id="driver-name-${count}" class="form-control text-uppercase additional-driver-name" />
@@ -461,8 +461,8 @@
                         </select>
                     </div>
                     <div class="col-1 align-self-end">
-                        <button type="button" id="btn-delete" class="btn btn-danger text-white">
-                            <i class="fa-solid fa-trash"></i>
+                        <button type="button" class="btn btn-danger text-white btn-delete-driver" data-id="${count}">
+                            <i class="fa-solid fa-trash" data-id="${count}"></i>
                         </button>
                     </div>
                 </div>`;
@@ -637,6 +637,19 @@
         $('.card-body').on('change', '.additional-driver-relationship', (e) => {
             refreshPremium(); 
         });
+
+        $('.card-body').on('click', '.btn-delete-driver', (e) => {
+            if($(e.target).data('id') != 0) {
+                $(`.row.driver-${$(e.target).data('id')}`).remove();
+            } else {
+                $(`#driver-name-${$(e.target).data('id')}`).val('');
+                $(`#driver-id-number-${$(e.target).data('id')}`).val('');
+                $(`#driver-relationship-${$(e.target).data('id')}`).val('');
+            }
+
+            // Remove in Additional Driver List
+            refreshPremium();
+        });
     });
 
     function refreshPremium()
@@ -669,7 +682,7 @@
         let additional_driver = [];
         $('.additional-driver-name').each((index, element) => {
             additional_driver.push({
-                name: $(element).val(),
+                name: $(element).val().toUpperCase(),
                 id_number: $($('.additional-driver-id-number')[index]).val(),
                 relationship: $($('.additional-driver-relationship')[index]).val()
             });

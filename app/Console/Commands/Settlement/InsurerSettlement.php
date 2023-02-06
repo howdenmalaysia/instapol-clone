@@ -20,6 +20,7 @@ use Maatwebsite\Excel\Facades\Excel;
 class InsurerSettlement extends Command
 {
     const DATE_FORMAT = 'Y-m-d';
+    const DATETIME_FORMAT = 'Y-m-d H:i:s';
 
     /**
      * The name and signature of the console command.
@@ -54,16 +55,16 @@ class InsurerSettlement extends Command
     {
         Log::info("[Cron - Insurer Settlement] Start Generating Reports.");
 
-        $start_date = $end_date = Carbon::now()->format(self::DATE_FORMAT);
+        $start_date = $end_date = Carbon::now()->format(self::DATETIME_FORMAT);
         if(!empty($this->argument('start_date')) && !empty($this->argument('end_date'))) {
-            $start_date = Carbon::parse($this->argument('start_date'))->format(self::DATE_FORMAT);
-            $end_date = Carbon::parse($this->argument('end_date'))->format(self::DATE_FORMAT);
+            $start_date = Carbon::parse($this->argument('start_date'))->startOfDay()->format(self::DATETIME_FORMAT);
+            $end_date = Carbon::parse($this->argument('end_date'))->endOfDay()->format(self::DATETIME_FORMAT);
         } else if(Carbon::now()->englishDayOfWeek === 'Wednesday') {
-            $start_date = Carbon::parse('last Friday')->startOfDay()->format(self::DATE_FORMAT); // Last Friday 00:00:00
-            $end_date = Carbon::now()->subDay()->endOfDay()->format(self::DATE_FORMAT); // Yesterday 23:59:59
+            $start_date = Carbon::parse('last Friday')->startOfDay()->format(self::DATETIME_FORMAT); // Last Friday 00:00:00
+            $end_date = Carbon::now()->subDay()->endOfDay()->format(self::DATETIME_FORMAT); // Yesterday 23:59:59
         } else if (Carbon::now()->englishDayOfWeek === 'Friday') {
-            $start_date = Carbon::parse('last Wednesday')->startOfDay()->format(self::DATE_FORMAT); // Last Wednesday 00:00:00
-            $end_date = Carbon::now()->subDay()->endOfDay()->format(self::DATE_FORMAT); // Yesterday 23:59:59
+            $start_date = Carbon::parse('last Wednesday')->startOfDay()->format(self::DATETIME_FORMAT); // Last Wednesday 00:00:00
+            $end_date = Carbon::now()->subDay()->endOfDay()->format(self::DATETIME_FORMAT); // Yesterday 23:59:59
         } else {
             // Throw Error
             $day = Carbon::now()->englishDayOfWeek;
@@ -114,7 +115,6 @@ class InsurerSettlement extends Command
                     $product,
                     &$rows,
                     &$row_data,
-                    $start_date,
                     &$total_commission,
                     &$total_eservice_fee,
                     &$total_sst,
@@ -130,19 +130,12 @@ class InsurerSettlement extends Command
                         ->first();
                     
                     $discount_amount = 0;
-                    $discount_target = '';
                     if(!empty($insurance->promo)) {
                         $discount_amount = $insurance->promo->discount_amoumt;
                         $total_discount += $discount_amount;
                     }
     
-                    $roadtax_premium = 0;
                     if(!empty($insurance_motor->roadtax)) {
-                        $roadtax_premium = floatval($insurance_motor->roadtax->roadtax_renewal_fee) +
-                            floatval($insurance_motor->roadtax->myeg_fee) +
-                            floatval($insurance_motor->roadtax->e_service_fee) +
-                            floatval($insurance_motor->roadtax->service_tax);
-
                         $total_eservice_fee += $insurance_motor->roadtax->e_service_fee;
                     }
     
@@ -169,7 +162,7 @@ class InsurerSettlement extends Command
                     if(array_key_exists($product->id, $row_data)) {
                         array_push($row_data[$product->id], [
                             $insurance->id,
-                            $insurance->updated_at->format(self::DATE_FORMAT),
+                            $insurance->updated_at->format(self::DATETIME_FORMAT),
                             $insurance->inception_date,
                             $insurance->policy_number,
                             $insurance_motor->vehicle_number,
@@ -184,7 +177,7 @@ class InsurerSettlement extends Command
                     } else {
                         $row_data[$product->id][] = [
                             $insurance->id,
-                            $insurance->updated_at->format(self::DATE_FORMAT),
+                            $insurance->updated_at->format(self::DATETIME_FORMAT),
                             $insurance->inception_date,
                             $insurance->policy_number,
                             $insurance_motor->vehicle_number,
@@ -200,6 +193,8 @@ class InsurerSettlement extends Command
     
                     $rows++;
                 });
+
+                $start_date = Carbon::parse($start_date)->format(self::DATE_FORMAT);
 
                 $filenames = [];
                 foreach($row_data as $product_id => $values) {
@@ -227,7 +222,7 @@ class InsurerSettlement extends Command
                     'details' => [[
                         $product->insurance_company->name,
                         $insurances->count(),
-                        $insurer_net_transfer
+                        number_format($insurer_net_transfer, 2)
                     ]]
                 ];
     

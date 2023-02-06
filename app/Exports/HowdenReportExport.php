@@ -6,6 +6,7 @@ use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
 class HowdenReportExport implements FromView, WithColumnFormatting, ShouldAutoSize
 {
@@ -27,9 +28,7 @@ class HowdenReportExport implements FromView, WithColumnFormatting, ShouldAutoSi
     public function columnFormats(): array
     {
         return [
-            'I' => '#,##0.00_-',
-            'J' => '#,##0.00_-',
-            'K' => '#,##0.00_-',
+            'B' => NumberFormat::FORMAT_NUMBER,
             'L' => '#,##0.00_-',
             'M' => '#,##0.00_-',
             'N' => '#,##0.00_-',
@@ -46,6 +45,10 @@ class HowdenReportExport implements FromView, WithColumnFormatting, ShouldAutoSi
             'Y' => '#,##0.00_-',
             'AA' => '#,##0.00_-',
             'AB' => '#,##0.00_-',
+            'AC' => '#,##0.00_-',
+            'AD' => '#,##0.00_-',
+            'AE' => '#,##0.00_-',
+            'AF' => '#,##0.00_-',
         ];
     }
 }

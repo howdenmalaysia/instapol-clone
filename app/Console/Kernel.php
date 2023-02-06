@@ -2,10 +2,11 @@
 
 namespace App\Console;
 
-use App\Console\Commands\EGHLSettlement;
-use App\Console\Commands\HowdenSettlement;
-use App\Console\Commands\InsurerSettlement;
+use App\Console\Commands\DropOffReport;
 use App\Console\Commands\MotorRenewalNotice;
+use App\Console\Commands\Settlement\EGHLSettlement;
+use App\Console\Commands\Settlement\HowdenSettlement;
+use App\Console\Commands\Settlement\InsurerSettlement;
 use App\Console\Commands\Settlement\MonthlySettlement;
 use Carbon\Carbon;
 use Illuminate\Console\Scheduling\Schedule;

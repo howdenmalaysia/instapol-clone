@@ -5,7 +5,9 @@ namespace App\Console\Commands\Settlement;
 use App\Exports\EGHLReportExport;
 use App\Mail\EGHLSettlementMail;
 use App\Models\CronJobs;
+use App\Models\EGHLLog;
 use App\Models\Motor\Insurance;
+use App\Models\Motor\InsuranceMotor;
 use App\Models\Motor\Product;
 use Carbon\Carbon;
 use Exception;
@@ -17,6 +19,7 @@ use Maatwebsite\Excel\Facades\Excel;
 class EGHLSettlement extends Command
 {
     const DATE_FORMAT = 'Y-m-d';
+    const DATETIME_FORMAT = 'Y-m-d H:i:s';
 
     /**
      * The name and signature of the console command.
@@ -51,16 +54,16 @@ class EGHLSettlement extends Command
     {
         Log::info("[Cron - eGHL Settlement] Start Generating Report.");
 
-        $start_date = $end_date = Carbon::now()->format(self::DATE_FORMAT);
+        $start_date = $end_date = Carbon::now()->format(self::DATETIME_FORMAT);
         if(!empty($this->argument('start_date')) && !empty($this->argument('end_date'))) {
-            $start_date = Carbon::parse($this->argument('start_date'))->format(self::DATE_FORMAT);
-            $end_date = Carbon::parse($this->argument('end_date'))->format(self::DATE_FORMAT);
+            $start_date = Carbon::parse($this->argument('start_date'))->startOfDay()->format(self::DATETIME_FORMAT);
+            $end_date = Carbon::parse($this->argument('end_date'))->endOfDay()->format(self::DATETIME_FORMAT);
         } else if(Carbon::now()->englishDayOfWeek === 'Wednesday') {
-            $start_date = Carbon::parse('last Friday')->startOfDay()->format(self::DATE_FORMAT); // Last Friday 00:00:00
-            $end_date = Carbon::now()->subDay()->endOfDay()->format(self::DATE_FORMAT); // Yesterday 23:59:59
+            $start_date = Carbon::parse('last Friday')->startOfDay()->format(self::DATETIME_FORMAT); // Last Friday 00:00:00
+            $end_date = Carbon::now()->subDay()->endOfDay()->format(self::DATETIME_FORMAT); // Yesterday 23:59:59
         } else if (Carbon::now()->englishDayOfWeek === 'Friday') {
-            $start_date = Carbon::parse('last Wednesday')->startOfDay()->format(self::DATE_FORMAT); // Last Wednesday 00:00:00
-            $end_date = Carbon::now()->subDay()->endOfDay()->format(self::DATE_FORMAT); // Yesterday 23:59:59
+            $start_date = Carbon::parse('last Wednesday')->startOfDay()->format(self::DATETIME_FORMAT); // Last Wednesday 00:00:00
+            $end_date = Carbon::now()->subDay()->endOfDay()->format(self::DATETIME_FORMAT); // Yesterday 23:59:59
         } else {
             // Throw Error
             $day = Carbon::now()->englishDayOfWeek;
@@ -93,14 +96,40 @@ class EGHLSettlement extends Command
                 return;
             }
     
-            $rows = 0;
+            $rows = $total_roadtax = $total_gateway_charges = 0;
             $total_amount = $row_data = [];
-            $records->map(function($insurance) use(&$rows, &$total_amount) {
-                if(array_key_exists($insurance->product_id, $total_amount)) {
-                    $total_amount[$insurance->product_id] += floatval($insurance->amount);
-                } else {
-                    $total_amount[$insurance->product_id] = floatval($insurance->amount);
+            $records->map(function($insurance) use(&$rows, &$total_amount, &$total_roadtax, &$total_gateway_charges) {
+                // Roadtax Amount
+                $insurance_motor = InsuranceMotor::with([
+                        'roadtax'
+                    ])
+                    ->where('insurance_id', $insurance->id)
+                    ->first();
+
+                $roadtax_premium = 0;
+                if(!empty($insurance_motor->roadtax)) {
+                    $roadtax_premium = floatval($insurance_motor->roadtax->roadtax_renewal_fee) +
+                        floatval($insurance_motor->roadtax->myeg_fee) +
+                        floatval($insurance_motor->roadtax->e_service_fee) +
+                        floatval($insurance_motor->roadtax->service_tax);
                 }
+
+                $total_roadtax += $roadtax_premium;
+
+                // Total Payable
+                if(array_key_exists($insurance->product_id, $total_amount)) {
+                    $total_amount[$insurance->product_id] += floatval($insurance->amount) - $roadtax_premium;
+                } else {
+                    $total_amount[$insurance->product_id] = floatval($insurance->amount) - $roadtax_premium;
+                }
+
+                // Payment Gateway Charges
+                $eghl_log = EGHLLog::where('payment_id', 'LIKE', '%' . $insurance->code . '%')
+                    ->where('txn_status', 0)
+                    ->latest()
+                    ->first();
+                
+                $total_gateway_charges += getGatewayCharges($insurance->amount, $eghl_log->service_id, $eghl_log->payment_method);
     
                 $rows++;
             });
@@ -132,10 +161,12 @@ class EGHLSettlement extends Command
                     'N/A'
                 ]);
             }
+
+            $start_date = Carbon::parse($start_date)->format(self::DATE_FORMAT);
     
             // Howden's Comms
             array_push($row_data, [
-                $total_commissions,
+                $total_commissions + $total_roadtax + $total_gateway_charges,
                 config('setting.settlement.howden.bank_code'),
                 config('setting.settlement.howden.bank_account_no'),
                 $start_date,
@@ -163,7 +194,7 @@ class EGHLSettlement extends Command
     
             Insurance::whereIn('id', $records->pluck('id'))
                 ->update([
-                    'settlement_on' => Carbon::now()->format(self::DATE_FORMAT)
+                    'settlement_on' => Carbon::now()->format(self::DATETIME_FORMAT)
                 ]);
             
             Log::info("[Cron - eGHL Settlement] {$rows} records processed. [{$start_date} to {$end_date}]");
