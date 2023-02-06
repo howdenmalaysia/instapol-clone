@@ -803,7 +803,14 @@ class AIG implements InsurerLibraryInterface
                 }
             }
         }
-        if(! count($additional_drivers) > 0){
+        //check all driver selected
+        if(array_search('00080', array_column($input->input->extra_cover, 'extra_cover_code')) === false){
+            $all_driver_exist = false;
+        }
+        else{
+            $all_driver_exist = true;
+        }
+        if(! count($additional_drivers) > 0 || $all_driver_exist == true){
             $input->input->extra_cover = array_filter($input->input->extra_cover, function ($extra_cover) {
                 return $extra_cover->extra_cover_code != '00070';
             });
@@ -853,7 +860,6 @@ class AIG implements InsurerLibraryInterface
                 ]);
             }
         }
-
         $body_type = $this->getBodyTypeDetails($input->input->vehicle_body_type ?? '');
 
         $dobs = str_split($input->input->id_number, 2);

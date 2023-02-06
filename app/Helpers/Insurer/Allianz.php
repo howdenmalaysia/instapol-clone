@@ -667,7 +667,7 @@ class Allianz implements InsurerLibraryInterface
             'sum_insured_type' => $vehicle->sum_insured_type,
             'min_sum_insured' => formatNumber($vehicle->min_sum_insured),
             'max_sum_insured' => formatNumber($vehicle->max_sum_insured),
-            'named_drivers_needed' => true,
+            'named_drivers_needed' => false,
             'contract_number' => $vehicle->extra_attribute->contractNumber,
         ]);
 
