@@ -662,7 +662,6 @@ class Allianz implements InsurerLibraryInterface
             'net_premium' => formatNumber($motor_premium->response->premium->premiumDueRoundedAfterPTV - $motor_premium->response->premium->commissionAmount),
             'extra_cover' => $this->sortExtraCoverList($input->extra_cover),
             'personal_accident' => $pa,
-            // 'quotation_number' => $motor_premium->response->premium->QUOTATION_NO,
             'sum_insured' => formatNumber($vehicle->sum_insured ?? 0),
             'sum_insured_type' => $vehicle->sum_insured_type,
             'min_sum_insured' => formatNumber($vehicle->min_sum_insured),
