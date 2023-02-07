@@ -73,7 +73,8 @@ class AmGeneral implements InsurerLibraryInterface
 		$this->encrypt_pswd_iterations = config('insurer.config.am_config.encrypt_pswd_iterations');
 		$this->encrypt_key_size = config('insurer.config.am_config.encrypt_key_size');
 		$this->channel_token = config('insurer.config.am_config.channel_token');
-		$this->brand = 'A';
+		$this->brand = 'Kurnia';
+		$this->secret_key = 'HOWDEN1005';
 	}
 
 	public function get_token(){
@@ -340,7 +341,7 @@ class AmGeneral implements InsurerLibraryInterface
             }
 
             $basic_premium = formatNumber($motor_premium->response->basicPremium);
-            $excess_amount = 0;
+            $excess_amount = formatNumber($motor_premium->response->compulsoryExcess);
             $ncd_percentage = $motor_premium->response->ncdPercent;
             $ncd_amount = formatNumber($motor_premium->response->ncdAmount);
             $total_benefit_amount = formatNumber($motor_premium->response->extraCoverageAmount);
@@ -1324,7 +1325,7 @@ class AmGeneral implements InsurerLibraryInterface
         $log = APILogs::create([
             'insurance_company_id' => $this->company_id,
             'method' => $method,
-            'domain' => $this->host.$this->port,
+            'domain' => $host,
             'path' => "/api/KEC/v1.0/".$function,
             'request_header' => json_encode($options['headers']),
             'request' => json_encode($options['body']??$options['form_params']),

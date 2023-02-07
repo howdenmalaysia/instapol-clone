@@ -33,8 +33,8 @@ return [
             'encrypt_password' => env('AMGEN_MOTOR_API_ENCRYPT_PASSWORD'),
             'encrypt_salt' => env('AMGEN_MOTOR_API_ENCRYPT_SALT'),
             'encrypt_iv' => env('AMGEN_MOTOR_API_ENCRYPT_IV'),
-            'encrypt_pswd_iterations' => 10,
-            'encrypt_key_size' => 32,
+            'encrypt_pswd_iterations' => '',
+            'encrypt_key_size' => '',
             'channel_token' => env('AMGEN_MOTOR_API_CHANNEL_TOKEN'),
         ],
         'zurich_config'=> [
