@@ -1321,17 +1321,22 @@ class AmGeneral implements InsurerLibraryInterface
             $postfield = $data;
             $options['body'] = $postfield;
         }
-
+		if($function){
+			$path = "/api/KEC/v1.0/".$function;
+		}
+		else{
+			$path = "/api/oauth/v2.0/token";;
+		}
         $log = APILogs::create([
             'insurance_company_id' => $this->company_id,
             'method' => $method,
-            'domain' => $host,
-            'path' => "/api/KEC/v1.0/".$function,
+            'domain' => $this->host.':'.$port,
+            'path' => $path,
             'request_header' => json_encode($options['headers']),
             'request' => json_encode($options['body']??$options['form_params']),
         ]);
-
-		$result = HttpClient::curl('POST', $host, $options);dump($result);
+		
+		$result = HttpClient::curl('POST', $host, $options);dump($result,$options);
 
         // Update the API log
         // APILogs::find($log->id)
