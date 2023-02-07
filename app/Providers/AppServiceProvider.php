@@ -24,6 +24,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        // Fix 419 Issue:
+        // Happen when Redirected with HTTP protocol instead of HTTPS and unable to get FontAwesome fonts
         URL::forceScheme('https');
     }
 }
