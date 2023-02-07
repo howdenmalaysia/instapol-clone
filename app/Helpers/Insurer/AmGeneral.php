@@ -113,7 +113,7 @@ class AmGeneral implements InsurerLibraryInterface
 			'dob' => $dob,
         ];
 		
-        $vix = $this->Q_GetProductList($data);
+        $vix = $this->Q_GetProductList($data);dump($vix);
         if(!$vix->status && is_string($vix->response)) {
             return $this->abort($vix->response);
         }
@@ -138,7 +138,7 @@ class AmGeneral implements InsurerLibraryInterface
 				'header' => $vix->header,
 			];
 			$vix_variant = $this->Q_GetProductListVariant($get_data);
-		}
+		}dump($vix_variant);
         $inception_date = Carbon::parse($vix_variant->response->inceptionDate)->format('Y-m-d');
         $expiry_date = Carbon::parse($vix_variant->response->expiryDate)->format('Y-m-d');
         
@@ -333,7 +333,7 @@ class AmGeneral implements InsurerLibraryInterface
 				'header'=>$vehicle->extra_attribute->header,
             ];
 
-            $motor_premium = $this->Q_GetQuote($data);
+            $motor_premium = $this->Q_GetQuote($data);dd($motor_premium);
 
 			if (!$motor_premium->status) {
                 return $this->abort($motor_premium->response);
@@ -1333,11 +1333,11 @@ class AmGeneral implements InsurerLibraryInterface
 		$result = HttpClient::curl('POST', $host, $options);
 
         // Update the API log
-        APILogs::find($log->id)
-            ->update([
-                'response_header' => json_encode($result->response_header),
-                'response' => $result->response
-            ]);
+        // APILogs::find($log->id)
+        //     ->update([
+        //         'response_header' => json_encode($result->response_header),
+        //         'response' => $result->response
+        //     ]);
 
         if ($result->status) {
             $json = json_decode($result->response);
