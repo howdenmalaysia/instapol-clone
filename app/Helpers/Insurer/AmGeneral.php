@@ -113,8 +113,8 @@ class AmGeneral implements InsurerLibraryInterface
             'postcode' => $input->postcode,
 			'dob' => $dob,
         ];
-		
-        $vix = $this->Q_GetProductList($data);
+
+		$vix = $this->Q_GetProductList($data);
         if(!$vix->status && is_string($vix->response)) {
             return $this->abort($vix->response);
         }
@@ -1312,7 +1312,7 @@ class AmGeneral implements InsurerLibraryInterface
                 'Channel' => 'Kurnia',
                 'Device' => 'PC',
             ];
-
+dd( $this->host.':'.$port);
             if ($type == "with_auth_token") {
                 $options['headers']['auth_token'] = $additionals['auth_token'][0];
                 $options['headers']['referencedata'] = $additionals['referenceData'][0];
@@ -1325,7 +1325,7 @@ class AmGeneral implements InsurerLibraryInterface
 			$path = "/api/KEC/v1.0/".$function;
 		}
 		else{
-			$path = "/api/oauth/v2.0/token";;
+			$path = "/api/oauth/v2.0/token";
 		}
         $log = APILogs::create([
             'insurance_company_id' => $this->company_id,
@@ -1338,14 +1338,14 @@ class AmGeneral implements InsurerLibraryInterface
 		
 		$result = HttpClient::curl('POST', $host, $options);dump($result,$options);
 
-        // Update the API log
-        // APILogs::find($log->id)
-        //     ->update([
-        //         'response_header' => json_encode($result->response_header),
-        //         'response' => $result->response
-        //     ]);
-
         if ($result->status) {
+			// Update the API log
+			APILogs::find($log->id)
+            ->update([
+                'response_header' => json_encode($result->response_header),
+                'response' => $result->response
+            ]);
+
             $json = json_decode($result->response);
 
             if (empty($json)) {
@@ -1355,6 +1355,12 @@ class AmGeneral implements InsurerLibraryInterface
             }
             $result->response = $json;
         } else {
+			// Update the API log
+			APILogs::find($log->id)
+            ->update([
+                'response_header' => json_encode($result->response_header),
+                'response' => json_encode($result->response)
+            ]);
             $message = !empty($result->response) ? $result->response : __('api.empty_response', ['company' => $this->company_name]);
             if(isset($result->response->status_code)){
                 $message = $result->response->status_code;
