@@ -334,7 +334,7 @@ class AmGeneral implements InsurerLibraryInterface
 				'header'=>$vehicle->extra_attribute->header,
             ];
 
-            $motor_premium = $this->Q_GetQuote($data);dd($motor_premium);
+            $motor_premium = $this->Q_GetQuote($data);
 
 			if (!$motor_premium->status) {
                 return $this->abort($motor_premium->response);
@@ -1311,8 +1311,8 @@ class AmGeneral implements InsurerLibraryInterface
                 'Channel' => 'Kurnia',
                 'Device' => 'PC',
             ];
-dd( $this->host.':'.$port);
-            if ($type == "with_auth_token") {
+
+			if ($type == "with_auth_token") {
                 $options['headers']['auth_token'] = $additionals['auth_token'][0];
                 $options['headers']['referencedata'] = $additionals['referenceData'][0];
             }
@@ -1335,7 +1335,7 @@ dd( $this->host.':'.$port);
             'request' => json_encode($options['body']??$options['form_params']),
         ]);
 		
-		$result = HttpClient::curl('POST', $host, $options);dump($result,$options,$host,$this->host,$this->port);
+		$result = HttpClient::curl('POST', $host, $options);
 
         if ($result->status) {
 			// Update the API log
