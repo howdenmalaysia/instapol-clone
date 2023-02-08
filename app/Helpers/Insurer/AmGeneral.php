@@ -1272,8 +1272,7 @@ class AmGeneral implements InsurerLibraryInterface
 	}
 
 	private function cURL($type = null, $function = null, $data = null, $additionals = null){
-		$port = $this->port;
-		$host = $this->host.':'.$port;
+		$host = $this->host.':'.$this->port;
 		$username = $this->username;
 		$password = $this->password;
 		$options = [
@@ -1330,13 +1329,13 @@ dd( $this->host.':'.$port);
         $log = APILogs::create([
             'insurance_company_id' => $this->company_id,
             'method' => $method,
-            'domain' => $this->host.':'.$port,
+            'domain' => $this->host.':'.$this->port,
             'path' => $path,
             'request_header' => json_encode($options['headers']),
             'request' => json_encode($options['body']??$options['form_params']),
         ]);
 		
-		$result = HttpClient::curl('POST', $host, $options);dump($result,$options);
+		$result = HttpClient::curl('POST', $host, $options);dump($result,$options,$host,$this->host,$this->port);
 
         if ($result->status) {
 			// Update the API log
