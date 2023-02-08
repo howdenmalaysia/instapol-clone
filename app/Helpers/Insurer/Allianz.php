@@ -612,6 +612,17 @@ class Allianz implements InsurerLibraryInterface
             // Include Extra Covers to Get Premium
             $input->extra_cover = $extra_cover_list;
         }
+        else{//update sum_insured
+            // get premium
+            $get_quotation = (object)[
+                'input'=>$input,
+                'vix'=>$vehicle,
+            ];
+            $upd_sum_insured = $this->getQuotation($get_quotation);
+            if (!$upd_sum_insured->status) {
+                return $this->abort($upd_sum_insured->response);
+            }
+        }
 
         // get premium
         $get_quotation = (object)[
@@ -1056,7 +1067,13 @@ class Allianz implements InsurerLibraryInterface
 			$year += 2000;
 		}
 		$dob = strval($year) . "-" . $dobs[1] . "-" . $dobs[2];
-        $avcode = $qParams->vix->extra_attribute->avvariant->VariantGrp[0]->AvCode ?? '';
+        $avcode = $qParams->vix->extra_attribute->avvariant->VariantGrp[0]->AvCode;
+        foreach($qParams->vix->extra_attribute->avvariant->VariantGrp as $car_variant){
+            if($qParams->input->vehicle->variant == $car_variant->Variant){
+                $avcode = $car_variant->AvCode;
+            }
+        }
+        $sum_insured = $qParams->input->vehicle->sum_insured ?? $qParams->vix->sum_insured;
         $text = '{
             "partnerId": "HOWDEN",
             "contractNumber": "'.$qParams->vix->extra_attribute->contractNumber.'",
@@ -1082,7 +1099,7 @@ class Allianz implements InsurerLibraryInterface
                 "yearOfManufacture": "'.$qParams->vix->manufacture_year.'",
                 "occupantsNumber": '.$qParams->vix->extra_attribute->seating_capacity.',
                 "ncdPercentage": '.$qParams->vix->ncd_percentage.',
-                "sumInsured": "'.$qParams->vix->sum_insured.'",
+                "sumInsured": "'.$sum_insured.'",
                 "avCode": "'.$avcode.'",
                 "mvInd": "N"
             }
@@ -1180,7 +1197,13 @@ class Allianz implements InsurerLibraryInterface
                 $index++;
             }
         }
-        $name = $input->input->name ?? 'Tan Ai Ling';//config('app.name');
+        $name = $input->input->name ?? 'Tan Ai Ling';//name is mandotory input
+        $avcode = $input->vix->extra_attribute->avvariant->VariantGrp[0]->AvCode;
+        foreach($input->vix->extra_attribute->avvariant->VariantGrp as $car_variant){
+            if($input->input->vehicle->variant == $car_variant->Variant){
+                $avcode = $car_variant->AvCode;
+            }
+        }
         $text = '{
             "salesChannel": "PTR",
             "partnerId": "HOWDEN",
@@ -1201,7 +1224,7 @@ class Allianz implements InsurerLibraryInterface
               }
             ],
             "vehicle": {
-              "avCode": ""
+              "avCode": "'.$avcode.'"
             }
           }';
 
