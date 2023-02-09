@@ -176,7 +176,34 @@ class AmGeneral implements InsurerLibraryInterface
 				]));
 			}
         }
-		dd(strtoupper(substr($vix_variant->response->productList[0]->defaultDriver[0]->gender, 0, 1)));
+		//driver
+		$defaultDriver = [];
+		array_push($defaultDriver, [
+			'driverName' => $vix_variant->response->productList[0]->defaultDriver[0]->driverName,
+			'newICNo' => $vix_variant->response->productList[0]->defaultDriver[0]->newICNo,
+			'oldICNo' => '',
+			'dateofBirth' => $vix_variant->response->productList[0]->defaultDriver[0]->dateofBirth,
+			'gender' => $this->gendercode($vix_variant->response->productList[0]->defaultDriver[0]->gender),
+		]);
+		//coverage
+		// $extraCoverageList = [];
+		// foreach($vix_variant->response->productList[0]->extraCoverageList as $extracover){
+		// 	if(isset($extracover->cartList)){
+		// 		array_push($defaultDriver, [
+		// 			'' => $extracover,
+		// 			"extraCoverageCode" => $extracover->extraCoverageCode,
+		// 			"extraCoverageSumInsured" => $extracover->extraCoverageCode,
+		// 			"cartAmount" => "50",
+		// 			"cartDays" => "7",
+		// 		]);
+		// 	}
+		// 	else{
+		// 		if()
+		// 	}
+		// 	array_push($defaultDriver, [
+		// 		'' => $extracover,
+		// 	]);
+		// }
 		//make
 		$get_make = explode (" ", $vix_variant->response->modelDesc);
         return (object) [
@@ -185,7 +212,7 @@ class AmGeneral implements InsurerLibraryInterface
 			'vehicleClass' => $vix_variant->response->productList[0]->vehicleClass,
 			'isRoadTaxAvail' => $vix_variant->response->isRoadTaxAvail,
 			'extraCoverageList' => $vix_variant->response->productList[0]->extraCoverageList,
-			'defaultDriver' => $vix_variant->response->productList[0]->defaultDriver,
+			'defaultDriver' => $defaultDriver,
             'response' => new VIXNCDResponse([
                 'chassis_number' => $vix->response->chassisNo,
                 'coverage' => $this->coverage_type($vix_variant->response->productList[0]->scopeOfCover),
@@ -207,6 +234,29 @@ class AmGeneral implements InsurerLibraryInterface
                 'vehicle_number' => $input->vehicle_number,
                 'vehicle_body_code' => null
             ])];
+    }
+	
+    private function gendercode(string $gender) : string
+    {
+		switch ($gender) {
+			case 'COMPANY': {
+				$code = 'C';
+
+				break;
+			}
+			case 'FEMALE': {
+				$code = 'F';
+
+				break;
+			}
+			case 'MALE': {
+				$code = 'M';
+
+				break;
+			}
+		}
+
+        return $code;
     }
 
     private function coverage_type(string $coverage_type) : string
@@ -323,9 +373,9 @@ class AmGeneral implements InsurerLibraryInterface
 				"vehicleClass"=>$vehicle->extra_attribute->vehicleClass,
 				"scopeOfCover"=>$vehicle->extra_attribute->cover_type,
 				"roadTaxOption"=>$vehicle->extra_attribute->isRoadTaxAvail,
-				"vehBodyTypeCode"=>$vehicle->extra_attribute->vehicle_body_code,
+				"vehBodyTypeCode"=>$vehicle->extra_attribute->vehicle_body_code ?? '01',
 				"sumInsured"=>$vehicle->sum_insured,
-				"saveInd"=> 'Y',
+				"saveInd"=> 'N',
 				"ptvSelectInd"=>'N',
 				// "extraCoverageList"=>$vehicle->extra_attribute->extraCoverageList,
 				"extraCoverageList"=>'',
@@ -735,28 +785,55 @@ class AmGeneral implements InsurerLibraryInterface
 	
 	public function Q_GetQuote($cParams = null)
 	{
+		// $text = array(
+		// 	"vehicleClass"=>$cParams->vehicleClass,
+		// 	"scopeOfCover"=>$cParams->scopeOfCover,
+		// 	"roadTaxOption"=>$cParams->roadTaxOption,
+		// 	"vehBodyTypeCode"=>$cParams->vehBodyTypeCode,
+		// 	"sumInsured"=>$cParams->sumInsured,
+		// 	"saveInd"=>$cParams->saveInd,
+		// 	"ptvSelectInd"=>$cParams->ptvSelectInd,
+		// 	"extraCoverageList"=>$cParams->extraCoverageList,
+		// 	"namedDriversList"=>$cParams->namedDriversList,
+		// 	"vehicleAgeLoadPercent"=>$cParams->vehicleAgeLoadPercent,
+		// 	"insuredAgeLoadPercent"=>$cParams->insuredAgeLoadPercent,
+		// 	"claimsExpLoadPercent"=>$cParams->claimsExpLoadPercent,
+		// );
 		$text = array(
-			"vehicleClass"=>$cParams->vehicleClass,
-			"scopeOfCover"=>$cParams->scopeOfCover,
-			"roadTaxOption"=>$cParams->roadTaxOption,
-			"vehBodyTypeCode"=>$cParams->vehBodyTypeCode,
-			"sumInsured"=>$cParams->sumInsured,
-			"saveInd"=>$cParams->saveInd,
-			"ptvSelectInd"=>$cParams->ptvSelectInd,
-			"extraCoverageList"=>$cParams->extraCoverageList,
-			"namedDriversList"=>$cParams->namedDriversList,
-			"vehicleAgeLoadPercent"=>$cParams->vehicleAgeLoadPercent,
-			"insuredAgeLoadPercent"=>$cParams->insuredAgeLoadPercent,
-			"claimsExpLoadPercent"=>$cParams->claimsExpLoadPercent,
+			"vehicleClass" => "PC",
+			"scopeOfCover" => "COMP",
+			"roadTaxOption" => "N",
+			"vehBodyTypeCode" => "01",
+			"sumInsured" => "51700.0",
+			"saveInd" => "N",
+			"ptvSelectInd" => "N",
+			"extraCoverageList" => [
+				[
+					"extraCoverageCode" => "B101",
+					"extraCoverageSumInsured" => "51700",
+					"extraCoverageEffectiveDate" => "09-02-2023",
+					"extraCoverageExpiryDate" => "08-02-2024",
+				],
+			],
+			"namedDriversList" => array([
+				"driverName" => "TAN AI LING",
+				"newICNo" => "550421085433",
+				"oldICNo" => "",
+				"dateofBirth" => "21-04-1955",
+				"gender" => "M",
+			]),
+			"vehicleAgeLoadPercent" => "",
+			"insuredAgeLoadPercent" => "",
+			"claimsExpLoadPercent" => "",
 		);
 		$encrypted = $this->encrypt(json_encode($text));
 
 		$data = array(
 			'requestData' => $encrypted
 		);
-dd($text,json_encode($text),json_encode($data),$cParams->header);
+dump($text,json_encode($text),json_encode($data),$cParams->header);
 		$response = $this->cURL("with_auth_token","QuickQuotation/GetQuickQuote", json_encode($data),$cParams->header);
-        if($response->status){
+		if($response->status){
 			$encrypted = $response->response->responseData;
 			$decrypted = json_decode($this->decrypt($response->response->responseData));
 

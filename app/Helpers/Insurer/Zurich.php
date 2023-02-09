@@ -2431,14 +2431,15 @@ class Zurich implements InsurerLibraryInterface
         ]);
 
         $result = HttpClient::curl($method, $url, $request_options);
-        // Update the API log
-        APILogs::find($log->id)
+
+        if($result->status) {
+            // Update the API log
+            APILogs::find($log->id)
             ->update([
                 'response_header' => json_encode($result->response_header),
                 'response' => $result->response
             ]);
 
-        if($result->status) {
             $cleaned_xml = preg_replace('/(<\/|<)[a-zA-Z]+:([a-zA-Z0-9]+[ =>])/', '$1$2', $result->response);
             $response = simplexml_load_string($cleaned_xml);
             if($response === false) {
@@ -2447,6 +2448,13 @@ class Zurich implements InsurerLibraryInterface
 
             $response = $response->xpath('Body')[0];
         } else {
+            // Update the API log
+            APILogs::find($log->id)
+            ->update([
+                'response_header' => json_encode($result->response_header),
+                'response' => json_encode($result->response)
+            ]);
+
             $message = '';
             if(empty($result->response)) {
                 $message = __('api.empty_response', ['company' => $this->company_name]);
