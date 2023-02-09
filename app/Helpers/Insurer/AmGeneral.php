@@ -73,8 +73,8 @@ class AmGeneral implements InsurerLibraryInterface
 		$this->encrypt_pswd_iterations = config('insurer.config.am_config.encrypt_pswd_iterations');
 		$this->encrypt_key_size = config('insurer.config.am_config.encrypt_key_size');
 		$this->channel_token = config('insurer.config.am_config.channel_token');
-		$this->brand = 'Kurnia';
-		$this->secret_key = 'HOWDEN1005';
+		$this->brand = 'K';
+		$this->secret_key = 'HOWDAPI0802!@#';
 	}
 
 	public function get_token(){
@@ -176,6 +176,7 @@ class AmGeneral implements InsurerLibraryInterface
 				]));
 			}
         }
+		dd(strtoupper(substr($vix_variant->response->productList[0]->defaultDriver[0]->gender, 0, 1)));
 		//make
 		$get_make = explode (" ", $vix_variant->response->modelDesc);
         return (object) [
@@ -326,7 +327,8 @@ class AmGeneral implements InsurerLibraryInterface
 				"sumInsured"=>$vehicle->sum_insured,
 				"saveInd"=> 'Y',
 				"ptvSelectInd"=>'N',
-				"extraCoverageList"=>$vehicle->extra_attribute->extraCoverageList,
+				// "extraCoverageList"=>$vehicle->extra_attribute->extraCoverageList,
+				"extraCoverageList"=>'',
 				"namedDriversList"=>$vehicle->extra_attribute->namedDriversList,
 				"vehicleAgeLoadPercent"=>'',
 				"insuredAgeLoadPercent"=>'',
@@ -334,7 +336,7 @@ class AmGeneral implements InsurerLibraryInterface
 				'header'=>$vehicle->extra_attribute->header,
             ];
 
-            $motor_premium = $this->Q_GetQuote($data);
+            $motor_premium = $this->Q_GetQuote($data);dd($motor_premium);
 
 			if (!$motor_premium->status) {
                 return $this->abort($motor_premium->response);
@@ -657,6 +659,7 @@ class AmGeneral implements InsurerLibraryInterface
 			"dob"=>$dob,
 			"newBusRegNo"=>"",
 		);
+		
 		$encrypted = $this->encrypt(json_encode($text));
 
 		$data = array(
@@ -664,10 +667,11 @@ class AmGeneral implements InsurerLibraryInterface
 		);
 
 		$response = $this->cURL("getData","QuickQuotation/GetProductList", json_encode($data));
-
+// dd($response);
         if($response->status){
 			$encrypted = $response->response->responseData;
 			$decrypted = json_decode($this->decrypt($response->response->responseData));
+			dump($decrypted);
 			if (empty($decrypted)) {
                 $message = !empty($response->response) ? $response->response : __('api.empty_response', ['company' => $this->company_name]);
 
@@ -706,7 +710,7 @@ class AmGeneral implements InsurerLibraryInterface
 		if($response->status){
 			$encrypted = $response->response->responseData;
 			$decrypted = json_decode($this->decrypt($response->response->responseData));
-			
+			dump($decrypted);
 			if (empty($decrypted)) {
                 $message = !empty($response->response) ? $response->response : __('api.empty_response', ['company' => $this->company_name]);
 
@@ -750,7 +754,7 @@ class AmGeneral implements InsurerLibraryInterface
 		$data = array(
 			'requestData' => $encrypted
 		);
-
+dd($text,json_encode($text),json_encode($data),$cParams->header);
 		$response = $this->cURL("with_auth_token","QuickQuotation/GetQuickQuote", json_encode($data),$cParams->header);
         if($response->status){
 			$encrypted = $response->response->responseData;
@@ -1306,7 +1310,7 @@ class AmGeneral implements InsurerLibraryInterface
                 'Content-Type' => 'application/json',
                 'Accept' => 'application/json',
                 'Username' => $this->username,
-                'Password' => $this->encrypt_password,
+                'Password' => $this->encrypt($password),
                 'Browser' => 'Chrome',
                 'Channel' => 'Kurnia',
                 'Device' => 'PC',

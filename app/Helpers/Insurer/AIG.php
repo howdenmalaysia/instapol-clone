@@ -229,15 +229,21 @@ class AIG implements InsurerLibraryInterface
         $vehicle = $input->vehicle ?? null;
         $ncd_amount = $basic_premium = $total_benefit_amount = $gross_premium = $sst_percent = $sst_amount = $stamp_duty = $excess_amount = $total_payable = 0;
         $pa = null;
-        $dobs = str_split($input->id_number, 2);
-        $id_number = $dobs[0] . $dobs[1] . $dobs[2] . "-" . $dobs[3] .  "-" . $dobs[4] . $dobs[5];
-        $year = intval($dobs[0]);
-        if ($year >= 10) {
-            $year += 1900;
-        } else {
-            $year += 2000;
+        
+        if($input->id_type == 1){
+            $dobs = str_split($input->id_number, 2);
+            $id_number = $dobs[0] . $dobs[1] . $dobs[2] . "-" . $dobs[3] .  "-" . $dobs[4] . $dobs[5];
+            $year = intval($dobs[0]);
+            if ($year >= 10) {
+                $year += 1900;
+            } else {
+                $year += 2000;
+            }
+            $dob = $dobs[2] . "-" . $dobs[1] . "-" . strval($year);
         }
-        $dob = $dobs[2] . "-" . $dobs[1] . "-" . strval($year);
+        else{
+            $id = $input->id_number;
+        }
         $region = '';
         if($input->region == 'West'){
             $region = 'W';
@@ -861,15 +867,22 @@ class AIG implements InsurerLibraryInterface
             }
         }
         $body_type = $this->getBodyTypeDetails($input->input->vehicle_body_type ?? '');
-
-        $dobs = str_split($input->input->id_number, 2);
-        $year = intval($dobs[0]);
-		if ($year >= 10) {
-			$year += 1900;
-		} else {
-			$year += 2000;
-		}
-		$dob = strval($year) . "-" . $dobs[1] . "-" . $dobs[2];
+        
+        if($input->input->id_type == 1){
+            $dobs = str_split($input->input->id_number, 2);
+            $year = intval($dobs[0]);
+            if ($year >= 10) {
+                $year += 1900;
+            } else {
+                $year += 2000;
+            }
+            $dob = strval($year) . "-" . $dobs[1] . "-" . $dobs[2];
+            $id_number = $input->input->id_number;
+            $age = getAgeFromIC($input->input->id_number) - 18;
+        }
+        else{
+            $id = $input->input->id_number;
+        }
         $inception_date = Carbon::parse($input->vehicle->inception_date)->format('Y-m-d');
         $expiry_date = Carbon::parse($input->vehicle->expiry_date)->format('Y-m-d');
         if(strtotime($expiry_date)<strtotime($inception_date)){
@@ -889,8 +902,8 @@ class AIG implements InsurerLibraryInterface
             'agtgstregdate' => '',
             'agtgstregno' => '',
             'antitd' => self::ANTI_THEFT,
-            'birthdate' => $dob,
-            'bizregno' => '',
+            'birthdate' => $dob ?? '',
+            'bizregno' => $id ?? '',
             'channel' => 'TIB',
             'chassisno' => $input->vehicle->extra_attribute->chassis_number,
             'claimamt' => '0',
@@ -901,7 +914,7 @@ class AIG implements InsurerLibraryInterface
             'covercode' => $input->vehicle->extra_attribute->covercode,
             'discount' => 'NO',
             'discountperc' => 0,
-            'driveexp' => getAgeFromIC($input->input->id_number) - 18,
+            'driveexp' => $age ?? '',
             'effectivedate' => $inception_date,
             'effectivetime' => $effective_time,
             'email' => $input->input->email,
@@ -929,7 +942,7 @@ class AIG implements InsurerLibraryInterface
             'name' => $input->input->name ?? config('app.name'),
             'ncdamt' => 0,
             'ncdperc' => $input->vehicle->ncd_percentage,
-            'newic' => $input->input->id_number,
+            'newic' => $id_number ?? '',
             'occupmajor' => $occupation,
             'oldic' => '',
             'ownershiptype' => $input->input->ownership_type ?? 'I',
@@ -975,7 +988,7 @@ class AIG implements InsurerLibraryInterface
             'item' => $item,
         ];
         // Generate XML from view
-        $xml = view('backend.xml.aig.premium')->with($data)->render();
+        $xml = view('backend.xml.aig.premium')->with($data)->render();//dd($xml);
         // Call API
         $result = $this->cURL($path, $xml);
 
@@ -1150,15 +1163,20 @@ class AIG implements InsurerLibraryInterface
             'paramValue' => $input->nvic,
         ]);
 
-        $dobs = str_split($input->id_number, 2);
-        $id_number = $dobs[0] . $dobs[1] . $dobs[2] . "-" . $dobs[3] .  "-" . $dobs[4] . $dobs[5];
-        $year = intval($dobs[0]);
-		if ($year >= 10) {
-			$year += 1900;
-		} else {
-			$year += 2000;
-		}
-		$dob = $dobs[1] . "/" . $dobs[2] . "/" . strval($year);
+        if($input->id_type == 1){
+            $dobs = str_split($input->id_number, 2);
+            $id_number = $dobs[0] . $dobs[1] . $dobs[2] . "-" . $dobs[3] .  "-" . $dobs[4] . $dobs[5];
+            $year = intval($dobs[0]);
+            if ($year >= 10) {
+                $year += 1900;
+            } else {
+                $year += 2000;
+            }
+            $dob = $dobs[1] . "/" . $dobs[2] . "/" . strval($year);
+        }
+        else{
+            $id = $input->id_number;
+        }
         $effective_time = '00:00:01';
         if(Carbon::parse($input->vehicle->inception_date)->lessThan(Carbon::today())) {
             $effective_time = date('H:i:s', strtotime('now'));
@@ -1390,15 +1408,20 @@ class AIG implements InsurerLibraryInterface
             'paramRemark' => '',
             'paramValue' => $input->nvic,
         ]);
-        $dobs = str_split($input->id_number, 2);
-        $id_number = $dobs[0] . $dobs[1] . $dobs[2] . "-" . $dobs[3] .  "-" . $dobs[4] . $dobs[5];
-        $year = intval($dobs[0]);
-		if ($year >= 10) {
-			$year += 1900;
-		} else {
-			$year += 2000;
-		}
-		$dob = $dobs[1] . "/" . $dobs[2] . "/" . strval($year);
+        if($input->id_type == 1){
+            $dobs = str_split($input->id_number, 2);
+            $id_number = $dobs[0] . $dobs[1] . $dobs[2] . "-" . $dobs[3] .  "-" . $dobs[4] . $dobs[5];
+            $year = intval($dobs[0]);
+            if ($year >= 10) {
+                $year += 1900;
+            } else {
+                $year += 2000;
+            }
+            $dob = $dobs[1] . "/" . $dobs[2] . "/" . strval($year);
+        }
+        else{
+            $id = $input->id_number;
+        }
         $effective_time = '00:00:01';
         if(Carbon::parse($input->vehicle->inception_date)->lessThan(Carbon::today())) {
             $effective_time = date('H:i:s', strtotime('now'));
@@ -2104,13 +2127,15 @@ class AIG implements InsurerLibraryInterface
         ]);
 
         $result = HttpClient::curl($method, $url, $request_options);
-        // Update the API log
-        APILogs::find($log->id)
-            ->update([
-                'response_header' => json_encode($result->response_header),
-                'response' => $result->response
-            ]);
+        
         if($result->status) {
+            // Update the API log
+            APILogs::find($log->id)
+                ->update([
+                    'response_header' => json_encode($result->response_header),
+                    'response' => $result->response
+                ]);
+
             $cleaned_xml = preg_replace('/(<\/|<)[a-zA-Z]+:([a-zA-Z0-9]+[ =>])/', '$1$2', $result->response);
             $response = simplexml_load_string($cleaned_xml);
             if($response === false) {
@@ -2119,6 +2144,13 @@ class AIG implements InsurerLibraryInterface
 
             $response = $response->xpath('Body')[0];
         } else {
+            // Update the API log
+			APILogs::find($log->id)
+            ->update([
+                'response_header' => json_encode($result->response_header),
+                'response' => json_encode($result->response)
+            ]);
+
             $message = '';
             if(empty($result->response)) {
                 $message = __('api.empty_response', ['company' => $this->company_name]);
