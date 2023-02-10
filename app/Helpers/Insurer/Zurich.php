@@ -34,7 +34,7 @@ class Zurich implements InsurerLibraryInterface
     private const SOAP_ACTION_DOMAIN = "https://gtws2.zurich.com.my/ziapps/zurichinsurance/services";
     private const EXTRA_COVERAGE_LIST = ['01','02','03','06','101','103','108','109','111',
     '112','19','20E','20W','22','25','25E','25W','57','72','89','89A','97','97A','D1','TW1','TW2',
-    '200','201','202','203','207','221','01A'];
+    '200','201','202','203','207','221','01A','07','100'];
     private const MIN_SUM_INSURED = 10000;
     private const MAX_SUM_INSURED = 500000;
     private const ADJUSTMENT_RATE_UP = 10;
@@ -489,20 +489,41 @@ class Zurich implements InsurerLibraryInterface
 
         //motor extra cover details
         $extra_cover = [];
+        $extra_cover_cart = [];
         if(isset($input->extcover)){
             foreach($input->extcover as $extcover){
-                array_push($extra_cover, (object) [
-                    'ext_cov_code' => $extcover->extra_cover_code,
-                    'unit_day' => 7,
-                    'unit_amount' => 50,
-                    'ECD_eff_date' => Carbon::now()->format('d/m/Y'),
-                    'ECD_exp_date' => Carbon::now()->addYear()->subDay()->format('d/m/Y'),
-                    'ECD_sum_insured' => $extcover->sum_insured ?? 0,
-                    'no_of_unit' => 1
-                ]);
+                if($extcover->extra_cover_code == '112'){
+                    $cart_day = 7;
+                    $cart_amount = 100;
+                    if($extcover->cart_day != ''){
+                        $cart_day = $extcover->cart_day;
+                    }
+                    if($extcover->cart_amount != ''){
+                        $cart_amount = $extcover->cart_amount;
+                    }
+                    array_push($extra_cover_cart, (object) [
+                        'ext_cov_code' => $extcover->extra_cover_code,                  
+                        'unit_day' => (int)$cart_day,
+                        'unit_amount' => (double)$cart_amount,
+                        'ECD_eff_date' => Carbon::now()->format('d/m/Y'),
+                        'ECD_exp_date' => Carbon::now()->addYear()->subDay()->format('d/m/Y'),
+                        'ECD_sum_insured' => $extcover->sum_insured ?? 0,
+                        'no_of_unit' => 1
+                    ]);
+                }
+                else{
+                    array_push($extra_cover, (object) [
+                        'ext_cov_code' => $extcover->extra_cover_code,
+                        'ECD_eff_date' => Carbon::now()->format('d/m/Y'),
+                        'ECD_exp_date' => Carbon::now()->addYear()->subDay()->format('d/m/Y'),
+                        'ECD_sum_insured' => $extcover->sum_insured ?? $sum_insured,
+                        'no_of_unit' => 1
+                    ]);
+                }
             }
         }
         $data["extcover"] = $extra_cover;
+        $data["extcover_cart"] = $extra_cover_cart;
         //additional driver
         $add_driver = [];
         $index = 1;
@@ -773,21 +794,42 @@ class Zurich implements InsurerLibraryInterface
         $data["abisi"] = $abisi;
         $data["chosen_si_type"] = $chosen_si_type;  
         //motor extra cover details
-        $ext_cov_code = $input->ext_cov_code;//'101';
-        $unit_day = $input->unit_day;//'0';
-        $unit_amount = $input->unit_amount;//'0';
-        $ecd_eff_date = $input->ecd_eff_date;//'14/1/2017';
-        $ecd_exp_date = $input->ecd_exp_date;//'13/1/2018';
-        $ecd_sum_insured = $input->ecd_sum_insured;//'0';
-        $no_of_unit = $input->no_of_unit;//'1';
-
-        $data["ext_cov_code"] = $ext_cov_code;
-        $data["unit_day"] = $unit_day;
-        $data["unit_amount"] = $unit_amount;
-        $data["ECD_eff_date"] = $ecd_eff_date;
-        $data["ECD_exp_date"] = $ecd_exp_date;
-        $data["ECD_sum_insured"] = $ecd_sum_insured;
-        $data["no_of_unit"] = $no_of_unit;
+        $extra_cover = [];
+        $extra_cover_cart = [];
+        if(isset($input->extcover)){
+            foreach($input->extcover as $extcover){
+                if($extcover->extra_cover_code == '112'){
+                    $cart_day = 7;
+                    $cart_amount = 100;
+                    if($extcover->cart_day != ''){
+                        $cart_day = $extcover->cart_day;
+                    }
+                    if($extcover->cart_amount != ''){
+                        $cart_amount = $extcover->cart_amount;
+                    }
+                    array_push($extra_cover_cart, (object) [
+                        'ext_cov_code' => $extcover->extra_cover_code,                  
+                        'unit_day' => (int)$cart_day,
+                        'unit_amount' => (double)$cart_amount,
+                        'ECD_eff_date' => Carbon::now()->format('d/m/Y'),
+                        'ECD_exp_date' => Carbon::now()->addYear()->subDay()->format('d/m/Y'),
+                        'ECD_sum_insured' => $extcover->sum_insured ?? 0,
+                        'no_of_unit' => 1
+                    ]);
+                }
+                else{
+                    array_push($extra_cover, (object) [
+                        'ext_cov_code' => $extcover->extra_cover_code,
+                        'ECD_eff_date' => Carbon::now()->format('d/m/Y'),
+                        'ECD_exp_date' => Carbon::now()->addYear()->subDay()->format('d/m/Y'),
+                        'ECD_sum_insured' => $extcover->sum_insured ?? $sum_insured,
+                        'no_of_unit' => 1
+                    ]);
+                }
+            }
+        }
+        $data["extcover"] = $extra_cover;
+        $data["extcover_cart"] = $extra_cover_cart;
         //Motor Additional Named Driver Details        
         $nd_name = $input->nd_name;//'TAMMY TAN';
         $nd_identity_no = $input->nd_identity_no;//'981211-11-1111';
@@ -1627,6 +1669,10 @@ class Zurich implements InsurerLibraryInterface
                 $extra_cover_name = 'Authorised Driver';
                 break;
             }
+            case '100': {
+                $extra_cover_name = 'Legal Liability to Passengers (LLTP)';
+                break;
+            }
         }
 
         return $extra_cover_name;
@@ -1771,6 +1817,10 @@ class Zurich implements InsurerLibraryInterface
                 }
                 case '221': {
                     $sequence = 33;
+                    break;
+                }
+                case '100': {
+                    $sequence = 34;
                     break;
                 }
             }

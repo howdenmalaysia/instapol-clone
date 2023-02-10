@@ -70,12 +70,23 @@
                             @foreach ($extcover as $ec)
                             <ExtraCoverData>
                                 <ExtCovCode>{{ $ec->ext_cov_code }}</ExtCovCode>
-                                <UnitDay>{{ $ec->unit_day }}</UnitDay>
-                                <UnitAmount>{{ $ec->unit_amount }}</UnitAmount>
                                 <EffDate>{{ $ec->ECD_eff_date }}</EffDate>
                                 <ExpDate>{{ $ec->ECD_exp_date }}</ExpDate>
                                 <SumInsured>{{ $ec->ECD_sum_insured }}</SumInsured>
                                 <NoOfUnit>{{ $ec->no_of_unit }}</NoOfUnit>
+                            </ExtraCoverData>
+                            @endforeach
+                    @endif
+                    @if (!empty($extcover_cart))
+                            @foreach ($extcover_cart as $ec_cart)
+                            <ExtraCoverData>
+                                <ExtCovCode>{{ $ec_cart->ext_cov_code }}</ExtCovCode>
+                                <UnitDay>{{ $ec_cart->unit_day }}</UnitDay>
+                                <UnitAmount>{{ $ec_cart->unit_amount }}</UnitAmount>
+                                <EffDate>{{ $ec_cart->ECD_eff_date }}</EffDate>
+                                <ExpDate>{{ $ec_cart->ECD_exp_date }}</ExpDate>
+                                <SumInsured>{{ $ec_cart->ECD_sum_insured }}</SumInsured>
+                                <NoOfUnit>{{ $ec_cart->no_of_unit }}</NoOfUnit>
                             </ExtraCoverData>
                             @endforeach
                     @endif
