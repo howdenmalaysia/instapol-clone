@@ -1,6 +1,6 @@
 <s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
     <s:Body>
-        <GetVehicleMake xmlns="https://api.zurich.com.my/v1/general/insurance/motor">
+        <GetVehicleMake xmlns="https://gtws2.zurich.com.my/ziapps/zurichinsurance">
             <MakeInputInfo>{{ $data }}</MakeInputInfo>
         </GetVehicleMake>
     </s:Body>

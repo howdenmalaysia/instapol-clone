@@ -30,8 +30,8 @@ class Zurich implements InsurerLibraryInterface
     private string $password;
     private string $secret_key;
     
-    private const SOAP_ACTION_DOMAIN = 'https://api.zurich.com.my/v1/general/insurance/motor/services';
-    // private const SOAP_ACTION_DOMAIN = "https://gtws2.zurich.com.my/ziapps/zurichinsurance/services";
+    // private const SOAP_ACTION_DOMAIN = 'https://api.zurich.com.my/v1/general/insurance/motor/services';
+    private const SOAP_ACTION_DOMAIN = "https://gtws2.zurich.com.my/ziapps/zurichinsurance/services";
     private const EXTRA_COVERAGE_LIST = ['01','02','03','06','101','103','108','109','111',
     '112','19','20E','20W','22','25','25E','25W','57','72','89','89A','97','97A','D1','TW1','TW2',
     '200','201','202','203','207','221','01A'];

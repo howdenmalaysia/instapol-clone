@@ -30,8 +30,8 @@ class ZurichTakaful implements InsurerLibraryInterface
     private string $password;
     private string $secret_key;
 
-    private const SOAP_ACTION_DOMAIN = 'https://api.zurich.com.my/v1/takaful/insurance/motor/services';
-    // private const SOAP_ACTION_DOMAIN = 'https://gtws2.zurich.com.my/zurichtakaful/services';
+    // private const SOAP_ACTION_DOMAIN = 'https://api.zurich.com.my/v1/takaful/insurance/motor/services';
+    private const SOAP_ACTION_DOMAIN = 'https://gtws2.zurich.com.my/zurichtakaful/services';
     private const EXTRA_COVERAGE_LIST = ['01','02','03','06','101','103','108','109','111',
     '112','19','20E','20W','22','25','25E','25W','57','72','89','89A','97','97A','D1','TW1','TW2',
     '200','201','202','203','207','221','01A'];
@@ -2456,7 +2456,7 @@ class ZurichTakaful implements InsurerLibraryInterface
                 'response_header' => json_encode($result->response_header),
                 'response' => $result->response
             ]);
-            
+
             $cleaned_xml = preg_replace('/(<\/|<)[a-zA-Z]+:([a-zA-Z0-9]+[ =>])/', '$1$2', $result->response);
             $response = simplexml_load_string($cleaned_xml);
             if($response === false) {

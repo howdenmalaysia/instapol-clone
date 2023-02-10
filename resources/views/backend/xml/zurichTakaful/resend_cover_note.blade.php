@@ -1,6 +1,6 @@
 <s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
     <s:Body>
-        <ResendCoverNote xmlns="https://api.zurich.com.my/v1/takaful/insurance/motor">
+        <ResendCoverNote xmlns="https://gtws2.zurich.com.my/zurichtakaful">
             <XmlRequest>
                 <![CDATA[<RequestData>
                     <ParticipantDetails>
