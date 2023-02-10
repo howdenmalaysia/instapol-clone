@@ -44,7 +44,9 @@
                             <extraCoverageSubmissionReq>
                                 <coverageId>{{ $extra->extra_cover_code }}</coverageId>
                                 <premium>{{ $extra->premium }}</premium>
-                                <sumInsured>{{ $extra->sum_insured }}</sumInsured>
+                                @if (!empty($extra->sum_insured))
+                                    <sumInsured>{{ $extra->sum_insured }}</sumInsured>
+                                @endif
                             </extraCoverageSubmissionReq>
                         @endforeach
                     </d4p1:ExtraCoverage>
