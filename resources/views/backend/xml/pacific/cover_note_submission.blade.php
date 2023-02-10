@@ -72,7 +72,7 @@
                     <namedDriverSubmissionReq>
                         <age>{{ $age }}</age>
                         <gender>{{ $gender }}</gender>
-                        <name>{{ $insured_name }}</name>
+                        <name>{{ $customer_name }}</name>
                         <nricNo>{{ $id_number }}</nricNo>
                         <relation>0</relation>
                     </namedDriverSubmissionReq>
@@ -81,7 +81,7 @@
                             <namedDriverSubmissionReq>
                                 <age>{{ $driver->age }}</age>
                                 <gender>{{ $driver->gender }}</gender>
-                                <name>{{ $driver->name }}</name>
+                                <name>{{ strtoupper($driver->name) }}</name>
                                 <nricNo>{{ $driver->id_number }}</nricNo>
                                 <relation>{{ $driver->relationship }}</relation>
                             </namedDriverSubmissionReq>
@@ -95,7 +95,7 @@
                 <d4p1:PostCode xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $postcode }}</d4p1:PostCode>
                 <d4p1:PremiumBeforeRebate xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API"></d4p1:PremiumBeforeRebate>
                 <d4p1:PreviousInsurerRegNo xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API"></d4p1:PreviousInsurerRegNo>
-                <d4p1:Race xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API"></d4p1:Race>
+                <d4p1:Race xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $race }}</d4p1:Race>
                 <d4p1:RebateAmount xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API"></d4p1:RebateAmount>
                 <d4p1:RegistrationNo xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $vehicle_number }}</d4p1:RegistrationNo>
                 <d4p1:SafetyFeatureCode xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $safety_feature_code }}</d4p1:SafetyFeatureCode>
