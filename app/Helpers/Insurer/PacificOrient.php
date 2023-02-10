@@ -689,7 +689,7 @@ class PacificOrient implements InsurerLibraryInterface
 
         $formatted_extra_cover = [];
         foreach($input->extra_cover as $extra) {
-            if(!in_array($extra->extra_cover_code, ['04', '72', '111'])) {
+            if(in_array($extra->extra_cover_code, ['04', '72', '111'])) {
                 array_push($formatted_extra_cover, (object) [
                     'extra_cover_code' => $extra->extra_cover_code,
                     'premium' => $extra->premium
