@@ -687,6 +687,22 @@ class PacificOrient implements InsurerLibraryInterface
         $path = 'poiapiv2/Insurance.svc';
         $token = $this->getToken();
 
+        $formatted_extra_cover = [];
+        foreach($input->extra_cover as $extra) {
+            if(!in_array($extra->extra_cover_code, ['04', '72', '111'])) {
+                array_push($formatted_extra_cover, (object) [
+                    'extra_cover_code' => $extra->extra_cover_code,
+                    'premium' => $extra->premium
+                ]);
+            } else {
+                array_push($formatted_extra_cover, (object) [
+                    'extra_cover_code' => $extra->extra_cover_code,
+                    'sum_insured' => $extra->sum_insured,
+                    'premium' => $extra->premium
+                ]);
+            }
+        }
+
         $data = [
             'address_one' => $input->insurance->address->address_one,
             'address_two' => $input->insurance->address->address_two,
