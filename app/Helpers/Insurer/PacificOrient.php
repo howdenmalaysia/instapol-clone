@@ -723,7 +723,7 @@ class PacificOrient implements InsurerLibraryInterface
             'email' => $input->insurance->holder->email_address,
             'email_aggregator' => 'instapol@my.howdengroup.com',
             'engine_number' => $input->vehicle->extra_attribute->engine_number,
-            'extra_coverage' => $input->extra_cover,
+            'extra_coverage' => $formatted_extra_cover,
             'garage_code' => self::GARAGE_CODE,
             'gender' => $this->getGender($input->gender, true),
             'id_number' => $input->insurance->holder->id_number,
