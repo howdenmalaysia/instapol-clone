@@ -530,13 +530,16 @@ class MotorController extends Controller
             'h_vehicle' => $vehicle ?? null,
             'h_vehicle_list' => $vehicle ?? null,
         ]);
+
+        Quotation::where('product_type', $quote->product_type)
+            ->where('vehicle_number', $quote->vehicle_no)
+            ->update(['active' => Quotation::INACTIVE]);
         
-        $response = Quotation::updateOrCreate([
+        $response = Quotation::create([
             'product_type' => $quote->product_type,
             'vehicle_number' => $quote->vehicle_no,
             'email_address' => $quote->email_address,
             'active' => Quotation::ACTIVE,
-        ], [
             'request_param' => json_encode($quote),
             'referrer' => $motor->referrer,
             'compare_page' => 0

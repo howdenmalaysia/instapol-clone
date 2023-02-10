@@ -23,7 +23,6 @@ class PacificOrient implements InsurerLibraryInterface
 {
     private string $company_id;
     private string $company_name;
-    private string $token;
     private string $agent_code;
     private string $user_id;
     private string $host;
