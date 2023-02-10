@@ -953,7 +953,7 @@ class PacificOrient implements InsurerLibraryInterface
     {
         $code = '';
 
-        switch(ucwords($state)) {
+        switch(ucwords(strtolower($state))) {
             case 'Johor':
             case 'Kedah':
             case 'Kelantan':
