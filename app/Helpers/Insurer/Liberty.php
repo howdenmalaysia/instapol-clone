@@ -101,7 +101,7 @@ class Liberty implements InsurerLibraryInterface
                 // return $this->abort(__('api.gap_in_cover', ['days' => $gap_in_cover]), config('setting.response_codes.gap_in_cover'));
             }
 
-            $inception_date = $today;
+            $inception_date = Carbon::parse($today);
             $expiry_date = Carbon::today()->addYear()->subDay()->format('Y-m-d');
         } else {
             // Check 2 Months Before
