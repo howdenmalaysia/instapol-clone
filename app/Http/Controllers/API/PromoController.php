@@ -135,7 +135,11 @@ class PromoController extends Controller
                 if($is_percentage) {
                     $discount_amount = $motor->roadtax->total * ($code->discount_percentage / 100);
                 } else {
-                    $discount_amount = $code->discount_amount;
+                    if(floatval($code->discount_amount) > $motor->roadtax->total) {
+                        $discount_amount = $motor->roadtax->total;
+                    } else {
+                        $discount_amount = $code->discount_amount;
+                    }
                 }
 
                 break;

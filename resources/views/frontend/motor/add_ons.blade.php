@@ -555,10 +555,10 @@
 
             // Consolidate Add Ons
             $('.extra-coverage-checkbox:checked').each((index, element) => {
-                let sum_insured = $(`#sum-insured-${$.escapeSelector($(element).val())}`).val();
+                let sum_insured = parseFloat($(`#sum-insured-${$.escapeSelector($(element).val())}`).val());
 
-                if($(`#sum-insured-${$.escapeSelector($(element).val())}`).val() == 0) {
-                    sum_insured = $('#sum-insured-slider').val();
+                if(isNaN($(`#sum-insured-${$.escapeSelector($(element).val())}`).val())) {
+                    sum_insured = parseFloat($('#sum-insured-slider').val());
                 }
 
                 if($(element).val() != 112) { // CART

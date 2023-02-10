@@ -687,6 +687,22 @@ class PacificOrient implements InsurerLibraryInterface
         $path = 'poiapiv2/Insurance.svc';
         $token = $this->getToken();
 
+        $formatted_extra_cover = [];
+        foreach($input->extra_cover as $extra) {
+            if(!in_array($extra->extra_cover_code, ['04', '72', '111'])) {
+                array_push($formatted_extra_cover, (object) [
+                    'extra_cover_code' => $extra->extra_cover_code,
+                    'premium' => $extra->premium
+                ]);
+            } else {
+                array_push($formatted_extra_cover, (object) [
+                    'extra_cover_code' => $extra->extra_cover_code,
+                    'sum_insured' => $extra->sum_insured,
+                    'premium' => $extra->premium
+                ]);
+            }
+        }
+
         $data = [
             'address_one' => $input->insurance->address->address_one,
             'address_two' => $input->insurance->address->address_two,
@@ -697,7 +713,7 @@ class PacificOrient implements InsurerLibraryInterface
             'commission_amount' => formatNumber($input->premium_details->gross_premium * 0.1),
             'commission_rate' => 10,
             'country_code' => self::COUNTRY,
-            'cover_region_code' => substr(strtoupper($input->region), 1),
+            'cover_region_code' => substr(strtoupper($input->region), 0, 1),
             'cover_note_date' => $input->insurance->quotation_date,
             'cover_note_effective_date' => $input->vehicle->inception_date,
             'cover_note_expiry_date' => Carbon::parse($input->vehicle->inception_date)->addYear()->subDay()->format('Y-m-d'),
@@ -709,12 +725,11 @@ class PacificOrient implements InsurerLibraryInterface
             'engine_number' => $input->vehicle->extra_attribute->engine_number,
             'extra_coverage' => $input->extra_cover,
             'garage_code' => self::GARAGE_CODE,
-            'gender' => $input->gender,
+            'gender' => $this->getGender($input->gender, true),
             'id_number' => $input->insurance->holder->id_number,
             'import_type' => self::IMPORT_TYPE,
             'insured_age' => getAgeFromIC($input->insurance->holder->id_number),
-            'insured_gender' => $this->getGender($input->insurance->holder->gender),
-            'insured_name' => $input->insurance->holder->name,
+            'insured_gender' => $this->getGender($input->insurance->holder->gender, true),
             'logbook_number' => 'A001',
             'marital_status' => $input->marital_status,
             'ncd_amount' => $input->insurance_motor->ncd_amount,
@@ -826,15 +841,29 @@ class PacificOrient implements InsurerLibraryInterface
     }
 
     // Mapping
-    private function getGender($data) : string
+    private function getGender($data, $full = false) : string
     {
-        switch($data) {
-            case 'M':
-            case 'F': {
-                return $data;
+        if(!$full) {
+            switch($data) {
+                case 'M':
+                case 'F': {
+                    return $data;
+                }
+                case 'O': {
+                    return 'C';
+                }
             }
-            case 'O': {
-                return 'C';
+        } else {
+            switch($data) {
+                case 'M': {
+                    return 'MALE';
+                }
+                case 'F': {
+                    return 'FEMALE';
+                }
+                case 'O': {
+                    return 'COMPANY';
+                }
             }
         }
     }
@@ -953,7 +982,7 @@ class PacificOrient implements InsurerLibraryInterface
     {
         $code = '';
 
-        switch(ucwords($state)) {
+        switch(ucwords(strtolower($state))) {
             case 'Johor':
             case 'Kedah':
             case 'Kelantan':
