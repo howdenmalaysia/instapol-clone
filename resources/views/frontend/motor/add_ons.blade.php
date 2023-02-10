@@ -661,6 +661,11 @@
             }));
         });
 
+        // Disable all checkboxes
+        $('.extra-coverage-checkbox').each((index, element) => {
+            $(element).attr('disabled', true);
+        });
+
         selected_extra_cover.forEach((extra_cover) => {
             if(extra_cover.option_list) {
                 if(extra_cover.option_list.description == 'Option List'){
@@ -741,6 +746,11 @@
                 $('#pricing-table #gross-premium').removeClass('loadingButton');
                 $('#pricing-table #sst').removeClass('loadingButton');
                 $('#pricing-table #total-payable').removeClass('loadingButton');
+
+                // Enable all checkboxes
+                $('.extra-coverage-checkbox').each((index, element) => {
+                    $(element).removeAttr('disabled');
+                });
             }
         }).catch((err) => {
             console.log(err.response);
