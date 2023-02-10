@@ -689,7 +689,7 @@ class PacificOrient implements InsurerLibraryInterface
 
         $formatted_extra_cover = [];
         foreach($input->extra_cover as $extra) {
-            if(!in_array($extra->extra_cover_code, ['04', '72', '111'])) {
+            if(in_array($extra->extra_cover_code, ['04', '72', '111'])) {
                 array_push($formatted_extra_cover, (object) [
                     'extra_cover_code' => $extra->extra_cover_code,
                     'premium' => $extra->premium
@@ -723,7 +723,7 @@ class PacificOrient implements InsurerLibraryInterface
             'email' => $input->insurance->holder->email_address,
             'email_aggregator' => 'instapol@my.howdengroup.com',
             'engine_number' => $input->vehicle->extra_attribute->engine_number,
-            'extra_coverage' => $input->extra_cover,
+            'extra_coverage' => $formatted_extra_cover,
             'garage_code' => self::GARAGE_CODE,
             'gender' => $this->getGender($input->gender, true),
             'id_number' => $input->insurance->holder->id_number,
