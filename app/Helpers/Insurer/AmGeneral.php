@@ -48,11 +48,13 @@ class AmGeneral implements InsurerLibraryInterface
 	
 	private object $master_data;
 	private string $encrypt_method = "AES-256-CBC";
+	private string $scopeOfCover = "COMP PREM";
     private const MIN_SUM_INSURED = 10000;
     private const MAX_SUM_INSURED = 500000;
     private const ADJUSTMENT_RATE_UP = 10;
     private const ADJUSTMENT_RATE_DOWN = 10;
-    private const EXTRA_COVERAGE_LIST = ['B101','111','112','25','57','72','72A','97A','89','89(a)','C001'];
+    private const EXTRA_COVERAGE_LIST = ['B101','112','25','57','72','72A','97A','89','89(a)','C001'];
+    // private const EXTRA_COVERAGE_LIST = ['B101','112','25','57','72','72A','97A','89','89(a)','B57C','C001'];
     private const CART_AMOUNT_LIST = [50, 100, 200];
     private const CART_DAY_LIST = [7, 14, 21];
 
@@ -129,28 +131,7 @@ class AmGeneral implements InsurerLibraryInterface
 			'header' => $vix->header,
 		];
 		$vix_variant = $this->F_GetProductListVariant($get_data);
-		//check nvic
-		// if(empty($input->nvic)){
-		// 	//use first nvic
-		// 	$index = 0;
-		// 	for($i = 0; $i < count($vix->response->variantSeriesList); $i++){
-		// 		if(! $vix->response->variantSeriesList[$i]->marketValue > 0){
-		// 			$index++;
-		// 		}
-		// 	}
-		// 	$get_data = (object)[
-		// 		'nvicCode' => $vix->response->variantSeriesList[$index]->nvicCode,
-		// 		'header' => $vix->header,
-		// 	];
-		// 	$vix_variant = $this->Q_GetProductListVariant($get_data);
-		// }
-		// else{
-		// 	$get_data = (object)[
-		// 		'nvicCode' => $input->nvic,
-		// 		'header' => $vix->header,
-		// 	];
-		// 	$vix_variant = $this->Q_GetProductListVariant($get_data);
-		// }
+
         $inception_date = Carbon::parse($vix_variant->response->inceptionDate)->format('Y-m-d');
         $expiry_date = Carbon::parse($vix_variant->response->expiryDate)->format('Y-m-d');
         
@@ -179,38 +160,44 @@ class AmGeneral implements InsurerLibraryInterface
 
 		//product
 		foreach ($vix_variant->response->productList as $product) {
-			if($product->scopeOfCover == "COMP") {
+			if($product->scopeOfCover == $this->scopeOfCover) {
 				$get_product = $product;
+			}
+		}
+		switch($input->id_type) {
+			case '1': {
+				$dobs = str_split($input->id_number, 2);
+				$id_number = $dobs[0] . $dobs[1] . $dobs[2] . "-" . $dobs[3] .  "-" . $dobs[4] . $dobs[5];
+				$year = intval($dobs[0]);
+				if ($year >= 10) {
+					$year += 1900;
+				} else {
+					$year += 2000;
+				}
+				$dob = $dobs[2] . "-" . $dobs[1] . "-" . strval($year);
+				$nric_number = $input->id_number;
+				break;
+			}
+			case '6': {
+				if ($this->isNewBusinessRegistrationNumber($input->id_number)) {
+					$new_business_registration_number = $input->id_number;
+				} else {
+					$business_registration_number = $input->id_number;
+				}
+
+				break;
 			}
 		}
 		//driver
 		$defaultDriver = [];
 		array_push($defaultDriver, [
-			'driverName' => $get_product->defaultDriver[0]->driverName,
-			'newICNo' => $get_product->defaultDriver[0]->newICNo,
+			'driverName' => $input->name ?? 'Named Driver',
+			'newICNo' => $nric_number,
 			'oldICNo' => '',
-			'dateofBirth' => $get_product->defaultDriver[0]->dateofBirth,
-			'gender' => $this->gendercode($get_product->defaultDriver[0]->gender),
+			'dateofBirth' => $dob,
+			'gender' => $input->gender,
 		]);
-		//coverage
-		// $extraCoverageList = [];
-		// foreach($get_product->extraCoverageList as $extracover){
-		// 	if(isset($extracover->cartList)){
-		// 		array_push($extraCoverageList, [
-		// 			'' => $extracover,
-		// 			"extraCoverageCode" => $extracover->extraCoverageCode,
-		// 			"extraCoverageSumInsured" => $extracover->extraCoverageCode,
-		// 			"cartAmount" => "50",
-		// 			"cartDays" => "7",
-		// 		]);
-		// 	}
-		// 	else{
-		// 		if()
-		// 	}
-		// 	array_push($extraCoverageList, [
-		// 		'' => $extracover,
-		// 	]);
-		// }
+
 		//make
 		$get_make = explode (" ", $vix_variant->response->modelDesc);
         return (object) [
@@ -325,7 +312,7 @@ class AmGeneral implements InsurerLibraryInterface
 		$vehicle = $input->vehicle ?? null;
         $ncd_amount = $basic_premium = $total_benefit_amount = $gross_premium = $sst_percent = $sst_amount = $stamp_duty = $excess_amount = $total_payable = 0;
         $pa = null;
-
+		
 		switch($input->id_type) {
 			case '1': {
 				$dobs = str_split($input->id_number, 2);
@@ -535,6 +522,20 @@ class AmGeneral implements InsurerLibraryInterface
 
                         break;
                     }
+					// case 'B57C': {
+                    //     $option_list = new OptionList([
+                    //         'name' => 'sum_insured',
+                    //         'description' => 'Option List',
+                    //         'values' => ['Plan A', 'Plan B', 'Plan C'],
+                    //         'any_value' => true,
+                    //         'increment' => null
+                    //     ]);
+                    //     $item->option_list = $option_list;
+
+                    //     // Default to RM 1,000
+                    //     $item->plan_type = $option_list->values[0];
+                    //     break;
+                    // }
                 }
 
                 if (!empty($_sum_insured_amount)) {
@@ -607,6 +608,7 @@ class AmGeneral implements InsurerLibraryInterface
 		if (!$add_quote->status) {
 			return $this->abort($add_quote->response);
 		}
+
         $new_extracover_list = [];
         if(!empty($motor_premium->response->extraCoverageList)) {
             foreach($input->extra_cover as $extra_cover) {
@@ -630,7 +632,7 @@ class AmGeneral implements InsurerLibraryInterface
             'gross_premium' => formatNumber($premium_data->grossPremium),
             'ncd_amount' => formatNumber($premium_data->ncdAmount),
             'ncd_percentage' => formatNumber($premium_data->ncdPercent),
-            'net_premium' => formatNumber($premium_data->netPremiumAfterPtv),
+            'net_premium' => formatNumber($premium_data->netPremium),
             'sum_insured' => formatNumber($premium_data->sumInsured ?? 0),
             'min_sum_insured' => formatNumber($premium_data->minSumInsured),
             'max_sum_insured' => formatNumber($premium_data->maxSumInsured),
@@ -1351,6 +1353,7 @@ class AmGeneral implements InsurerLibraryInterface
 				'response'=>$decrypted,
 				'header'=>$response->response_header,
 			];
+			return $data;
         }
         else{
 			$error = (object)[

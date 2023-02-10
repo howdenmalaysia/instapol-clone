@@ -2361,8 +2361,14 @@ class Zurich implements InsurerLibraryInterface
         $NxtNCDEffDate = '';
         if((string)$result_data->RespCode == '000'){
             //next NCD effective date
-            $date_dmy = str_split((string)$result_data->NxtNCDEffDate, 2);
-            $NxtNCDEffDate = $date_dmy[0].'-'.$date_dmy[1].'-'.$date_dmy[2].$date_dmy[3];
+            if(isset($result_data->NxtNCDEffDate) && $result_data->NxtNCDEffDate != ''){
+                $date_dmy = str_split((string)$result_data->NxtNCDEffDate, 2);
+                $NxtNCDEffDate = $date_dmy[0].'-'.$date_dmy[1].'-'.$date_dmy[2].$date_dmy[3];
+            }
+            else{
+                $date_dmy = str_split((string)$result_data->NxtPolEffDate, 2);
+                $NxtNCDEffDate = $date_dmy[0].'-'.$date_dmy[1].'-'.$date_dmy[2].$date_dmy[3];
+            }
         }
         else {
             $error = $result_data->RespDesc;
