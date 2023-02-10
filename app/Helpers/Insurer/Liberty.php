@@ -98,7 +98,7 @@ class Liberty implements InsurerLibraryInterface
             $gap_in_cover = abs(Carbon::today()->diffInDays($inception_date));
             // Liberty Doesn't Allow Renewal for Expired Policy
             if ($gap_in_cover > 0) {
-                return $this->abort(__('api.gap_in_cover', ['days' => $gap_in_cover]), config('setting.response_codes.gap_in_cover'));
+                // return $this->abort(__('api.gap_in_cover', ['days' => $gap_in_cover]), config('setting.response_codes.gap_in_cover'));
             }
 
             $inception_date = $today;
