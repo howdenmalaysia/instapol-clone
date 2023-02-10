@@ -831,7 +831,7 @@ return [
                 'lltp' => 'Acts of negligence your passenger(s) suing you for injury caused to them (except your own family members)',
                 'srcc' => 'Cover damages to your vehicle caused directly by persons involved in a strike, riot or disturbance of public peace.',
                 'accessories' => 'If you have fitted your car with expensive accessories, then it is a good idea to gconsider getting this add-ons as insurance companies do not cover aftermarket accessories, only standard installations as listed by car manufacturer during claim.',
-                'pa' => 'Personal accident plan while traveling in your vehilce is now available for purchase',
+                'pa' => 'Personal accident plan while traveling in your vehicle is now available for purchase',
                 'ncd' => 'This extension provides covers for compensation for loss of "No Claim Discount" (NCD)',
                 'cart' => 'Compensation when your car under repair',
                 'special_perils' => 'Cover loss or damage to your car caused by flood, typhoon, hurricane, storm, tempest, volcanic eruption, earthquake., landslide, landslip, subsidence or sinking of the soil/earth or convulsions of nature.',
