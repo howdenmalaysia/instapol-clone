@@ -53,8 +53,8 @@ class AmGeneral implements InsurerLibraryInterface
     private const MAX_SUM_INSURED = 500000;
     private const ADJUSTMENT_RATE_UP = 10;
     private const ADJUSTMENT_RATE_DOWN = 10;
-    // private const EXTRA_COVERAGE_LIST = ['B101','112','25','57','72','72A','97A','89','89(a)','C001'];
-    private const EXTRA_COVERAGE_LIST = ['B101','112','25','57','72','72A','97A','89','89(a)','B57C','C001'];
+    private const EXTRA_COVERAGE_LIST = ['B101','112','25','57','72','72A','97A','89','89(a)','C001'];
+    // private const EXTRA_COVERAGE_LIST = ['B101','112','25','57','72','72A','97A','89','89(a)','B57C','C001'];
     private const CART_AMOUNT_LIST = [50, 100, 200];
     private const CART_DAY_LIST = [7, 14, 21];
 
@@ -848,9 +848,7 @@ class AmGeneral implements InsurerLibraryInterface
 		$data = array(
 			'requestData' => $encrypted
 		);
-
 		$response = $this->cURL("with_auth_token","QuickQuotation/GetProductListVariant", json_encode($data),$cParams->header);
-dd(json_encode($data),$cParams->header);
 		if($response->status){
 			$encrypted = $response->response->responseData;
 			$decrypted = json_decode($this->decrypt($response->response->responseData));
@@ -999,7 +997,7 @@ dd(json_encode($data),$cParams->header);
 		if($response->status){
 			$encrypted = $response->response->responseData;
 			$decrypted = json_decode($this->decrypt($response->response->responseData));
-dd($text,$decrypted);
+
 			if (empty($decrypted)) {
                 $message = !empty($response->response) ? $response->response : __('api.empty_response', ['company' => $this->company_name]);
 
@@ -1642,7 +1640,7 @@ dd($text,$decrypted);
             'request' => json_encode($options['body']??$options['form_params']),
         ]);
 		
-		$result = HttpClient::curl('POST', $host, $options);dump($options);
+		$result = HttpClient::curl('POST', $host, $options);
 
         if ($result->status) {
 			// Update the API log

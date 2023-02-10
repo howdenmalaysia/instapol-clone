@@ -505,17 +505,30 @@ class Zurich implements InsurerLibraryInterface
         $data["extcover"] = $extra_cover;
         //additional driver
         $add_driver = [];
+        $index = 1;
         if(isset($input->additional_driver)){
             foreach($input->additional_driver as $adddriver){
-                array_push($add_driver, (object) [
-                    'nd_name' =>'',
-                    'nd_identity_no' => '',
-                    'nd_date_of_birth' => '',
-                    'nd_gender' => '',
-                    'nd_marital_sts' => '',
-                    'nd_occupation' => '',
-                    'nd_relationship' => ''
-                ]);
+                if($index > 2){
+                    $dobs = str_split($adddriver->id_number, 2);
+                    $id_number = $dobs[0] . $dobs[1] . $dobs[2] . "-" . $dobs[3] .  "-" . $dobs[4] . $dobs[5];
+                    $year = intval($dobs[0]);
+                    if ($year >= 10) {
+                        $year += 1900;
+                    } else {
+                        $year += 2000;
+                    }
+                    $dob = $dobs[2] . "/" . $dobs[1] . "/" . strval($year);
+                    array_push($add_driver, (object) [
+                        'nd_name' =>$adddriver->name ?? '',
+                        'nd_identity_no' => $adddriver->id_number ?? '',
+                        'nd_date_of_birth' => $dob ?? '',
+                        'nd_gender' => $adddriver->gender ?? '',
+                        'nd_marital_sts' => $adddriver->marital_sts ?? '',
+                        'nd_occupation' => $adddriver->occupation ?? '',
+                        'nd_relationship' => $adddriver->relationship ?? '',
+                    ]);
+                }
+                $index++;
             }
         }
         $data["additional_driver"] = $add_driver;
@@ -784,15 +797,32 @@ class Zurich implements InsurerLibraryInterface
         $nd_occupation = $input->nd_occupation;//'99';
         $nd_relationship = $input->nd_relationship;//'5';
         $data['additional_driver'] = [];
-        array_push($data['additional_driver'], (object) [
-            'nd_name' => $nd_name,
-            'nd_identity_no' => $nd_identity_no,
-            'nd_date_of_birth' => $nd_date_of_birth,
-            'nd_gender' => $nd_gender,
-            'nd_marital_sts' => $nd_marital_sts,
-            'nd_occupation' => $nd_occupation,
-            'nd_relationship' => $nd_relationship,
-        ]);
+        $index = 1;
+        if(isset($input->additional_driver)){
+            foreach($input->additional_driver as $adddriver){
+                if($index > 2){
+                    $dobs = str_split($adddriver->id_number, 2);
+                    $id_number = $dobs[0] . $dobs[1] . $dobs[2] . "-" . $dobs[3] .  "-" . $dobs[4] . $dobs[5];
+                    $year = intval($dobs[0]);
+                    if ($year >= 10) {
+                        $year += 1900;
+                    } else {
+                        $year += 2000;
+                    }
+                    $dob = $dobs[2] . "/" . $dobs[1] . "/" . strval($year);
+                    array_push($data['additional_driver'], (object) [
+                        'nd_name' =>$adddriver->name ?? '',
+                        'nd_identity_no' => $adddriver->id_number ?? '',
+                        'nd_date_of_birth' => $dob ?? '',
+                        'nd_gender' => $adddriver->gender ?? '',
+                        'nd_marital_sts' => $adddriver->marital_sts ?? '',
+                        'nd_occupation' => $adddriver->occupation ?? '',
+                        'nd_relationship' => $adddriver->relationship ?? '',
+                    ]);
+                }
+                $index++;
+            }
+        }
         //PAC Rider Details
         $pac_rider_no = $input->pac_rider_no;//'TAMMY TAN';
         $pac_rider_name = $input->pac_rider_name;//'981211-11-1111';
@@ -1339,7 +1369,7 @@ class Zurich implements InsurerLibraryInterface
             'postcode' => $input->postcode,
             'state' => $this->getStateCode(ucwords(strtolower($input->state))),
             'country' => 'MAS',
-            'sum_insured' => $vehicle->sum_insured,
+            'sum_insured' => $input->vehicle->sum_insured,
             'av_ind' => 'N',
             'vol_excess' => '',
             'pac_ind' => 'N',
