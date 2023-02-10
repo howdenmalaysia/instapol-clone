@@ -552,7 +552,7 @@
             $('.extra-coverage-checkbox:checked').each((index, element) => {
                 let sum_insured = $(`#sum-insured-${$.escapeSelector($(element).val())}`).val();
 
-                if($(`#sum-insured-${$.escapeSelector($(element).val())}`).val() == 0) {
+                if(isNaN($(`#sum-insured-${$.escapeSelector($(element).val())}`).val())) {
                     sum_insured = $('#sum-insured-slider').val();
                 }
 
