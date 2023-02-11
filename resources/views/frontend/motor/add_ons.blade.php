@@ -579,7 +579,7 @@
             // Consolidate Additional Drivers
             let additional_driver = [];
             $('.additional-driver-name').each((index, element) => {
-                if($(`#driver-name-${index + 1}`).val() != '') {
+                if($(`#driver-name-${index}`).val() != '') {
                     additional_driver.push({
                         name: $(`#driver-name-${index}`).val(),
                         id_number: $(`#driver-id-number-${index}`).val(),
