@@ -437,7 +437,7 @@
         });
 
         $('#add-additional-driver').on('click', () => {
-            let count = $('.additional-driver-name').length + 1;
+            let count = $('.additional-driver-name').length;
             let html = `
                 <div class="row info px-md-3 driver-${count}">
                     <div class="col-4">
