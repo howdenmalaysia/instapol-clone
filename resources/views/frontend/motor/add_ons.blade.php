@@ -303,6 +303,8 @@
         // Send Land on Add Ons Page to GA
         gtag('event', 'l_motor_ao', { 'debug_mode': true });
 
+        populateDrivers();
+
         $('#show-more-add-ons').on('click', (e) => {
             let shown = $(e.target).data('shown');
             
@@ -583,9 +585,9 @@
             let additional_driver = [];
             $('.info').each((index, element) => {
                 additional_driver.push({
-                    driver_name: $(element).find('#additional-driver-name').val(),
-                    driver_id_number: $(element).find('#additional-driver-id-number').val(),
-                    driver_relationship: $(element).find('#additional-driver-relationship').val()
+                    name: $(element).find('#additional-driver-name').val(),
+                    id_number: $(element).find('#additional-driver-id-number').val(),
+                    relationship: $(element).find('#additional-driver-relationship').val()
                 })
             });
 
@@ -891,6 +893,18 @@
         }
 
         return '';
+    }
+
+    function populateDrivers()
+    {
+        if(motor.additional_drivers) {
+            motor.additional_drivers.forEach((driver, index) => {
+                $('#add-additional-driver').trigger('click');
+                $(`#driver-name-${index + 1}`).val(driver.name);
+                $(`#driver-id-number-${index + 1}`).val(driver.id_number);
+                $(`#driver-relationship-${index + 1}`).val(driver.relationship);
+            });
+        }
     }
 </script>
 @endpush
