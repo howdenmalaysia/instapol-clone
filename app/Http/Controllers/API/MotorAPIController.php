@@ -515,6 +515,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
                     'insurance_motor_id' => $insurance_motor->id,
                     'name' => $additional_driver->name,
                     'id_number' => $additional_driver->id_number,
+                    'relationship_id' => $additional_driver->relationship
                 ]);
             }
 
