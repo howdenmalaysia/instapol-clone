@@ -578,12 +578,14 @@
 
             // Consolidate Additional Drivers
             let additional_driver = [];
-            $('.info').each((index, element) => {
-                additional_driver.push({
-                    name: $(element).find('#additional-driver-name').val(),
-                    id_number: $(element).find('#additional-driver-id-number').val(),
-                    relationship: $(element).find('#additional-driver-relationship').val()
-                })
+            $('.additional-driver-name').each((index, element) => {
+                if($(`#driver-name-${index + 1}`).val() != '') {
+                    additional_driver.push({
+                        name: $(element).find(`#driver-name-${index + 1}`).val(),
+                        id_number: $(element).find(`#driver-id-number-${index + 1}`).val(),
+                        relationship: $(element).find(`#driver-relationship-${index + 1}`).val()
+                    });
+                }
             });
 
             $('#h-additional-drivers').val(JSON.stringify(additional_driver));
