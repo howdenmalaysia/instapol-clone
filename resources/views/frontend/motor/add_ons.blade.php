@@ -581,9 +581,9 @@
             $('.additional-driver-name').each((index, element) => {
                 if($(`#driver-name-${index + 1}`).val() != '') {
                     additional_driver.push({
-                        name: $(element).find(`#driver-name-${index + 1}`).val(),
-                        id_number: $(element).find(`#driver-id-number-${index + 1}`).val(),
-                        relationship: $(element).find(`#driver-relationship-${index + 1}`).val()
+                        name: $(`#driver-name-${index + 1}`).val(),
+                        id_number: $(`#driver-id-number-${index + 1}`).val(),
+                        relationship: $(`#driver-relationship-${index + 1}`).val()
                     });
                 }
             });
