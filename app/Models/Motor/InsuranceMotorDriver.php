@@ -14,6 +14,7 @@ class InsuranceMotorDriver extends Model
         'insurance_motor_id',
         'name',
         'id_number',
+        'relationship_id',
         'updated_at'
     ];
 
