@@ -584,7 +584,7 @@
             // Consolidate Additional Drivers
             let additional_driver = [];
             $('.additional-driver-name').each((index, element) => {
-                if($(`#driver-name-${index + 1}`).val() != '') {
+                if($(`#driver-name-${index}`).val() != '') {
                     additional_driver.push({
                         name: $(`#driver-name-${index}`).val(),
                         id_number: $(`#driver-id-number-${index}`).val(),
@@ -899,12 +899,12 @@
 
     function populateDrivers()
     {
-        if(motor.additional_drivers) {
+        if(motor.additional_drivers.length > 0) {
             motor.additional_drivers.forEach((driver, index) => {
                 $('#add-additional-driver').trigger('click');
                 $(`#driver-name-${index}`).val(driver.name);
                 $(`#driver-id-number-${index}`).val(driver.id_number);
-                $(`#driver-relationship-${index}`).val(driver.relationship);
+                $(`#driver-relationship-${index}`).val(driver.relationship).trigger('change');
             });
         }
     }
