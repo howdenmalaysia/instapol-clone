@@ -241,7 +241,7 @@
                             <div class="hidden">
                                 <input type="hidden" id="motor" name="motor" value='@json(session('motor'))' />
                                 <input type="hidden" id="selected-extra-coverage" name="selected_extra_coverage" />
-                                <input type="hidden" id="h-additional-drivers" name="additional_drivers" />
+                                <input type="hidden" id="h-additional-driver" name="additional_driver" />
                                 <input type="hidden" id="h-roadtax" name="roadtax" />
                             </div>
                         </form>
@@ -303,7 +303,7 @@
         // Send Land on Add Ons Page to GA
         gtag('event', 'l_motor_ao', { 'debug_mode': true });
 
-        populateDrivers();
+        populateDriver();
 
         $('#show-more-add-ons').on('click', (e) => {
             let shown = $(e.target).data('shown');
@@ -588,7 +588,7 @@
                 }
             });
 
-            $('#h-additional-drivers').val(JSON.stringify(additional_driver));
+            $('#h-additional-driver').val(JSON.stringify(additional_driver));
 
             if(!$('#roadtax-checkbox').is(':checked')) {
                 swalAlert("{{ __('frontend.modal.forget_road_tax') }}", (result) => {
@@ -887,10 +887,10 @@
         return '';
     }
 
-    function populateDrivers()
+    function populateDriver()
     {
-        if(motor.additional_drivers.length > 0) {
-            motor.additional_drivers.forEach((driver, index) => {
+        if(motor.additional_driver.length > 0) {
+            motor.additional_driver.forEach((driver, index) => {
                 $('#add-additional-driver').trigger('click');
                 $(`#driver-name-${index}`).val(driver.name);
                 $(`#driver-id-number-${index}`).val(driver.id_number);
