@@ -900,14 +900,12 @@
     function populateDriver()
     {
         if(motor.additional_driver) {
-            if(motor.additional_driver.length > 0) {
-                motor.additional_driver.forEach((driver, index) => {
-                    $('#add-additional-driver').trigger('click');
-                    $(`#driver-name-${index}`).val(driver.name);
-                    $(`#driver-id-number-${index}`).val(driver.id_number);
-                    $(`#driver-relationship-${index}`).val(driver.relationship).trigger('change');
-                });
-            }
+            motor.additional_driver.forEach((driver, index) => {
+                $('#add-additional-driver').trigger('click');
+                $(`#driver-name-${index}`).val(driver.name);
+                $(`#driver-id-number-${index}`).val(driver.id_number);
+                $(`#driver-relationship-${index}`).val(driver.relationship).trigger('change');
+            });
         }
     }
 </script>
