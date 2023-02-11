@@ -586,7 +586,7 @@
             $('.additional-driver-name').each((index, element) => {
                 if($(`#driver-name-${index}`).val() != '') {
                     additional_driver.push({
-                        name: $(`#driver-name-${index}`).val(),
+                        name: $(`#driver-name-${index}`).val().toUpperCase(),
                         id_number: $(`#driver-id-number-${index}`).val(),
                         relationship: $(`#driver-relationship-${index}`).val()
                     });
