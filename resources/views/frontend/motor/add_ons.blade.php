@@ -584,7 +584,7 @@
                 })
             });
 
-            $('#h-additional-driver').val(JSON.stringify(additional_driver));
+            $('#h-additional-drivers').val(JSON.stringify(additional_driver));
 
             if(!$('#roadtax-checkbox').is(':checked')) {
                 swalAlert("{{ __('frontend.modal.forget_road_tax') }}", (result) => {

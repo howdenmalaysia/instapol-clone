@@ -262,7 +262,7 @@ class MotorController extends Controller
             $session->selected_extra_coverage = $selected_extra_cover;
         }
 
-        if(!empty($request->additional_driver)) {
+        if(!empty($request->additional_drivers)) {
             $session->additional_drivers = $request->additional_drivers;
         }
 
