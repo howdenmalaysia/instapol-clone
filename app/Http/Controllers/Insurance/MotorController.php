@@ -262,7 +262,7 @@ class MotorController extends Controller
             $session->selected_extra_coverage = $selected_extra_cover;
         }
 
-        if(!empty($request->additional_driver)) {
+        if(!empty($request->additional_drivers)) {
             $session->additional_drivers = $request->additional_drivers;
         }
 
@@ -533,6 +533,7 @@ class MotorController extends Controller
 
         Quotation::where('product_type', $quote->product_type)
             ->where('vehicle_number', $quote->vehicle_no)
+            ->where('email', $quote->email_address)
             ->update(['active' => Quotation::INACTIVE]);
         
         $response = Quotation::create([
