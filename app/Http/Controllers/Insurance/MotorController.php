@@ -263,7 +263,7 @@ class MotorController extends Controller
         }
 
         if(!empty($request->additional_drivers)) {
-            $session->additional_drivers = $request->additional_drivers;
+            $session->additional_drivers = json_decode($request->additional_drivers);
         }
 
         if(!empty($request->roadtax)) {
