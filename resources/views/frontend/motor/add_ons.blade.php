@@ -442,7 +442,7 @@
         });
 
         $('#add-additional-driver').on('click', () => {
-            let count = $('.additional-driver-name').length + 1;
+            let count = $('.additional-driver-name').length;
             let html = `
                 <div class="row info px-md-3 driver-${count}">
                     <div class="col-4">
@@ -586,9 +586,9 @@
             $('.additional-driver-name').each((index, element) => {
                 if($(`#driver-name-${index + 1}`).val() != '') {
                     additional_driver.push({
-                        name: $(`#driver-name-${index + 1}`).val(),
-                        id_number: $(`#driver-id-number-${index + 1}`).val(),
-                        relationship: $(`#driver-relationship-${index + 1}`).val()
+                        name: $(`#driver-name-${index}`).val(),
+                        id_number: $(`#driver-id-number-${index}`).val(),
+                        relationship: $(`#driver-relationship-${index}`).val()
                     });
                 }
             });
@@ -902,9 +902,9 @@
         if(motor.additional_drivers) {
             motor.additional_drivers.forEach((driver, index) => {
                 $('#add-additional-driver').trigger('click');
-                $(`#driver-name-${index + 1}`).val(driver.name);
-                $(`#driver-id-number-${index + 1}`).val(driver.id_number);
-                $(`#driver-relationship-${index + 1}`).val(driver.relationship);
+                $(`#driver-name-${index}`).val(driver.name);
+                $(`#driver-id-number-${index}`).val(driver.id_number);
+                $(`#driver-relationship-${index}`).val(driver.relationship);
             });
         }
     }
