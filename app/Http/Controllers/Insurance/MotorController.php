@@ -533,6 +533,7 @@ class MotorController extends Controller
 
         Quotation::where('product_type', $quote->product_type)
             ->where('vehicle_number', $quote->vehicle_no)
+            ->where('email', $quote->email_address)
             ->update(['active' => Quotation::INACTIVE]);
         
         $response = Quotation::create([
