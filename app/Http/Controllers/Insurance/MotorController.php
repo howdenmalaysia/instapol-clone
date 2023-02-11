@@ -422,6 +422,8 @@ class MotorController extends Controller
             $product = Product::with(['insurance_company', 'product_type'])
                 ->where('id', $insurance->product_id)
                 ->first();
+            
+            $relationships = Relationship::all();
 
             // Get Roadtax Delivery Fee
             if(!empty($motor->roadtax)) {
@@ -438,7 +440,8 @@ class MotorController extends Controller
             'policy_holder' => $policy_holder,
             'motor' => $motor,
             'extra_cover' => $extra_cover,
-            'product' => $product
+            'product' => $product,
+            'relationships' => $relationships
         ]);
     }
 
