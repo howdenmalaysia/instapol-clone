@@ -62,6 +62,7 @@ class AIG implements InsurerLibraryInterface
     public function vehicleDetails(object $input) : object
     {
         $data = [
+            'id_type' => $input->id_type,
             'id_number' => $input->id_number,
             'vehicle_number' => $input->vehicle_number
         ];
@@ -309,6 +310,9 @@ class AIG implements InsurerLibraryInterface
                 'vehicle' => $vehicle,
             ];
             $premium = $this->getPremium($data);
+            if (!$premium->status) {
+                return $this->abort($premium->response, $premium->code);
+            }
             $excess_amount = formatNumber($premium->response->excess);
             $ncd_amount = formatNumber($premium->response->ncd_amount);
             $basic_premium = formatNumber($premium->response->gross_premium + $ncd_amount);
@@ -868,21 +872,37 @@ class AIG implements InsurerLibraryInterface
         }
         $body_type = $this->getBodyTypeDetails($input->input->vehicle_body_type ?? '');
         
-        if($input->input->id_type == 1){
-            $dobs = str_split($input->input->id_number, 2);
-            $year = intval($dobs[0]);
-            if ($year >= 10) {
-                $year += 1900;
-            } else {
-                $year += 2000;
-            }
-            $dob = strval($year) . "-" . $dobs[1] . "-" . $dobs[2];
-            $id_number = $input->input->id_number;
-            $age = getAgeFromIC($input->input->id_number) - 18;
-        }
-        else{
-            $id = $input->input->id_number;
-        }
+        switch($input->input->id_type) {
+			case '1': {
+				$dobs = str_split($input->input->id_number, 2);
+                $year = intval($dobs[0]);
+                if ($year >= 10) {
+                    $year += 1900;
+                } else {
+                    $year += 2000;
+                }
+                $dob = strval($year) . "-" . $dobs[1] . "-" . $dobs[2];
+                $id_number = $input->input->id_number;
+                $age = getAgeFromIC($input->input->id_number) - 18;
+				break;
+			}
+			case '4': {
+				$id = $input->input->id_number;
+				break;
+			}
+		}
+        if($input->input->gender == 'O'){
+			$gender = 'C';
+		}
+		else{
+			$gender = $input->input->gender;
+		}
+		if($input->input->marital_status == 'O'){
+			$marital_status = 'C';
+		}
+		else{
+			$marital_status = $input->input->marital_status;
+		}
         $inception_date = Carbon::parse($input->vehicle->inception_date)->format('Y-m-d');
         $expiry_date = Carbon::parse($input->vehicle->expiry_date)->format('Y-m-d');
         if(strtotime($expiry_date)<strtotime($inception_date)){
@@ -902,7 +922,7 @@ class AIG implements InsurerLibraryInterface
             'agtgstregdate' => '',
             'agtgstregno' => '',
             'antitd' => self::ANTI_THEFT,
-            'birthdate' => $dob ?? '',
+            'birthdate' => $dob ?? '1984-02-24',//cannot empty
             'bizregno' => $id ?? '',
             'channel' => 'TIB',
             'chassisno' => $input->vehicle->extra_attribute->chassis_number,
@@ -914,14 +934,14 @@ class AIG implements InsurerLibraryInterface
             'covercode' => $input->vehicle->extra_attribute->covercode,
             'discount' => 'NO',
             'discountperc' => 0,
-            'driveexp' => $age ?? '',
+            'driveexp' => $age ?? '39',//cannot empty
             'effectivedate' => $inception_date,
             'effectivetime' => $effective_time,
             'email' => $input->input->email,
             'engineno' => $input->vehicle->extra_attribute->engine_number,
             'expirydate' => $expiry_date,
             'garage' => 'B',
-            'gender' => $input->input->gender,
+            'gender' => $gender,
             'gstclaimperc' => 0,
             'gstcode' => '',
             'gstpurpose' => '',
@@ -937,7 +957,7 @@ class AIG implements InsurerLibraryInterface
             'makecodemajor' => $input->vehicle->extra_attribute->make_code,
             'makecodeminor' => str_pad($input->vehicle->extra_attribute->model_code, 2, '0', STR_PAD_LEFT),
             'makeyear' => $input->vehicle->manufacture_year,
-            'maritalstatus' => $input->input->marital_status,
+            'maritalstatus' => $marital_status,
             'mtcycrider' => 'S',
             'name' => $input->input->name ?? config('app.name'),
             'ncdamt' => 0,
@@ -988,7 +1008,7 @@ class AIG implements InsurerLibraryInterface
             'item' => $item,
         ];
         // Generate XML from view
-        $xml = view('backend.xml.aig.premium')->with($data)->render();//dd($xml);
+        $xml = view('backend.xml.aig.premium')->with($data)->render();
         // Call API
         $result = $this->cURL($path, $xml);
 
@@ -1043,6 +1063,16 @@ class AIG implements InsurerLibraryInterface
     private function getVIXNCD(array $input) : ResponseData
     {
         $path = 'GetVIXNCD';
+        switch($input['id_type']) {
+			case '1': {
+                $id_number = $input['id_number'];
+				break;
+			}
+			case '4': {
+				$id = $input['id_number'];
+				break;
+			}
+		}
         $request_id = Str::uuid();
         $data["agent_code"] = $this->agent_code;
         $data["item"] = [];
@@ -1051,15 +1081,14 @@ class AIG implements InsurerLibraryInterface
         //     'paramRemark' => '1',
         //     'paramValue' => '1',
         // ]);
-        $data["biz_reg_no"] = '';
+        $data["biz_reg_no"] = $id ?? '';
         $data["comp_code"] = '71';
-        $data["new_ic"] = $input['id_number'];
+        $data["new_ic"] = $id_number ?? '';
         $data["old_ic"] = '';
         $data["passport_no"] = '';
         $data["reg_no"] = $input['vehicle_number'];
         $data["request_id"] = 'D112';
         $data["signature"] = $this->generateSignature('D112');
-
         // Generate XML from view
         $xml = view('backend.xml.aig.getvixncd')->with($data)->render();
         // Call API
