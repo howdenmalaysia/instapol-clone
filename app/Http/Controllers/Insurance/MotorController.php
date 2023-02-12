@@ -263,7 +263,7 @@ class MotorController extends Controller
         }
 
         if(!empty($request->additional_driver)) {
-            $session->additional_drivers = $request->additional_drivers;
+            $session->additional_driver = json_decode($request->additional_driver);
         }
 
         if(!empty($request->roadtax)) {
@@ -422,6 +422,8 @@ class MotorController extends Controller
             $product = Product::with(['insurance_company', 'product_type'])
                 ->where('id', $insurance->product_id)
                 ->first();
+            
+            $relationships = Relationship::all();
 
             // Get Roadtax Delivery Fee
             if(!empty($motor->roadtax)) {
@@ -438,7 +440,8 @@ class MotorController extends Controller
             'policy_holder' => $policy_holder,
             'motor' => $motor,
             'extra_cover' => $extra_cover,
-            'product' => $product
+            'product' => $product,
+            'relationships' => $relationships
         ]);
     }
 
@@ -533,6 +536,7 @@ class MotorController extends Controller
 
         Quotation::where('product_type', $quote->product_type)
             ->where('vehicle_number', $quote->vehicle_no)
+            ->where('email_address', $quote->email_address)
             ->update(['active' => Quotation::INACTIVE]);
         
         $response = Quotation::create([
