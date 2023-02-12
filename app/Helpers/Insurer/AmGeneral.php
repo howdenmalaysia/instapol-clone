@@ -53,8 +53,9 @@ class AmGeneral implements InsurerLibraryInterface
     private const MAX_SUM_INSURED = 500000;
     private const ADJUSTMENT_RATE_UP = 10;
     private const ADJUSTMENT_RATE_DOWN = 10;
-    private const EXTRA_COVERAGE_LIST = ['B101','112','25','57','72','72A','97A','89','89(a)','C001'];
-    // private const EXTRA_COVERAGE_LIST = ['B101','112','25','57','72','72A','97A','89','89(a)','B57C','C001'];
+    // private const EXTRA_COVERAGE_LIST = ['B101','112','25','57','72','72A','97A','89','89(a)','C001','C005'];
+	//C005 for comp plus, B57C for comp prem
+    private const EXTRA_COVERAGE_LIST = ['B101','112','25','57','72','72A','97A','89','89(a)','B57C','C001','C005'];
     private const CART_AMOUNT_LIST = [50, 100, 200];
     private const CART_DAY_LIST = [7, 14, 21];
 
@@ -104,6 +105,9 @@ class AmGeneral implements InsurerLibraryInterface
         if(!$vix->status && is_string($vix->response)) {
             return $this->abort($vix->response);
         }
+		else if(isset($vix->response->errorCode)){
+			return $this->abort($vix->response->errorCode .', '. $vix->response->errorMessage);
+		}
 		if(isset($vix->response->variantSeriesList)){
 			$nvicCode = '';
 			$variants = [];
@@ -132,6 +136,13 @@ class AmGeneral implements InsurerLibraryInterface
 		];
 		$vix_variant = $this->F_GetProductListVariant($get_data);
 
+        if(!$vix_variant->status && is_string($vix_variant->response)) {
+            return $this->abort($vix_variant->response);
+        }
+		else if(isset($vix_variant->response->errorCode)){
+			return $this->abort($vix_variant->response->errorCode .', '. $vix_variant->response->errorMessage);
+		}
+
         $inception_date = Carbon::parse($vix_variant->response->inceptionDate)->format('Y-m-d');
         $expiry_date = Carbon::parse($vix_variant->response->expiryDate)->format('Y-m-d');
         
@@ -159,10 +170,15 @@ class AmGeneral implements InsurerLibraryInterface
         }
 
 		//product
+		$scope = false;
 		foreach ($vix_variant->response->productList as $product) {
 			if($product->scopeOfCover == $this->scopeOfCover) {
 				$get_product = $product;
+				$scope = true;
 			}
+		}
+		if(! $scope){
+			return $this->abort('Scope of cover '. $this->scopeOfCover . ' not available for this car.');
 		}
 		switch($input->id_type) {
 			case '1': {
@@ -178,7 +194,7 @@ class AmGeneral implements InsurerLibraryInterface
 				$nric_number = $input->id_number;
 				break;
 			}
-			case '6': {
+			case '4': {
 				if ($this->isNewBusinessRegistrationNumber($input->id_number)) {
 					$new_business_registration_number = $input->id_number;
 				} else {
@@ -190,13 +206,15 @@ class AmGeneral implements InsurerLibraryInterface
 		}
 		//driver
 		$defaultDriver = [];
-		array_push($defaultDriver, [
-			'driverName' => $input->name ?? 'Named Driver',
-			'newICNo' => $nric_number,
-			'oldICNo' => '',
-			'dateofBirth' => $dob,
-			'gender' => $input->gender,
-		]);
+		if($input->id_type != '4'){
+			array_push($defaultDriver, [
+				'driverName' => $input->name ?? 'Named Driver',
+				'newICNo' => $nric_number ?? '',
+				'oldICNo' => '',
+				'dateofBirth' => $dob ?? '',
+				'gender' => $input->gender,
+			]);
+		}
 
 		//make
 		$get_make = explode (" ", $vix_variant->response->modelDesc);
@@ -327,7 +345,7 @@ class AmGeneral implements InsurerLibraryInterface
 				$nric_number = $input->id_number;
 				break;
 			}
-			case '6': {
+			case '4': {
 				if ($this->isNewBusinessRegistrationNumber($input->id_number)) {
 					$new_business_registration_number = $input->id_number;
 				} else {
@@ -403,8 +421,7 @@ class AmGeneral implements InsurerLibraryInterface
 				"sumInsured"=>$vehicle->sum_insured,
 				"saveInd"=> 'Y',
 				"ptvSelectInd"=>'N',
-				// "extraCoverageList"=>$vehicle->extra_attribute->amgen_quote_input->extraCoverageList,
-				"namedDriversList"=>$vehicle->extra_attribute->amgen_quote_input->namedDriversList,
+				"namedDriversList"=>$vehicle->extra_attribute->amgen_quote_input->namedDriversList ?? '',
 				"vehicleAgeLoadPercent"=>'',
 				"insuredAgeLoadPercent"=>'',
 				"claimsExpLoadPercent"=>'',
@@ -416,6 +433,9 @@ class AmGeneral implements InsurerLibraryInterface
 			if (!$motor_premium->status) {
                 return $this->abort($motor_premium->response);
             }
+			else if(isset($motor_premium->response->errorCode)){
+				return $this->abort($motor_premium->response->errorCode .', '. $motor_premium->response->errorMessage);
+			}
 
             $basic_premium = formatNumber($motor_premium->response->basicPremium);
             $excess_amount = formatNumber($motor_premium->response->compulsoryExcess);
@@ -431,7 +451,20 @@ class AmGeneral implements InsurerLibraryInterface
 
             // Remove Extra Cover which is not entitled
             $available_benefits = self::EXTRA_COVERAGE_LIST;
-
+			switch($this->scopeOfCover) {
+				case 'COMP PLUS': {
+					$available_benefits = array_filter($available_benefits, function ($benefits) {
+						return $benefits != 'B57C';
+					});
+					break;
+				}
+				case 'COMP PREM': {
+					$available_benefits = array_filter($available_benefits, function ($benefits) {
+						return $benefits != 'C005';
+					});
+					break;
+				}
+			}
             $extra_cover_list = [];
             // Generate Extra Cover List
             foreach($available_benefits as $extra_cover_code) {
@@ -441,7 +474,7 @@ class AmGeneral implements InsurerLibraryInterface
                     'selected' => false,
                     'readonly' => false,
                     'extra_cover_code' => $extra_cover_code,
-                    'extra_cover_description' => '',
+                    'extra_cover_description' => $this->getExtraCoverDescription($extra_cover_code),
                     'sum_insured' => 0,
                     'premium' => 0,
 					'plan_type' => ''
@@ -468,7 +501,7 @@ class AmGeneral implements InsurerLibraryInterface
 
                         // Get The Lowest CART Day & Amount / Day To Get Premium
                         $_cart_day = $cart_list[0]->cart_day;
-                        $_cart_amount = $cart_list[0]->cart_amount_list[0];
+                        $_cart_amount = $cart_list[0]->cart_amount_list[1];
 
                         break;
                     }
@@ -485,7 +518,7 @@ class AmGeneral implements InsurerLibraryInterface
                         $item->option_list = $option_list;
 
                         // Default to RM 1,000
-                        $_sum_insured_amount = $option_list->values[0];
+                        $_sum_insured_amount = $option_list->values[1];
 
                         break;
                     }
@@ -502,7 +535,7 @@ class AmGeneral implements InsurerLibraryInterface
                         $item->option_list = $option_list;
 
                         // Default to RM 1,000
-                        $_sum_insured_amount = $option_list->values[0];
+                        $_sum_insured_amount = $option_list->values[1];
 
                         break;
                     }
@@ -527,13 +560,13 @@ class AmGeneral implements InsurerLibraryInterface
                         $option_list = new OptionList([
                             'name' => 'sum_insured',
                             'description' => 'Option List',
-                            'values' => ['Plan A', 'Plan B', 'Plan C', 'Plan D'],
+                            'values' => ['20% Sum Insured', '30% Sum Insured', '40% Sum Insured', '50% Sum Insured'],
                             'any_value' => true,
                             'increment' => null
                         ]);
                         $item->option_list = $option_list;
 
-                        // Default to plan A
+                        // Default to 20% SI
                         $item->plan_type = $option_list->values[0];
                         break;
                     }
@@ -574,8 +607,16 @@ class AmGeneral implements InsurerLibraryInterface
 		if (!$motor_premium->status) {
 			return $this->abort($motor_premium->response);
 		}
+		else if(isset($motor_premium->response->errorCode)){
+			return $this->abort($motor_premium->response->errorCode .', '. $motor_premium->response->errorMessage);
+		}
+
 		//get quotationNo
+		if(strlen($input->state) > 30){
+			$state = substr($input->state, 0, 30);
+		}
 		$text = (object)[
+			'id_type' => $input->id_type,
 			'id_number' => $input->id_number,
 			"newICNo"=>$nric_number ?? '',
 			"vehicleClass"=>$vehicle->extra_attribute->amgen_quote_input->vehicleClass,
@@ -590,9 +631,9 @@ class AmGeneral implements InsurerLibraryInterface
 			"insuredAddress3"=>isset($input->address_two) ? (empty($input->address_two) ? '' : $input->city . ', ' . $input->state) : '',
 			"insuredAddress4"=> '',
 			"vehicleKeptAddress1"=>$input->address_one ?? '11 FLOOR AIK HUA',
-			"vehicleKeptAddress2"=>isset($input->address_two) ? (empty($input->address_two) ? $input->city . ', ' . $input->state : $input->address_two) : '',
-			"vehicleKeptAddress3"=>isset($input->address_two) ? (empty($input->address_two) ? '' : $input->city . ', ' . $input->state) : '',
-			"vehicleKeptAddress4"=> '',
+			"vehicleKeptAddress2"=>isset($input->address_two) ? (empty($input->address_two) ? $input->city . ', ' : $input->address_two) : '',
+			"vehicleKeptAddress3"=>isset($input->address_two) ? (empty($input->address_two) ? '' : $input->city . ', ') : '',
+			"vehicleKeptAddress4"=> $state ?? '',
 			"insuredPostCode"=>$input->postcode,
 			"vehiclePostCode"=>$input->postcode,
 			"mobileNo"=>$input->phone_code ?? '0123456789',
@@ -609,6 +650,9 @@ class AmGeneral implements InsurerLibraryInterface
 		if (!$add_quote->status) {
 			return $this->abort($add_quote->response);
 		}
+		else if(isset($add_quote->response->errorCode)){
+			return $this->abort($add_quote->response->errorCode .', '. $add_quote->response->errorMessage);
+		}
 
         $new_extracover_list = [];
         if(!empty($motor_premium->response->extraCoverageList)) {
@@ -619,7 +663,9 @@ class AmGeneral implements InsurerLibraryInterface
                         $total_benefit_amount += (float) $extra->premium;
                         $extra_cover->selected = floatval($extra->premium) == 0;
 
-                        array_push($new_extracover_list, $extra_cover);
+						if($extra_cover->premium > 0){
+                            array_push($new_extracover_list, $extra_cover);
+                        }
                     }
                 }
             }
@@ -629,7 +675,7 @@ class AmGeneral implements InsurerLibraryInterface
         $response = new PremiumResponse([
             'basic_premium' => formatNumber($premium_data->basicPremium),
             'excess_amount' => formatNumber($premium_data->compulsoryExcess),
-            'extra_cover' => $input->extra_cover,
+            'extra_cover' => $this->sortExtraCoverList($input->extra_cover),
             'gross_premium' => formatNumber($premium_data->grossPremium),
             'ncd_amount' => formatNumber($premium_data->ncdAmount),
             'ncd_percentage' => formatNumber($premium_data->ncdPercent),
@@ -643,7 +689,7 @@ class AmGeneral implements InsurerLibraryInterface
             'stamp_duty' => formatNumber($premium_data->stampDuty),
             'total_benefit_amount' => formatNumber($total_benefit_amount),
             'total_payable' => formatNumber($premium_data->totalPayable),
-            'named_drivers_needed' => true,
+            'named_drivers_needed' => false,
             'quotation_number' => $add_quote->response->quotationNo,
         ]);
 
@@ -675,13 +721,15 @@ class AmGeneral implements InsurerLibraryInterface
 
         // Generate Selected Extra Cover List
         $extra_benefits = [];
-        foreach ($input->insurance_motor->extra_cover as $extra_cover) {
-            array_push($extra_benefits, (object) [
+        foreach ($input->insurance->extra_cover as $extra_cover) {
+            array_push($extra_benefits, new ExtraCover([
                 'extra_cover_code' => $extra_cover->code,
-                'sum_insured' => $extra_cover->sum_insured,
-                'cart_day' => $extra_cover->cart_day,
-                'cart_amount' => $extra_cover->cart_amount
-            ]);
+                'extra_cover_description' => $extra_cover->description,
+                'premium' => floatval($extra_cover->amount),
+                'sum_insured' => floatval($extra_cover->sum_insured) ?? 0,
+                'cart_amount' => $extra_cover->cart_amount ?? 0,
+                'cart_day' => $extra_cover->cart_day ?? 0,
+            ]));
         }
 
         $total_payable = formatNumber($input->insurance->premium->total_contribution);
@@ -716,15 +764,81 @@ class AmGeneral implements InsurerLibraryInterface
             'extra_cover' => $extra_benefits,
             'occupation' => $input->insurance->policy_holder->occupation,
         ];
-
-        $result = $this->Q_GetQuote($data);
+		$set_data = (object)[
+			'input' => $data,
+		];
+        $result = $this->Q_GetQuote($set_data);
 
         if (!$result->status) {
             return $this->abort($result->response . ' (Quotation Number: ' . $extra_attribute->quotation_number . ')', $result->code);
         }
 
+		//get quotationNo
+		if(strlen($input->insurance->address->state) > 30){
+			$state = substr($input->insurance->address->state, 0, 30);
+		}
+		switch($input->insurance->policy_holder->id_type_id) {
+			case '1': {
+				$dobs = str_split($input->insurance->policy_holder->id_number, 2);
+				$id_number = $dobs[0] . $dobs[1] . $dobs[2] . "-" . $dobs[3] .  "-" . $dobs[4] . $dobs[5];
+				$year = intval($dobs[0]);
+				if ($year >= 10) {
+					$year += 1900;
+				} else {
+					$year += 2000;
+				}
+				$dob = $dobs[2] . "-" . $dobs[1] . "-" . strval($year);
+				$nric_number = $input->insurance->policy_holder->id_number;
+				break;
+			}
+			case '4': {
+				if ($this->isNewBusinessRegistrationNumber($input->insurance->policy_holder->id_number)) {
+					$new_business_registration_number = $input->insurance->policy_holder->id_number;
+				} else {
+					$business_registration_number = $input->insurance->policy_holder->id_number;
+				}
+
+				break;
+			}
+		}
+
+		$text = (object)[
+			'id_type' => $input->insurance->policy_holder->id_type,
+			'id_number' => $input->insurance->policy_holder->id_number,
+			"newICNo"=>$nric_number ?? '',
+			"vehicleClass"=>$extra_attribute->amgen_quote_input->vehicleClass,
+			"vehicleNo"=>$input->insurance_motor->vehicle_number,
+			"brand"=>$this->brand,
+			"dob"=>$dob ?? '',
+			"clientName"=>$input->insurance->policy_holder->name ?? config('app.name'),
+			"genderCode"=>$input->insurance->policy_holder->gender,
+			"maritalStatusCode"=>$input->insurance->policy_holder->marital_status,
+			"insuredAddress1"=>$input->insurance->address->address_one ?? '11 FLOOR AIK HUA',
+			"insuredAddress2"=>isset($input->insurance->address->address_two) ? (empty($input->insurance->address->address_two) ? $input->insurance->address->city . ', ' . $input->insurance->address->state : $input->insurance->address->address_two) : '',
+			"insuredAddress3"=>isset($input->insurance->address->address_two) ? (empty($input->insurance->address->address_two) ? '' : $input->insurance->address->city . ', ' . $input->insurance->address->state) : '',
+			"insuredAddress4"=> '',
+			"vehicleKeptAddress1"=>$input->insurance->address->address_one ?? '11 FLOOR AIK HUA',
+			"vehicleKeptAddress2"=>isset($input->insurance->address->address_two) ? (empty($input->insurance->address->address_two) ? $input->insurance->address->city . ', ' : $input->insurance->address->address_two) : '',
+			"vehicleKeptAddress3"=>isset($input->insurance->address->address_two) ? (empty($input->insurance->address->address_two) ? '' : $input->insurance->address->city . ', ') : '',
+			"vehicleKeptAddress4"=> $state ?? '',
+			"insuredPostCode"=>$input->insurance->address->postcode,
+			"vehiclePostCode"=>$input->insurance->address->postcode,
+			"mobileNo"=>$input->insurance->policy_holder->phone_number ?? '0123456789',
+			"emailId"=>$input->insurance->policy_holder->email,
+			"garagedCode"=>'01',
+			"safetyCode"=>'99',
+			"newBusRegNo"=> $new_business_registration_number ?? '',
+			"busRegNo"=>$business_registration_number ?? '',
+			"oldICNo"=> '',
+			"qReferenceNo"=>$result->response->qReferenceNo,
+			'header'=>$result->header,
+		];
+		$add_quote = $this->Q_GetAdditionalQuoteInfo($text);
+		if (!$add_quote->status) {
+			return $this->abort($add_quote->response);
+		}
         $response = (object) [
-            'policy_number' => $result->response->COVERNOTE_NO
+            'policy_number' => $add_quote->response->coverNoteNo
         ];
 
         return (object) ['status' => true, 'response' => $response];
@@ -781,27 +895,43 @@ class AmGeneral implements InsurerLibraryInterface
 
 	public function Q_GetProductList($cParams = null)
 	{
-		$dobs = str_split($cParams->id_number, 2);
+		switch($cParams->id_type) {
+			case '1': {
+				$dobs = str_split($cParams->id_number, 2);
 
-		$year = intval($dobs[0]);
-		if ($year >= 10) {
-			$year += 1900;
-		} else {
-			$year += 2000;
+				$year = intval($dobs[0]);
+				if ($year >= 10) {
+					$year += 1900;
+				} else {
+					$year += 2000;
+				}
+
+				$dob = $dobs[2] . "-" . $dobs[1] . "-" . strval($year);
+				$nric_number = $dobs[0] . $dobs[1] . $dobs[2] . "-" . $dobs[3] .  "-" . $dobs[4] . $dobs[5];;
+				break;
+			}
+			case '4': {
+				if ($this->isNewBusinessRegistrationNumber($cParams->id_number)) {
+					$new_business_registration_number = $cParams->id_number;
+				} else {
+					$business_registration_number = $cParams->id_number;
+				}
+
+				break;
+			}
 		}
-
-		$dob = $dobs[2] . "-" . $dobs[1] . "-" . strval($year);
+		
 		$text = array(
-			"newICNo"=>$cParams->id_number,
+			"newICNo"=>$nric_number ?? "",
 			"oldICNo"=>"",
-			"busRegNo"=>"",
+			"busRegNo"=>$business_registration_number ?? "",
 			"vehicleClass"=>"PC",
 			"vehicleNo"=>$cParams->vehicle_number,
 			"brand"=>$this->brand,
 			"insuredPostCode"=>$cParams->postcode,
 			"vehiclePostCode"=>$cParams->postcode,
-			"dob"=>$dob,
-			"newBusRegNo"=>"",
+			"dob"=>$dob ?? "",
+			"newBusRegNo"=>$new_business_registration_number ?? "",
 		);
 		
 		$encrypted = $this->encrypt(json_encode($text));
@@ -878,6 +1008,12 @@ class AmGeneral implements InsurerLibraryInterface
 	public function Q_GetQuote($cParams = null)
 	{
 		$get_vix = $this->Q_GetProductList($cParams->input);
+		if(!$get_vix->status && is_string($get_vix->response)) {
+            return $this->abort($get_vix->response);
+        }
+		else if(isset($get_vix->response->errorCode)){
+			return $this->abort($get_vix->response->errorCode .', '. $get_vix->response->errorMessage);
+		}
 		if(isset($get_vix->response->variantSeriesList)){
 			$nvicCode = '';
 			foreach($get_vix->response->variantSeriesList as $variant){
@@ -894,84 +1030,115 @@ class AmGeneral implements InsurerLibraryInterface
 			'header' => $get_vix->header,
 		];
 		$get_variant = $this->Q_GetProductListVariant($get_data);
+		if(!$get_variant->status && is_string($get_variant->response)) {
+            return $this->abort($get_variant->response);
+        }
+		else if(isset($get_variant->response->errorCode)){
+			return $this->abort($get_variant->response->errorCode .', '. $get_variant->response->errorMessage);
+		}
 		$inceptionDate = $get_variant->response->inceptionDate;
 		$expiryDate = $get_variant->response->expiryDate;
 		//coverage
+		//check 57 & B57C, priority 57
+        if(array_search('57', array_column($cParams->input->extra_cover, 'extra_cover_code')) === false){
+            $exist = false;
+        }
+        else{
+            $exist = true;
+        }
+        if($exist){
+            $cParams->input->extra_cover = array_filter($cParams->input->extra_cover, function ($extra_cover) {
+				return $extra_cover->extra_cover_code != 'B57C' && $extra_cover->extra_cover_code != 'B57D' &&
+				$extra_cover->extra_cover_code != 'B57E' && $extra_cover->extra_cover_code != 'B57F';
+            });
+        }
 		$extraCoverageList = [];
 		foreach($cParams->input->extra_cover as $extracover){
-			// if($extracover->extra_cover_code == '112'){
-			// 	array_push($extraCoverageList, [
-			// 		"extraCoverageCode" => $extracover->extra_cover_code,
-			// 		"extraCoverageSumInsured" => 350,//$sum_insured,
-			// 		"cartAmount" => $extracover->cart_amount,
-			// 		"cartDays" => $extracover->cart_day,
-			// 	]);
-			// }
-			
-			// if($extracover->extra_cover_code != '112' && $extracover->extra_cover_code != 'B57C' && $extracover->extra_cover_code != 'B101'){
-			if($extracover->extra_cover_code == '57'){
+			if($extracover->extra_cover_code == '112'){
+				if($extracover->cart_day == '7'){
+					if($extracover->cart_amount == '50'){
+						$extraCoverageSumInsured = 350;
+					}
+					else if($extracover->cart_amount == '100'){
+						$extraCoverageSumInsured = 700;
+					}
+					else if($extracover->cart_amount == '200'){
+						$extraCoverageSumInsured = 1400;
+					}
+				}
+				else if($extracover->cart_day == '14'){
+					if($extracover->cart_amount == '50'){
+						$extraCoverageSumInsured = 700;
+					}
+					else if($extracover->cart_amount == '100'){
+						$extraCoverageSumInsured = 1400;
+					}
+					else if($extracover->cart_amount == '200'){
+						$extraCoverageSumInsured = 2800;
+					}
+				}
+				else if($extracover->cart_day == '21'){
+					if($extracover->cart_amount == '50'){
+						$extraCoverageSumInsured = 1050;
+					}
+					else if($extracover->cart_amount == '100'){
+						$extraCoverageSumInsured = 2100;
+					}
+					else if($extracover->cart_amount == '200'){
+						$extraCoverageSumInsured = 4200;
+					}
+				}
+				array_push($extraCoverageList, [
+					"extraCoverageCode" => $extracover->extra_cover_code,
+					"extraCoverageSumInsured" => $extraCoverageSumInsured,
+					"cartAmount" => $extracover->cart_amount,
+					"cartDays" => $extracover->cart_day,
+				]);
+			}
+			else if($extracover->extra_cover_code == 'B101'){
+				array_push($extraCoverageList, [
+					"extraCoverageCode" => $extracover->extra_cover_code,
+					"extraCoverageEffectiveDate" => $inceptionDate,
+					"extraCoverageExpiryDate" => $expiryDate,
+				]);
+			}
+			else if($extracover->extra_cover_code == 'B57C' || $extracover->extra_cover_code == 'B57D' ||
+			$extracover->extra_cover_code == 'B57E' || $extracover->extra_cover_code == 'B57F'){
+				if($extracover->plan_type == '20% Sum Insured'){
+					$extracover->extra_cover_code == 'B57C';
+					array_push($extraCoverageList, [
+						"extraCoverageCode" => $extracover->extra_cover_code,
+						"inclusionOfPartialCoverSIPercent" => "20",
+					]);
+				}
+				else if($extracover->plan_type == '30% Sum Insured'){
+					$extracover->extra_cover_code == 'B57D';
+					array_push($extraCoverageList, [
+						"extraCoverageCode" => $extracover->extra_cover_code,
+						"inclusionOfPartialCoverSIPercent" => "30",
+					]);
+				}
+				else if($extracover->plan_type == '40% Sum Insured'){
+					$extracover->extra_cover_code == 'B57E';
+					array_push($extraCoverageList, [
+						"extraCoverageCode" => $extracover->extra_cover_code,
+						"inclusionOfPartialCoverSIPercent" => "40",
+					]);
+				}
+				else if($extracover->plan_type == '50% Sum Insured'){
+					$extracover->extra_cover_code == 'B57F';
+					array_push($extraCoverageList, [
+						"extraCoverageCode" => $extracover->extra_cover_code,
+						"inclusionOfPartialCoverSIPercent" => "50",
+					]);
+				}
+			}
+			else{
 				array_push($extraCoverageList, [
 					"extraCoverageCode" => $extracover->extra_cover_code,
 					"extraCoverageSumInsured" => $extracover->sum_insured,
 				]);
 			}
-			// else if($extracover->extra_cover_code == '112'){
-			// 	array_push($extraCoverageList, [
-			// 		"extraCoverageCode" => $extracover->extra_cover_code,
-			// 		"extraCoverageSumInsured" => 350,//$sum_insured,
-			// 		"cartAmount" => $extracover->cart_amount,
-			// 		"cartDays" => $extracover->cart_day,
-			// 	]);
-			// }
-			// else if($extracover->extra_cover_code == 'B101'){
-			// 	array_push($extraCoverageList, [
-			// 		"extraCoverageCode" => $extracover->extra_cover_code,
-			// 		"extraCoverageSumInsured" => $extracover->sum_insured,
-			// 		"extraCoverageEffectiveDate" => $inceptionDate,
-			// 		"extraCoverageExpiryDate" => $expiryDate,
-			// 	]);
-			// }
-			else if($extracover->extra_cover_code == 'B57C' || $extracover->extra_cover_code == 'B57D' ||
-			$extracover->extra_cover_code == 'B57E' || $extracover->extra_cover_code == 'B57F'){
-				if($extracover->plan_type == 'Plan A'){
-					$extracover->extra_cover_code == 'B57C';
-					array_push($extraCoverageList, [
-						"extraCoverageCode" => $extracover->extra_cover_code,
-						"extraCoverageSumInsured" => $extracover->sum_insured,
-						"inclusionOfPartialCoverSIPercent" => "20",
-					]);
-				}
-				else if($extracover->plan_type == 'Plan B'){
-					$extracover->extra_cover_code == 'B57D';
-					array_push($extraCoverageList, [
-						"extraCoverageCode" => $extracover->extra_cover_code,
-						"extraCoverageSumInsured" => $extracover->sum_insured,
-						"inclusionOfPartialCoverSIPercent" => "30",
-					]);
-				}
-				else if($extracover->plan_type == 'Plan C'){
-					$extracover->extra_cover_code == 'B57E';
-					array_push($extraCoverageList, [
-						"extraCoverageCode" => $extracover->extra_cover_code,
-						"extraCoverageSumInsured" => $extracover->sum_insured,
-						"inclusionOfPartialCoverSIPercent" => "40",
-					]);
-				}
-				else if($extracover->plan_type == 'Plan D'){
-					$extracover->extra_cover_code == 'B57F';
-					array_push($extraCoverageList, [
-						"extraCoverageCode" => $extracover->extra_cover_code,
-						"extraCoverageSumInsured" => $extracover->sum_insured,
-						"inclusionOfPartialCoverSIPercent" => "50",
-					]);
-				}
-			}
-			// else{
-			// 	array_push($extraCoverageList, [
-			// 		"extraCoverageCode" => $extracover->extra_cover_code,
-			// 		"extraCoverageSumInsured" => $extracover->sum_insured,
-			// 	]);
-			// }
 		}
 		$text = array(
 			"vehicleClass"=>$cParams->vehicleClass,
@@ -1026,14 +1193,26 @@ class AmGeneral implements InsurerLibraryInterface
 		$occupationCode = !empty($cParams->id_number) ? $this->getOccupationCode() : $this->getOccupationCode('TRADING COMPANY');
 
 		// nationalityCode only Applicable to Individual Clients
-		$nationalityCode = !empty($cParams->id_number) ? $this->getNationalityCode() : '';
+		$nationalityCode = (!empty($cParams->id_number) && ($cParams->id_type != '4')) ? $this->getNationalityCode() : '';
+		if($cParams->genderCode == 'O'){
+			$gender = 'C';
+		}
+		else{
+			$gender = $cParams->genderCode;
+		}
+		if($cParams->maritalStatusCode == 'O'){
+			$marital_status = 'C';
+		}
+		else{
+			$marital_status = $cParams->maritalStatusCode;
+		}
 		$text = array(
 			"newICNo"=>$cParams->newICNo,
 			"oldICNo"=>$cParams->oldICNo,
 			"busRegNo"=>$cParams->busRegNo,
 			"clientName"=>$cParams->clientName,
-			"genderCode"=>$cParams->genderCode,
-			"maritalStatusCode"=>$cParams->maritalStatusCode,
+			"genderCode"=>$gender,
+			"maritalStatusCode"=>$marital_status,
 			"insuredAddress1"=>$cParams->insuredAddress1,
 			"insuredAddress2"=>$cParams->insuredAddress2,
 			"insuredAddress3"=>$cParams->insuredAddress3,
@@ -1100,7 +1279,7 @@ class AmGeneral implements InsurerLibraryInterface
 				$nric_number = $cParams->id_number;
 				break;
 			}
-			case '6': {
+			case '4': {
 				if ($this->isNewBusinessRegistrationNumber($cParams->id_number)) {
 					$new_business_registration_number = $cParams->id_number;
 				} else {
@@ -1115,17 +1294,31 @@ class AmGeneral implements InsurerLibraryInterface
 		$occupationCode = !empty($cParams->id_number) ? $this->getOccupationCode() : $this->getOccupationCode('TRADING COMPANY');
 
 		// nationalityCode only Applicable to Individual Clients
-		$nationalityCode = !empty($cParams->id_number) ? $this->getNationalityCode() : '';
-
+		$nationalityCode = (!empty($cParams->id_number) && ($cParams->id_type != '4')) ? $this->getNationalityCode() : '';
+		
+		if($cParams->gender == 'O'){
+			$gender = 'C';
+		}
+		else{
+			$gender = $cParams->gender;
+		}
+		if($cParams->marital_status == 'O'){
+			$marital_status = 'C';
+		}
+		else{
+			$marital_status = $cParams->marital_status;
+		}
 		$text = array(
 			"newICNo"=>$nric_number ?? '',
+			"oldICNo"=>'',
+			"busRegNo"=>$business_registration_number ?? '',
 			"vehicleClass"=>'PC',
 			"vehicleNo"=>$cParams->vehicle_number,
 			"brand"=>$this->brand,
 			"dob"=>$dob ?? '',
 			"clientName"=>$cParams->name ?? config('app.name'),
-			"genderCode"=>$cParams->gender,
-			"maritalStatusCode"=>$cParams->marital_status,
+			"genderCode"=>$gender,
+			"maritalStatusCode"=>$marital_status,
 			"insuredAddress1"=>$cParams->address_one ?? '11 FLOOR AIK HUA',
 			"insuredAddress2"=>isset($cParams->address_two) ? (empty($cParams->address_two) ? $cParams->city . ', ' . $cParams->state : $cParams->address_two) : '',
 			"insuredAddress3"=>isset($cParams->address_two) ? (empty($cParams->address_two) ? '' : $cParams->city . ', ' . $cParams->state) : '',
@@ -1561,6 +1754,193 @@ class AmGeneral implements InsurerLibraryInterface
 
 		return $nationality_code;
 	}
+
+	private function sortExtraCoverList(array $extra_cover_list) : array
+    {
+        foreach ($extra_cover_list as $_extra_cover) {
+            $sequence = 99;
+            switch ($_extra_cover->extra_cover_code) {
+                case '06': {
+                    $sequence = 1;
+                    break;
+                }
+                case '109': { 
+                    $sequence = 2;
+                    break;
+                }
+                case '22': { 
+                    $sequence = 3;
+                    break;
+                }
+                case '25': { 
+                    $sequence = 4;
+                    break;
+                }
+                case '57': { 
+                    $sequence = 5;
+                    break;
+                }
+                case '72': { 
+                    $sequence = 6;
+                    break;
+                }
+                case '72A': { 
+                    $sequence = 7;
+                    break;
+                }
+                case '89': { 
+                    $sequence = 8;
+                    break;
+                }
+                case '89(a)': { 
+                    $sequence = 9;
+                    break;
+                }
+                case '111': { 
+                    $sequence = 10;
+                    break;
+                }
+                case '97A': { 
+                    $sequence = 11;
+                    break;
+                }
+                case '112': { 
+                    $sequence = 12;
+                    break;
+                }
+                case 'B045': { 
+                    $sequence = 13;
+                    break;
+                }
+                case 'B210': { 
+                    $sequence = 14;
+                    break;
+                }
+                case 'B101': { 
+                    $sequence = 15;
+                    break;
+                }
+                case 'B102': { 
+                    $sequence = 16;
+                    break;
+                }
+                case 'B213': { 
+                    $sequence = 17;
+                    break;
+                }
+                case 'B57C': { 
+                    $sequence = 18;
+                    break;
+                }
+                case 'C001': { 
+                    $sequence = 19;
+                    break;
+                }
+                case 'C005': { 
+                    $sequence = 20;
+                    break;
+                }
+            }
+
+            $_extra_cover->sequence = $sequence;
+        }
+
+        $sorted = array_values(Arr::sort($extra_cover_list, function ($value) {
+            return $value->sequence;
+        }));
+
+        return $sorted;
+    }
+
+    private function getExtraCoverDescription(string $extra_cover_code) : string
+    {
+        $extra_cover_name = '';
+
+        switch($extra_cover_code) {
+            case '06': {
+				$extra_cover_name = 'TUITION PURPOSE';
+				break;
+			}
+			case '109': { 
+				$extra_cover_name = 'EXTENSION OF COVER FOR FERRY TRANSIT TO AND/OR FROM SABAH AND THE FEDERAL TERRITORY OF LABUAN';
+				break;
+			}
+			case '22': { 
+				$extra_cover_name = 'CARAVAN TRAILERS (PRIVATE CAR ONLY)';
+				break;
+			}
+			case '25': { 
+				$extra_cover_name = 'STRIKE, RIOT AND CIVIL COMMOTION';
+				break;
+			}
+			case '57': { 
+				$extra_cover_name = 'INCLUSION OF SPECIAL PERILS / CONVULSIONS OF NATURE';
+				break;
+			}
+			case '72': { 
+				$extra_cover_name = 'LEGAL LIABILITY OF PASSENGERS';
+				break;
+			}
+			case '72A': { 
+				$extra_cover_name = 'LEGAL LIABILITY TO PASSENGERS';
+				break;
+			}
+			case '89': { 
+				$extra_cover_name = 'WINDSCREEN DAMAGE (TEMPERED/LAMINATED GLASS INCLUSIVE LABOUR COST)';
+				break;
+			}
+			case '89(a)': { 
+				$extra_cover_name = 'WINDSCREEN DAMAGE (TINTING FILM INCLUSIVE LABOUR COST)';
+				break;
+			}
+			case '111': { 
+				$extra_cover_name = 'CURRENT YEAR NCD RELIEF';
+				break;
+			}
+			case '97A': { 
+				$extra_cover_name = 'NGV GAS';
+				break;
+			}
+			case '112': { 
+				$extra_cover_name = 'COMPENSATION FOR ASSESSED REPAIR TIME (CART)';
+				break;
+			}
+			case 'B045': { 
+				$extra_cover_name = 'ADDITIONAL BUSINESS USE';
+				break;
+			}
+			case 'B210': { 
+				$extra_cover_name = 'RELIABILITY TRIALS, COMPETITIONS ETC.';
+				break;
+			}
+			case 'B101': { 
+				$extra_cover_name = 'THAILAND TRIP';
+				break;
+			}
+			case 'B102': { 
+				$extra_cover_name = 'COVER TO WEST KALIMANTAN, INDONESIA';
+				break;
+			}
+			case 'B213': { 
+				$extra_cover_name = 'INCREASE OF THIRD PARTY PROPERTY DAMAGE LIABILITY';
+				break;
+			}
+			case 'B57C': { 
+				$extra_cover_name = 'INCLUSION OF PARTIAL COVER FOR CONVULSION OF NATURE';
+				break;
+			}
+			case 'C001': { 
+				$extra_cover_name = 'PRIVATE HIRE CAR (E-HAILING)';
+				break;
+			}
+			case 'C005': { 
+				$extra_cover_name = 'GRAB DRIVER PROTECTOR';
+				break;
+			}
+        }
+
+        return $extra_cover_name;
+    }
 
 	private function decrypt($data){
         $first_key = openssl_pbkdf2($this->password, $this->encrypt_salt, $this->encrypt_key_size, $this->encrypt_pswd_iterations, "sha1");
