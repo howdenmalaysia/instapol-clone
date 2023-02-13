@@ -30,7 +30,7 @@ class Allianz implements InsurerLibraryInterface
     private const OCCUPATION = '99';
 
     private const EXTRA_COVERAGE_LIST = ['PAB-ERW','72','89','97A','101','102','25','100(a)',
-    'A202','57','111','112','109','A206','A209'];
+    'A202','57','111','112','109','A206','A209','A201','PAB3'];
     private const CART_AMOUNT_LIST = [50, 100, 200];
     private const CART_DAY_LIST = [7, 14, 21];
 
@@ -72,7 +72,6 @@ class Allianz implements InsurerLibraryInterface
             'vehicle_number' => $input->vehicle_number,
             'postcode' => $input->postcode
         ];
-        
         $vix = $this->getVIXNCD($data);
 
         if(!$vix->status && is_string($vix->response)) {
@@ -166,7 +165,7 @@ class Allianz implements InsurerLibraryInterface
         $postcode_details = $this->postalCode($input->postcode);
         $get_vehicle_details = (object)[
             'vehicle_number' => $input->vehicle_number,
-            'id_type' => $this->id_type($input->id_type),
+            'id_type' => $input->id_type,
             'id_number' => $input->id_number,
             'postcode' => $postcode_details->Postcode,
         ];
@@ -393,7 +392,7 @@ class Allianz implements InsurerLibraryInterface
         $postcode_details = $this->postalCode($input->postcode);
         $get_vehicle_details = (object)[
             'vehicle_number' => $input->vehicle_number,
-            'id_type' => $this->id_type($input->id_type),
+            'id_type' => $input->id_type,
             'id_number' => $input->id_number,
             'postcode' => $postcode_details->Postcode,
         ];
@@ -401,10 +400,18 @@ class Allianz implements InsurerLibraryInterface
         if (!$vehicle_vix->status) {
             return $this->abort($vehicle_vix->response, $vehicle_vix->code);
         }
+        
+        if($vehicle_vix->response->model == 'COROLLA' || $vehicle_vix->response->model == 'ALTIS'){
+            $model = 'COROLLA/ALTIS';
+        }
+        else{
+            $model = $vehicle_vix->response->model;
+        }
+        
         $get_avvariant = (object)[
             'region' => $postcode_details->Region,
             'makeCode' => $vehicle_vix->response->make,
-            'modelCode' => $vehicle_vix->response->model,
+            'modelCode' => $model,
             'makeYear' => $vehicle_vix->response->manufacture_year,
         ];
         $avvariant = $this->avVariant($get_avvariant)->response;
@@ -422,7 +429,7 @@ class Allianz implements InsurerLibraryInterface
             $postcode_details = $this->postalCode($input->postcode);
             $get_vehicle_details = (object)[
                 'vehicle_number' => $input->vehicle_number,
-                'id_type' => $this->id_type($input->id_type),
+                'id_type' => $input->id_type,
                 'id_number' => $input->id_number,
                 'postcode' => $postcode_details->Postcode,
             ];
@@ -430,10 +437,17 @@ class Allianz implements InsurerLibraryInterface
             if (!$vehicle_vix->status) {
                 return $this->abort($vehicle_vix->response, $vehicle_vix->code);
             }
+            if($vehicle_vix->response->model == 'COROLLA' || $vehicle_vix->response->model == 'ALTIS'){
+                $model = 'COROLLA/ALTIS';
+            }
+            else{
+                $model = $vehicle_vix->response->model;
+            }
+            
             $get_avvariant = (object)[
                 'region' => $postcode_details->Region,
                 'makeCode' => $vehicle_vix->response->make,
-                'modelCode' => $vehicle_vix->response->model,
+                'modelCode' => $model,
                 'makeYear' => $vehicle_vix->response->manufacture_year,
             ];
             $avvariant = $this->avVariant($get_avvariant)->response;
@@ -507,7 +521,14 @@ class Allianz implements InsurerLibraryInterface
 
             // Remove Extra Cover which is not entitled
             $available_benefits = self::EXTRA_COVERAGE_LIST;
-            
+            switch($input->id_type) {
+				case '1': {
+					$available_benefits = array_filter($available_benefits, function ($benefits) {
+						return $benefits != 'A201' && $benefits != 'PAB3';
+					});
+					break;
+				}
+			}
             $extra_cover_list = [];
             // Generate Extra Cover List
             foreach($available_benefits as $extra_cover_code) {
@@ -537,7 +558,7 @@ class Allianz implements InsurerLibraryInterface
                         $item->option_list = $option_list;
 
                         // Default to RM 1,000
-                        $_sum_insured_amount = $option_list->values[0];
+                        $_sum_insured_amount = $option_list->values[1];
 
                         break;
                     }
@@ -588,6 +609,20 @@ class Allianz implements InsurerLibraryInterface
                             'name' => 'sum_insured',
                             'description' => 'Option List',
                             'values' => ['Plan A', 'Plan B', 'Plan C'],
+                            'any_value' => true,
+                            'increment' => null
+                        ]);
+                        $item->option_list = $option_list;
+
+                        // Default to RM 1,000
+                        $item->plan_type = $option_list->values[0];
+                        break;
+                    }
+                    case 'PAB3': {
+                        $option_list = new OptionList([
+                            'name' => 'sum_insured',
+                            'description' => 'Option List',
+                            'values' => ['Plan A', 'Plan B'],
                             'any_value' => true,
                             'increment' => null
                         ]);
@@ -766,6 +801,14 @@ class Allianz implements InsurerLibraryInterface
                     $sequence = 17;
                     break;
                 }
+                case 'A201': {
+                    $sequence = 18;
+                    break;
+                }
+                case 'PAB3': {
+                    $sequence = 19;
+                    break;
+                }
             }
             
             $_extra_cover->sequence = $sequence;
@@ -842,6 +885,14 @@ class Allianz implements InsurerLibraryInterface
                 $extra_cover_name = 'Car Break-In/Robbery';
                 break;
             }
+            case 'A201': { 
+                $extra_cover_name = 'Waiver of Betterment Contribution';
+                break;
+            }
+            case 'PAB3': { 
+                $extra_cover_name = 'Driver and Passengers Shield';
+                break;
+            }
         }
 
         return $extra_cover_name;
@@ -892,13 +943,15 @@ class Allianz implements InsurerLibraryInterface
 
         // Generate Selected Extra Cover
         $selected_extra_cover = [];
-        foreach($input->insurance->extra_cover as $extra_cover) {
-            array_push($selected_extra_cover, (object) [
-                'code' => $extra_cover->code,
-                'description' => $extra_cover->description,
-                'premium' => $extra_cover->amount,
-                'sum_insured' => $extra_cover->sum_insured ?? 0
-            ]);
+        foreach ($input->insurance->extra_cover as $extra_cover) {
+            array_push($selected_extra_cover, new ExtraCover([
+                'extra_cover_code' => $extra_cover->code,
+                'extra_cover_description' => $extra_cover->description,
+                'premium' => floatval($extra_cover->amount),
+                'sum_insured' => floatval($extra_cover->sum_insured) ?? 0,
+                'cart_amount' => $extra_cover->cart_amount ?? 0,
+                'cart_day' => $extra_cover->cart_day ?? 0,
+            ]));
         }
 
         $input->additional_driver = $additional_driver_list;
@@ -940,7 +993,7 @@ class Allianz implements InsurerLibraryInterface
         $postcode_details = $this->postalCode($input->postcode);
         $get_vehicle_details = (object)[
             'vehicle_number' => $input->vehicle_number,
-            'id_type' => $this->id_type($input->id_type),
+            'id_type' => $input->id_type,
             'id_number' => $input->id_number,
             'postcode' => $postcode_details->Postcode,
         ];
@@ -1058,15 +1111,26 @@ class Allianz implements InsurerLibraryInterface
 
     public function getQuotation(object $qParams) : object
     {
-        $dobs = str_split($qParams->input->id_number, 2);
-        $id_number = $dobs[0] . $dobs[1] . $dobs[2] . "-" . $dobs[3] .  "-" . $dobs[4] . $dobs[5];
-        $year = intval($dobs[0]);
-		if ($year >= 10) {
-			$year += 1900;
-		} else {
-			$year += 2000;
+        switch($qParams->input->id_type) {
+			case '1': {
+				$dobs = str_split($qParams->input->id_number, 2);
+				$id_number = $dobs[0] . $dobs[1] . $dobs[2] . "-" . $dobs[3] .  "-" . $dobs[4] . $dobs[5];
+				$year = intval($dobs[0]);
+				if ($year >= 10) {
+					$year += 1900;
+				} else {
+					$year += 2000;
+				}
+				$dob = strval($year) . "-" . $dobs[1] . "-" . $dobs[2];
+                $id_type = 'NRIC';
+				break;
+			}
+			case '4': {
+                $id_type = 'OLD_IC';
+                $dob = '1984-11-03';//cannot be empty
+				break;
+			}
 		}
-		$dob = strval($year) . "-" . $dobs[1] . "-" . $dobs[2];
         $avcode = $qParams->vix->extra_attribute->avvariant->VariantGrp[0]->AvCode;
         foreach($qParams->vix->extra_attribute->avvariant->VariantGrp as $car_variant){
             if($qParams->input->vehicle->variant == $car_variant->Variant){
@@ -1080,7 +1144,7 @@ class Allianz implements InsurerLibraryInterface
             "effectiveDate": "'.Carbon::parse($qParams->vix->inception_date)->format('Y-m-d').'",
             "expirationDate": "'.Carbon::parse($qParams->vix->expiry_date)->format('Y-m-d').'",
             "person": {
-                "identityType": "NRIC",
+                "identityType": "'.$id_type.'",
                 "identityNumber": "'.$qParams->input->id_number.'",
                 "gender": "'.$qParams->input->gender.'",
                 "birthDate": "'.$dob.'",
@@ -1117,10 +1181,20 @@ class Allianz implements InsurerLibraryInterface
 
     public function getVIXNCD(object $input) : object
     {
+        switch($input->id_type) {
+			case '1': {
+				$id_type = 'NRIC';
+				break;
+			}
+			case '4': {
+				$id_type = 'OLD_IC';
+				break;
+			}
+		}
         $text = '{
             "sourceSystem": "PARTNER_ID",
             "vehicleLicenseId": "'.$input->vehicle_number.'",
-            "identityType": "NRIC",
+            "identityType": "'.$id_type.'",
             "identityNumber": "'.$input->id_number.'",
             "checkUbbInd": "1",
             "postalCode": "'.$input->postcode.'"
@@ -1163,6 +1237,19 @@ class Allianz implements InsurerLibraryInterface
                             "planCode": "'.$planCode.'"
                         }';
                     }
+                    else if($coverCode == 'PAB3'){
+                        $plan_type = $extra_cover->plan_type ?? $extra_cover->sum_insured;
+                        if($plan_type == 'Plan A'){
+                            $planCode = "PAB3A";
+                        }
+                        else if($plan_type == 'Plan B'){
+                            $planCode = "PAB3B";
+                        }
+                        $additional_cover .= '{
+                            "coverCode": "'.$coverCode.'",
+                            "planCode": "'.$planCode.'"
+                        }';
+                    }
                     else{
                         $additional_cover .= '{
                             "coverCode": "'.$coverCode.'",
@@ -1181,6 +1268,19 @@ class Allianz implements InsurerLibraryInterface
                         }
                         else if($plan_type == 'Plan C'){
                             $planCode = "PABERWC";
+                        }
+                        $additional_cover .= '{
+                            "coverCode": "'.$coverCode.'",
+                            "planCode": "'.$planCode.'"
+                        },';
+                    }
+                    else if($coverCode == 'PAB3'){
+                        $plan_type = $extra_cover->plan_type ?? $extra_cover->sum_insured;
+                        if($plan_type == 'Plan A'){
+                            $planCode = "PAB3A";
+                        }
+                        else if($plan_type == 'Plan B'){
+                            $planCode = "PAB3B";
                         }
                         $additional_cover .= '{
                             "coverCode": "'.$coverCode.'",
@@ -1277,25 +1377,25 @@ class Allianz implements InsurerLibraryInterface
         return $result;
     }
     
-    private function getMaritalStatusCode($marital_status) : int
+    private function getMaritalStatusCode($marital_status) : string
     {
         $code = null;
 
         switch($marital_status) {
             case 'S': {
-                $code = 0;
+                $code = '0';
                 break;
             }
             case 'M': {
-                $code = 1;
+                $code = '1';
                 break;
             }
             case 'D': {
-                $code = 2;
+                $code = '2';
                 break;
             }
             case 'O': {
-                $code = 3;
+                $code = '';
                 break;
             }
         }

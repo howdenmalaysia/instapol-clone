@@ -234,17 +234,17 @@
                                                     <a href="{{ route('motor.add-ons') }}" class="btn btn-outline-secondary text-uppercase">{{ __('frontend.button.edit') }}</a>
                                                 </div>
                                             </div>
-                                            @if (!empty($additional_driver))
+                                            @if (!empty($motor->driver))
                                                 <div class="row">
                                                     <div class="col-4 fw-bold">{{ __('frontend.fields.name') }}</div>
                                                     <div class="col-4 fw-bold">{{ __('frontend.fields.id_number') }}</div>
                                                     <div class="col-4 fw-bold">{{ __('frontend.fields.relationship') }}</div>
                                                 </div>
-                                                @foreach ($additional_driver as $driver)
+                                                @foreach ($motor->driver as $driver)
                                                     <div class="row">
                                                         <div class="col-4">{{ $driver->name }}</div>
                                                         <div class="col-4">{{ $driver->id_number }}</div>
-                                                        <div class="col-4">{{ $driver->relationship }}</div>
+                                                        <div class="col-4">{{ $relationships->where('id', $driver->relationship_id)->first()->name }}</div>
                                                     </div>
                                                 @endforeach
                                             @else

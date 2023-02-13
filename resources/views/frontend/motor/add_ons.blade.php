@@ -241,7 +241,7 @@
                             <div class="hidden">
                                 <input type="hidden" id="motor" name="motor" value='@json(session('motor'))' />
                                 <input type="hidden" id="selected-extra-coverage" name="selected_extra_coverage" />
-                                <input type="hidden" id="h-additional-drivers" name="additional_drivers" />
+                                <input type="hidden" id="h-additional-driver" name="additional_driver" />
                                 <input type="hidden" id="h-roadtax" name="roadtax" />
                             </div>
                         </form>
@@ -302,6 +302,8 @@
     $(() => {
         // Send Land on Add Ons Page to GA
         gtag('event', 'l_motor_ao', { 'debug_mode': true });
+
+        populateDriver();
 
         $('#show-more-add-ons').on('click', (e) => {
             let shown = $(e.target).data('shown');
@@ -440,7 +442,7 @@
         });
 
         $('#add-additional-driver').on('click', () => {
-            let count = $('.additional-driver-name').length + 1;
+            let count = $('.additional-driver-name').length;
             let html = `
                 <div class="row info px-md-3 driver-${count}">
                     <div class="col-4">
@@ -581,12 +583,14 @@
 
             // Consolidate Additional Drivers
             let additional_driver = [];
-            $('.info').each((index, element) => {
-                additional_driver.push({
-                    driver_name: $(element).find('#additional-driver-name').val(),
-                    driver_id_number: $(element).find('#additional-driver-id-number').val(),
-                    driver_relationship: $(element).find('#additional-driver-relationship').val()
-                })
+            $('.additional-driver-name').each((index, element) => {
+                if($(`#driver-name-${index}`).val() != '') {
+                    additional_driver.push({
+                        name: $(`#driver-name-${index}`).val().toUpperCase(),
+                        id_number: $(`#driver-id-number-${index}`).val(),
+                        relationship: $(`#driver-relationship-${index}`).val()
+                    });
+                }
             });
 
             $('#h-additional-driver').val(JSON.stringify(additional_driver));
@@ -891,6 +895,18 @@
         }
 
         return '';
+    }
+
+    function populateDriver()
+    {
+        if(motor.additional_driver) {
+            motor.additional_driver.forEach((driver, index) => {
+                $('#add-additional-driver').trigger('click');
+                $(`#driver-name-${index}`).val(driver.name);
+                $(`#driver-id-number-${index}`).val(driver.id_number);
+                $(`#driver-relationship-${index}`).val(driver.relationship).trigger('change');
+            });
+        }
     }
 </script>
 @endpush
