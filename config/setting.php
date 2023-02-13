@@ -19,6 +19,9 @@ return [
         'bicycle' => env('BICYCLE_URL'),
         'travel' => env('TRAVEL_URL'),
         'doc_pro' => env('DOC_PRO_URL'),
+        'landlord' => env('LANDLORD_URL'),
+
+
     ],
     'id_type' => [
         'nric_no' => 1,
