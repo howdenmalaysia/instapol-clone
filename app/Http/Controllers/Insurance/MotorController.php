@@ -246,7 +246,8 @@ class MotorController extends Controller
                         $_add_ons = (object) [
                             'sum_insured' => $selected->sum_insured ?? $extra_cover->sum_insured,
                             'extra_cover_description' => $extra_cover->extra_cover_description,
-                            'extra_cover_code' => $selected->extra_cover_code
+                            'extra_cover_code' => $selected->extra_cover_code,
+                            'plan_type' => $selected->plan_type
                         ];
 
                         if(!empty($selected->cart_day) && !empty($selected->cart_amount)) {

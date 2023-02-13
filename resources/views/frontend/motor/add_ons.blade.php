@@ -118,7 +118,7 @@
                                                             <select id="{{ 'sum-insured-' . $_extra_cover->extra_cover_code }}" class="option-list" data-select data-extra-cover-code="{{ $_extra_cover->extra_cover_code }}">
                                                                 @foreach ($_extra_cover->option_list->values as $index => $option)
                                                                     @if (is_string($option))
-                                                                        <option value="{{ $option }}" {{ $index === 0 ? 'selected' : ''}}>{{ $option }}</option>
+                                                                        <option value="{{ $option }}" {{ $index === 0 ? 'selected' : ''}} name="plan_type">{{ $option }}</option>
                                                                     @else
                                                                         <option value="{{ $option }}" {{ $option === 1000 ? 'selected' : '' }}>{{ 'RM ' . $option }}</option>
                                                                     @endif
@@ -344,7 +344,7 @@
 
                         Object.values(extra.option_list.values).forEach((option) => {
                             if (typeof option === 'string'){
-                                html += `<option value="${option}" ${option === 0 ? 'selected' : ''}>${option}</option>`;
+                                html += `<option value="${option}" ${option === 0 ? 'selected' : ''} name="plan_type">${option}</option>`;
                             }
                             else{
                                 html += `<option value="${option}" ${option === 1000 ? 'selected' : ''}>${'RM ' + option}</option>`;
@@ -564,10 +564,15 @@
                 }
 
                 if($(element).val() != 112) { // CART
+                    var plan_type_value = '';
+                    if($(`#sum-insured-${$.escapeSelector($(element).val())} option:selected`).attr("name") == 'plan_type'){
+                        plan_type_value = $(`#sum-insured-${$.escapeSelector($(element).val())} option:selected`).text()
+                    }
                     selected_extra_cover.push({
                         extra_cover_code: $(element).val(),
                         sum_insured: sum_insured,
-                        premium: $(`#${$.escapeSelector($(element).val())}-premium`).text()
+                        premium: $(`#${$.escapeSelector($(element).val())}-premium`).text(),
+                        plan_type: plan_type_value,
                     });
                 } else {
                     selected_extra_cover.push({

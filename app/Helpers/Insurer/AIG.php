@@ -532,24 +532,12 @@ class AIG implements InsurerLibraryInterface
                     if((string)$item->bencode === $extra_cover->extra_cover_code) {
                         $extra_cover->premium = formatNumber($item->benpremium);
                         $total_benefit_amount += floatval($item->benpremium);
-                        //plan type
-                        if(isset($extra_cover->plan_type) && $extra_cover->plan_type !== ''){
-                            if((string)$item->bencode == 'smart_auto'){
-                                $extra_cover->sum_insured = ['Starter', 'Saver', 'Supreme'];
-                            }
-                            else{
-                                $extra_cover->sum_insured = ['Plan A', 'Plan B', 'Plan C'];
-                            }
-                        }
-                        else {
-                            if(is_string($extra_cover->sum_insured) || formatNumber($extra_cover->sum_insured) > 0 ){
-                                $extra_cover->sum_insured = formatNumber((float) $item->suminsured);
-                            }
-                            else if(!empty($extra_cover->sumInsured)) {
-                                $extra_cover->sum_insured = formatNumber((float) $item->suminsured);
-                            }
-                        }
                         $extra_cover->selected = (float) $item->benpremium == 0;
+                        
+                        if(!empty($extra_cover->sumInsured)) {
+                                $extra_cover->sum_insured = formatNumber((float) $item->suminsured);
+                        }
+                        
                         if($extra_cover->premium > 0){
                             array_push($new_extracover_list, $extra_cover);
                         }

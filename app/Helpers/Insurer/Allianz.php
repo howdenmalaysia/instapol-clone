@@ -229,7 +229,7 @@ class Allianz implements InsurerLibraryInterface
                 }]
             }
         }';
-		$result = $this->cURL("getData", "/checkUBB", $text);
+		$result = $this->cURL("getData", "checkUBB", $text);
         
         if(!$result->status) {
             return $this->abort($result->response);
@@ -256,7 +256,7 @@ class Allianz implements InsurerLibraryInterface
         }
         $function = 'allianzMake';
 
-		$result = $this->cURL("GET", "/lov/allianzMake".$make_code);
+		$result = $this->cURL("GET", "lov/allianzMake".$make_code);
 		
         if(!$result->status) {
             return $this->abort($result->response);
@@ -279,7 +279,7 @@ class Allianz implements InsurerLibraryInterface
             $model_code = "&modelCode=".$input->modelCode;
         }
         $function = 'allianzModel';
-		$result = $this->cURL("GET", "/lov/allianzModel".$make_code.$model_code);
+		$result = $this->cURL("GET", "lov/allianzModel".$make_code.$model_code);
 
         if(!$result->status) {
             return $this->abort($result->response);
@@ -301,7 +301,7 @@ class Allianz implements InsurerLibraryInterface
             $model_code = "&modelCode=".$input->modelCode;
         }
         $function = 'allianzVariant';
-		$result = $this->cURL("GET", "/lov/allianzVariant".$make_code.$model_code);
+		$result = $this->cURL("GET", "lov/allianzVariant".$make_code.$model_code);
 
         if(!$result->status) {
             return $this->abort($result->response);
@@ -323,7 +323,7 @@ class Allianz implements InsurerLibraryInterface
             $make_code = "&makeCode=".$input->makeCode;
         }
         $function = 'avMake';
-		$result = $this->cURL("GET", "/lov/avMake".$region.$make_code);
+		$result = $this->cURL("GET", "lov/avMake".$region.$make_code);
 
         if(!$result->status) {
             return $this->abort($result->response);
@@ -346,7 +346,7 @@ class Allianz implements InsurerLibraryInterface
             $model_code = "&modelCode=".$input->modelCode;
         }
         $function = 'avModel';//CITY
-		$result = $this->cURL("GET", "/lov/avModel".$region.$make_code.$model_code);
+		$result = $this->cURL("GET", "lov/avModel".$region.$make_code.$model_code);
         
         if(!$result->status) {
             return $this->abort($result->response);
@@ -373,7 +373,7 @@ class Allianz implements InsurerLibraryInterface
             $make_year = "&makeYear=".$input->makeYear;
         }
         $function = 'avVariant';
-		$result = $this->cURL("GET", "/lov/avVariant".$region.$make_code.$model_code.$make_year);
+		$result = $this->cURL("GET", "lov/avVariant".$region.$make_code.$model_code.$make_year);
 		
         if(!$result->status) {
             return $this->abort($result->response);
@@ -450,7 +450,10 @@ class Allianz implements InsurerLibraryInterface
                 'modelCode' => $model,
                 'makeYear' => $vehicle_vix->response->manufacture_year,
             ];
-            $avvariant = $this->avVariant($get_avvariant)->response;
+            $avvariant = $this->avVariant($get_avvariant);
+            if (!$avvariant->status) {
+                return $this->abort($avvariant->response, $avvariant->code);
+            }
             // Get Selected Variant
             $selected_variant = null;
             if ($input->nvic == '-') {
@@ -469,7 +472,6 @@ class Allianz implements InsurerLibraryInterface
             if (empty($selected_variant)) {
                 return $this->abort(trans('api.variant_not_match'));
             }
-
             // set vehicle
             $vehicle = new Vehicle([
                 'make' => (string)$vehicle_vix->response->make,
@@ -492,7 +494,7 @@ class Allianz implements InsurerLibraryInterface
                     'engine_number' => $vehicle_vix->response->engine_number,
                     'seating_capacity' => $vehicle_vix->response->seating_capacity,
                     'contractNumber' => $vehicle_vix->contractNumber,
-                    'avvariant' => $avvariant,
+                    'avvariant' => $avvariant->response,
                     'make_code' => $vehicle_vix->response->make_code,
                     'model_code' => $vehicle_vix->response->model_code,
                 ],
@@ -677,14 +679,11 @@ class Allianz implements InsurerLibraryInterface
                         $extra_cover->premium = formatNumber((float) $extra->displayPremium);
                         $total_benefit_amount += (float)$extra->displayPremium;
                         $extra_cover->selected = (float)$extra->displayPremium == 0;
-                        if(isset($extra_cover->plan_type) && $extra_cover->plan_type !== ''){
-                            $extra_cover->sum_insured = ['Plan A', 'Plan B', 'Plan C'];
+
+                        if(!empty($extra->coverSumInsured)) {
+                            $extra_cover->sum_insured = formatNumber((float) $extra->coverSumInsured);
                         }
-                        else{
-                            if(!empty($extra->coverSumInsured)) {
-                                $extra_cover->sum_insured = formatNumber((float) $extra->coverSumInsured);
-                            }
-                        }
+                        
                         if($extra_cover->premium > 0){
                             array_push($new_extracover_list, $extra_cover);
                         }
@@ -1038,7 +1037,7 @@ class Allianz implements InsurerLibraryInterface
             }
           }';
 
-		$result = $this->cURL("getData", "/submission", $text);
+		$result = $this->cURL("getData", "submission", $text);
 
         if(!$result->status) {
             return $this->abort($result->response);
@@ -1132,15 +1131,23 @@ class Allianz implements InsurerLibraryInterface
 			}
 		}
         $avcode = $qParams->vix->extra_attribute->avvariant->VariantGrp[0]->AvCode;
+        $SumInsured = $qParams->input->vehicle->sum_insured;
+        if($SumInsured == 0){
+            $SumInsured = $qParams->vix->extra_attribute->avvariant->VariantGrp[0]->SumInsured;
+        }
         foreach($qParams->vix->extra_attribute->avvariant->VariantGrp as $car_variant){
             if($qParams->input->vehicle->variant == $car_variant->Variant){
                 $avcode = $car_variant->AvCode;
+                $SumInsured = $car_variant->SumInsured;
             }
         }
-        $sum_insured = $qParams->input->vehicle->sum_insured ?? $qParams->vix->sum_insured;
+        $contractNumber = $qParams->input->vehicle->extra_attribute->contractNumber;
+        if($contractNumber == ''){
+            $contractNumber = $qParams->vix->extra_attribute->contractNumber;
+        }
         $text = '{
             "partnerId": "HOWDEN",
-            "contractNumber": "'.$qParams->vix->extra_attribute->contractNumber.'",
+            "contractNumber": "'.$contractNumber.'",
             "effectiveDate": "'.Carbon::parse($qParams->vix->inception_date)->format('Y-m-d').'",
             "expirationDate": "'.Carbon::parse($qParams->vix->expiry_date)->format('Y-m-d').'",
             "person": {
@@ -1163,13 +1170,13 @@ class Allianz implements InsurerLibraryInterface
                 "yearOfManufacture": "'.$qParams->vix->manufacture_year.'",
                 "occupantsNumber": '.$qParams->vix->extra_attribute->seating_capacity.',
                 "ncdPercentage": '.$qParams->vix->ncd_percentage.',
-                "sumInsured": "'.$sum_insured.'",
+                "sumInsured": "'.$SumInsured.'",
                 "avCode": "'.$avcode.'",
                 "mvInd": "N"
             }
         }';
 
-		$result = $this->cURL("getData", "/quote", $text);
+		$result = $this->cURL("getData", "quote", $text);
         if(!$result->status) {
             return $this->abort($result->response);
         }
@@ -1199,7 +1206,7 @@ class Allianz implements InsurerLibraryInterface
             "checkUbbInd": "1",
             "postalCode": "'.$input->postcode.'"
         }';
-        $result = $this->cURL("getData", "/vehicleDetails", $text);
+        $result = $this->cURL("getData", "vehicleDetails", $text);
 
         if(!$result->status) {
             return $this->abort($result->response);
@@ -1304,10 +1311,14 @@ class Allianz implements InsurerLibraryInterface
                 $avcode = $car_variant->AvCode;
             }
         }
+        $contractNumber = $input->input->vehicle->extra_attribute->contractNumber;
+        if($contractNumber == ''){
+            $contractNumber = $input->vix->extra_attribute->contractNumber;
+        }
         $text = '{
             "salesChannel": "PTR",
             "partnerId": "HOWDEN",
-            "contractNumber": "'.$input->vix->extra_attribute->contractNumber.'",
+            "contractNumber": "'.$contractNumber.'",
             "effectiveDate": "'.Carbon::parse($input->vix->inception_date)->format('Y-m-d').'",
             "expirationDate": "'.Carbon::parse($input->vix->expiry_date)->format('Y-m-d').'",
             "additionalCover": [
@@ -1328,7 +1339,7 @@ class Allianz implements InsurerLibraryInterface
             }
           }';
 
-		$result = $this->cURL("update", "/quote", $text);
+		$result = $this->cURL("update", "quote", $text);
 
         if(!$result->status) {
             return $this->abort($result->response);
@@ -1429,7 +1440,6 @@ class Allianz implements InsurerLibraryInterface
         else{
             $token = $this->get_token();
             $host .= $this->url . $function;
-            $domain = $host;
             $options = [];
             $options['headers'] = [
                 'Authorization' => 'Bearer '.$token,
@@ -1445,6 +1455,7 @@ class Allianz implements InsurerLibraryInterface
             else if($type == 'Validate'){
                 $host = $this->host . $function;
             }
+            $domain = $host;
 
             $options['body'] = $data;
             $postfield = $options['body'];
