@@ -48,7 +48,7 @@
                                             </tr>
                                             <tr>
                                                 <th class="text-start">{{ __('frontend.motor.payment_summary_page.next_ncd') }}</th>
-                                                <td class="text-uppercase text-end">{{ intval($motor->ncd_percentage) . '%' }} </td>
+                                                <td class="text-uppercase text-end">{{ floatval($motor->ncd_percentage) . '%' }} </td>
                                             </tr>
                                             <tr>
                                                 <th class="text-start">{{ __('frontend.motor.add_ons_page.road_tax_renewal') }}</th>
