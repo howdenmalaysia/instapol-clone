@@ -907,7 +907,7 @@ class AmGeneral implements InsurerLibraryInterface
 				}
 
 				$dob = $dobs[2] . "-" . $dobs[1] . "-" . strval($year);
-				$nric_number = $dobs[0] . $dobs[1] . $dobs[2] . "-" . $dobs[3] .  "-" . $dobs[4] . $dobs[5];;
+				$nric_number = $cParams->id_number;
 				break;
 			}
 			case '4': {
@@ -1998,8 +1998,8 @@ class AmGeneral implements InsurerLibraryInterface
             ];
 
 			if ($type == "with_auth_token") {
-                $options['headers']['auth_token'] = $additionals['auth_token'][0];
-                $options['headers']['referencedata'] = $additionals['referenceData'][0];
+                $options['headers']['auth_token'] = toObject($additionals)->auth_token[0];
+                $options['headers']['referencedata'] = toObject($additionals)->referenceData[0] ?? toObject($additionals)->referencedata[0];
             }
 
             $postfield = $data;
