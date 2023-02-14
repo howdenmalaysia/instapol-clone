@@ -180,28 +180,23 @@ class AmGeneral implements InsurerLibraryInterface
 		if(! $scope){
 			return $this->abort('Scope of cover '. $this->scopeOfCover . ' not available for this car.');
 		}
-		switch($input->id_type) {
-			case '1': {
-				$dobs = str_split($input->id_number, 2);
-				$id_number = $dobs[0] . $dobs[1] . $dobs[2] . "-" . $dobs[3] .  "-" . $dobs[4] . $dobs[5];
-				$year = intval($dobs[0]);
-				if ($year >= 10) {
-					$year += 1900;
-				} else {
-					$year += 2000;
-				}
-				$dob = $dobs[2] . "-" . $dobs[1] . "-" . strval($year);
-				$nric_number = $input->id_number;
-				break;
+		if($input->id_type == '1'){
+			$dobs = str_split($input->id_number, 2);
+			$id_number = $dobs[0] . $dobs[1] . $dobs[2] . "-" . $dobs[3] .  "-" . $dobs[4] . $dobs[5];
+			$year = intval($dobs[0]);
+			if ($year >= 10) {
+				$year += 1900;
+			} else {
+				$year += 2000;
 			}
-			case '4': {
-				if ($this->isNewBusinessRegistrationNumber($input->id_number)) {
-					$new_business_registration_number = $input->id_number;
-				} else {
-					$business_registration_number = $input->id_number;
-				}
-
-				break;
+			$dob = $dobs[2] . "-" . $dobs[1] . "-" . strval($year);
+			$nric_number = $input->id_number;
+		}
+		else if($input->id_type == '4'){
+			if ($this->isNewBusinessRegistrationNumber($input->id_number)) {
+				$new_business_registration_number = $input->id_number;
+			} else {
+				$business_registration_number = $input->id_number;
 			}
 		}
 		//driver
@@ -331,28 +326,23 @@ class AmGeneral implements InsurerLibraryInterface
         $ncd_amount = $basic_premium = $total_benefit_amount = $gross_premium = $sst_percent = $sst_amount = $stamp_duty = $excess_amount = $total_payable = 0;
         $pa = null;
 
-		switch($input->id_type) {
-			case '1': {
-				$dobs = str_split($input->id_number, 2);
-				$id_number = $dobs[0] . $dobs[1] . $dobs[2] . "-" . $dobs[3] .  "-" . $dobs[4] . $dobs[5];
-				$year = intval($dobs[0]);
-				if ($year >= 10) {
-					$year += 1900;
-				} else {
-					$year += 2000;
-				}
-				$dob = $dobs[2] . "-" . $dobs[1] . "-" . strval($year);
-				$nric_number = $input->id_number;
-				break;
+		if($input->id_type == '1'){
+			$dobs = str_split($input->id_number, 2);
+			$id_number = $dobs[0] . $dobs[1] . $dobs[2] . "-" . $dobs[3] .  "-" . $dobs[4] . $dobs[5];
+			$year = intval($dobs[0]);
+			if ($year >= 10) {
+				$year += 1900;
+			} else {
+				$year += 2000;
 			}
-			case '4': {
-				if ($this->isNewBusinessRegistrationNumber($input->id_number)) {
-					$new_business_registration_number = $input->id_number;
-				} else {
-					$business_registration_number = $input->id_number;
-				}
-
-				break;
+			$dob = $dobs[2] . "-" . $dobs[1] . "-" . strval($year);
+			$nric_number = $input->id_number;
+		}
+		else if($input->id_type == '4'){
+			if ($this->isNewBusinessRegistrationNumber($input->id_number)) {
+				$new_business_registration_number = $input->id_number;
+			} else {
+				$business_registration_number = $input->id_number;
 			}
 		}
 
@@ -895,32 +885,27 @@ class AmGeneral implements InsurerLibraryInterface
 
 	public function Q_GetProductList($cParams = null)
 	{
-		switch($cParams->id_type) {
-			case '1': {
-				$dobs = str_split($cParams->id_number, 2);
+		if($cParams->id_type == '1'){
+			$dobs = str_split($cParams->id_number, 2);
 
-				$year = intval($dobs[0]);
-				if ($year >= 10) {
-					$year += 1900;
-				} else {
-					$year += 2000;
-				}
-
-				$dob = $dobs[2] . "-" . $dobs[1] . "-" . strval($year);
-				$nric_number = $cParams->id_number;
-				break;
+			$year = intval($dobs[0]);
+			if ($year >= 10) {
+				$year += 1900;
+			} else {
+				$year += 2000;
 			}
-			case '4': {
-				if ($this->isNewBusinessRegistrationNumber($cParams->id_number)) {
-					$new_business_registration_number = $cParams->id_number;
-				} else {
-					$business_registration_number = $cParams->id_number;
-				}
 
-				break;
+			$dob = $dobs[2] . "-" . $dobs[1] . "-" . strval($year);
+			$nric_number = $cParams->id_number;
+		}
+		else if ($cParams->id_type == '4'){
+			if ($this->isNewBusinessRegistrationNumber($cParams->id_number)) {
+				$new_business_registration_number = $cParams->id_number;
+			} else {
+				$business_registration_number = $cParams->id_number;
 			}
 		}
-		
+
 		$text = array(
 			"newICNo"=>$nric_number ?? "",
 			"oldICNo"=>"",
@@ -1265,28 +1250,23 @@ class AmGeneral implements InsurerLibraryInterface
 
 	public function F_GetProductList($cParams = null)
 	{
-		switch($cParams->id_type) {
-			case '1': {
-				$dobs = str_split($cParams->id_number, 2);
-				$id_number = $dobs[0] . $dobs[1] . $dobs[2] . "-" . $dobs[3] .  "-" . $dobs[4] . $dobs[5];
-				$year = intval($dobs[0]);
-				if ($year >= 10) {
-					$year += 1900;
-				} else {
-					$year += 2000;
-				}
-				$dob = $dobs[2] . "-" . $dobs[1] . "-" . strval($year);
-				$nric_number = $cParams->id_number;
-				break;
+		if($cParams->id_type == '1'){
+			$dobs = str_split($cParams->id_number, 2);
+			$id_number = $dobs[0] . $dobs[1] . $dobs[2] . "-" . $dobs[3] .  "-" . $dobs[4] . $dobs[5];
+			$year = intval($dobs[0]);
+			if ($year >= 10) {
+				$year += 1900;
+			} else {
+				$year += 2000;
 			}
-			case '4': {
-				if ($this->isNewBusinessRegistrationNumber($cParams->id_number)) {
-					$new_business_registration_number = $cParams->id_number;
-				} else {
-					$business_registration_number = $cParams->id_number;
-				}
-
-				break;
+			$dob = $dobs[2] . "-" . $dobs[1] . "-" . strval($year);
+			$nric_number = $cParams->id_number;
+		}
+		else if($cParams->id_type == '4'){
+			if ($this->isNewBusinessRegistrationNumber($cParams->id_number)) {
+				$new_business_registration_number = $cParams->id_number;
+			} else {
+				$business_registration_number = $cParams->id_number;
 			}
 		}
 

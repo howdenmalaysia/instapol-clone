@@ -133,7 +133,7 @@ class AIG implements InsurerLibraryInterface
                 'sum_insured' => $sum_insured,
                 'sum_insured_type' => 'Market Value',
                 'ncd_percentage' => floatval($vix->response->ncdperc),
-                'seating_capacity' => 0,
+                'seating_capacity' => $input->vehicle->extra_attribute->seating_capacity,
                 'variants' => $variants,
                 'vehicle_number' => (string) $input->vehicle_number,
             ])
@@ -276,7 +276,6 @@ class AIG implements InsurerLibraryInterface
             if (empty($selected_variant)) {
                 return $this->abort(trans('api.variant_not_match'));
             }
-
             // set vehicle
             $vehicle = new Vehicle([
                 'make' => $vehicle_vix->response->make ?? $input->vehicle->make,
@@ -537,7 +536,7 @@ class AIG implements InsurerLibraryInterface
                         if(!empty($extra_cover->sumInsured)) {
                                 $extra_cover->sum_insured = formatNumber((float) $item->suminsured);
                         }
-                        
+
                         if($extra_cover->premium > 0){
                             array_push($new_extracover_list, $extra_cover);
                         }
@@ -779,7 +778,7 @@ class AIG implements InsurerLibraryInterface
         $index = 1;
         if(isset($input->input->additional_driver)) {
             foreach ($input->input->additional_driver as $additional_driver) {
-                if($additional_driver->id_number != '' || $additional_driver->id_number != null){
+                if(! empty($additional_driver->id_number) && ! empty($additional_driver->relationship) && ! empty($additional_driver->name)){
                     $age = getAgeFromIC($additional_driver->id_number);
                     if($drivers_count > 2){
                         array_push($additional_drivers, (object) [
@@ -860,24 +859,20 @@ class AIG implements InsurerLibraryInterface
         }
         $body_type = $this->getBodyTypeDetails($input->input->vehicle_body_type ?? '');
         
-        switch($input->input->id_type) {
-			case '1': {
-				$dobs = str_split($input->input->id_number, 2);
-                $year = intval($dobs[0]);
-                if ($year >= 10) {
-                    $year += 1900;
-                } else {
-                    $year += 2000;
-                }
-                $dob = strval($year) . "-" . $dobs[1] . "-" . $dobs[2];
-                $id_number = $input->input->id_number;
-                $age = getAgeFromIC($input->input->id_number) - 18;
-				break;
-			}
-			case '4': {
-				$id = $input->input->id_number;
-				break;
-			}
+        if($input->input->id_type == '1'){
+            $dobs = str_split($input->input->id_number, 2);
+            $year = intval($dobs[0]);
+            if ($year >= 10) {
+                $year += 1900;
+            } else {
+                $year += 2000;
+            }
+            $dob = strval($year) . "-" . $dobs[1] . "-" . $dobs[2];
+            $id_number = $input->input->id_number;
+            $age = getAgeFromIC($input->input->id_number) - 18;
+		}
+		else if ($input->input->id_type == '4'){
+            $id = $input->input->id_number;
 		}
         if($input->input->gender == 'O'){
 			$gender = 'C';
@@ -1051,15 +1046,11 @@ class AIG implements InsurerLibraryInterface
     private function getVIXNCD(array $input) : ResponseData
     {
         $path = 'GetVIXNCD';
-        switch($input['id_type']) {
-			case '1': {
-                $id_number = $input['id_number'];
-				break;
-			}
-			case '4': {
-				$id = $input['id_number'];
-				break;
-			}
+        if($input['id_type'] == '1'){
+            $id_number = $input['id_number'];
+		}
+		else if ($input['id_type'] == '4'){
+            $id = $input['id_number'];
 		}
         $request_id = Str::uuid();
         $data["agent_code"] = $this->agent_code;

@@ -490,6 +490,7 @@ class Zurich implements InsurerLibraryInterface
         //motor extra cover details
         $extra_cover = [];
         $extra_cover_cart = [];
+        $alldriver = false;
         if(isset($input->extcover)){
             foreach($input->extcover as $extcover){
                 if($extcover->extra_cover_code == '112'){
@@ -512,13 +513,29 @@ class Zurich implements InsurerLibraryInterface
                     ]);
                 }
                 else{
-                    array_push($extra_cover, (object) [
-                        'ext_cov_code' => $extcover->extra_cover_code,
-                        'ECD_eff_date' => Carbon::now()->format('d/m/Y'),
-                        'ECD_exp_date' => Carbon::now()->addYear()->subDay()->format('d/m/Y'),
-                        'ECD_sum_insured' => $extcover->sum_insured ?? $sum_insured,
-                        'no_of_unit' => 1
-                    ]);
+                    if($extcover->extra_cover_code == '01'){
+                        $alldriver = true;
+                    }
+                    if($alldriver){
+                        if($extcover->extra_cover_code != '07'){
+                            array_push($extra_cover, (object) [
+                                'ext_cov_code' => $extcover->extra_cover_code,
+                                'ECD_eff_date' => Carbon::now()->format('d/m/Y'),
+                                'ECD_exp_date' => Carbon::now()->addYear()->subDay()->format('d/m/Y'),
+                                'ECD_sum_insured' => $extcover->sum_insured ?? $sum_insured,
+                                'no_of_unit' => 1
+                            ]);
+                        }
+                    }
+                    else{
+                        array_push($extra_cover, (object) [
+                            'ext_cov_code' => $extcover->extra_cover_code,
+                            'ECD_eff_date' => Carbon::now()->format('d/m/Y'),
+                            'ECD_exp_date' => Carbon::now()->addYear()->subDay()->format('d/m/Y'),
+                            'ECD_sum_insured' => $extcover->sum_insured ?? $sum_insured,
+                            'no_of_unit' => 1
+                        ]);
+                    }
                 }
             }
         }
@@ -527,29 +544,33 @@ class Zurich implements InsurerLibraryInterface
         //additional driver
         $add_driver = [];
         $index = 1;
-        if(isset($input->additional_driver)){
-            foreach($input->additional_driver as $adddriver){
-                if($index > 2){
-                    $dobs = str_split($adddriver->id_number, 2);
-                    $id_number = $dobs[0] . $dobs[1] . $dobs[2] . "-" . $dobs[3] .  "-" . $dobs[4] . $dobs[5];
-                    $year = intval($dobs[0]);
-                    if ($year >= 10) {
-                        $year += 1900;
-                    } else {
-                        $year += 2000;
+        if(! $alldriver){
+            if(isset($input->additional_driver)){
+                foreach($input->additional_driver as $adddriver){
+                    if(! empty($adddriver->id_number) && ! empty($adddriver->relationship) && ! empty($adddriver->name)){
+                        if($index > 2){
+                            $dobs = str_split($adddriver->id_number, 2);
+                            $id_number = $dobs[0] . $dobs[1] . $dobs[2] . "-" . $dobs[3] .  "-" . $dobs[4] . $dobs[5];
+                            $year = intval($dobs[0]);
+                            if ($year >= 10) {
+                                $year += 1900;
+                            } else {
+                                $year += 2000;
+                            }
+                            $dob = $dobs[2] . "/" . $dobs[1] . "/" . strval($year);
+                            array_push($add_driver, (object) [
+                                'nd_name' =>$adddriver->name ?? '',
+                                'nd_identity_no' => $adddriver->id_number ?? '',
+                                'nd_date_of_birth' => $dob ?? '',
+                                'nd_gender' => $adddriver->gender ?? '',
+                                'nd_marital_sts' => $adddriver->marital_sts ?? '',
+                                'nd_occupation' => $adddriver->occupation ?? '',
+                                'nd_relationship' => $adddriver->relationship ?? '',
+                            ]);
+                        }
+                        $index++;
                     }
-                    $dob = $dobs[2] . "/" . $dobs[1] . "/" . strval($year);
-                    array_push($add_driver, (object) [
-                        'nd_name' =>$adddriver->name ?? '',
-                        'nd_identity_no' => $adddriver->id_number ?? '',
-                        'nd_date_of_birth' => $dob ?? '',
-                        'nd_gender' => $adddriver->gender ?? '',
-                        'nd_marital_sts' => $adddriver->marital_sts ?? '',
-                        'nd_occupation' => $adddriver->occupation ?? '',
-                        'nd_relationship' => $adddriver->relationship ?? '',
-                    ]);
                 }
-                $index++;
             }
         }
         $data["additional_driver"] = $add_driver;

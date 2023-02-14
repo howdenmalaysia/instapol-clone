@@ -1110,25 +1110,21 @@ class Allianz implements InsurerLibraryInterface
 
     public function getQuotation(object $qParams) : object
     {
-        switch($qParams->input->id_type) {
-			case '1': {
-				$dobs = str_split($qParams->input->id_number, 2);
-				$id_number = $dobs[0] . $dobs[1] . $dobs[2] . "-" . $dobs[3] .  "-" . $dobs[4] . $dobs[5];
-				$year = intval($dobs[0]);
-				if ($year >= 10) {
-					$year += 1900;
-				} else {
-					$year += 2000;
-				}
-				$dob = strval($year) . "-" . $dobs[1] . "-" . $dobs[2];
-                $id_type = 'NRIC';
-				break;
-			}
-			case '4': {
-                $id_type = 'OLD_IC';
-                $dob = '1984-11-03';//cannot be empty
-				break;
-			}
+        if($qParams->input->id_type == '1'){
+            $dobs = str_split($qParams->input->id_number, 2);
+            $id_number = $dobs[0] . $dobs[1] . $dobs[2] . "-" . $dobs[3] .  "-" . $dobs[4] . $dobs[5];
+            $year = intval($dobs[0]);
+            if ($year >= 10) {
+                $year += 1900;
+            } else {
+                $year += 2000;
+            }
+            $dob = strval($year) . "-" . $dobs[1] . "-" . $dobs[2];
+            $id_type = 'NRIC';
+		}
+		else if($qParams->input->id_type == '4'){
+            $id_type = 'OLD_IC';
+            $dob = '1984-11-03';//cannot be empty
 		}
         $avcode = $qParams->vix->extra_attribute->avvariant->VariantGrp[0]->AvCode;
         $SumInsured = $qParams->input->vehicle->sum_insured;
@@ -1188,15 +1184,11 @@ class Allianz implements InsurerLibraryInterface
 
     public function getVIXNCD(object $input) : object
     {
-        switch($input->id_type) {
-			case '1': {
-				$id_type = 'NRIC';
-				break;
-			}
-			case '4': {
-				$id_type = 'OLD_IC';
-				break;
-			}
+        if($input->id_type == '1') {
+            $id_type = 'NRIC';
+		}
+		else if ($input->id_type == '4') {
+            $id_type = 'OLD_IC';
 		}
         $text = '{
             "sourceSystem": "PARTNER_ID",
