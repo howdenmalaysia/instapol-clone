@@ -30,7 +30,7 @@ class PacificOrient implements InsurerLibraryInterface
     // Settings
     private const PRODUCT = 'PC'; // Private Comprehensive
     // LLtP, SRCC, Windscreen, Tinted Flim, NCD Relief
-    private const EXTRA_COVERAGE_LIST = ['06', '04', '25', '89', '72', '111'];
+    private const EXTRA_COVERAGE_LIST = ['06', '04', '05', '25', '89', '72', '111'];
     private const ANTI_THEFT_DEVICE = '12'; // M / Device - Alarm w Immobilizer
     private const COUNTRY = 'MYS';
     private const CUSTOMER_CATEGORY = 'I'; // Individual
@@ -910,6 +910,10 @@ class PacificOrient implements InsurerLibraryInterface
                 $extra_cover_description = 'All Drivers';
                 break;
             }
+            case '05': {
+                $extra_cover_description = 'Flood, Typhoon, Hurricane, Volcanic, Earthquake';
+                break;
+            }
             case '10': {
                 $extra_cover_description = 'Additional Named Drivers';
                 break;
@@ -961,16 +965,20 @@ class PacificOrient implements InsurerLibraryInterface
                     $sequence = 3;
                     break;
                 }
-                case '25': { // Strike Riot & Civil Commotion
+                case '05': {
                     $sequence = 4;
                     break;
                 }
-                case '72': { // Tinted Film Screen
+                case '25': { // Strike Riot & Civil Commotion
                     $sequence = 5;
                     break;
                 }
-                case '111': { // Current Year NCD relief
+                case '72': { // Tinted Film Screen
                     $sequence = 6;
+                    break;
+                }
+                case '111': { // Current Year NCD relief
+                    $sequence = 7;
                     break;
                 }
             }
