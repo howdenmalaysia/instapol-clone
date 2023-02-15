@@ -26,8 +26,6 @@ class AppServiceProvider extends ServiceProvider
     {
         // Fix 419 Issue:
         // Happen when Redirected with HTTP protocol instead of HTTPS and unable to get FontAwesome fonts
-        if (env('APP_ENV') !== 'local') {
-            URL::forceScheme('https');
-        }
+        URL::forceScheme('https');
     }
 }
