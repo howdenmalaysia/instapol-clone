@@ -134,6 +134,7 @@ class Allianz implements InsurerLibraryInterface
             'veh_model_code' => $VehModelCode,
             'uom' => $uom,
             'contractNumber' => $vix->response->contractNumber,
+            'avMakeCode' => $vix->response->avMakeCode,
             'response' => new VIXNCDResponse([
                 'body_type_code' => null,
                 'body_type_description' => null,
@@ -172,7 +173,7 @@ class Allianz implements InsurerLibraryInterface
         $vix = $this->vehicleDetails($get_vehicle_details);
         $get_avvariant = (object)[
             'region' => $postcode_details->Region,
-            'makeCode' => $vix->response->make,
+            'makeCode' => $vix->response->avMakeCode,
             'modelCode' => $vix->response->model,
             'makeYear' => $vix->response->manufacture_year, 
         ];
@@ -410,7 +411,7 @@ class Allianz implements InsurerLibraryInterface
         
         $get_avvariant = (object)[
             'region' => $postcode_details->Region,
-            'makeCode' => $vehicle_vix->response->make,
+            'makeCode' => $vehicle_vix->avMakeCode,
             'modelCode' => $model,
             'makeYear' => $vehicle_vix->response->manufacture_year,
         ];
@@ -446,7 +447,7 @@ class Allianz implements InsurerLibraryInterface
             
             $get_avvariant = (object)[
                 'region' => $postcode_details->Region,
-                'makeCode' => $vehicle_vix->response->make,
+                'makeCode' => $vehicle_vix->avMakeCode,
                 'modelCode' => $model,
                 'makeYear' => $vehicle_vix->response->manufacture_year,
             ];
@@ -497,6 +498,7 @@ class Allianz implements InsurerLibraryInterface
                     'avvariant' => $avvariant->response,
                     'make_code' => $vehicle_vix->response->make_code,
                     'model_code' => $vehicle_vix->response->model_code,
+                    'avMakeCode' => $vehicle_vix->avMakeCode,
                 ],
             ]);
             // get premium
@@ -518,7 +520,7 @@ class Allianz implements InsurerLibraryInterface
             $sst_percent = formatNumber($motor_premium->response->premium->serviceTaxPercentage);
             $sst_amount = formatNumber($motor_premium->response->premium->serviceTaxAmount);
             $stamp_duty = formatNumber($motor_premium->response->premium->stampDuty);
-            $total_payable = formatNumber($motor_premium->response->premium->premiumDueRoundedAfterPTV);//?????
+            $total_payable = formatNumber($motor_premium->response->premium->premiumDueRoundedAfterPTV);
             $net_premium = formatNumber($motor_premium->response->premium->premiumDueRoundedAfterPTV - $motor_premium->response->premium->commissionAmount);
 
             // Remove Extra Cover which is not entitled
@@ -1126,19 +1128,29 @@ class Allianz implements InsurerLibraryInterface
             $id_type = 'OLD_IC';
             $dob = '1984-11-03';//cannot be empty
 		}
-        $avcode = $qParams->vix->extra_attribute->avvariant->VariantGrp[0]->AvCode;
-        $SumInsured = $qParams->input->vehicle->sum_insured;
-        if($SumInsured == 0){
-            $SumInsured = $qParams->vix->extra_attribute->avvariant->VariantGrp[0]->SumInsured;
+        //check avcode selected or default first variant's avcode
+        $avcode = $qParams->input->vehicle->extra_attribute->avcode;
+        if(empty($avcode)){
+            $avcode = $qParams->vix->extra_attribute->avvariant->VariantGrp[0]->AvCode;          
         }
-        foreach($qParams->vix->extra_attribute->avvariant->VariantGrp as $car_variant){
-            if($qParams->input->vehicle->variant == $car_variant->Variant){
-                $avcode = $car_variant->AvCode;
-                $SumInsured = $car_variant->SumInsured;
+        $SumInsured = $qParams->input->vehicle->sum_insured;
+        if(empty($SumInsured)){
+            $SumInsured = $qParams->vix->extra_attribute->avvariant->VariantGrp[0]->SumInsured;
+            if(empty($avcode)){
+                $qParams->vix->sum_insured = $qParams->vix->extra_attribute->avvariant->VariantGrp[0]->SumInsured;
+            }
+            else{
+                foreach($qParams->vix->extra_attribute->avvariant->VariantGrp as $value){
+                    if($value->AvCode == $avcode){
+                        $qParams->vix->sum_insured = $value->SumInsured;
+                        $qParams->vix->min_sum_insured = roundSumInsured($value->SumInsured, self::ADJUSTMENT_RATE_DOWN, false, self::MIN_SUM_INSURED);
+                        $qParams->vix->max_sum_insured = roundSumInsured($value->SumInsured, self::ADJUSTMENT_RATE_UP, true, self::MAX_SUM_INSURED);
+                    }
+                }
             }
         }
         $contractNumber = $qParams->input->vehicle->extra_attribute->contractNumber;
-        if($contractNumber == ''){
+        if(empty($contractNumber)){
             $contractNumber = $qParams->vix->extra_attribute->contractNumber;
         }
         $text = '{
@@ -1202,6 +1214,11 @@ class Allianz implements InsurerLibraryInterface
 
         if(!$result->status) {
             return $this->abort($result->response);
+        }
+        else{
+            if(isset($result->response->UBBStatus)){
+                return $this->abort(json_encode($result->response->UBBStatus));
+            }
         }
         
         return new ResponseData([
@@ -1297,14 +1314,14 @@ class Allianz implements InsurerLibraryInterface
             }
         }
         $name = $input->input->name ?? 'Tan Ai Ling';//name is mandotory input
-        $avcode = $input->vix->extra_attribute->avvariant->VariantGrp[0]->AvCode;
-        foreach($input->vix->extra_attribute->avvariant->VariantGrp as $car_variant){
-            if($input->input->vehicle->variant == $car_variant->Variant){
-                $avcode = $car_variant->AvCode;
-            }
+        //check avcode selected or default first variant's avcode
+        $avcode = $input->input->vehicle->extra_attribute->avcode;
+        if(empty($avcode)){
+            $avcode = $input->vix->extra_attribute->avvariant->VariantGrp[0]->AvCode;          
         }
+        //check contractnumber
         $contractNumber = $input->input->vehicle->extra_attribute->contractNumber;
-        if($contractNumber == ''){
+        if(empty($contractNumber)){
             $contractNumber = $input->vix->extra_attribute->contractNumber;
         }
         $text = '{
