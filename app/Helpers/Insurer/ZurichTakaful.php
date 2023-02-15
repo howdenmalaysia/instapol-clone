@@ -1260,7 +1260,7 @@ class ZurichTakaful implements InsurerLibraryInterface
                                 // Generate Options From 1000 To 10,000
                                 $option_list = new OptionList([
                                     'name' => 'sum_insured',
-                                    'description' => 'Sum Insured Amount',
+                                    'description' => 'Sum Insured / Sum covered Amount',
                                     'values' => generateExtraCoverSumInsured(1000, 10000, 1000),
                                     'any_value' => true,
                                     'increment' => 100
@@ -1277,7 +1277,7 @@ class ZurichTakaful implements InsurerLibraryInterface
                                 // Generate Options From 1000 To 10,000
                                 $option_list = new OptionList([
                                     'name' => 'sum_insured',
-                                    'description' => 'Sum Insured Amount',
+                                    'description' => 'Sum Insured / Sum covered Amount',
                                     'values' => generateExtraCoverSumInsured(1000, 10000, 1000),
                                     'any_value' => true,
                                     'increment' => 100
@@ -1294,7 +1294,7 @@ class ZurichTakaful implements InsurerLibraryInterface
                                 // Generate Options From 1000 To 10,000
                                 $option_list = new OptionList([
                                     'name' => 'sum_insured',
-                                    'description' => 'Sum Insured Amount',
+                                    'description' => 'Sum Insured / Sum covered Amount',
                                     'values' => generateExtraCoverSumInsured(1000, 10000, 1000),
                                     'any_value' => true,
                                     'increment' => 100
@@ -1311,7 +1311,7 @@ class ZurichTakaful implements InsurerLibraryInterface
                                 // Generate Options From 1000 To 10,000
                                 $option_list = new OptionList([
                                     'name' => 'sum_insured',
-                                    'description' => 'Sum Insured Amount',
+                                    'description' => 'Sum Insured / Sum covered Amount',
                                     'values' => generateExtraCoverSumInsured(1000, 10000, 1000),
                                     'any_value' => true,
                                     'increment' => 100
@@ -1328,7 +1328,7 @@ class ZurichTakaful implements InsurerLibraryInterface
                                 // Generate Options From 1000 To 10,000
                                 $option_list = new OptionList([
                                     'name' => 'sum_insured',
-                                    'description' => 'Sum Insured Amount',
+                                    'description' => 'Sum Insured / Sum covered Amount',
                                     'values' => generateExtraCoverSumInsured(1000, 10000, 1000),
                                     'any_value' => true,
                                     'increment' => 100
@@ -1345,7 +1345,7 @@ class ZurichTakaful implements InsurerLibraryInterface
                                 // Generate Options From 1000 To 10,000
                                 $option_list = new OptionList([
                                     'name' => 'sum_insured',
-                                    'description' => 'Sum Insured Amount',
+                                    'description' => 'Sum Insured / Sum covered Amount',
                                     'values' => array_diff(generateExtraCoverSumInsured(1000, 5000, 1000), array(3000,4000)),
                                     'any_value' => true,
                                     'increment' => 100
@@ -1362,7 +1362,7 @@ class ZurichTakaful implements InsurerLibraryInterface
                                 // Generate Options From 1000 To 10,000
                                 $option_list = new OptionList([
                                     'name' => 'sum_insured',
-                                    'description' => 'Sum Insured Amount',
+                                    'description' => 'Sum Insured / Sum covered Amount',
                                     'values' => generateExtraCoverSumInsured(1000, 5000, 1000),
                                     'any_value' => true,
                                     'increment' => 100
