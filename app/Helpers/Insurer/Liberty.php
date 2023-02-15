@@ -574,12 +574,14 @@ class Liberty implements InsurerLibraryInterface
             case config('setting.id_type.nric_no'): {
                 $input->ownership_type = 'I'; // Individual
                 $input->company_registration_number = '';
+                $input->driving_experience = $input->insurance->holder->age - 18 < 0 ? 0 : $input->insurance->holder->age - 18;
 
                 break;
             }
             case config('setting.id_type.company_registration_no'): {
                 $input->company_registration_number = $input->id_number;
                 $input->ownership_type = 'C'; // Corporate
+                $input->driving_experience = 0;
 
                 break;
             }
@@ -1018,7 +1020,7 @@ class Liberty implements InsurerLibraryInterface
             'cover_code' => self::COVER_CODE,
             'date_of_birth' => formatDateFromIC($input->insurance->holder->id_number),
             'domain' => $this->host,
-            'driving_experience' => $input->insurance->holder->age - 18,
+            'driving_experience' => $input->driving_experience,
             'effective_date' => Carbon::parse($input->insurance->inception_date)->format('Y-m-d'),
             'effective_time' => $effective_time,
             'email' => $input->insurance->holder->email,
