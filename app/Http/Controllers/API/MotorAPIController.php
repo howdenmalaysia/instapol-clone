@@ -620,6 +620,11 @@ class MotorAPIController extends Controller implements MotorAPIInterface
                 $delivery_fee = RoadtaxDeliveryType::where('description', RoadtaxDeliveryType::OTHERS)->first();
             }
         }
+        
+        // Collection Method - MyJPJ App
+        if(!$request->delivery) {
+            $delivery_fee->amount = 0;
+        }
 
         // 4. Calculation
         $roadtax_price = formatNumber($roadtax->base_rate);

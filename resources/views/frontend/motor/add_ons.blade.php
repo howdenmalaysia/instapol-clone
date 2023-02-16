@@ -281,7 +281,15 @@
                             </div>
                         </div>
                     </div>
-                    <div id="assistance">
+                    <div class="border-bottom py-3">
+                        <label for="roadtax-collection"></label>
+                        <select id="roadtax-collection" class="form-control" data-select required>
+                            <option value="no-delivery" selected>{{ __('frontend.motor.add_ons_page.myjpj') }}</option>
+                            <option value="delivery">{{ __('frontend.motor.add_ons_page.delivery') }}</option>
+                        </select>
+                        <small>{{ __('frontend.motor.add_ons_page.roadtax_notes') }}</small>
+                    </div>
+                    <div id="assistance" class="mt-3">
                         <p class="mb-0">{{ __('frontend.motor.add_ons_page.body_type_modal.need_assisstance') }}</p>
                         <span>
                             <p class="mb-0">{{ __('frontend.motor.add_ons_page.body_type_modal.contact_us') }}</p>
@@ -761,6 +769,7 @@
             id_type: motor.policy_holder.id_type,
             postcode: motor.postcode,
             body_type: $('#body-type').val(),
+            delivery: $('#roadtax-collection').val() === 'delivery'
         }).then((res) => {
             console.log('RoadTax', res);
 
