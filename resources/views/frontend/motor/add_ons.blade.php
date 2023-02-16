@@ -446,40 +446,46 @@
 
         $('#add-additional-driver').on('click', () => {
             let count = $('.additional-driver-name').length;
-            let html = `
-                <div class="row info px-md-3 driver-${count}">
-                    <div class="col-4">
-                        <label for="driver-name-${count}" class="form-label">{{ __('frontend.fields.name') }}</label>
-                        <input type="text" id="driver-name-${count}" class="form-control text-uppercase additional-driver-name" />
-                    </div>
-                    <div class="col-4">
-                        <label for="driver-id-number-${count}" class="form-label">{{ __('frontend.fields.id_number') }}</label>
-                        <input type="text" id="driver-id-number-${count}" class="form-control additional-driver-id-number" />
-                    </div>
-                    <div class="col-3">
-                        <label for="driver-relationship-${count}" class="form-label">{{ __('frontend.fields.relationship') }}</label>
-                        <select id="driver-relationship-${count}" class="form-control additional-driver-relationship" data-select>
-                            <option value=""></option>
-                            @foreach ($relationships as $relationship)
-                                <option value="{{ $relationship->id }}">{{ __("frontend.relationships.{$relationship->name}") }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-1 align-self-end">
-                        <button type="button" class="btn btn-danger text-white btn-delete-driver" data-id="${count}">
-                            <i class="fa-solid fa-trash" data-id="${count}"></i>
-                        </button>
-                    </div>
-                </div>`;
+            let blocked = ;
 
-            $(html).insertAfter($('.info').last());
+            if(![10, 12].includes(motor.product_id) || ([10, 12].includes(motor.product_id) && count > 4)) {
+                let html = `
+                    <div class="row info px-md-3 driver-${count}">
+                        <div class="col-4">
+                            <label for="driver-name-${count}" class="form-label">{{ __('frontend.fields.name') }}</label>
+                            <input type="text" id="driver-name-${count}" class="form-control text-uppercase additional-driver-name" />
+                        </div>
+                        <div class="col-4">
+                            <label for="driver-id-number-${count}" class="form-label">{{ __('frontend.fields.id_number') }}</label>
+                            <input type="text" id="driver-id-number-${count}" class="form-control additional-driver-id-number" />
+                        </div>
+                        <div class="col-3">
+                            <label for="driver-relationship-${count}" class="form-label">{{ __('frontend.fields.relationship') }}</label>
+                            <select id="driver-relationship-${count}" class="form-control additional-driver-relationship" data-select>
+                                <option value=""></option>
+                                @foreach ($relationships as $relationship)
+                                    <option value="{{ $relationship->id }}">{{ __("frontend.relationships.{$relationship->name}") }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-1 align-self-end">
+                            <button type="button" class="btn btn-danger text-white btn-delete-driver" data-id="${count}">
+                                <i class="fa-solid fa-trash" data-id="${count}"></i>
+                            </button>
+                        </div>
+                    </div>`;
+    
+                $(html).insertAfter($('.info').last());
+    
+                $('.additional-driver-relationship').select2({
+                    width: '100%',
+                    theme: 'bootstrap-5'
+                }).on('select2:select', function () {
+                    $(this).parsley().validate();
+                });
+            } else {
 
-            $('.additional-driver-relationship').select2({
-                width: '100%',
-                theme: 'bootstrap-5'
-            }).on('select2:select', function () {
-                $(this).parsley().validate();
-            });
+            }
         });
 
         $('#btn-continue-modal').on('click', () => {
