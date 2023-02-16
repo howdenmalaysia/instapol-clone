@@ -814,7 +814,7 @@ class AIG implements InsurerLibraryInterface
         }
         // Format Extra Cover Code
         $formatted_extra_cover = [];
-        if(isset($input->input->extra_cover)) {
+        if(isset($input->input->extra_cover) && ! empty($input->input->extra_cover)) {
             foreach ($input->input->extra_cover as $extra_cover) {
                 $extra_cover_code = $extra_cover->extra_cover_code;
                 $extra_cover->extra_cover_description = $extra_cover->extra_cover_description;
@@ -825,23 +825,8 @@ class AIG implements InsurerLibraryInterface
                     $sum_insured_amount = $extra_cover->sum_insured;
                 }
                 else{
-                    if($plan_type == 'Plan A' && is_numeric($plan_type) == false){
-                        $extra_cover_code = $extra_cover_code . 'A';
-                    }
-                    else if($plan_type == 'Plan B' && is_numeric($plan_type) == false){
-                        $extra_cover_code = $extra_cover_code . 'B';
-                    }
-                    else if($plan_type == 'Plan C' && is_numeric($plan_type) == false){
-                        $extra_cover_code = $extra_cover_code . 'C';
-                    }
-                    else if($plan_type == 'Supreme' && is_numeric($plan_type) == false){
-                        $extra_cover_code = '21';
-                    }
-                    else if($plan_type == 'Saver' && is_numeric($plan_type) == false){
-                        $extra_cover_code = '22';
-                    }
-                    else if($plan_type == 'Starter' && is_numeric($plan_type) == false){
-                        $extra_cover_code = '23';
+                    if(! empty($plan_type)){
+                        $extra_cover_code = $this->plan_type_coverCode($plan_type, $extra_cover_code);
                     }
                 }
                 array_push($formatted_extra_cover, (object) [
@@ -1132,23 +1117,8 @@ class AIG implements InsurerLibraryInterface
                     $sum_insured_amount = $extra_cover->sum_insured;
                 }
                 else{
-                    if($plan_type == 'Plan A' && is_numeric($plan_type) == false){
-                        $extra_cover_code = $extra_cover_code . 'A';
-                    }
-                    else if($plan_type == 'Plan B' && is_numeric($plan_type) == false){
-                        $extra_cover_code = $extra_cover_code . 'B';
-                    }
-                    else if($plan_type == 'Plan C' && is_numeric($plan_type) == false){
-                        $extra_cover_code = $extra_cover_code . 'C';
-                    }
-                    else if($plan_type == 'Supreme' && is_numeric($plan_type) == false){
-                        $extra_cover_code = '21';
-                    }
-                    else if($plan_type == 'Saver' && is_numeric($plan_type) == false){
-                        $extra_cover_code = '22';
-                    }
-                    else if($plan_type == 'Starter' && is_numeric($plan_type) == false){
-                        $extra_cover_code = '23';
+                    if(! empty($plan_type)){
+                        $extra_cover_code = $this->plan_type_coverCode($plan_type, $extra_cover_code);
                     }
                 }
                 array_push($formatted_extra_cover, (object) [
@@ -1378,23 +1348,8 @@ class AIG implements InsurerLibraryInterface
                     $sum_insured_amount = $extra_cover->sum_insured;
                 }
                 else{
-                    if($plan_type == 'Plan A' && is_numeric($plan_type) == false){
-                        $extra_cover_code = $extra_cover_code . 'A';
-                    }
-                    else if($plan_type == 'Plan B' && is_numeric($plan_type) == false){
-                        $extra_cover_code = $extra_cover_code . 'B';
-                    }
-                    else if($plan_type == 'Plan C' && is_numeric($plan_type) == false){
-                        $extra_cover_code = $extra_cover_code . 'C';
-                    }
-                    else if($plan_type == 'Supreme' && is_numeric($plan_type) == false){
-                        $extra_cover_code = '21';
-                    }
-                    else if($plan_type == 'Saver' && is_numeric($plan_type) == false){
-                        $extra_cover_code = '22';
-                    }
-                    else if($plan_type == 'Starter' && is_numeric($plan_type) == false){
-                        $extra_cover_code = '23';
+                    if(! empty($plan_type)){
+                        $extra_cover_code = $this->plan_type_coverCode($plan_type, $extra_cover_code);
                     }
                 }
                 array_push($formatted_extra_cover, (object) [
@@ -1818,6 +1773,40 @@ class AIG implements InsurerLibraryInterface
         return new ResponseData([
             'response' => $result_data,
         ]);
+    }
+
+    private function plan_type_coverCode($plan_type, $coverCode = null) : string
+    {
+        $cover_code = '';
+
+        switch (strtolower($plan_type)) {
+            case 'plan a': {
+                $cover_code = $coverCode . 'A';
+                break;
+            }
+            case 'plan b': {
+                $cover_code = $coverCode . 'B';
+                break;
+            }
+            case 'plan c': {
+                $cover_code = $coverCode . 'C';
+                break;
+            }
+            case 'supreme': {
+                $cover_code = '21';
+                break;
+            }
+            case 'saver': {
+                $cover_code = '22';
+                break;
+            }
+            case 'starter': {
+                $cover_code = '23';
+                break;
+            }
+        }
+
+        return $cover_code;
     }
 
     private function getStateCode($state) : string
