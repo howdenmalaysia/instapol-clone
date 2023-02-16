@@ -16,9 +16,6 @@ class RoadtaxResponse extends DataTransferObject
     public $eservice_fee;
 
     /** @var float */
-    public $delivery_fee;
-
-    /** @var float */
     public $sst;
 
     /** @var float */
