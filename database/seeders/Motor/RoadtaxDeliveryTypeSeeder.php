@@ -17,23 +17,23 @@ class RoadtaxDeliveryTypeSeeder extends Seeder
         $types = [
             [
                 'description' => 'West Malaysia',
-                'amount' => 10.00,
-                'processing_fee' => 4.00,
+                'amount' => 8.00,
+                'processing_fee' => 2.75,
             ],
             [
                 'description' => 'East Malaysia',
-                'amount' => 15.00,
-                'processing_fee' => 9.00,
+                'amount' => 10.00,
+                'processing_fee' => 2.75,
             ],
             [
                 'description' => 'Klang Valley',
-                'amount' => 0.00,
-                'processing_fee' => 9.28,
+                'amount' => 6.00,
+                'processing_fee' => 2.75,
             ],
             [
                 'description' => 'Others',
-                'amount' => 0.00,
-                'processing_fee' => 11.40,
+                'amount' => 10.00,
+                'processing_fee' => 2.75,
             ]
         ];
 
