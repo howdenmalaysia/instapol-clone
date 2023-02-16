@@ -821,6 +821,7 @@ return [
             'eservice_fee' => 'eService Fee',
             'delivery_fee' => 'Delivery Fee',
             'service_tax' => 'Service Tax',
+            'collection_method' => 'Collection Method',
             'delivery' => 'Delivery',
             'myjpj' => 'MyJPJ App',
             'roadtax_notes' => 'Before transacting using this method, you MUST downoad and register your MyJPJ application. Your ELMM / Digital Driving License will be available on your MyJPJ applicationn within 24 hours. Download the MyJPJ App from the Apple App Store or Google Play Store.',

@@ -282,7 +282,7 @@
                         </div>
                     </div>
                     <div class="border-bottom py-3">
-                        <label for="roadtax-collection"></label>
+                        <label for="roadtax-collection">{{ __('frontend.motor.add_ons_page.collection_method') }}</label>
                         <select id="roadtax-collection" class="form-control" data-select required>
                             <option value="no-delivery" selected>{{ __('frontend.motor.add_ons_page.myjpj') }}</option>
                             <option value="delivery">{{ __('frontend.motor.add_ons_page.delivery') }}</option>
