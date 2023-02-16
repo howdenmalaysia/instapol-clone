@@ -628,6 +628,11 @@ class MotorAPIController extends Controller implements MotorAPIInterface
                 $delivery_fee = RoadtaxDeliveryType::where('description', RoadtaxDeliveryType::OTHERS)->first();
             }
         }
+        
+        // Collection Method - MyJPJ App
+        if(!$request->delivery) {
+            $delivery_fee->amount = 0;
+        }
 
         // 4. Calculation
         $roadtax_price = formatNumber($roadtax->base_rate);
@@ -637,15 +642,16 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             $roadtax_price += formatNumber($additional_engine_capacity) * formatNumber($roadtax->progressive_rate);
         }
 
+        $delivery = formatNumber($delivery_fee->processing_fee) + formatNumber($delivery_fee->amount);
+        $delivery += formatNumber($delivery * 0.06);
         $e_service_fee = (formatNumber($roadtax_price) + formatNumber($delivery_fee->processing_fee)) * 0.02;
         $sst = $e_service_fee * 0.06;
-        $total = formatNumber($roadtax_price) + formatNumber($e_service_fee) + formatNumber($delivery_fee) + formatNumber($sst) + formatNumber($delivery_fee->processing_fee);
+        $total = formatNumber($roadtax_price) + formatNumber($e_service_fee) + formatNumber($delivery) + formatNumber($sst);
 
         $response = new RoadtaxResponse([
             'roadtax_price' => formatNumber($roadtax_price),
-            'myeg_fee' => formatNumber($delivery_fee->processing_fee),
+            'myeg_fee' => formatNumber($delivery),
             'eservice_fee' => formatNumber($e_service_fee),
-            'delivery_fee' => formatNumber($delivery_fee),
             'sst' => formatNumber($sst),
             'total' => formatNumber($total)
         ]);
