@@ -162,42 +162,21 @@ class Allianz implements InsurerLibraryInterface
     }
 
     public function checkUBB(object $input) : object
-    {  
-        $postcode_details = $this->postalCode($input->postcode);
-        $get_vehicle_details = (object)[
-            'vehicle_number' => $input->vehicle_number,
-            'id_type' => $input->id_type,
-            'id_number' => $input->id_number,
-            'postcode' => $postcode_details->Postcode,
-        ];
-        $vix = $this->vehicleDetails($get_vehicle_details);
-        $get_avvariant = (object)[
-            'region' => $postcode_details->Region,
-            'makeCode' => $vix->response->avMakeCode,
-            'modelCode' => $vix->response->model,
-            'makeYear' => $vix->response->manufacture_year, 
-        ];
-        $avvariant = $this->avVariant($get_avvariant)->response;
-        $get_quotation = (object)[
-            'input'=>$input,
-            'vix'=>$vix,
-            'avvariant'=>$avvariant,
-        ];
-        $quotation = $this->getQuotation($get_quotation)->response;
+    {
         $text = '{
-            "ReferenceNo": "'.$quotation->contract->contractNumber.'",
+            "ReferenceNo": "'.$input->contractNumber.'",
             "ProductCat": "MT",
             "SourceSystem": "PARTNER_ID",
             "ClaimsExp": "0",
             "ReconInd": "N",
-            "ExcessWaiveInd": "'.$quotation->contract->excessWaiveInd.'",
+            "ExcessWaiveInd": "'.$input->excessWaiveInd.'",
             "CheckUbbInd": 1,
             "Policy": {
-                "PolicyEffectiveDate": "'.Carbon::parse($vix->response->inception_date)->format('Y-m-d').'",
-                "PolicyExpiryDate": "'.Carbon::parse($vix->response->expiry_date)->format('Y-m-d').'",
+                "PolicyEffectiveDate": "'.$input->inception_date.'",
+                "PolicyExpiryDate": "'.$input->expiry_date.'",
                 "Client": {
                     "IdentificationNumber": "'.$input->id_number.'",
-                    "IdType": "NRIC",
+                    "IdType": "'.$input->id_type.'",
                     "Age": "'.$input->age.'"
                 },
                 "RiskList": [{
@@ -207,24 +186,24 @@ class Allianz implements InsurerLibraryInterface
                         "IdType": "NRIC"
                     },
                     "Vehicle": {
-                        "AvCode": "'.$avvariant->VariantGrp[0]->AvCode.'",
-                        "Capacity": "'.$vix->response->engine_capacity.'",
-                        "MakeCode": "'.$vix->response->make_code.'",
-                        "Model": "'.$vix->response->model.'",
+                        "AvCode": "'.$input->AvCode.'",
+                        "Capacity": "'.$input->Capacity.'",
+                        "MakeCode": "'.$input->MakeCode.'",
+                        "Model": "'.$input->Model.'",
                         "PiamModel": "28",
-                        "Seat": '.$vix->response->seating_capacity.',
-                        "VehicleNo": "'.$vix->response->vehicle_number.'",
-                        "YearOfManufacture": "'.$vix->response->manufacture_year.'",
+                        "Seat": '.$input->Seat.',
+                        "VehicleNo": "'.$input->VehicleNo.'",
+                        "YearOfManufacture": "'.$input->YearOfManufacture.'",
                         "NamedDriverList": [{
                             "Age": "'.$input->age.'",
                             "IdentificationNumber": "'.$input->id_number.'"
                         }],
-                        "HighPerformanceInd": "'.$quotation->contract->highPerformanceInd.'",
-                        "HrtvInd": "'.$quotation->contract->hrtvInd.'"
+                        "HighPerformanceInd": "'.$input->HighPerformanceInd.'",
+                        "HrtvInd": "'.$input->HrtvInd.'"
                     },
                     "CoverList": [{
                         "CoverPremium": {
-                            "SumInsured": "'.$vix->response->sum_insured.'"
+                            "SumInsured": "'.$input->SumInsured.'"
                         }
                     }]
                 }]
@@ -235,17 +214,18 @@ class Allianz implements InsurerLibraryInterface
         if(!$result->status) {
             return $this->abort($result->response);
         }
-        if(count($result->response->ReferRiskList) > 0){
-            return new ResponseData([
-                'status' => $result->status,
-                'response' => $result->response// customer is eligible to purchase the insurance and can proceed with the subsequent quotation
-            ]);
-        }
         else{
-            return new ResponseData([
-                'status' => $result->status,
-                'response' => $result->response
-            ]);
+            if(empty($result->response->ReferRiskList)){
+                return new ResponseData([
+                    'status' => $result->status,
+                    'response' => $result->response
+                ]);
+            }
+            else{
+                if(!$result->status) {
+                    return $this->abort(json_encode($result->response->ReferRiskList));
+                }
+            }
         }
     }
 
@@ -1123,6 +1103,7 @@ class Allianz implements InsurerLibraryInterface
             }
             $dob = strval($year) . "-" . $dobs[1] . "-" . $dobs[2];
             $id_type = 'NRIC';
+            $age = getAgeFromIC($qParams->input->id_number);
 		}
 		else if($qParams->input->id_type == '4'){
             $id_type = 'OLD_IC';
@@ -1188,6 +1169,29 @@ class Allianz implements InsurerLibraryInterface
         if(!$result->status) {
             return $this->abort($result->response);
         }
+        //check UBB
+        $ubb = (object)[
+            'contractNumber' => $contractNumber,
+            'excessWaiveInd' => $result->response->contract->excessWaiveInd,
+            'contractNumber' => $contractNumber,
+            'inception_date' => Carbon::parse($qParams->vix->inception_date)->format('Y-m-d'),
+            'expiry_date' => Carbon::parse($qParams->vix->expiry_date)->format('Y-m-d'),
+            'id_number' => $qParams->input->id_number,
+            'id_type' => $id_type,
+            'age' => $age,
+            'AvCode' => $avcode,
+            'Capacity' => $qParams->vix->engine_capacity,
+            'MakeCode' => $qParams->vix->extra_attribute->make_code,
+            'Model' => $qParams->vix->model,
+            'Seat' => $qParams->vix->extra_attribute->seating_capacity,
+            'VehicleNo' => $qParams->input->vehicle_number,
+            'YearOfManufacture' => $qParams->vix->manufacture_year,
+            'HighPerformanceInd' => $result->response->contract->highPerformanceInd,
+            'HrtvInd' => $result->response->contract->hrtvInd,
+            'SumInsured' => $SumInsured,
+        ];
+        $checkUBB = $this->checkUBB($ubb);
+
         return new ResponseData([
             'status' => $result->status,
             'response' => $result->response
