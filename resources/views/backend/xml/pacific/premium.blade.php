@@ -8,16 +8,18 @@
                 <coverage xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $coverage }}</coverage>
                 <effDate xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $effective_date }}</effDate>
                 <expDate xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $expiry_date }}</expDate>
-                @if (!empty($extra_cover))
-                    <extraCoverage xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">
+                <extraCoverage xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">
+                    @if (!empty($extra_cover))
                         @foreach ($extra_cover as $_extra_cover)
                                 <extraCoverageReq>
                                     <coverageId>{{ $_extra_cover->extra_cover_code }}</coverageId>
                                     <sumInsured>{{ $_extra_cover->sum_insured }}</sumInsured>
                                 </extraCoverageReq>
                         @endforeach
+                    @else
+                        <!-- Optional -->
+                    @endif
                     </extraCoverage>
-                @endif
                 <gender xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $gender }}</gender>
                 <insuredAge xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $age }}</insuredAge>
                 <maritalStatus xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $marital_status }}</maritalStatus>
