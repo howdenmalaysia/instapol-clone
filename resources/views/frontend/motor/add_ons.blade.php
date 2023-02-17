@@ -665,7 +665,7 @@
 
         $('#roadtax-collection').on('change', (e) => {
             if($(e.target).val() == 'delivery') {
-                $('#roadtax-collection-message').text("{!! __('frontend.motor.add_ons_page.tooltip.roadtax') !!}");
+                $('#roadtax-collection-message').html("{!! __('frontend.motor.add_ons_page.tooltip.roadtax') !!}");
             } else if($(e.target).val() == 'no-delivery') {
                 $('#roadtax-collection-message').text("{{ __('frontend.motor.add_ons_page.roadtax_notes') }}");
             }
