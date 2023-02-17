@@ -452,7 +452,7 @@
         $('#add-additional-driver').on('click', () => {
             let count = $('.additional-driver-name').length;
 
-            if(![10, 12].includes(motor.product_id) || ([10, 12].includes(motor.product_id) && count <= 2)) {
+            if(![10, 12].includes(motor.product_id) || ([10, 12].includes(motor.product_id) && count <= 8)) {
                 let html = `
                     <div class="row info px-md-3 driver-${count}">
                         <div class="col-4">
@@ -675,7 +675,7 @@
 
         $('#roadtax-collection').on('change', (e) => {
             if($(e.target).val() == 'delivery') {
-                $('#roadtax-collection-message').text("{!! __('frontend.motor.add_ons_page.tooltip.roadtax') !!}");
+                $('#roadtax-collection-message').html("{!! __('frontend.motor.add_ons_page.tooltip.roadtax') !!}");
             } else if($(e.target).val() == 'no-delivery') {
                 $('#roadtax-collection-message').text("{{ __('frontend.motor.add_ons_page.roadtax_notes') }}");
             }
