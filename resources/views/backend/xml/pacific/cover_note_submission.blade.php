@@ -38,8 +38,8 @@
                 <d4p1:EngineNo xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $engine_number }}</d4p1:EngineNo>
                 <d4p1:ExcessAmount xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $premium_details->excess_amount }}</d4p1:ExcessAmount>
                 
-                @if (!empty($extra_coverage))
-                    <d4p1:ExtraCoverage xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">
+                <d4p1:ExtraCoverage xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">
+                    @if (!empty($extra_coverage))
                         @foreach ($extra_coverage as $extra)
                             <extraCoverageSubmissionReq>
                                 <coverageId>{{ $extra->extra_cover_code }}</coverageId>
@@ -49,8 +49,10 @@
                                 @endif
                             </extraCoverageSubmissionReq>
                         @endforeach
-                    </d4p1:ExtraCoverage>
-                @endif
+                    @else
+                        <!-- Optional -->
+                    @endif
+                </d4p1:ExtraCoverage>
 
                 <d4p1:FinanceCompany xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API"></d4p1:FinanceCompany>
                 <d4p1:GSTAmountOnCommission xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API"></d4p1:GSTAmountOnCommission>
