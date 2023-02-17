@@ -488,7 +488,7 @@
                     $(this).parsley().validate();
                 });
             } else {
-                swalAlert("{{ __('frontend.motor.add_ons_page.additional_driver_limit') }}");
+                swalAlert("{{ __('frontend.motor.add_ons_page.additional_driver_limit') }}", null, false, 'warning', "{{ __('frontend.button.close') }}");
             }
         });
 
