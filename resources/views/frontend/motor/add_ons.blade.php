@@ -452,7 +452,7 @@
         $('#add-additional-driver').on('click', () => {
             let count = $('.additional-driver-name').length;
 
-            if(![10, 12].includes(motor.product_id) || ([10, 12].includes(motor.product_id) && count <= 4)) {
+            if(![10, 12].includes(motor.product_id) || ([10, 12].includes(motor.product_id) && count <= 2)) {
                 let html = `
                     <div class="row info px-md-3 driver-${count}">
                         <div class="col-4">
