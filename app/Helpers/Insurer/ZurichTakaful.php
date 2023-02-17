@@ -2554,6 +2554,8 @@ class ZurichTakaful implements InsurerLibraryInterface
             'body' => $xml
         ];
 
+        $result = HttpClient::curl($method, $url, $request_options);
+
         $log = APILogs::create([
             'insurance_company_id' => $this->company_id,
             'method' => $method,
@@ -2562,9 +2564,7 @@ class ZurichTakaful implements InsurerLibraryInterface
             'request_header' => json_encode($request_options['headers']),
             'request' => json_encode($request_options['body']),
         ]);
-
-        $result = HttpClient::curl($method, $url, $request_options);
-
+        
         if($result->status) {
             // Update the API log
             APILogs::find($log->id)

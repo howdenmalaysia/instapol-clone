@@ -2044,6 +2044,9 @@ class AmGeneral implements InsurerLibraryInterface
 		else{
 			$path = "/api/oauth/v2.0/token";
 		}
+		
+		$result = HttpClient::curl('POST', $host, $options);
+
         $log = APILogs::create([
             'insurance_company_id' => $this->company_id,
             'method' => $method,
@@ -2053,8 +2056,6 @@ class AmGeneral implements InsurerLibraryInterface
             'request' => json_encode($options['body']??$options['form_params']),
         ]);
 		
-		$result = HttpClient::curl('POST', $host, $options);
-
         if ($result->status) {
 			// Update the API log
 			APILogs::find($log->id)

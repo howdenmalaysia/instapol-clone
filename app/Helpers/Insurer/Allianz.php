@@ -1473,7 +1473,9 @@ class Allianz implements InsurerLibraryInterface
             $options['body'] = $data;
             $postfield = $options['body'];
         }
-        
+
+        $result = HttpClient::curl($method, $host, $options);
+
         $log = APILogs::create([
             'insurance_company_id' => $this->company_id,
             'method' => $method,
@@ -1482,9 +1484,7 @@ class Allianz implements InsurerLibraryInterface
             'request_header' => json_encode($options['headers']),
             'request' => json_encode($postfield),
         ]);
-
-        $result = HttpClient::curl($method, $host, $options);
-
+        
         // Update the API log
         APILogs::find($log->id)
             ->update([
