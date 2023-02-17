@@ -451,7 +451,6 @@
 
         $('#add-additional-driver').on('click', () => {
             let count = $('.additional-driver-name').length;
-            let blocked = ;
 
             if(![10, 12].includes(motor.product_id) || ([10, 12].includes(motor.product_id) && count > 4)) {
                 let html = `
