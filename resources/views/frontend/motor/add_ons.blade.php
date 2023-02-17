@@ -451,9 +451,8 @@
 
         $('#add-additional-driver').on('click', () => {
             let count = $('.additional-driver-name').length;
-            let blocked = ;
 
-            if(![10, 12].includes(motor.product_id) || ([10, 12].includes(motor.product_id) && count > 4)) {
+            if(![10, 12].includes(motor.product_id) || ([10, 12].includes(motor.product_id) && count <= 2)) {
                 let html = `
                     <div class="row info px-md-3 driver-${count}">
                         <div class="col-4">
@@ -489,7 +488,7 @@
                     $(this).parsley().validate();
                 });
             } else {
-
+                swalAlert("{{ __('frontend.motor.add_ons_page.additional_driver_limit') }}", null, false, 'warning', "{{ __('frontend.button.close') }}");
             }
         });
 
