@@ -209,9 +209,6 @@
                                                         <option value="saloon">{{ __('frontend.motor.add_ons_page.body_type_modal.saloon') }}</option>
                                                         <option value="non-saloon">{{ __('frontend.motor.add_ons_page.body_type_modal.non_saloon') }}</option>
                                                     </select>
-                                                    <span data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="{!! __('frontend.motor.add_ons_page.tooltip.roadtax') !!}">
-                                                        <i class="fa-solid fa-circle-question text-primary fa-15x"></i>
-                                                    </span>
                                                 </div>
                                             </div>
                                         </div>
@@ -287,7 +284,7 @@
                             <option value="no-delivery" selected>{{ __('frontend.motor.add_ons_page.myjpj') }}</option>
                             <option value="delivery">{{ __('frontend.motor.add_ons_page.delivery') }}</option>
                         </select>
-                        <small>{{ __('frontend.motor.add_ons_page.roadtax_notes') }}</small>
+                        <small id="roadtax-collection-message">{{ __('frontend.motor.add_ons_page.roadtax_notes') }}</small>
                     </div>
                     <div id="assistance" class="mt-3">
                         <p class="mb-0">{{ __('frontend.motor.add_ons_page.body_type_modal.need_assisstance') }}</p>
@@ -312,6 +309,9 @@
         gtag('event', 'l_motor_ao', { 'debug_mode': true });
 
         populateDriver();
+
+        // Show Sum Insured Slider by Default
+        $('#sum-insured-tooltip').tooltip('show');
 
         $('#show-more-add-ons').on('click', (e) => {
             let shown = $(e.target).data('shown');
@@ -661,6 +661,14 @@
 
             // Remove in Additional Driver List
             refreshPremium();
+        });
+
+        $('#roadtax-collection').on('change', (e) => {
+            if($(e.target).val() == 'delivery') {
+                $('#roadtax-collection-message').text("{!! __('frontend.motor.add_ons_page.tooltip.roadtax') !!}");
+            } else if($(e.target).val() == 'no-delivery') {
+                $('#roadtax-collection-message').text("{{ __('frontend.motor.add_ons_page.roadtax_notes') }}");
+            }
         });
     });
 
