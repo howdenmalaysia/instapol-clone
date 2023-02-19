@@ -924,6 +924,7 @@ class ZurichTakaful implements InsurerLibraryInterface
                                 'nd_marital_sts' => $adddriver->marital_sts ?? '',
                                 'nd_occupation' => $adddriver->occupation ?? '',
                                 'nd_relationship' => $adddriver->relationship ?? '',
+                                'nd_nationality' => $adddriver->nationality ?? ''
                             ]);
                         }
                         $additional_drv = true;
