@@ -762,7 +762,7 @@ class PacificOrient implements InsurerLibraryInterface
 
         $xml = view('backend.xml.pacific.cover_note_submission')->with($data)->render();
 
-        $result = $this->cURL($path, $xml);
+        $result = $this->cURL($path, $xml, self::SOAP_ACTION_DOMAIN . '/IInsurance/PolicySubmission');
 
         if(!$result->status) {
             return $this->abort($result->response);
