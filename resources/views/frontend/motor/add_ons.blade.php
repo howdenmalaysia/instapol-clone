@@ -311,7 +311,7 @@
         populateDriver();
 
         // Show Sum Insured Slider by Default
-        $('#sum-insured-tooltip').tooltip().show();
+        $('#sum-insured-tooltip').tooltip('show');
 
         $('#show-more-add-ons').on('click', (e) => {
             let shown = $(e.target).data('shown');
