@@ -195,10 +195,14 @@
                 }).then((response) => {
                     console.log(response);
 
-                    if(++responses === products.length) {
-                        swalAlert('An Error Encountered in Retrieving Vehicle Details. Please Contact Howden Specialist.', () => {
-                            window.location = "{{ route('motor.index') }}"
-                        });
+                    if(response.data.variants.length === 0) {
+                        responses++;
+
+                        if(responses === products.length) {
+                            swalAlert('An Error Encountered in Retrieving Vehicle Details. Please Contact Howden Specialist.', () => {
+                                window.location = "{{ route('motor.index') }}"
+                            });
+                        }
                     }
 
                     let singleVariant = response.data.variants.length === 1;
