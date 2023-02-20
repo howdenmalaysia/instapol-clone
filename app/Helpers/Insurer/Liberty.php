@@ -1079,7 +1079,7 @@ class Liberty implements InsurerLibraryInterface
             'vehicle_type_code' => $input->vehicle->extra_attribute->vehicle_type_code,
         ];
 
-        $xml = view('xml.Motor.Liberty.issue_cover_note')->with($data)->render();
+        $xml = view('backend.xml.liberty.cover_note_submission')->with($data)->render();
 
         $result = $this->cURL($path, $xml);
 
