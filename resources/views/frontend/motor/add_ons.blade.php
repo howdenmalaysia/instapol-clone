@@ -311,6 +311,7 @@
         populateDriver();
 
         // Show Sum Insured Slider by Default
+        $('#sum-insured-slider').trigger('input');
         $('#sum-insured-tooltip').tooltip('show');
 
         $('#show-more-add-ons').on('click', (e) => {
