@@ -1002,7 +1002,10 @@ class Liberty implements InsurerLibraryInterface
                     'extra_cover_code' => $extra_cover_code,
                     'extra_cover_description' => $extra_cover->extra_cover_description,
                     'sum_insured' => $extra_cover->sum_insured ?? 0,
-                    'unit' => $extra_cover->unit ?? 0
+                    'unit' => $extra_cover->unit ?? 0,
+                    'premium' => $extra_cover->premium,
+                    'cart_amount' => $extra_cover->cart_amount ?? 0,
+                    'cart_day' => $extra_cover->cart_day ?? 0,
                 ]));
             }
         }
