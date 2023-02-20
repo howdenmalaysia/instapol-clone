@@ -32,7 +32,7 @@
                                     @if (session('motor')->vehicle->min_sum_insured !== session('motor')->vehicle->max_sum_insured)
                                         <label class="float-left text-primary fw-bold">{{ 'RM ' . number_format(session('motor')->vehicle->min_sum_insured) }}</label>
                                         <label class="float-end text-primary fw-bold">{{ 'RM ' . number_format(session('motor')->vehicle->max_sum_insured) }}</label>
-                                        <div id="sum-insured-tooltip" class="range" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ 'RM ' . number_format(session('motor')->vehicle->sum_insured) }}">
+                                        <div id="sum-insured-tooltip" class="range" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-toggle="manual" title="{{ 'RM ' . number_format(session('motor')->vehicle->sum_insured) }}">
                                             <input type="range" id="sum-insured-slider" class="form-range" min="{{ session('motor')->vehicle->min_sum_insured }}" max="{{ session('motor')->vehicle->max_sum_insured }}" value="{{ session('motor')->vehicle->sum_insured }}" step="1000">
                                         </div>
                                     @else
@@ -311,7 +311,7 @@
         populateDriver();
 
         // Show Sum Insured Slider by Default
-        $('#sum-insured-tooltip').tooltip('show');
+        $('#sum-insured-tooltip').tooltip().show();
 
         $('#show-more-add-ons').on('click', (e) => {
             let shown = $(e.target).data('shown');
