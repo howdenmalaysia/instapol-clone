@@ -333,7 +333,7 @@
                     <x-slot name="body">
                         <p>{{ str_replace(':insured_name', $policy_holder->name, __('frontend.motor.payment_summary_page.confirm_modal.line_1')) }}</p>
                         <p>{{ '- ' . __('frontend.motor.payment_summary_page.confirm_modal.line_2') }}</p>
-                        <p>{!! '- ' . str_replace(':pds', '', __('frontend.motor.payment_summary_page.confirm_modal.line_3', ['pds' => "<a href=" . $product->product_disclosure . " target=\"_blank\">Product Disclosure Sheet</a>"])) !!}</p>
+                        <p>{!! '- ' . str_replace(':pds', '', __('frontend.motor.payment_summary_page.confirm_modal.line_3', ['pds' => "<a href=" . $product->insurance_company->product_disclosure . " target=\"_blank\">Product Disclosure Sheet</a>"])) !!}</p>
                         <div id="tnc-radio" class="text-center my-4">
                             <div class="form-check form-check-inline">
                                 <input type="radio" id="agree" class="form-check-input" value="agree">
