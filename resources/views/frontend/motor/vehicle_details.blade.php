@@ -179,6 +179,7 @@
             const controller = new AbortController();
             let selectedVariant = null;
             let errorMessage = '';
+            let responses = 0;
 
             products.forEach((product_id, key) => {
                 instapol.post("{{ route('motor.api.vehicle-details') }}", {
@@ -193,6 +194,12 @@
                     signal: controller.signal
                 }).then((response) => {
                     console.log(response);
+
+                    if(++responses === products.length) {
+                        swalAlert('An Error Encountered in Retrieving Vehicle Details. Please Contact Howden Specialist.', () => {
+                            window.location = "{{ route('motor.index') }}"
+                        });
+                    }
 
                     let singleVariant = response.data.variants.length === 1;
 
@@ -236,6 +243,12 @@
                     if(shouldStop) {
                         controller.abort();
                         swalAlert(error.response.data.response, () => {
+                            window.location = "{{ route('motor.index') }}"
+                        });
+                    }
+
+                    if(++responses === products.length) {
+                        swalAlert('An Error Encountered in Retrieving Vehicle Details. Please Contact Howden Specialist.', () => {
                             window.location = "{{ route('motor.index') }}"
                         });
                     }
