@@ -273,11 +273,13 @@
                     $(e.target).addClass('loadingButton');
 
                     // Set User Data to GA
-                    gtag('set', 'user_data', {
-                        'email': $('#email-address').val(),
-                        'phone_number': '+6' + $('#phone-number').val().replace('-', ''),
-                        'address': {
-                            'postal_code': $('#postcode').val(),
+                    gtag('set', {
+                        'user_data': {
+                            'email_address': $('#email-address').val(),
+                            'phone_number': '+6' + $('#phone-number').val().replace('-', ''),
+                            'address': {
+                                'postal_code': $('#postcode').val(),
+                            }
                         }
                     });
 
