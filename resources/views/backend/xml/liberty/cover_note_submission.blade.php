@@ -4,18 +4,18 @@
         <issueCoverNoteReq xmlns="http://servlet">
             <actprem xmlns="urn:IssueCoverNote">{{ $act_premium }}</actprem>
             @if (count($additional_driver) > 0)
-            <adddrv xmlns="urn:IssueCoverNote">
-                @foreach ($additional_driver as $index => $driver)
-                    <item xmlns="{{ $domain . $path }}">
-                        <drvage xmlns="urn:IssueCoverNote">{{ $driver->age }}</drvage>
-                        <drvdob xmlns="urn:IssueCoverNote">{{ $driver->date_of_birth }}</drvdob>
-                        <drvrel xmlns="urn:IssueCoverNote">{{ $driver->relationship }}</drvrel>
-                        <icnumber xmlns="urn:IssueCoverNote">{{ $driver->id_number }}</icnumber>
-                        <index xmlns="urn:IssueCoverNote">{{ $index + 1}}</index>
-                        <name xmlns="urn:IssueCoverNote">{{ $driver->name }}</name>
-                    </item>
-                @endforeach
-            </adddrv>
+                <adddrv xmlns="urn:IssueCoverNote">
+                    @foreach ($additional_driver as $index => $driver)
+                        <item xmlns="{{ $domain . $path }}">
+                            <drvage xmlns="urn:IssueCoverNote">{{ $driver->age }}</drvage>
+                            <drvdob xmlns="urn:IssueCoverNote">{{ $driver->date_of_birth }}</drvdob>
+                            <drvrel xmlns="urn:IssueCoverNote">{{ $driver->relationship }}</drvrel>
+                            <icnumber xmlns="urn:IssueCoverNote">{{ $driver->id_number }}</icnumber>
+                            <index xmlns="urn:IssueCoverNote">{{ $index + 1 }}</index>
+                            <name xmlns="urn:IssueCoverNote">{{ $driver->name }}</name>
+                        </item>
+                    @endforeach
+                </adddrv>
             @endif
             @if (count($extra_benefit) > 0)
                 <extracov xmlns="urn:IssueCoverNote">
