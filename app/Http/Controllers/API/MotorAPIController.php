@@ -894,7 +894,13 @@ public function callback(Request $request)
             ->where('contract_number', $request->ContractNumber)
             ->where('insurance_status', Insurance::STATUS_PAYMENT_ACCEPTED)
             ->first();
-        
+        if(empty($insurance)){
+            $response = (object)[
+                'Status' => "NOK",
+                'Mesage' => "ContractNumber Not Found"
+            ];
+            return $response;
+        }
         // Get Product Details
         $product = $this->getProduct($insurance->product_id);
 
