@@ -261,7 +261,7 @@
                         </div>
                         <div class="row">
                             <div class="col-12">
-                                <small>{{ __('frontend.motor.add_ons_page.body_type_modal.saloon_description') }}</small>
+                                <font>{{ __('frontend.motor.add_ons_page.body_type_modal.saloon_description') }}</font>
                             </div>
                         </div>
                     </div>
@@ -274,7 +274,7 @@
                         </div>
                         <div class="row">
                             <div class="col-12">
-                                <small>{{ __('frontend.motor.add_ons_page.body_type_modal.non_saloon_description') }}</small>
+                                <font>{{ __('frontend.motor.add_ons_page.body_type_modal.non_saloon_description') }}</font>
                             </div>
                         </div>
                     </div>

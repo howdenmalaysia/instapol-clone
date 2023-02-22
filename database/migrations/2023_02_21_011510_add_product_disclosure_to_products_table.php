@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddProductDisclosureToInsuranceCompaniesTable extends Migration
+class AddProductDisclosureToProductsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddProductDisclosureToInsuranceCompaniesTable extends Migration
      */
     public function up()
     {
-        Schema::table('insurance_companies', function (Blueprint $table) {
-            $table->string('product_disclosure')->after('coming_soon');
+        Schema::table('products', function (Blueprint $table) {
+            $table->string('product_disclosure')->after('name');
         });
     }
 
@@ -25,7 +25,7 @@ class AddProductDisclosureToInsuranceCompaniesTable extends Migration
      */
     public function down()
     {
-        Schema::table('insurance_companies', function (Blueprint $table) {
+        Schema::table('products', function (Blueprint $table) {
             $table->dropColumn('product_disclosure');
         });
     }

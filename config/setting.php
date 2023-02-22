@@ -20,7 +20,7 @@ return [
         'travel' => env('TRAVEL_URL'),
         'doc_pro' => env('DOC_PRO_URL'),
         'landlord' => env('LANDLORD_URL'),
-
+        'miea' => env('MIEA_URL'),
 
     ],
     'id_type' => [
