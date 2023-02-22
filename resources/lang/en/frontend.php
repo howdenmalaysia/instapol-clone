@@ -807,9 +807,9 @@ return [
         ],
         'add_ons_page' => [
             'add_ons' => 'Add Ons',
-            'sum_insured' => 'Sum Insured',
+            'sum_insured' => 'Sum Insured / Sum Covered',
             'fixed_value' => 'Fixed Value',
-            'sum_insured_amount' => 'Sum Insured Amount',
+            'sum_insured_amount' => 'Sum Insured / Sum Covered Amount',
             'additional_coverage' => 'Additional Coverage',
             'additional_driver' => 'Additional Driver(s)',
             'add_driver' => 'Add Driver',
@@ -855,7 +855,7 @@ return [
             ]
         ],
         'policy_holder_page' => [
-            'policy_holder_details' => 'Policy Holder Details',
+            'policy_holder_details' => 'Policy Holder / Certificate Holder Details',
             'edit_personal_detail' => 'Edit Personal Detail',
             'use_same_address' => 'Use address above for delivery purpose',
             'recipient_tooltip' => 'The name of the person who is receiving road tax disc delivery',
@@ -883,8 +883,8 @@ return [
         'payment_summary_page' => [
             'payment' => 'Payment',
             'summary' => 'Summary',
-            'policy_holder' => 'Policy Holder',
-            'insurer' => 'Insurer',
+            'policy_holder' => 'Policy Holder / Certificate Holder',
+            'insurer' => 'Insurer / Takaful Operator',
             'product' => 'Product',
             'coverage_date' => 'Coverage Date',
             'sum_insured' => 'Sum Insured / Sum Covered',
@@ -977,7 +977,7 @@ return [
         'total_payable' => 'Total Payable',
         'promo' => 'Promo',
         'tooltip' => [
-            'basic_premium' => 'Basic Premium',
+            'basic_premium' => 'Basic Premium / Contribution',
             'ncd' => 'No Claim Discount',
             'additional_coverage' => 'Total Price of Selected Add Ons',
             'gross_premium' => 'Gross Premium'
