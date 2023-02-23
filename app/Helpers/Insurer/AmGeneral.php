@@ -1422,6 +1422,17 @@ class AmGeneral implements InsurerLibraryInterface
 			if (empty($decrypted)) {
                 $message = !empty($response->response) ? $response->response : __('api.empty_response', ['company' => $this->company_name]);
 
+				$log = APILogs::create([
+					'insurance_company_id' => $this->company_id,
+					'method' => "Decrypted Response Data",
+					'domain' => $this->host.':'.$this->port,
+					'path' => "/api/KEC/v1.0/FullQuotation/GetProductList",
+					'request_header' => "",
+					'request' => "",
+					'response_header' => "",
+					'response' => json_encode($message),
+				]);
+
                 return $this->abort($message);
             }
 
