@@ -129,7 +129,7 @@
                 </div>
                 <div class="row mt-3">
                     <div class="col-12 text-center">
-                    <a href="">{{ __('frontend.motor.vehicle_details.need_assistance') }}</a>
+                    <button id="assistance" class="btn btn-link">{{ __('frontend.motor.vehicle_details.need_assistance') }}</button>
                     </div>
                 </div>
                 <div class="hidden">
@@ -153,17 +153,17 @@
             
             fetchData();
 
-            $('#variants').on('change', function() {
+            $('#variants').on('change', () => {
                 if($(this).val() == '') {
                     $('#variant-popover').popover('show');
                 }
             });
 
-            $('#variants').on('select2:open', function() {
+            $('#variants').on('select2:open', () => {
                 $('#variant-popover').popover('hide');
             });
 
-            $('#btn-continue').on('click', function() {
+            $('#btn-continue').on('click', () => {
                 let form = $('#vehicle-details-form');
 
                 if(form.parsley().isValid()) {
@@ -171,6 +171,11 @@
                     form.submit();
                 }
             });
+
+            $('#assistance').on('click', (e) => {
+                e.preventDefault();
+                showLiveChat();
+            })
         });
 
         function fetchData() {
@@ -249,13 +254,14 @@
                         swalAlert(error.response.data.response, () => {
                             window.location = "{{ route('motor.index') }}"
                         });
+                    } else {
+                        if(++responses === products.length) {
+                            swalAlert('An Error Encountered in Retrieving Vehicle Details. Please Contact Howden Specialist.', () => {
+                                window.location = "{{ route('motor.index') }}"
+                            });
+                        }
                     }
 
-                    if(++responses === products.length) {
-                        swalAlert('An Error Encountered in Retrieving Vehicle Details. Please Contact Howden Specialist.', () => {
-                            window.location = "{{ route('motor.index') }}"
-                        });
-                    }
                 });
             });
         }

@@ -242,3 +242,18 @@ if(!function_exists('getGatewayCharges')) {
         return $gateway_charges;
     }
 }
+
+if(!function_exists('roundPricing')) {
+    function roundPricing(float $price) {
+        $last = (int) substr(explode('.', $price)[1], -1, 1);
+        $rounded = 0;
+
+        if($last < 3 || $last >= 8) {
+            $rounded = round($price, 1);
+        } else if($last >= 3 && $last < 8) {
+            $rounded = round($price / .05) * .05;
+        }
+
+        return $rounded;
+    }
+}

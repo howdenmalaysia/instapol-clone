@@ -369,7 +369,7 @@ class PacificOrient implements InsurerLibraryInterface
             'stamp_duty' => formatNumber($premium->response->stamp_duty),
             'tariff_premium' => formatNumber($premium->response->tariff_premium),
             'total_benefit_amount' => formatNumber($total_benefit_amount),
-            'total_payable' => formatNumber($premium->response->total_premium),
+            'total_payable' => formatNumber(roundPricing($premium->response->total_premium)),
             'request_id' => $premium->response->request_id,
             'named_drivers_needed' => $input->id_type === config('setting.id_type.nric_no'),
         ]);
@@ -386,7 +386,7 @@ class PacificOrient implements InsurerLibraryInterface
             $response->total_benefit_amount = array_filter($input->extra_cover, function ($extra_cover) {
                 return $extra_cover->extra_cover_code == '06';
             })[0]->premium ?? 0;
-            $response->total_payable = $total_payable;
+            $response->total_payable = roundPricing($total_payable);
 
             $response->vehicle = $vehicle;
         }
@@ -702,7 +702,7 @@ class PacificOrient implements InsurerLibraryInterface
             }
         }
 
-        $order = ['72', '04', '25', '89', '111'];
+        $order = ['05', '04', '25', '89', '72', '111'];
         usort($formatted_extra_cover, function($a, $b) use($order) {
             $pos_a = array_search($a->extra_cover_code, $order);
             $pos_b = array_search($b->extra_cover_code, $order);
@@ -711,6 +711,7 @@ class PacificOrient implements InsurerLibraryInterface
         });
 
         $data = [
+            'additional_driver' => $input->additional_driver,
             'address_one' => $input->insurance->address->address_one,
             'address_two' => $input->insurance->address->address_two,
             'age' => $input->age,
@@ -741,7 +742,6 @@ class PacificOrient implements InsurerLibraryInterface
             'ncd_amount' => $input->insurance_motor->ncd_amount,
             'ncd_percentage' => $input->vehicle->ncd_percentage,
             'nvic' => $input->vehicle->nvic,
-            'named_driver' => $input->additional_driver,
             'occupation' => self::OCCUPATION,
             'permitted_drivers' => self::PERMITTED_DRIVERS,
             'phone_number' => $input->insurance->holder->phone_code . $input->insurance->holder->phone_number,

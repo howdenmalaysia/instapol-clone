@@ -342,6 +342,8 @@ body {
     }
 
     .btn:focus {
-        background-color: $primary;
+        &:not(.btn-link) {
+            background-color: $primary;
+        }
     }
 }
