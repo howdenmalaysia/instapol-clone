@@ -970,7 +970,7 @@ class Zurich implements InsurerLibraryInterface
         ]); 
     }
 
-    public function issue_cover_note(object $input) : object
+    public function IssueCoverNote(object $input) : object
     {
         $participant_code = $this->participant_code;
         $transaction_ref_no = $input->transaction_ref_no;
@@ -1000,11 +1000,16 @@ class Zurich implements InsurerLibraryInterface
         }     
         $result_data = $result->response->IssueCoverNoteResponse->XmlResult;
         $xml_data = simplexml_load_string($result_data);
-        $response['CoverNoteInfo']['CoverNoteNo'] = $xml_data->CoverNoteInfo->CoverNoteNo ?? '';
-        $response['CoverNoteInfo']['NCDMsg'] = $xml_data->CoverNoteInfo->NCDMsg;
+        
+        $response = (object) [
+            'CoverNoteNo' => (string) $xml_data->CoverNoteInfo->CoverNoteNo,
+            'NCDMsg' => (string) $xml_data->CoverNoteInfo->NCDMsg,
+        ];
+
         return new ResponseData([
-            'response' => (object)$response
-        ]); 
+            'status' => true,
+            'response' => $response
+        ]);
     }
     
     public function resend_cover_note(object $input) : object
@@ -1519,7 +1524,7 @@ class Zurich implements InsurerLibraryInterface
                             $extra_cover->selected = (float) $extra->ExtCoverPrem == 0;
                         }
                         if(!empty($extra->ExtCoverSumInsured)) {
-                            $extra_cover->sum_insured = formatNumber((float) $extra->ExtCoverSumInsured);
+                            $extra_cover->sum_insured = formatNumber((float) str_replace(",","",$extra->ExtCoverSumInsured));
                         }
                         if($extra_cover->premium > 0){
                             array_push($new_extracover_list, $extra_cover);
@@ -2389,8 +2394,18 @@ class Zurich implements InsurerLibraryInterface
         $extra_attribute = json_decode($input->insurance->extra_attribute->value);
 
         switch($input->id_type) {
+            case config('setting.id_type.nric_no'): {
+                $input->gender = $input->insurance->holder->gender;
+                $input->age = $input->insurance->holder->age;
+                $input->marital_status = $this->getMaritalStatusCode($input->insurance_motor->marital_status);
+                $id_number = $input->id_number;
+
+                break;
+            }
             case config('setting.id_type.company_registration_no'): {
                 $input->company_registration_number = $input->id_number;
+                $input->gender = $this->getGender('O');
+                $input->marital_status = $this->getMaritalStatusCode('O');
 
                 break;
             }
@@ -2398,19 +2413,24 @@ class Zurich implements InsurerLibraryInterface
                 return $this->abort(__('api.unsupported_id_type'), config('setting.response_codes.unsupported_id_types'));
             }
         }
+
+        $input->postcode = $input->insurance->address->postcode;
         
         $input->vehicle = (object) [
+            'expiry_date' => $input->insurance->expiry_date,
             'inception_date' => $input->insurance->inception_date,
-            'manufacture_year' => $input->insurance_motor->manufacture_year,
+            'manufacture_year' => $input->insurance_motor->manufactured_year,
             'ncd_percentage' => $input->insurance_motor->ncd_percentage,
             'nvic' => $input->insurance_motor->nvic,
-            'sum_insured' => formatNumber($input->insurance_motor->sum_insured),
+            'sum_insured' => formatNumber($input->insurance_motor->market_value),
+            'engine_capacity' => $input->insurance_motor->engine_capacity,
             'extra_attribute' => (object) [
                 'chassis_number' => $extra_attribute->chassis_number,
                 'cover_type' => $extra_attribute->cover_type,
                 'engine_number' => $extra_attribute->engine_number,
                 'seating_capacity' => $extra_attribute->seating_capacity,
-                'request_id' => $extra_attribute->request_id,
+                'make_code' => $extra_attribute->make_code,
+                'model_code' => $extra_attribute->model_code,
             ],
         ];
 
@@ -2428,40 +2448,168 @@ class Zurich implements InsurerLibraryInterface
 
         // Generate Selected Extra Cover
         $selected_extra_cover = [];
-        foreach ($input->insurance->extra_cover as $extra_cover) {
-            array_push($selected_extra_cover, new ExtraCover([
+        foreach($input->insurance->extra_cover as $extra_cover) {
+            array_push($selected_extra_cover, (object) [
                 'extra_cover_code' => $extra_cover->code,
                 'extra_cover_description' => $extra_cover->description,
-                'premium' => floatval($extra_cover->amount),
-                'sum_insured' => floatval($extra_cover->sum_insured) ?? 0,
-                'cart_amount' => $extra_cover->cart_amount ?? 0,
-                'cart_day' => $extra_cover->cart_day ?? 0,
-            ]));
+                'premium' => $extra_cover->amount,
+                'sum_insured' => $extra_cover->sum_insured ?? 0
+            ]);
         }
 
         $input->additional_driver = $additional_driver_list;
         $input->extra_cover = $selected_extra_cover;
-        
-        $premium_result = $this->getQuotation($input);
+
+        $region = '';
+        if($input->region == 'West'){
+            $region = 'W';
+        }
+        else if($input->region == 'East'){
+            $region = 'E';
+        }
+        $quotation = (object)[
+            'request_datetime' => Carbon::now()->format('Y/M/d h:i:s A'),
+            'transaction_ref_no' => $this->participant_code."0000008",//
+            'VehNo' => $input->vehicle_number,
+            'getmail' => '',
+            'quotationNo' => '',
+            'trans_type' => 'B',
+            'pre_VehNo' => $input->vehicle_number,
+            'product_code' => 'PC01',
+            'cover_type' => $this->getCoverType($input->vehicle->extra_attribute->cover_type),
+            'ci_code' => 'MX1',
+            'eff_date' => $input->vehicle->inception_date,
+            'exp_date' => $input->vehicle->expiry_date,
+            'new_owned_Veh_ind' => '',
+            'VehReg_date' => '',
+            'ReconInd' => '',
+            'modcarInd' => '',
+            'modperformanceaesthetic' => '',
+            'modfunctional' => '',
+            'yearofmake' => $input->vehicle->manufacture_year,
+            'make' => $input->vehicle->extra_attribute->make_code,
+            'model' => $input->vehicle->extra_attribute->model_code,
+            'capacity' => $input->vehicle->engine_capacity,
+            'uom' => $input->uom ?? 'CC',
+            'engine_no' => $input->vehicle->extra_attribute->engine_number,
+            'chasis_no' => $input->vehicle->extra_attribute->chassis_number,
+            'logbook_no' => '',
+            'reg_loc' => 'L',
+            'region_code' => $region,
+            'no_of_passenger' => $input->vehicle->extra_attribute->seating_capacity,
+            'no_of_drivers' => '1',
+            'ins_indicator' => 'P',
+            'name' => $input->name ?? 'Tan Ai Ling',
+            'ins_nationality' => '',
+            'new_ic' => $id_number ?? '',
+            'other_id' => '',
+            'date_of_birth' => $dob ?? '',
+            'age' => $input->age,
+            'gender' => $input->gender,
+            'marital_sts' => $input->marital_status,
+            'occupation' => self::OCCUPATION,
+            'mobile_no' => $input->phone_number,
+            'off_ph_no' => '',
+            'email' => $input->email,
+            'address' => $input->address_one . $input->address_two,
+            'postcode' => $input->postcode,
+            'state' => $this->getStateCode(ucwords(strtolower($input->state))),
+            'country' => 'MAS',
+            'sum_insured' => $input->sum_insured ?? $input->vehicle->sum_insured,
+            'av_ind' => 'N',
+            'vol_excess' => '',
+            'pac_ind' => 'N',
+            'pac_type' => '',
+            'pac_unit' => '',
+            'all_driver_ind' => 'N',
+            'abisi' => '',
+            'chosen_si_type' => 'REC_SI',
+            'extcover' => $input->extra_cover,
+            'ecd_pac_code' => 'R0075',
+            'ecd_pac_unit' => '1',
+            'additional_driver' => $input->additional_driver,
+        ];
+        if($input->id_type == 4){
+            $quotation->other_id = $company_registration_number;
+            $quotation->ins_indicator = 'C';
+            $quotation->ci_code = 'MX4';
+        }
+        $premium_result = $this->getQuotation($quotation);
 
         if(!$premium_result->status) {
             return $this->abort($premium_result->response);
         }
-
-        $input->premium_details = $premium_result;
-        $input->vehicle->extra_attributes->request_id = $premium_result->request_id;
-        
-        $result = $this->issueCoverNote($input);
+        $input->premium_details = $premium_result->response;
+        $quotationNo = $premium_result->response->QuotationInfo->QuotationNo;
+        //issueCoverNote
+        $covernote_data = (object)[
+            'transaction_ref_no' => $this->participant_code."0000008",
+            'request_datetime' => Carbon::now()->format('Y/M/d h:i:s A'),
+            'quotationNo' => $quotationNo,
+        ];
+        $result = $this->issueCoverNote($covernote_data);
 
         if(!$result->status) {
             return $this->abort($result->response);
         }
+        $response = (object) [
+            'policy_number' => $result->response->CoverNoteNo
+        ];
 
-        return new ResponseData([
-            'response' => (object) [
-                'policy_number' => $result->response->policyNo
-            ]
-        ]);
+        return (object) ['status' => true, 'response' => $response];
+    }
+
+    private function getGender($data, $full = false) : string
+    {
+        if(!$full) {
+            switch($data) {
+                case 'M':
+                case 'F': {
+                    return $data;
+                }
+                case 'O': {
+                    return 'C';
+                }
+            }
+        } else {
+            switch($data) {
+                case 'M': {
+                    return 'MALE';
+                }
+                case 'F': {
+                    return 'FEMALE';
+                }
+                case 'O': {
+                    return 'COMPANY';
+                }
+            }
+        }
+    }
+    
+    private function getMaritalStatusCode($marital_status) : int
+    {
+        $code = null;
+
+        switch($marital_status) {
+            case 'S': {
+                $code = 0;
+                break;
+            }
+            case 'M': {
+                $code = 1;
+                break;
+            }
+            case 'D': {
+                $code = 2;
+                break;
+            }
+            case 'O': {
+                $code = 3;
+                break;
+            }
+        }
+
+        return $code;
     }
 
     public function abort(string $message, int $code = 490) : ResponseData
