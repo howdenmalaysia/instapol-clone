@@ -153,17 +153,17 @@
             
             fetchData();
 
-            $('#variants').on('change', function() {
+            $('#variants').on('change', () => {
                 if($(this).val() == '') {
                     $('#variant-popover').popover('show');
                 }
             });
 
-            $('#variants').on('select2:open', function() {
+            $('#variants').on('select2:open', () => {
                 $('#variant-popover').popover('hide');
             });
 
-            $('#btn-continue').on('click', function() {
+            $('#btn-continue').on('click', () => {
                 let form = $('#vehicle-details-form');
 
                 if(form.parsley().isValid()) {
