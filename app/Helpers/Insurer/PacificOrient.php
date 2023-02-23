@@ -702,7 +702,7 @@ class PacificOrient implements InsurerLibraryInterface
             }
         }
 
-        $order = ['72', '04', '25', '89', '111'];
+        $order = ['05', '04', '25', '89', '72', '111'];
         usort($formatted_extra_cover, function($a, $b) use($order) {
             $pos_a = array_search($a->extra_cover_code, $order);
             $pos_b = array_search($b->extra_cover_code, $order);
