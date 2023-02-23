@@ -249,13 +249,14 @@
                         swalAlert(error.response.data.response, () => {
                             window.location = "{{ route('motor.index') }}"
                         });
+                    } else {
+                        if(++responses === products.length) {
+                            swalAlert('An Error Encountered in Retrieving Vehicle Details. Please Contact Howden Specialist.', () => {
+                                window.location = "{{ route('motor.index') }}"
+                            });
+                        }
                     }
 
-                    if(++responses === products.length) {
-                        swalAlert('An Error Encountered in Retrieving Vehicle Details. Please Contact Howden Specialist.', () => {
-                            window.location = "{{ route('motor.index') }}"
-                        });
-                    }
                 });
             });
         }
