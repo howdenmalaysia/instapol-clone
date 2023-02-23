@@ -369,7 +369,7 @@ class PacificOrient implements InsurerLibraryInterface
             'stamp_duty' => formatNumber($premium->response->stamp_duty),
             'tariff_premium' => formatNumber($premium->response->tariff_premium),
             'total_benefit_amount' => formatNumber($total_benefit_amount),
-            'total_payable' => formatNumber($premium->response->total_premium),
+            'total_payable' => formatNumber(roundPricing($premium->response->total_premium)),
             'request_id' => $premium->response->request_id,
             'named_drivers_needed' => $input->id_type === config('setting.id_type.nric_no'),
         ]);
@@ -386,7 +386,7 @@ class PacificOrient implements InsurerLibraryInterface
             $response->total_benefit_amount = array_filter($input->extra_cover, function ($extra_cover) {
                 return $extra_cover->extra_cover_code == '06';
             })[0]->premium ?? 0;
-            $response->total_payable = $total_payable;
+            $response->total_payable = roundPricing($total_payable);
 
             $response->vehicle = $vehicle;
         }
