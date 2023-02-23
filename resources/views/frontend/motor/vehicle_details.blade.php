@@ -129,7 +129,7 @@
                 </div>
                 <div class="row mt-3">
                     <div class="col-12 text-center">
-                    <a id="assistance">{{ __('frontend.motor.vehicle_details.need_assistance') }}</a>
+                    <button id="assistance" class="btn btn-link">{{ __('frontend.motor.vehicle_details.need_assistance') }}</button>
                     </div>
                 </div>
                 <div class="hidden">
@@ -172,7 +172,7 @@
                 }
             });
 
-            $('#asistance').on('click', (e) => {
+            $('#assistance').on('click', (e) => {
                 e.preventDefault();
                 showLiveChat();
             })
