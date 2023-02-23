@@ -129,7 +129,7 @@
                 </div>
                 <div class="row mt-3">
                     <div class="col-12 text-center">
-                    <a href="">{{ __('frontend.motor.vehicle_details.need_assistance') }}</a>
+                    <a id="assistance">{{ __('frontend.motor.vehicle_details.need_assistance') }}</a>
                     </div>
                 </div>
                 <div class="hidden">
@@ -171,6 +171,11 @@
                     form.submit();
                 }
             });
+
+            $('#asistance').on('click', (e) => {
+                e.preventDefault();
+                showLiveChat();
+            })
         });
 
         function fetchData() {
