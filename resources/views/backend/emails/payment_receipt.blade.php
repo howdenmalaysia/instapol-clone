@@ -83,7 +83,7 @@
 
                                         <div style="line-height: 140%; text-align: left; word-wrap: break-word;">
                                             <p style="font-size: 14px; line-height: 140%;">
-                                                Your insurance policy will be emailed to you within 1 business day and roadtax (if you have renewed with us) will be delivered to you within 2 business days.
+                                                Your insurance policy / certificate will be emailed to you within 1 business day and roadtax (if you have renewed with us) will be delivered to you within 2 business days.
                                             </p>
                                         </div>
                                     </td>
