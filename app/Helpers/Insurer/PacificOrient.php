@@ -711,6 +711,7 @@ class PacificOrient implements InsurerLibraryInterface
         });
 
         $data = [
+            'additional_driver' => $input->additional_driver,
             'address_one' => $input->insurance->address->address_one,
             'address_two' => $input->insurance->address->address_two,
             'age' => $input->age,
@@ -741,7 +742,6 @@ class PacificOrient implements InsurerLibraryInterface
             'ncd_amount' => $input->insurance_motor->ncd_amount,
             'ncd_percentage' => $input->vehicle->ncd_percentage,
             'nvic' => $input->vehicle->nvic,
-            'named_driver' => $input->additional_driver,
             'occupation' => self::OCCUPATION,
             'permitted_drivers' => self::PERMITTED_DRIVERS,
             'phone_number' => $input->insurance->holder->phone_code . $input->insurance->holder->phone_number,
