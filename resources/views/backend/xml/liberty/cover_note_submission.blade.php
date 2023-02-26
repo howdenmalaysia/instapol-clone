@@ -2,6 +2,12 @@
 <Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.xmlsoap.org/soap/envelope/">
     <Body>
         <issueCoverNoteReq xmlns="http://servlet">
+            <arrExtraParam>
+                <item xmlns="">
+                    <paramIndicator>emailind</paramIndicator>
+                    <paramValue>Y</paramValue>
+                </item>
+            </arrExtraParam>
             <actprem xmlns="urn:IssueCoverNote">{{ $act_premium }}</actprem>
             @if (count($additional_driver) > 0)
                 <adddrv xmlns="urn:IssueCoverNote">
