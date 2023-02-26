@@ -1108,6 +1108,7 @@ class Allianz implements InsurerLibraryInterface
 		else if($qParams->input->id_type == '4'){
             $id_type = 'OLD_IC';
             $dob = '1984-11-03';//cannot be empty
+            $age = '';
 		}
         //check avcode selected or default first variant's avcode
         $avcode = $qParams->input->vehicle->extra_attribute->avcode;
@@ -1173,7 +1174,6 @@ class Allianz implements InsurerLibraryInterface
         $ubb = (object)[
             'contractNumber' => $contractNumber,
             'excessWaiveInd' => $result->response->contract->excessWaiveInd,
-            'contractNumber' => $contractNumber,
             'inception_date' => Carbon::parse($qParams->vix->inception_date)->format('Y-m-d'),
             'expiry_date' => Carbon::parse($qParams->vix->expiry_date)->format('Y-m-d'),
             'id_number' => $qParams->input->id_number,
@@ -1484,7 +1484,7 @@ class Allianz implements InsurerLibraryInterface
             'request_header' => json_encode($options['headers']),
             'request' => json_encode($postfield),
         ]);
-        
+
         // Update the API log
         APILogs::find($log->id)
             ->update([

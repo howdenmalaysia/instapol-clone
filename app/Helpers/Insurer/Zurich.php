@@ -350,7 +350,7 @@ class Zurich implements InsurerLibraryInterface
         );
         $hashed_signature = $this->generateSignature($signature);
         $getmail = $input->getmail;
-        if($getmail != ''){
+        if($getmail != '' && is_array($getmail)){
             if(count((array)$getmail)>1){
                 $CNMailId = implode(', ', (array)$getmail);
             }
@@ -1167,7 +1167,7 @@ class Zurich implements InsurerLibraryInterface
                 'request_datetime' => Carbon::now()->format('Y/M/d h:i:s A'),
                 'transaction_ref_no' => $this->participant_code."0000008",//
                 'VehNo' => $input->vehicle_number,
-                'getmail' => '',
+                'getmail' => 'conference2@my.howdengroup.com',
                 'quotationNo' => '',
                 'trans_type' => 'B',
                 'pre_VehNo' => $vehicle_vix->response->vehicle_number,
@@ -1440,7 +1440,7 @@ class Zurich implements InsurerLibraryInterface
             'request_datetime' => Carbon::now()->format('Y/M/d h:i:s A'),
             'transaction_ref_no' => $this->participant_code."0000008",//
             'VehNo' => $input->vehicle_number,
-            'getmail' => '',
+            'getmail' => 'conference2@my.howdengroup.com',
             'quotationNo' => '',
             'trans_type' => 'B',
             'pre_VehNo' => $input->vehicle_number,
@@ -2471,7 +2471,7 @@ class Zurich implements InsurerLibraryInterface
             'request_datetime' => Carbon::now()->format('Y/M/d h:i:s A'),
             'transaction_ref_no' => $this->participant_code."0000008",//
             'VehNo' => $input->vehicle_number,
-            'getmail' => '',
+            'getmail' => 'conference2@my.howdengroup.com',
             'quotationNo' => '',
             'trans_type' => 'B',
             'pre_VehNo' => $input->vehicle_number,
