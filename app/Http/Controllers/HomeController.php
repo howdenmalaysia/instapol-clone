@@ -46,4 +46,13 @@ class HomeController extends Controller
     {
         return view('frontend.claims');
     }
+    public function UnderMaintenance()
+    {
+        return view('frontend.UnderMaintenance');
+    }
+  public function UnderMaintenance2()
+    {
+        return view('frontend.UnderMaintenance');
+    }
+
 }
