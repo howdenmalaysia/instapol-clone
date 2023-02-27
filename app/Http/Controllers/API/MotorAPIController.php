@@ -737,7 +737,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             
             InsuranceRemark::create([
                 'insurance_id' => $input->insurance->id,
-                'remark' => "{$product->insurance_company->name} Policy successfully created. (Policy Number: {$result->policy_number})",
+                'remark' => "{$product->insurance_company->name} Policy successfully created. (Policy Number: {$result->response->policy_number})",
             ]);
 
             DB::commit();
