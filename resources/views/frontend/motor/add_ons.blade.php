@@ -308,8 +308,6 @@
         // Send Land on Add Ons Page to GA
         gtag('event', 'l_motor_ao', { 'debug_mode': true });
 
-        populateDriver();
-
         // Show Sum Insured Slider by Default
         $('#sum-insured-slider').trigger('input');
         $('#sum-insured-tooltip').tooltip('show');
@@ -671,6 +669,8 @@
                 $('#roadtax-collection-message').text("{{ __('frontend.motor.add_ons_page.roadtax_notes') }}");
             }
         });
+
+        populateDriver();
     });
 
     function refreshPremium()
