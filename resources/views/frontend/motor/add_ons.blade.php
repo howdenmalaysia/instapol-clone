@@ -702,11 +702,13 @@
 
         let additional_driver = [];
         $('.additional-driver-name').each((index, element) => {
-            additional_driver.push({
-                name: $(element).val().toUpperCase(),
-                id_number: $($('.additional-driver-id-number')[index]).val(),
-                relationship: $($('.additional-driver-relationship')[index]).val()
-            });
+            if($(element).val() != '' && $($('.additional-driver-id-number')[index]).val() != '' && $($('.additional-driver-relationship')[index]).val() != '') {
+                additional_driver.push({
+                    name: $(element).val().toUpperCase(),
+                    id_number: $($('.additional-driver-id-number')[index]).val(),
+                    relationship: $($('.additional-driver-relationship')[index]).val()
+                });
+            }
         });
 
         instapol.post("{{ route('motor.api.quote') }}", {
