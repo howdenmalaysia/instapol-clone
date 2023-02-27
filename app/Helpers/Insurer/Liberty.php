@@ -404,6 +404,7 @@ class Liberty implements InsurerLibraryInterface
                     'extra_cover_code' => '07',
                     'extra_cover_description' => $this->getExtraBenefitDescription('07', $vehicle->engine_capacity),
                     'sum_insured' => 0,
+                    'premium' => 0,
                     'unit' => count($input->additional_driver)
                 ]));
             } else {
