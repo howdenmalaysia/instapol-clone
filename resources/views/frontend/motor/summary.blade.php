@@ -336,13 +336,14 @@
                         <p>{!! '- ' . str_replace(':pds', '', __('frontend.motor.payment_summary_page.confirm_modal.line_3', ['pds' => "<a href=" . $product->product_disclosure . " target=\"_blank\">Product Disclosure Sheet</a>"])) !!}</p>
                         <div id="tnc-radio" class="text-center my-4">
                             <div class="form-check form-check-inline">
-                                <input type="radio" id="agree" class="form-check-input" value="agree">
+                                <input type="radio" id="agree" class="form-check-input" name="accept-pds" value="agree">
                                 <label for="agree" class="form-check-label">{{ __('frontend.general.agree') }}</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input type="radio" id="disagree" class="form-check-input" value="disagree" />
+                                <input type="radio" id="disagree" class="form-check-input" name="accept-pds" value="disagree" />
                                 <label for="disagree" class="form-check-label">{{ __('frontend.general.disagree') }}</label>
                             </div>
+                            <p id="disagree-pds-error" class="text-danger d-none py-4">{{ __('frontend.motor.payment_summary_page.confirm_modal.disagree_error') }}</p>
                         </div>
                         <p>{{ __('frontend.motor.payment_summary_page.confirm_modal.line_4') }}</p>
                         <p>{{ __('frontend.motor.payment_summary_page.confirm_modal.line_5') }}</p>
@@ -369,6 +370,15 @@
 
             $('#btn-pay').on('click', () => {
                 $('#agree-modal').modal('show');
+            });
+
+            $('input[name=accept-pds]').on('change', (e) => {
+                $('#disagree-pds-error').addClass('d-none');
+
+                if($(e.target).val() !== 'agree') {
+                    $('#btn-pay-modal').attr('disable', true);
+                    $('#disagree-pds-error').removeClass('d-none');
+                }
             });
 
             $('#btn-pay-modal').on('click', () => {
