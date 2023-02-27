@@ -902,7 +902,8 @@ return [
                 'line_2' => 'I understand that it is my duty to take reasonable care not to make a misrepresentation in answering the questions in this Application Form and I hereby declare that I have fully and accurately answered the questions above.',
                 'line_3' => 'I have read, understood and accepted that :pds and <a href="/privacy-policy" target="_blank">Privacy Policy</a> for this product.',
                 'line_4' => 'Please make sure you review the order and personal details before go to payment page.',
-                'line_5' => 'Once you click \'Pay Now\', you cannot change these details.'
+                'line_5' => 'Once you click \'Pay Now\', you cannot change these details.',
+                'disagree_error' => 'You must select agree to conrtinue.'
             ]
         ],
         'payment_success_page' => [
