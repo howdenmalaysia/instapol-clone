@@ -163,8 +163,8 @@ class Liberty implements InsurerLibraryInterface
     {
         $vehicle = $input->vehicle ?? null;
         $basic_premium = $ncd_percentage = $ncd_amount = $total_benefit_amount = $gross_premium = $sst_amount = $sst_percent = $stamp_duty = $excess_amount = $total_payable = $net_premium = 0;
-
         $id_number = $company_registration_number = $ownership_type = $date_of_birth = $gender = $marital_status = '';
+        $allowed_extra_cover = self::EXTRA_BENEFIT_LIST;
         $driving_experience = 0;
         switch($input->id_type) {
             case config('setting.id_type.nric_no'): {
@@ -174,6 +174,10 @@ class Liberty implements InsurerLibraryInterface
                 $driving_experience = getAgeFromIC($input->id_number) - 18 < 0 ? 18 : getAgeFromIC($input->id_number) - 18;
                 $gender = $input->gender;
                 $marital_status = $input->marital_status;
+
+                $allowed_extra_cover = array_filter(self::EXTRA_BENEFIT_LIST, function($code) {
+                    return $code !== '10';
+                });
 
                 break;
             }
@@ -279,7 +283,7 @@ class Liberty implements InsurerLibraryInterface
 
             // Generate extra cover list and Include the generated extra cover list to input
             $extra_cover_list = [];
-            foreach (self::EXTRA_BENEFIT_LIST as $_extra_cover_code) {
+            foreach ($allowed_extra_cover as $_extra_cover_code) {
                 $extra_cover = new ExtraCover([
                     'selected' => false,
                     'readonly' => false,
@@ -486,7 +490,7 @@ class Liberty implements InsurerLibraryInterface
             'total_benefit_amount' => formatNumber($total_benefit_amount),
             'total_payable' => formatNumber($motor_premium->response->gross_due),
             'fl_quote_number' => $motor_premium->response->fl_quote_number,
-            'named_drivers_needed' => false
+            'named_drivers_needed' => $input->id_type === config('setting.id_type.nric_no')
         ]);
 
         if ($full_quote) {
