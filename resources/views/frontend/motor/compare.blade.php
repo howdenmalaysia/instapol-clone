@@ -777,7 +777,7 @@
                             product_id: product.id,
                         }).then((res) => {
                             console.log('Allianz AvCode', res);
-                            allianz_variant = res;
+                            allianz_variant = res.data.response;
 
                             res.data.response.forEach((variant) => {
                                 $('#allianz-variant').append(`<option value="${variant.AvCode}">${variant.Variant} (Sum Insured: ${'RM ' + formatMoney(variant.SumInsured)})</option>`);
