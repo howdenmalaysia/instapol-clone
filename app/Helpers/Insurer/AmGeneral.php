@@ -916,7 +916,7 @@ class AmGeneral implements InsurerLibraryInterface
 			'requestData' => $encrypted
 		);
 
-		$response = $this->cURL("getData","QuickQuotation/GetProductList", json_encode($data));
+		$response = $this->cURL("getData","QuickQuotation/GetProductList", json_encode($data), $encrypted);
 
 		if($response->status){
 			$encrypted = $response->response->responseData;
@@ -954,7 +954,7 @@ class AmGeneral implements InsurerLibraryInterface
 		$data = array(
 			'requestData' => $encrypted
 		);
-		$response = $this->cURL("with_auth_token","QuickQuotation/GetProductListVariant", json_encode($data),$cParams->header);
+		$response = $this->cURL("with_auth_token","QuickQuotation/GetProductListVariant", json_encode($data), $encrypted,$cParams->header);
 		if($response->status){
 			$encrypted = $response->response->responseData;
 			$decrypted = json_decode($this->decrypt($response->response->responseData));
@@ -1049,7 +1049,7 @@ class AmGeneral implements InsurerLibraryInterface
 			$B57C_data = array(
 				'requestData' => $B57C_encrypted
 			);
-			$B57C_response = $this->cURL("with_auth_token","QuickQuotation/GetQuickQuote", json_encode($B57C_data),$get_variant->header);
+			$B57C_response = $this->cURL("with_auth_token","QuickQuotation/GetQuickQuote", json_encode($B57C_data), $B57C_encrypted,$get_variant->header);
 			if($B57C_response->status){
 				$B57C_encrypted = $B57C_response->response->responseData;
 				$B57C_decrypted = json_decode($this->decrypt($B57C_response->response->responseData));
@@ -1192,7 +1192,7 @@ class AmGeneral implements InsurerLibraryInterface
 		$data = array(
 			'requestData' => $encrypted
 		);
-		$response = $this->cURL("with_auth_token","QuickQuotation/GetQuickQuote", json_encode($data),$get_variant->header);
+		$response = $this->cURL("with_auth_token","QuickQuotation/GetQuickQuote", json_encode($data), $encrypted,$get_variant->header);
 		if($response->status){
 			$encrypted = $response->response->responseData;
 			$decrypted = json_decode($this->decrypt($response->response->responseData));
@@ -1274,7 +1274,7 @@ class AmGeneral implements InsurerLibraryInterface
 			'requestData' => $encrypted
 		);
 
-		$response = $this->cURL("with_auth_token","QuickQuotation/GetAdditionalQuoteInfo", json_encode($data),$cParams->header);
+		$response = $this->cURL("with_auth_token","QuickQuotation/GetAdditionalQuoteInfo", json_encode($data), $encrypted,$cParams->header);
         if($response->status){
 			$encrypted = $response->response->responseData;
 			$decrypted = json_decode($this->decrypt($response->response->responseData));
@@ -1376,7 +1376,7 @@ class AmGeneral implements InsurerLibraryInterface
 			'requestData' => $encrypted
 		);
 
-		$response = $this->cURL("getData","FullQuotation/GetProductList", json_encode($data));
+		$response = $this->cURL("getData","FullQuotation/GetProductList", json_encode($data), $encrypted);
         if($response->status){
 			$encrypted = $response->response->responseData;
 			$decrypted = json_decode($this->decrypt($response->response->responseData));
@@ -1414,7 +1414,7 @@ class AmGeneral implements InsurerLibraryInterface
 			'requestData' => $encrypted
 		);
 
-		$response = $this->cURL("with_auth_token","FullQuotation/GetProductListVariant", json_encode($data),$cParams->header);
+		$response = $this->cURL("with_auth_token","FullQuotation/GetProductListVariant", json_encode($data), $encrypted,$cParams->header);
         if($response->status){
 			$encrypted = $response->response->responseData;
 			$decrypted = json_decode($this->decrypt($response->response->responseData));
@@ -1474,7 +1474,7 @@ class AmGeneral implements InsurerLibraryInterface
 			'requestData' => $encrypted
 		);
 
-		$response = $this->cURL("with_auth_token","FullQuotation/GetFullQuote", json_encode($data),$cParams->header);
+		$response = $this->cURL("with_auth_token","FullQuotation/GetFullQuote", json_encode($data), $encrypted,$cParams->header);
         if($response->status){
 			$encrypted = $response->response->responseData;
 			$decrypted = json_decode($this->decrypt($response->response->responseData));
@@ -1518,7 +1518,7 @@ class AmGeneral implements InsurerLibraryInterface
 			'requestData' => $encrypted
 		);
 
-		$response = $this->cURL("getData","Renewal/GetPolicyInfo", json_encode($data));
+		$response = $this->cURL("getData","Renewal/GetPolicyInfo", json_encode($data), $encrypted);
         if($response->status){
 			$encrypted = $response->response->responseData;
 			$decrypted = json_decode($this->decrypt($response->response->responseData));
@@ -1577,7 +1577,7 @@ class AmGeneral implements InsurerLibraryInterface
 			'requestData' => $encrypted
 		);
 
-		$response = $this->cURL("with_auth_token","Renewal/GetRenewalQuote", json_encode($data),$cParams->header);
+		$response = $this->cURL("with_auth_token","Renewal/GetRenewalQuote", json_encode($data), $encrypted,$cParams->header);
         if($response->status){
 			$encrypted = $response->response->responseData;
 			$decrypted = json_decode($this->decrypt($response->response->responseData));
@@ -1624,7 +1624,7 @@ class AmGeneral implements InsurerLibraryInterface
 			'requestData' => $encrypted
 		);
 
-		$response = $this->cURL("with_auth_token","GetCovernoteSubmission", json_encode($data),$cParams->header);
+		$response = $this->cURL("with_auth_token","GetCovernoteSubmission", json_encode($data), $encrypted,$cParams->header);
         if($response->status){
 			$encrypted = $response->response->responseData;
 			$decrypted = json_decode($this->decrypt($response->response->responseData));
@@ -1664,7 +1664,7 @@ class AmGeneral implements InsurerLibraryInterface
 			'requestData' => $encrypted
 		);
 
-		$response = $this->cURL("getData","GetQuotationDetails", json_encode($data));
+		$response = $this->cURL("getData","GetQuotationDetails", json_encode($data), $encrypted);
         if($response->status){
 			$encrypted = $response->response->responseData;
 			$decrypted = json_decode($this->decrypt($response->response->responseData));
@@ -1701,7 +1701,7 @@ class AmGeneral implements InsurerLibraryInterface
 			'requestData' => $encrypted
 		);
 
-		$response = $this->cURL("getData","GetQuotationStatus", json_encode($data));
+		$response = $this->cURL("getData","GetQuotationStatus", json_encode($data), $encrypted);
         if($response->status){
 			$encrypted = $response->response->responseData;
 			$decrypted = json_decode($this->decrypt($response->response->responseData));
@@ -1739,7 +1739,7 @@ class AmGeneral implements InsurerLibraryInterface
 			'requestData' => $encrypted
 		);
 
-		$response = $this->cURL("getData","GetMasterData", json_encode($data));
+		$response = $this->cURL("getData","GetMasterData", json_encode($data), $encrypted);
         if($response->status){
 			$encrypted = $response->response->responseData;
 			$decrypted = json_decode($this->decrypt($response->response->responseData));
@@ -2000,7 +2000,7 @@ class AmGeneral implements InsurerLibraryInterface
         return $output;
 	}
 
-	private function cURL($type = null, $function = null, $data = null, $additionals = null){
+	private function cURL($type = null, $function = null, $data = null, $encrypted_request = null, $additionals = null){
 		$host = $this->host.':'.$this->port;
 		$username = $this->username;
 		$password = $this->password;
@@ -2064,15 +2064,15 @@ class AmGeneral implements InsurerLibraryInterface
             'domain' => $this->host.':'.$this->port,
             'path' => $path,
             'request_header' => json_encode($options['headers']),
-            'request' => json_encode($options['body']??$options['form_params']),
+            'request' => json_encode(isset($options['form_params']) ? $options['form_params'] : $this->decrypt($encrypted_request)),
         ]);
-		
+
         if ($result->status) {
 			// Update the API log
 			APILogs::find($log->id)
             ->update([
                 'response_header' => json_encode($result->response_header),
-                'response' => $result->response
+                'response' => isset($options['form_params']) ? $result->response : $this->decrypt(json_decode($result->response)->responseData)
             ]);
 
             $json = json_decode($result->response);
@@ -2088,7 +2088,7 @@ class AmGeneral implements InsurerLibraryInterface
 			APILogs::find($log->id)
             ->update([
                 'response_header' => json_encode($result->response_header),
-                'response' => json_encode($result->response)
+                'response' => isset($options['form_params']) ? json_encode($result->response) : $this->decrypt(json_decode($result->response)->responseData)
             ]);
             $message = !empty($result->response) ? $result->response : __('api.empty_response', ['company' => $this->company_name]);
             if(isset($result->response->status_code)){
