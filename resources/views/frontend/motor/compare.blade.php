@@ -388,6 +388,7 @@
         let motor = JSON.parse($('#motor').val());
         let products = JSON.parse($('#products').val());
         let premiums = [];
+        let allianz_variant = [];
         let controller = null;
         let add_ons_available = {
             'Windscreen': [],
@@ -495,6 +496,10 @@
             $('#avcode-next').on('click', async () => {
                 if($('#allianz-variant').val() != '') {
                     motor.vehicle.extra_attribute.avcode = $('#allianz-variant').val();
+                    motor.vehicle.variant = allianz_variant.find((variant) => {
+                        return variant.AvCode = $('#allianz-variant').val();
+                    }).Variant;
+
                     $('#motor').val(JSON.stringify(motor));
 
                     await getPremium([motor.product_id]);
@@ -772,11 +777,11 @@
                             product_id: product.id,
                         }).then((res) => {
                             console.log('Allianz AvCode', res);
+                            allianz_variant = res;
 
                             res.data.response.forEach((variant) => {
-                                $('#allianz-variant').append(`<option value="${variant.AvCode}">${variant.Variant}(Sum Insured: ${'RM ' + formatMoney(variant.SumInsured)})</option>`);
+                                $('#allianz-variant').append(`<option value="${variant.AvCode}">${variant.Variant} (Sum Insured: ${'RM ' + formatMoney(variant.SumInsured)})</option>`);
                             });
-
                         })
                     }
                 }).catch((error) => {
