@@ -8,6 +8,7 @@
                         <TransactionReferenceNo>{{ $transaction_reference }}</TransactionReferenceNo>
                         <RequestDateTime>{{ $request_datetime }}</RequestDateTime>
                         <HashCode>{{ $hashcode }}</HashCode>
+                        <CNMailId>{{ $getmail }}</CNMailId>
                     </ParticipantDetails>
                     <IssueCoverNoteDetails>
                         <AgentCode>{{ $agent_code }}</AgentCode>

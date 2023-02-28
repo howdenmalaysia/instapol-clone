@@ -756,7 +756,7 @@ class ZurichTakaful implements InsurerLibraryInterface
         $uom = $input->uom;//'CC';
         $engine_no = $input->engine_no;//'EWE323WS';
         $chasis_no = $input->chasis_no;//'PM2L252S002107437';
-        $logbook_no = $input->logbook_no;//'ERTGRET253';
+        $logbook_no = $input->logbook_no;//'NA';
         $reg_loc = $input->reg_loc;//'L';
         $region_code = $input->region_code;//'W';
         $no_of_passenger = $input->no_of_passenger;//'5';
@@ -1004,11 +1004,11 @@ class ZurichTakaful implements InsurerLibraryInterface
         $agent_code = $this->agent_code;
         $data["quotation_no"] = $quotationNo;
         $data["agent_code"] = $agent_code;
-        $data["logbookno"] = 'ERTGRET253';
-
+        $data["logbookno"] = 'NA';
+        $data["getmail"] = 'conference2@my.howdengroup.com';
         $path = 'IssueCoverNote';
         // Generate XML from view
-        $xml = view('backend.xml.zurich.issue_cover_note')->with($data)->render();
+        $xml = view('backend.xml.zurichTakaful.issue_cover_note')->with($data)->render();
         // Call API
         $result = $this->cURL($path, $xml);
         if (!$result->status) {
@@ -1210,7 +1210,7 @@ class ZurichTakaful implements InsurerLibraryInterface
                 'uom' => $vehicle_vix->uom,
                 'engine_no' => $vehicle_vix->response->engine_number,
                 'chasis_no' => $vehicle_vix->response->chassis_number,
-                'logbook_no' => 'ERTGRET253',
+                'logbook_no' => 'NA',
                 'reg_loc' => 'L',
                 'region_code' => $region,
                 'no_of_passenger' => $vehicle_vix->response->seating_capacity,
@@ -1482,7 +1482,7 @@ class ZurichTakaful implements InsurerLibraryInterface
             'uom' => $input->uom ?? 'CC',
             'engine_no' => $input->vehicle->extra_attribute->engine_number,
             'chasis_no' => $input->vehicle->extra_attribute->chassis_number,
-            'logbook_no' => 'ERTGRET253',
+            'logbook_no' => 'NA',
             'reg_loc' => 'L',
             'region_code' => $region,
             'no_of_passenger' => $input->vehicle->extra_attribute->seating_capacity,
@@ -2523,7 +2523,7 @@ class ZurichTakaful implements InsurerLibraryInterface
             'uom' => $input->uom ?? 'CC',
             'engine_no' => $input->vehicle->extra_attribute->engine_number,
             'chasis_no' => $input->vehicle->extra_attribute->chassis_number,
-            'logbook_no' => 'ERTGRET253',
+            'logbook_no' => 'NA',
             'reg_loc' => 'L',
             'region_code' => $region,
             'no_of_passenger' => $input->vehicle->extra_attribute->seating_capacity,
@@ -2557,6 +2557,7 @@ class ZurichTakaful implements InsurerLibraryInterface
             'extcover' => $input->extra_cover,
             'ecd_pac_code' => 'R0075',
             'ecd_pac_unit' => '1',
+            'nationality' => 'MAS',
             'additional_driver' => $input->additional_driver,
         ];
         if($input->id_type == 4){
@@ -2771,19 +2772,17 @@ class ZurichTakaful implements InsurerLibraryInterface
         ]);
 
         if($result->status) {
-            // Update the API log
-            APILogs::find($log->id)
-            ->update([
-                'response_header' => json_encode($result->response_header),
-                'response' => $result->response
-            ]);
-
             $cleaned_xml = preg_replace('/(<\/|<)[a-zA-Z]+:([a-zA-Z0-9]+[ =>])/', '$1$2', $result->response);
             $response = simplexml_load_string($cleaned_xml);
             if($response === false) {
                 return $this->abort(__('api.xml_error'));
             }
-
+            // Update the API log
+            APILogs::find($log->id)
+            ->update([
+                'response_header' => json_encode($result->response_header),
+                'response' => json_encode($response)
+            ]);
             $response = $response->xpath('Body')[0];
         } else {
             // Update the API log

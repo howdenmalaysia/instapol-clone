@@ -17,6 +17,7 @@ use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 
 class AIG implements InsurerLibraryInterface
 {
@@ -675,6 +676,7 @@ class AIG implements InsurerLibraryInterface
     public function submission(object $input) : object
     {
         // Get Extra Attribute
+        Log::info('AIG:------------------' .json_encode($input));
         $extra_attribute = json_decode($input->insurance->extra_attribute->value);
 
         switch($input->id_type) {
@@ -712,7 +714,7 @@ class AIG implements InsurerLibraryInterface
                 'cover_type' => $extra_attribute->cover_type,
                 'engine_number' => $extra_attribute->engine_number,
                 'seating_capacity' => $extra_attribute->seating_capacity,
-                'vehicle_use_code' => $extra_attribute->usecode,
+                'usecode' => $extra_attribute->usecode,
                 'vehtypecode' => $extra_attribute->vehtypecode,
                 'covercode' => $extra_attribute->covercode,
                 'make_code' => $extra_attribute->make_code,
@@ -756,7 +758,6 @@ class AIG implements InsurerLibraryInterface
         }
 
         $input->premium_details = $premium_result->response;
-        
         $result = $this->issueCoverNote($data);
 
         if(!$result->status) {
