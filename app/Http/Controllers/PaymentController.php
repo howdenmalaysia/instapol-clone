@@ -152,8 +152,8 @@ class PaymentController extends Controller
         // 0 - Transaction successful
         // 1 - Transaction failed
         // 2 - Transaction pending
-        switch ($request->TxnStatus) {
-            case '0': {
+        // switch ($request->TxnStatus) {
+        //     case '0': {
                 if ($insurance->insurance_status == Insurance::STATUS_NEW_QUOTATION || $insurance->insurance_status == Insurance::STATUS_PAYMENT_FAILURE) {
                     if (floatval($insurance->amount) != floatval($request->Amount)) {
                         // Update Insurance Status
@@ -198,25 +198,25 @@ class PaymentController extends Controller
                     $helper->submission($data);
                 }
 
-                break;
-            }
-            case '1': {
-                if ($insurance->insurance_status == Insurance::STATUS_NEW_QUOTATION || $insurance->insurance_status == Insurance::STATUS_PAYMENT_FAILURE) {
-                    // Update Insurance Status
-                    Insurance::find($insurance->id)
-                        ->update([
-                            'insurance_status' => Insurance::STATUS_PAYMENT_FAILURE
-                        ]);
+        //         break;
+        //     }
+        //     case '1': {
+        //         if ($insurance->insurance_status == Insurance::STATUS_NEW_QUOTATION || $insurance->insurance_status == Insurance::STATUS_PAYMENT_FAILURE) {
+        //             // Update Insurance Status
+        //             Insurance::find($insurance->id)
+        //                 ->update([
+        //                     'insurance_status' => Insurance::STATUS_PAYMENT_FAILURE
+        //                 ]);
 
-                    InsuranceRemark::create([
-                        'insurance_id' => $insurance->id,
-                        'remark' => $request->TxnMessage . '. (Payment ID: ' . $request->PaymentID . ')'
-                    ]);
-                }
+        //             InsuranceRemark::create([
+        //                 'insurance_id' => $insurance->id,
+        //                 'remark' => $request->TxnMessage . '. (Payment ID: ' . $request->PaymentID . ')'
+        //             ]);
+        //         }
 
-                break;
-            }
-        }
+        //         break;
+        //     }
+        // }
 
         $request->session()->put(Str::before($request->Param6, '-'), $insurance->insurance_code);
 
