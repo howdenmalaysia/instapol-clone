@@ -989,6 +989,7 @@ class Zurich implements InsurerLibraryInterface
         $agent_code = $this->agent_code;
         $data["quotation_no"] = $quotationNo;
         $data["agent_code"] = $agent_code;
+        $data["logbookno"] = 'ERTGRET253';
 
         $path = 'IssueCoverNote';
         // Generate XML from view
@@ -1189,7 +1190,7 @@ class Zurich implements InsurerLibraryInterface
                 'uom' => $vehicle_vix->uom,
                 'engine_no' => $vehicle_vix->response->engine_number,
                 'chasis_no' => $vehicle_vix->response->chassis_number,
-                'logbook_no' => '',
+                'logbook_no' => 'ERTGRET253',
                 'reg_loc' => 'L',
                 'region_code' => $region,
                 'no_of_passenger' => $vehicle_vix->response->seating_capacity,
@@ -1462,7 +1463,7 @@ class Zurich implements InsurerLibraryInterface
             'uom' => $input->uom ?? 'CC',
             'engine_no' => $input->vehicle->extra_attribute->engine_number,
             'chasis_no' => $input->vehicle->extra_attribute->chassis_number,
-            'logbook_no' => '',
+            'logbook_no' => 'ERTGRET253',
             'reg_loc' => 'L',
             'region_code' => $region,
             'no_of_passenger' => $input->vehicle->extra_attribute->seating_capacity,
@@ -2399,6 +2400,14 @@ class Zurich implements InsurerLibraryInterface
                 $input->age = $input->insurance->holder->age;
                 $input->marital_status = $this->getMaritalStatusCode($input->insurance_motor->marital_status);
                 $id_number = $input->id_number;
+                $dobs = str_split($input->id_number, 2);
+                $year = intval($dobs[0]);
+                if ($year >= 10) {
+                    $year += 1900;
+                } else {
+                    $year += 2000;
+                }
+                $dob = $dobs[2] . "-" . $dobs[1] . "-" . strval($year);
 
                 break;
             }
@@ -2493,7 +2502,7 @@ class Zurich implements InsurerLibraryInterface
             'uom' => $input->uom ?? 'CC',
             'engine_no' => $input->vehicle->extra_attribute->engine_number,
             'chasis_no' => $input->vehicle->extra_attribute->chassis_number,
-            'logbook_no' => '',
+            'logbook_no' => 'ERTGRET253',
             'reg_loc' => 'L',
             'region_code' => $region,
             'no_of_passenger' => $input->vehicle->extra_attribute->seating_capacity,
@@ -2508,12 +2517,12 @@ class Zurich implements InsurerLibraryInterface
             'gender' => $input->gender,
             'marital_sts' => $input->marital_status,
             'occupation' => self::OCCUPATION,
-            'mobile_no' => $input->phone_number,
+            'mobile_no' => $input->phone_number ?? $input->insurance->holder->phone_number,
             'off_ph_no' => '',
-            'email' => $input->email,
-            'address' => $input->address_one . $input->address_two,
+            'email' => $input->email ?? $input->insurance->holder->email_address,
+            'address' => $input->insurance->address->address_one ?? $input->address_one . $input->insurance->address->address_two ?? $input->address_two,
             'postcode' => $input->postcode,
-            'state' => $this->getStateCode(ucwords(strtolower($input->state))),
+            'state' => $this->getStateCode(ucwords(strtolower($input->insurance->address->state ?? $input->state))),
             'country' => 'MAS',
             'sum_insured' => $input->sum_insured ?? $input->vehicle->sum_insured,
             'av_ind' => 'N',
@@ -2540,11 +2549,15 @@ class Zurich implements InsurerLibraryInterface
             return $this->abort($premium_result->response);
         }
         $input->premium_details = $premium_result->response;
-        $quotationNo = $premium_result->response->QuotationInfo->QuotationNo;
+        foreach($premium_result->response->QuotationInfo as $key=>$value){
+            if($key == 'QuotationNo'){
+                $quotationNo = $value[0];
+            }
+        }
         //issueCoverNote
         $covernote_data = (object)[
             'transaction_ref_no' => $this->participant_code."0000008",
-            'request_datetime' => Carbon::now()->format('Y/M/d h:i:s A'),
+            'request_datetime' => Carbon::now()->format('Y-m-d\TH:i:s.u'),
             'quotationNo' => $quotationNo,
         ];
         $result = $this->issueCoverNote($covernote_data);

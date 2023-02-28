@@ -12,6 +12,7 @@
                     <IssueCoverNoteDetails>
                         <AgentCode>{{ $agent_code }}</AgentCode>
                         <QuotationNumber>{{ $quotation_no }}</QuotationNumber>
+                        <LogBookNo>{{ $logbookno }}</LogBookNo>
                     </IssueCoverNoteDetails>	
                 </RequestData>]]>
             </XmlRequest>
