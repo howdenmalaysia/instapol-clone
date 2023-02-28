@@ -717,6 +717,7 @@ class PacificOrient implements InsurerLibraryInterface
             'anti_theft' => self::ANTI_THEFT_DEVICE,
             'chassis_number' => $input->vehicle->extra_attribute->chassis_number,
             'city' => $input->insurance->address->city,
+            'commission_amount' => roundPricing($input->premium_details->gross_premium * 0.1), 
             'commission_rate' => 10,
             'country_code' => self::COUNTRY,
             'cover_region_code' => substr(strtoupper($input->region), 0, 1),
