@@ -376,8 +376,10 @@
                 $('#disagree-pds-error').addClass('d-none');
 
                 if($(e.target).val() !== 'agree') {
-                    $('#btn-pay-modal').attr('disable', true);
+                    $('#btn-pay-modal').attr('disabled', true);
                     $('#disagree-pds-error').removeClass('d-none');
+                } else {
+                    $('#btn-pay-modal').removeAttr('disabled');
                 }
             });
 

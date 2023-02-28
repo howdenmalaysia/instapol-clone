@@ -930,7 +930,7 @@ class PacificOrient implements InsurerLibraryInterface
                 break;
             }
             case '72': {
-                $extra_cover_description = 'Tinted Film Screen';
+                $extra_cover_description = 'Legal Liability of Passengers (Act Of Negligence)';
                 break;
             }
             case '111': {
