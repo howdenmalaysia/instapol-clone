@@ -767,6 +767,10 @@ class PacificOrient implements InsurerLibraryInterface
         if(!$result->status) {
             return $this->abort($result->response);
         }
+
+        return new ResponseData([
+            'response' => $result->response
+        ]);
     }
 
     public function cURL(string $path, string $xml, string $soap_action = null, string $method = 'POST', array $header = []) : ResponseData
