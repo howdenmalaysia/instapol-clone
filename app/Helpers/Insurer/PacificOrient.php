@@ -717,6 +717,7 @@ class PacificOrient implements InsurerLibraryInterface
             'anti_theft' => self::ANTI_THEFT_DEVICE,
             'chassis_number' => $input->vehicle->extra_attribute->chassis_number,
             'city' => $input->insurance->address->city,
+            'commission_amount' => formatNumber($input->premium_details->gross_premium * 0.1), 
             'commission_rate' => 10,
             'country_code' => self::COUNTRY,
             'cover_region_code' => substr(strtoupper($input->region), 0, 1),
@@ -766,6 +767,10 @@ class PacificOrient implements InsurerLibraryInterface
         if(!$result->status) {
             return $this->abort($result->response);
         }
+
+        return new ResponseData([
+            'response' => $result->response
+        ]);
     }
 
     public function cURL(string $path, string $xml, string $soap_action = null, string $method = 'POST', array $header = []) : ResponseData
@@ -929,7 +934,7 @@ class PacificOrient implements InsurerLibraryInterface
                 break;
             }
             case '72': {
-                $extra_cover_description = 'Tinted Film Screen';
+                $extra_cover_description = 'Legal Liability of Passengers (Act Of Negligence)';
                 break;
             }
             case '111': {

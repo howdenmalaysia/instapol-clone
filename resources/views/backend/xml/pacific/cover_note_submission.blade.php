@@ -16,7 +16,7 @@
                 <d4p1:BasicPremium xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $premium_details->basic_premium }}</d4p1:BasicPremium>
                 <d4p1:ChassisNo xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $chassis_number }}</d4p1:ChassisNo>
                 <d4p1:City xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $city }}</d4p1:City>
-                <d4p1:CommissionAmount xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API"></d4p1:CommissionAmount>
+                <d4p1:CommissionAmount xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $commission_amount }}</d4p1:CommissionAmount>
                 <d4p1:CommissionRate xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $commission_rate }}</d4p1:CommissionRate>
                 <d4p1:CountryCode xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $country_code }}</d4p1:CountryCode>
                 <d4p1:CoverNoteDate xmlns="http://schemas.datacontract.org/2004/07/PO.Web.API">{{ $cover_note_date }}</d4p1:CoverNoteDate>
