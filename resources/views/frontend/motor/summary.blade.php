@@ -378,6 +378,8 @@
                 if($(e.target).val() !== 'agree') {
                     $('#btn-pay-modal').attr('disabled', true);
                     $('#disagree-pds-error').removeClass('d-none');
+                } else {
+                    $('#btn-pay-modal').removeAttr('disabled');
                 }
             });
 
