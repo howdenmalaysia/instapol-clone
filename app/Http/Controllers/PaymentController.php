@@ -195,14 +195,7 @@ class PaymentController extends Controller
                     ];
 
                     $helper = new Submission(Str::before($request->Param6, '-'), Str::after($request->Param6, '-'));
-                    $submission = $helper->submission($data);
-
-                    // Update Policy / Cover Note Number
-                    Insurance::where('id', $insurance->id)
-                        ->update([
-                            'cover_note_number' => $submission->response->policy_number,
-                            'cover_note_date' => Carbon::now()->format('Y-m-d'),
-                        ]);
+                    $helper->submission($data);
                 }
 
                 break;
