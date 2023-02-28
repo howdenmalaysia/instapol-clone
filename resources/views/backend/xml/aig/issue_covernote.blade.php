@@ -72,12 +72,12 @@
             @if (!empty($formatted_extra_cover))
                 @foreach ($formatted_extra_cover as $extra_cover)
                     <item xmlns="https://www-400.aig.com.my/AGS/services/IssueCoverNote">
-                        <bencode xmlns="urn:IssueCoverNote">{{ $extra_cover->bencode }}</bencode>
-                        <bendesc xmlns="urn:IssueCoverNote">{{ $extra_cover->bendesc }}</bendesc>
-                        <benpremium xmlns="urn:IssueCoverNote">{{ $extra_cover->benpremium }}</benpremium>
-                        <cewcommperc xmlns="urn:IssueCoverNote">{{ $extra_cover->cewcommperc }}</cewcommperc>
-                        <cewstampduty xmlns="urn:IssueCoverNote">{{ $extra_cover->cewstampduty }}</cewstampduty>
-                        <suminsured xmlns="urn:IssueCoverNote">{{ $extra_cover->suminsured }}</suminsured>
+                        <bencode xmlns="urn:IssueCoverNote">{{ $extra_cover->extra_cover_code }}</bencode>
+                        <bendesc xmlns="urn:IssueCoverNote">{{ $extra_cover->extra_cover_description }}</bendesc>
+                        <benpremium xmlns="urn:IssueCoverNote">{{ $extra_cover->premium }}</benpremium>
+                        <cewcommperc xmlns="urn:IssueCoverNote">{{ $extra_cover->commperc }}</cewcommperc>
+                        <cewstampduty xmlns="urn:IssueCoverNote">{{ $extra_cover->stampduty }}</cewstampduty>
+                        <suminsured xmlns="urn:IssueCoverNote">{{ $extra_cover->sum_insured }}</suminsured>
                         <unit xmlns="urn:IssueCoverNote">{{ $extra_cover->unit }}</unit>
                     </item>
                 @endforeach

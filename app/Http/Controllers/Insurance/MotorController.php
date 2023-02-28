@@ -248,6 +248,7 @@ class MotorController extends Controller
                             'extra_cover_description' => $extra_cover->extra_cover_description,
                             'extra_cover_code' => $selected->extra_cover_code,
                             'plan_type' => $selected->plan_type ?? $extra_cover->plan_type,
+                            'premium' => $selected->premium,
                         ];
 
                         if(!empty($selected->cart_day) && !empty($selected->cart_amount)) {

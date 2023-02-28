@@ -17,7 +17,6 @@ use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Log;
 
 class AIG implements InsurerLibraryInterface
 {
@@ -200,11 +199,6 @@ class AIG implements InsurerLibraryInterface
                 'named_drivers_needed' => true,
             ])
         ];
-    }
-
-    public function cover_note(object $input) : object
-    {
-        
     }
 
     public function jpj_status(object $input) : object
@@ -676,7 +670,6 @@ class AIG implements InsurerLibraryInterface
     public function submission(object $input) : object
     {
         // Get Extra Attribute
-        Log::info('AIG:------------------' .json_encode($input));
         $extra_attribute = json_decode($input->insurance->extra_attribute->value);
 
         switch($input->id_type) {
@@ -714,7 +707,7 @@ class AIG implements InsurerLibraryInterface
                 'cover_type' => $extra_attribute->cover_type,
                 'engine_number' => $extra_attribute->engine_number,
                 'seating_capacity' => $extra_attribute->seating_capacity,
-                'usecode' => $extra_attribute->usecode,
+                'usecode' => $extra_attribute->vehicle_use_code,
                 'vehtypecode' => $extra_attribute->vehtypecode,
                 'covercode' => $extra_attribute->covercode,
                 'make_code' => $extra_attribute->make_code,
@@ -757,7 +750,7 @@ class AIG implements InsurerLibraryInterface
             return $this->abort($premium_result->response);
         }
 
-        $input->premium_details = $premium_result->response;
+        $data->input->premium_details = $premium_result->response;
         $result = $this->issueCoverNote($data);
 
         if(!$result->status) {
@@ -842,8 +835,10 @@ class AIG implements InsurerLibraryInterface
             $effective_time = date('H:i:s', strtotime('now'));
         }
         $occupation = '820';
-        if($input->input->occupation != '' || $input->input->occupation != null){
-            $occupation = $input->input->occupation;
+        if(isset($input->input->occupation)){
+            if($input->input->occupation != '' || $input->input->occupation != null){
+                $occupation = $input->input->occupation;
+            }
         }
         // Format list additional driver charges for third driver
         $additional_drivers = [];
@@ -953,7 +948,7 @@ class AIG implements InsurerLibraryInterface
         array_push($item,(object)[
             'paramIndicator' => 'NVIC',
             'paramRemark' => '',
-            'paramValue' => $input->input->nvic,
+            'paramValue' => $input->input->nvic ?? $input->vehicle->nvic,
         ]);
         $data = [
             'address_1' => ($input->input->address_one ?? '11 FLOOR AIK HUA'),
@@ -978,7 +973,7 @@ class AIG implements InsurerLibraryInterface
             'driveexp' => $age ?? '39',//cannot empty
             'effectivedate' => $inception_date,
             'effectivetime' => $effective_time,
-            'email' => $input->input->email,
+            'email' => $input->input->email ?? $input->input->insurance->holder->email_address,
             'engineno' => $input->vehicle->extra_attribute->engine_number,
             'expirydate' => $expiry_date,
             'garage' => 'B',
@@ -1030,13 +1025,13 @@ class AIG implements InsurerLibraryInterface
             'seatcapacity' => $input->input->vehicle->extra_attribute->seating_capacity,
             'signature' => $this->generateSignature('D112'),
             'stampduty' => 10,
-            'statecode' => $this->getStateCode($input->input->state),
+            'statecode' => $this->getStateCode($input->input->state ?? $input->input->insurance->address->state),
             'suminsured' => $input->vehicle->sum_insured,
             'theftclaim' => 0,
             'thirdclaim' => 0,
-            'towndesc' => $this->getStateName($input->input->state),
+            'towndesc' => $this->getStateName($input->input->state ?? $input->input->insurance->address->state),
             'trailerno' => '',
-            'usecode' => $input->vehicle->extra_attribute->vehicle_use_code,
+            'usecode' => $input->vehicle->extra_attribute->vehicle_use_code ?? $input->vehicle->extra_attribute->usecode,
             'vehbody' => $body_type->description ?? '',
             'vehbodycode' => $body_type->code ?? '',
             'vehcapacity' => $input->vehicle->engine_capacity,
@@ -1252,7 +1247,7 @@ class AIG implements InsurerLibraryInterface
         array_push($item,(object)[
             'paramIndicator' => 'NVIC',
             'paramRemark' => '',
-            'paramValue' => $input->input->nvic,
+            'paramValue' => $input->input->nvic ?? $input->vehicle->nvic,
         ]);
 
         if($input->input->id_type == 1){
@@ -1274,14 +1269,15 @@ class AIG implements InsurerLibraryInterface
             $effective_time = date('H:i:s', strtotime('now'));
         }
         $occupation = '820';
-        if($input->input->occupation != '' || $input->input->occupation != null){
-            $occupation = $input->input->occupation;
+        if(isset($input->input->occupation)){
+            if($input->input->occupation != '' || $input->input->occupation != null){
+                $occupation = $input->input->occupation;
+            }
         }
-
         $data = [
             'GPSCertNo' => '',
             'GPSCompName' => '',
-            'actprem' => doubleval($input->premium_details->actprem) ?? '',
+            'actprem' => doubleval($input->input->premium_details->act_premium),
             'address1' =>($input->input->address_one ?? '11 FLOOR AIK HUA'),
             'address2' => isset($input->input->address_two) ? (empty($input->input->address_two) ? $input->input->city . ', ' . $input->input->state : $input->input->address_two) : '',
             'address3' => isset($input->input->address_two) ? (empty($input->input->address_two) ? '' : $input->input->city . ', ' . $input->input->state) : '',
@@ -1301,9 +1297,9 @@ class AIG implements InsurerLibraryInterface
             'claimamt' => doubleval('0'),
             'cncondition' => 'n',
             'cnpaystatus' => $input->input->cnpaystatus ?? 'R',
-            'commgstamt' => $input->premium_details->commgstamt ?? doubleval('0'),
-            'commiamt' => $input->premium_details->commiamt ?? doubleval('0'),
-            'commiperc' => $input->premium_details->commiperc ?? doubleval('0'),
+            'commgstamt' => $input->input->premium_details->commgstamt,
+            'commiamt' => $input->input->premium_details->commission_amount,
+            'commiperc' => $input->input->premium_details->commiperc,
             'compcode' => '71',
             'country' => '',
             'covercode' => $input->vehicle->extra_attribute->covercode,
@@ -1313,45 +1309,45 @@ class AIG implements InsurerLibraryInterface
             'drvexp' => intval(getAgeFromIC($input->input->id_number) - 18),
             'effectivedate' => Carbon::parse($input->vehicle->inception_date)->format('Y-m-d'),
             'effectivetime' => $effective_time,
-            'email' => $input->input->email,
+            'email' => $input->input->email ?? $input->input->insurance->holder->email_address,
             'engineno' => $input->vehicle->extra_attribute->engine_number,
-            'excess' => $input->premium_details->response->excess ?? doubleval('0'),
+            'excess' => $input->input->premium_details->excess,
             'expirydate' => Carbon::parse($input->vehicle->expiry_date)->format('Y-m-d'),
-            'flquoteno' => $input->premium_details->response->fl_quote_number ?? '',
+            'flquoteno' => $input->input->premium_details->fl_quote_number,
             'garage' => 'B',
             'gender' => $input->input->gender,
-            'grossdue' => $input->premium_details->gross_due ?? doubleval('0'),
-            'grossdue2' => $input->premium_details->gross_due_2 ?? doubleval('0'),
-            'grossprem' => $input->premium_details->gross_premium ?? doubleval('0'),
-            'gstamt' => $input->premium_details->gstamt ?? doubleval('0'),
-            'gstclaimperc' => $input->premium_details->gstclaimperc ?? doubleval('0'),
-            'gstcode' => $input->premium_details->gstcode ?? '',
-            'gstoverwrite' => $input->premium_details->gstoverwrite ?? 'N',
-            'gstperc' => $input->premium_details->gstperc ?? doubleval('0'),
-            'gstpurpose' => $input->premium_details->gstpurpose ?? '',
-            'gstreg' => $input->premium_details->gstreg ?? '',
-            'gstregdate' => $input->premium_details->gstregdate ?? '',
-            'gstregdateend' => $input->premium_details->gstregdateend ?? '',
-            'gstregno' => $input->premium_details->gstregno ?? '',
-            'hpcode' => $input->premium_details->hpcode ?? '',
-            'hphoneno' => $input->premium_details->hphoneno ?? '',
-            'insertstmp' => $input->premium_details->insertstmp ?? '',
-            'insref2' => $input->premium_details->insref2 ?? '',
+            'grossdue' => $input->input->premium_details->gross_due,
+            'grossdue2' => $input->input->premium_details->gross_due_2,
+            'grossprem' => $input->input->premium_details->gross_premium,
+            'gstamt' => $input->input->premium_details->gstamt,
+            'gstclaimperc' => $input->input->premium_details->gstclaimperc,
+            'gstcode' => $input->input->premium_details->gstcode,
+            'gstoverwrite' => $input->input->premium_details->gstoverwrite[0] ?? 'N',
+            'gstperc' => $input->input->premium_details->gstperc[0],
+            'gstpurpose' => $input->input->premium_details->gstpurpose,
+            'gstreg' => $input->input->premium_details->gstreg,
+            'gstregdate' => $input->input->premium_details->gstregdate,
+            'gstregdateend' => $input->input->premium_details->gstregdateend,
+            'gstregno' => $input->input->premium_details->gstregno,
+            'hpcode' => $input->input->premium_details->hpcode,
+            'hphoneno' => $input->input->premium_details->hphoneno,
+            'insertstmp' => $input->input->premium_details->insertstmp[0],
+            'insref2' => $input->input->premium_details->insref2,
             'last4digit' => '',
-            'lessor' => $input->premium_details->lessor ?? '',
-            'loadingamt' => $input->premium_details->loading_amount ?? '0',
-            'loadingperc' => $input->premium_details->loading_percentage ?? '0',
+            'lessor' => $input->input->premium_details->lessor,
+            'loadingamt' => $input->input->premium_details->loading_amount,
+            'loadingperc' => $input->input->premium_details->loading_percentage,
             'makecodemajor' => $input->vehicle->extra_attribute->make_code,
-            'makecodeminor' => $input->vehicle->extra_attribute->model_code,
+            'makecodeminor' => str_pad($input->vehicle->extra_attribute->model_code, 2, '0', STR_PAD_LEFT),
             'makeyear' => intval($input->vehicle->manufacture_year), 
-            'maritalstatus' => $input->input->marital_status,
+            'maritalstatus' => $input->input->insurance->motor->marital_status,
             'merchantid' => '',
             'name' => $input->input->name ?? config('app.name'),
-            'ncdamt' => $input->premium_details->ncd_amount ?? doubleval('0'),
-            'ncdperc' => doubleval($input->premium_details->ncd_percentage),
-            'netdue' => $input->premium_details->net_due ??  doubleval('0'),
-            'netdue2' => $input->premium_details->net_due_2 ?? doubleval('0'),
-            'netprem' => $input->premium_details->net_premium ?? doubleval('0'),
+            'ncdamt' => $input->input->premium_details->ncd_amount,
+            'ncdperc' => doubleval($input->input->premium_details->ncd_percentage),
+            'netdue' => $input->input->premium_details->net_due,
+            'netdue2' => $input->input->premium_details->net_due_2,
+            'netprem' => $input->input->premium_details->net_premium,
             'newic' => $id_number,
             'occupmajor' => $occupation,
             'oldic' => '',
@@ -1359,48 +1355,48 @@ class AIG implements InsurerLibraryInterface
             'passportno' => '',
             'payamt' => $input->input->payamt ?? '0',
             'paytype' => $input->input->paytype ?? 'CC',
-            'piamdrv' => $input->premium_details->piamdrv ?? '0',
+            'piamdrv' => $input->input->premium_details->piamdrv[0],
             'postcode' => $input->input->postcode,
-            'preinscode' => $input->premium_details->preinscode ?? '',
-            'preinsname' => $input->premium_details->preinsname ?? '',
-            'preinsncd' => $input->premium_details->preinsncd ?? doubleval('0.00'),
-            'preinspolno' => $input->premium_details->preinspolno ?? '',
-            'preinsregno' => $input->premium_details->preinsregno ?? '',
-            'prepoleffdate' => $input->premium_details->prepoleffdate ?? '',
-            'prepolexpdate' => $input->premium_details->prepolexpdate ?? '',
+            'preinscode' => $input->input->premium_details->preinscode,
+            'preinsname' => $input->input->premium_details->preinsname,
+            'preinsncd' => $input->input->premium_details->preinsncd[0],
+            'preinspolno' => $input->input->premium_details->preinspolno,
+            'preinsregno' => $input->input->premium_details->preinsregno[0],
+            'prepoleffdate' => $input->input->premium_details->prepoleffdate,
+            'prepolexpdate' => $input->input->premium_details->prepolexpdate,
             'pscoreoriloading' => $input->input->pscoreoriloading ?? 0,
-            'purchasedate' => $input->premium_details->purchasedate ?? '',
-            'purchaseprice' => $input->premium_details->purchaseprice ?? doubleval('0'),
-            'purpose' => $input->premium_details->purpose ?? 'NB',
-            'quoteno' => $input->premium_details->quoteno ?? '',
+            'purchasedate' => $input->input->premium_details->purchasedate,
+            'purchaseprice' => $input->input->premium_details->purchaseprice[0],
+            'purpose' => $input->input->premium_details->purpose[0] ?? 'NB',
+            'quoteno' => $input->input->premium_details->quoteno,
             'receiptno' => $input->input->receiptno ?? '',
             'redbookdesc' => $input->input->redbookdesc ?? '',
             'redbooksum' => $input->input->redbooksum ?? doubleval('0'),
             'region' => strtoupper(substr($input->input->region, 0, 1)),
             'regno' => $input->input->vehicle_number,
-            'renewno' => $input->premium_details->renewno ?? '',
+            'renewno' => $input->input->premium_details->renewno,
             'requestid' => 'D112',
             'respdatetime' => '',
             'safety' => self::SAFETY_CODE,
             'signature' => $this->generateSignature('D112'),
-            'stampduty' => doubleval($input->premium_details->stamp_duty) ?? doubleval('10'),
-            'statecode' => $this->getStateCode($input->input->state),
+            'stampduty' => doubleval($input->input->premium_details->stamp_duty),
+            'statecode' => $this->getStateCode($input->input->insurance->holder->state),
             'suminsured' => doubleval($input->vehicle->sum_insured),
-            'tariffpremium' => $input->premium_details->tariff_premium ?? doubleval('0'),
-            'theftclaim' => $input->premium_details->theftclaim ?? intval('0'),
-            'thirdclaim' => $input->premium_details->thirdclaim ?? intval('0'),
-            'towndesc' => $input->premium_details->towndesc ?? $this->getStateName($input->state),
-            'trailerno' => $input->premium_details->trailerno ?? '',
-            'usecode' => $input->premium_details->usecode ?? '01',
-            'vehbody' => $input->premium_details->description ?? '',
-            'vehbodycode' => $input->premium_details->vehbodycode ?? '',
+            'tariffpremium' => $input->input->premium_details->tariff_premium,
+            'theftclaim' => $input->input->premium_details->theftclaim[0],
+            'thirdclaim' => $input->input->premium_details->thirdclaim[0],
+            'towndesc' => $input->input->premium_details->towndesc[0] ?? $this->getStateName($input->input->insurance->holder->state),
+            'trailerno' => $input->input->premium_details->trailerno,
+            'usecode' => $input->input->premium_details->usecode[0],
+            'vehbody' => $input->input->premium_details->vehbody[0],
+            'vehbodycode' => $input->input->premium_details->vehbodycode[0],
             'vehcapacity' => doubleval($input->vehicle->engine_capacity),
-            'vehcapacitycode' => $input->premium_details->vehcapacitycode ?? self::VEHICLE_CAPACITY_CODE,
-            'vehclaim' => $input->premium_details->vehclaim ?? intval('0'),
-            'vehtypecode' => $input->premium_details->vehtypecode,
-            'waiveloading' => $input->premium_details->usecode ?? '',
-            'winclaim' => $input->premium_details->winclaim ?? intval('0'),
-            'additional_driver' => $additional_driver,
+            'vehcapacitycode' => $input->input->premium_details->vehcapacitycode[0] ?? self::VEHICLE_CAPACITY_CODE,
+            'vehclaim' => $input->input->premium_details->vehclaim[0],
+            'vehtypecode' => $input->input->premium_details->vehtypecode[0],
+            'waiveloading' => $input->input->premium_details->usecode[0],
+            'winclaim' => $input->input->premium_details->winclaim[0],
+            'additional_driver' => $additional_drivers,
             'formatted_extra_cover' => $formatted_extra_cover,
             'item' => $item,
         ];
