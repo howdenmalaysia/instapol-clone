@@ -523,6 +523,13 @@ class PacificOrient implements InsurerLibraryInterface
             return $this->abort($premium_result->response);
         }
 
+        $sequence = [];
+        foreach($premium_result->response->extra_coverage as $extra) {
+            array_push($sequence, $extra->coverageId);
+        }
+
+        $input->sequence = $sequence;
+
         $input->premium_details = $premium_result->response;
         $input->vehicle->extra_attribute->request_id = $premium_result->response->request_id;
         
@@ -703,8 +710,8 @@ class PacificOrient implements InsurerLibraryInterface
         }
 
         usort($formatted_extra_cover, function($a, $b) use($input) {
-            $pos_a = array_search($a->extra_cover_code, array_column($input->premium_details->extra_cover, 'coverageId'));
-            $pos_b = array_search($b->extra_cover_code, array_column($input->premium_details->extra_cover, 'coverageId'));
+            $pos_a = array_search($a->extra_cover_code, $input->sequence);
+            $pos_b = array_search($b->extra_cover_code, $input->sequence);
 
             return $pos_a - $pos_b;
         });
@@ -767,6 +774,10 @@ class PacificOrient implements InsurerLibraryInterface
         if(!$result->status) {
             return $this->abort($result->response);
         }
+
+        $response = (object) [
+            'policy_number' => (string) $result->response->PolicySubmissionResult->policyNo
+        ];
 
         return new ResponseData([
             'response' => $result->response
