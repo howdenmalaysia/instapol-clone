@@ -775,6 +775,10 @@ class PacificOrient implements InsurerLibraryInterface
             return $this->abort($result->response);
         }
 
+        $response = (object) [
+            'policy_number' => (string) $result->response->PolicySubmissionResult->policyNo
+        ];
+
         return new ResponseData([
             'response' => $result->response
         ]);
