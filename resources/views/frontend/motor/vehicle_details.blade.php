@@ -200,6 +200,10 @@
                 }).then((response) => {
                     console.log(response);
 
+                    if(response.make == '' || data.model == '') {
+                        return;
+                    }
+
                     if(response.data.variants.length === 0) {
                         responses++;
 
