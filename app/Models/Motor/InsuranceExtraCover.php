@@ -16,6 +16,8 @@ class InsuranceExtraCover extends Model
         'code',
         'description',
         'sum_insured',
+        'cart_day',
+        'cart_amount',
         'amount',
         'updated_at'
     ];

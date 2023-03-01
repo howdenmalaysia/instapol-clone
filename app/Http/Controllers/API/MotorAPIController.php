@@ -472,6 +472,8 @@ class MotorAPIController extends Controller implements MotorAPIInterface
                     'code' => $extra_cover->extra_cover_code,
                     'description' => $extra_cover->extra_cover_description,
                     'sum_insured' => $extra_cover->sum_insured,
+                    'cart_day' => $extra_cover->cart_day ?? null,
+                    'cart_amount' => $extra_cover->cart_amount ?? null,
                     'amount' => array_values(array_filter($quotation->extra_cover, function($item) use($extra_cover) {
                         return $item->extra_cover_code === $extra_cover->extra_cover_code;
                     }))[0]->premium,

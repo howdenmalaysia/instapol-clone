@@ -2462,7 +2462,9 @@ class Zurich implements InsurerLibraryInterface
                 'extra_cover_code' => $extra_cover->code,
                 'extra_cover_description' => $extra_cover->description,
                 'premium' => $extra_cover->amount,
-                'sum_insured' => $extra_cover->sum_insured ?? 0
+                'sum_insured' => $extra_cover->sum_insured ?? 0,
+                'cart_day' => $extra_cover->cart_day,
+                'cart_amount' => $extra_cover->cart_amount ?? 0,
             ]);
         }
 
