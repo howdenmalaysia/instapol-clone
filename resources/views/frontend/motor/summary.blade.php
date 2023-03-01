@@ -351,7 +351,7 @@
                     <x-slot name="footer">
                         <div class="modal-footer text-end">
                             <button type="button" class="btn btn-secondary rounded" data-bs-dismiss="modal">{{ __('frontend.button.close') }}</button>
-                            <button type="button" id="btn-pay-modal" class="btn btn-primary text-white rounded">{{ __('frontend.button.pay') }}</button>
+                            <button type="button" id="btn-pay-modal" class="btn btn-primary text-white rounded" disabled>{{ __('frontend.button.pay') }}</button>
                         </div>
                     </x-slot>
                 </x-modal>
