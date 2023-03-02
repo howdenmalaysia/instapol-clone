@@ -1060,12 +1060,12 @@ class AIG implements InsurerLibraryInterface
         }
 
         // 2. Check Refer Risks
-        // $refer_code = (string) $result->response->reqdataReturn->refercode;
-        // if($refer_code != '') {
-        //     $message = (string) $result->response->reqdataReturn->referdesc;
+        $refer_code = (string) $result->response->reqdataReturn->refercode;
+        if($refer_code != '') {
+            $message = (string) $result->response->reqdataReturn->referdesc;
 
-        //     return $this->abort(__('api.referred_risk', ['company' => $this->company_name, 'reason' => str_replace('^', ', ', $message)]), $refer_code);
-        // }
+            return $this->abort(__('api.referred_risk', ['company' => $this->company_name, 'reason' => str_replace('^', ', ', $message)]), $refer_code);
+        }
 
         $response = (object) [
             'act_premium' => formatNumber((float) $result->response->reqdataReturn->actprem),

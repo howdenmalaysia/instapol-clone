@@ -1016,7 +1016,9 @@ class ZurichTakaful implements InsurerLibraryInterface
         }     
         $result_data = $result->response->IssueCoverNoteResponse->XmlResult;
         $xml_data = simplexml_load_string($result_data);
-        
+        if(! isset($xml_data->CoverNoteInfo->CoverNoteNo)){
+            return $this->abort($xml_data->CoverNoteError);
+        }
         $response = (object) [
             'CoverNoteNo' => (string) $xml_data->CoverNoteInfo->CoverNoteNo,
             'NCDMsg' => (string) $xml_data->CoverNoteInfo->NCDMsg,
