@@ -208,6 +208,8 @@
                                 window.location = "{{ route('motor.index') }}"
                             });
                         }
+
+                        return;
                     }
 
                     let singleVariant = response.data.variants.length === 1;
