@@ -1005,7 +1005,7 @@ class ZurichTakaful implements InsurerLibraryInterface
         $data["quotation_no"] = $quotationNo;
         $data["agent_code"] = $agent_code;
         $data["logbookno"] = 'NA';
-        $data["getmail"] = 'conference2@my.howdengroup.com';
+        $data["getmail"] = $input->getmail;
         $path = 'IssueCoverNote';
         // Generate XML from view
         $xml = view('backend.xml.zurichTakaful.issue_cover_note')->with($data)->render();
@@ -1017,7 +1017,7 @@ class ZurichTakaful implements InsurerLibraryInterface
         $result_data = $result->response->IssueCoverNoteResponse->XmlResult;
         $xml_data = simplexml_load_string($result_data);
         if(! isset($xml_data->CoverNoteInfo->CoverNoteNo)){
-            return $this->abort($xml_data->CoverNoteError);
+            return $this->abort(json_encode($xml_data));
         }
         $response = (object) [
             'CoverNoteNo' => (string) $xml_data->CoverNoteInfo->CoverNoteNo,
@@ -1190,7 +1190,7 @@ class ZurichTakaful implements InsurerLibraryInterface
                 'request_datetime' => Carbon::now()->format('Y/M/d h:i:s A'),
                 'transaction_ref_no' => $this->participant_code."0000008",//
                 'VehNo' => $input->vehicle_number,
-                'getmail' => 'conference2@my.howdengroup.com',
+                'getmail' => $input->email,
                 'quotationNo' => '',
                 'trans_type' => 'B',
                 'pre_VehNo' => $vehicle_vix->response->vehicle_number,
@@ -1462,7 +1462,7 @@ class ZurichTakaful implements InsurerLibraryInterface
             'request_datetime' => Carbon::now()->format('Y/M/d h:i:s A'),
             'transaction_ref_no' => $this->participant_code."0000008",//
             'VehNo' => $input->vehicle_number,
-            'getmail' => 'conference2@my.howdengroup.com',
+            'getmail' => $input->email,
             'quotationNo' => '',
             'trans_type' => 'B',
             'pre_VehNo' => $input->vehicle_number,
@@ -2505,7 +2505,7 @@ class ZurichTakaful implements InsurerLibraryInterface
             'request_datetime' => Carbon::now()->format('Y/M/d h:i:s A'),
             'transaction_ref_no' => $this->participant_code."0000008",//
             'VehNo' => $input->vehicle_number,
-            'getmail' => 'conference2@my.howdengroup.com',
+            'getmail' => $input->email ?? $input->insurance->holder->email_address,
             'quotationNo' => '',
             'trans_type' => 'B',
             'pre_VehNo' => $input->vehicle_number,
@@ -2585,6 +2585,7 @@ class ZurichTakaful implements InsurerLibraryInterface
             'transaction_ref_no' => $this->participant_code."0000008",
             'request_datetime' => Carbon::now()->format('Y-m-d\TH:i:s.u'),
             'quotationNo' => $quotationNo,
+            'getmail' => $input->email ?? $input->insurance->holder->email_address,
         ];
         $result = $this->issueCoverNote($covernote_data);
 
