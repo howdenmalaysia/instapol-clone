@@ -150,7 +150,7 @@
         $(function() {
             // Send Land on Vehicle Details Event to GA
             gtag('event', 'l_motor_vd', { 'debug_mode': true });
-            
+
             fetchData();
 
             $('#variants').on('change', () => {
@@ -200,11 +200,7 @@
                 }).then((response) => {
                     console.log(response);
 
-                    if(response.make == '' || data.model == '') {
-                        return;
-                    }
-
-                    if(response.data.variants.length === 0) {
+                    if(response.data.variants.length === 0 || response.data.make == '' || response.data.model == '') {
                         responses++;
 
                         if(responses === products.length) {
@@ -238,7 +234,7 @@
                     }
                 }).catch((error) => {
                     console.log(error);
-                    
+
                     let shouldStop = false;
                     switch(error.response.status) {
                         case 460: // Earlier Renewal (2 months - MAX 62 days)
