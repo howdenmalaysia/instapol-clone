@@ -34,8 +34,8 @@ class MotorController extends Controller
     {
         $insurers = InsuranceCompany::orderBy('sequence')
             ->get();
-        
-        $motor = $request->session()->get('motor', []);        
+
+        $motor = $request->session()->get('motor', []);
         return view('frontend.motor.index')->with(['insurers' => $insurers, 'motor' => $motor]);
     }
 
@@ -106,7 +106,7 @@ class MotorController extends Controller
         $products = Product::with('insurance_company')->get();
         $product_ids = [];
         foreach($products as $product) {
-            if(in_array($product->insurance_company->name, ['Pacific & Orient Insurance', 'Lonpac', 'Tune Protect', 'Zurich'])) {
+            if(in_array($product->insurance_company->name, ['Pacific & Orient Insurance', 'Lonpac', 'Tune Protect', 'Zurich General Insurance Malaysia Berhad'])) {
                 array_push($product_ids, $product->id);
             }
         }
@@ -121,7 +121,7 @@ class MotorController extends Controller
         if(empty($request->session()->get('motor'))) {
             return redirect()->route('motor.index');
         }
-        
+
         $session = json_decode($request->motor);
 
         // Reformat Dates
@@ -140,7 +140,7 @@ class MotorController extends Controller
 
         $session->quotation_id = $quote['quotation']->id ?? $session->quotation_id ?? '';
         $request->session()->put('motor', $session);
-        
+
         return redirect()->route('motor.compare');
     }
 
@@ -149,7 +149,7 @@ class MotorController extends Controller
         if(empty($request->session()->get('motor'))) {
             return redirect()->route('motor.index');
         }
-        
+
         $session = $request->session()->get('motor');
 
         if($session->policy_holder->id_type === config('setting.id_type.company_registration_no')) {
@@ -172,7 +172,7 @@ class MotorController extends Controller
         if(empty($request->session()->get('motor'))) {
             return redirect()->route('motor.index');
         }
-        
+
         $motor = json_decode($request->motor);
         $premium = json_decode($request->premium);
 
@@ -309,7 +309,7 @@ class MotorController extends Controller
         if(!empty($request->quotation_number)) {
             $motor->vehicle->extra_attribute->quotation_number = $request->quotation_number;
         }
-        
+
         $request->session()->put('motor', $motor);
 
         $dob = $id_number = '';
@@ -422,7 +422,7 @@ class MotorController extends Controller
             $product = Product::with(['insurance_company', 'product_type'])
                 ->where('id', $insurance->product_id)
                 ->first();
-            
+
             $relationships = Relationship::all();
 
             // Get Roadtax Delivery Fee
@@ -450,7 +450,7 @@ class MotorController extends Controller
         if(empty($request->session()->get('motor'))) {
             return redirect()->route('motor.index');
         }
-        
+
         $insurance_code = $request->session()->get('motor');
 
         $insurance = Insurance::findByInsuranceCode($insurance_code);
@@ -538,7 +538,7 @@ class MotorController extends Controller
             ->where('vehicle_number', $quote->vehicle_no)
             ->where('email_address', $quote->email_address)
             ->update(['active' => Quotation::INACTIVE]);
-        
+
         $response = Quotation::create([
             'product_type' => $quote->product_type,
             'vehicle_number' => $quote->vehicle_no,
