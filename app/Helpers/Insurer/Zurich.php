@@ -2512,7 +2512,7 @@ class Zurich implements InsurerLibraryInterface
             'no_of_passenger' => $input->vehicle->extra_attribute->seating_capacity,
             'no_of_drivers' => '1',
             'ins_indicator' => 'P',
-            'name' => $input->name ?? 'Tan Ai Ling',
+            'name' => $input->insurance->holder->name,
             'ins_nationality' => '',
             'new_ic' => $id_number ?? '',
             'other_id' => '',
