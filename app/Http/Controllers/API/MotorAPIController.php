@@ -437,7 +437,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
                 'vehicle_state_id' => $postcode->state->id,
                 'vehicle_number' => strtoupper($input->vehicle_number),
                 'chassis_number' => $input->vehicle->extra_attribute->chassis_number,
-                'engine_number' => $input->vehicle->extra_attribute->engine_number,
+                'engine_number' => $input->vehicle->extra_attribute->engine_number ?? '',
                 'make' => $input->vehicle->make,
                 'model' => $input->vehicle->model,
                 'seating_capacity' => $input->vehicle->extra_attribute->seating_capacity,
