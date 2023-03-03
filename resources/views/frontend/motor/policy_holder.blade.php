@@ -1,7 +1,7 @@
 @extends('frontend.layouts.app')
 
 @section('title', implode(' | ', [config('app.name'), __('frontend.motor.policy_holder_page.edit_personal_detail')]))
-    
+
 @section('content')
     <x-motor-layout id="policy-holder" current-step="4">
         <x-slot name="content">
@@ -130,7 +130,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                @if (!empty(session('motor')->roadtax) && session('motor')->roadtax->devlivery)
+                                @if (!empty(session('motor')->roadtax) && session('motor')->roadtax->delivery)
                                     <div class="row mt-3">
                                         <div class="col-12 col-sm-3"></div>
                                         <div class="col-12 col-sm-9">
