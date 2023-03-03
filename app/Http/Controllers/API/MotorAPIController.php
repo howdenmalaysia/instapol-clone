@@ -84,15 +84,15 @@ class MotorAPIController extends Controller implements MotorAPIInterface
                     ]);
 
                 return $this->abort($result->response, $result->code);
-            }         
-    
+            }
+
             // Include Insurer Details in Response
             $product = Product::with(['insurance_company'])
                 ->where('id', $request->product_id)
                 ->first();
             $result->response->insurer = $product->insurance_company->name;
             $result->response->product_name = $product->name;
-    
+
             $data = new VehicleVariantData([
                 'insurer' => $result->response->insurer,
                 'product_name' => $result->response->product_name,
@@ -125,7 +125,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             return $data->all();
         } catch(Exception $ex) {
             Log::error("[API/GetVehicleDetails] An error occurred. {$ex->getMessage()}");
-            
+
             return $this->abort($ex->getMessage());
         }
     }
@@ -137,7 +137,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
 
         // Get State Details with Postcode
         $postcode = $this->getPostcodeDetails($motor->postcode);
-        
+
         // Get Product Details
         $product = $this->getProduct($request->product_id);
 
@@ -145,7 +145,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
         if(!empty($motor->vehicle_body_type)) {
             $vehicle_body_type_id = VehicleBodyType::where('name', $motor->vehicle_body_type)->pluck('id');
         }
-        
+
         switch($motor->policy_holder->id_type) {
             case 1: {
                 $age = getAgeFromIC($motor->policy_holder->id_number);
@@ -358,7 +358,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
 
         try {
             DB::beginTransaction();
-            
+
             // 1. Check if a record exists with vehicle number
             $insurance_motor = InsuranceMotor::where('vehicle_number', $input->vehicle_number)->first();
 
@@ -500,13 +500,13 @@ class MotorAPIController extends Controller implements MotorAPIInterface
                     'myeg_fee' => $motor->roadtax->myeg_fee,
                     'e_service_fee' => $motor->roadtax->eservice_fee,
                     'service_tax' => $motor->roadtax->sst,
-                    'recipient_name' => strtoupper($motor->roadtax->recipient_name),
-                    'recipient_phone_number' => $motor->roadtax->recipient_phone_number,
-                    'recipient_address_one' => strtoupper($motor->roadtax->address_one),
-                    'recipient_address_two' => strtoupper($motor->roadtax->address_two),
-                    'recipient_postcode' => $motor->roadtax->postcode,
-                    'recipient_city' => strtoupper($motor->roadtax->city),
-                    'recipient_state' => strtoupper($motor->roadtax->state),
+                    'recipient_name' => strtoupper($motor->roadtax->recipient_name ?? null),
+                    'recipient_phone_number' => $motor->roadtax->recipient_phone_number ?? null,
+                    'recipient_address_one' => strtoupper($motor->roadtax->address_one ?? null),
+                    'recipient_address_two' => strtoupper($motor->roadtax->address_two ?? null),
+                    'recipient_postcode' => $motor->roadtax->postcode ?? null,
+                    'recipient_city' => strtoupper($motor->roadtax->city ?? null),
+                    'recipient_state' => strtoupper($motor->roadtax->state ?? null),
                 ]);
             }
 
@@ -623,7 +623,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
                 $delivery_fee = RoadtaxDeliveryType::where('description', RoadtaxDeliveryType::OTHERS)->first();
             }
         }
-        
+
         // Collection Method - MyJPJ App
         if(!$request->delivery) {
             $delivery_fee->amount = 0;
@@ -737,7 +737,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
                     'insurance_status' => Insurance::STATUS_POLICY_ISSUED,
                     'cover_note_date' => Carbon::now()->format('Y-m-d')
                 ]);
-            
+
             InsuranceRemark::create([
                 'insurance_id' => $input->insurance->id,
                 'remark' => "{$product->insurance_company->name} Policy successfully created. (Policy Number: {$result->response->policy_number})",
