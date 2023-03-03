@@ -130,7 +130,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                @if (!empty(session('motor')->roadtax))
+                                @if (!empty(session('motor')->roadtax) && session('motor')->roadtax->devlivery)
                                     <div class="row mt-3">
                                         <div class="col-12 col-sm-3"></div>
                                         <div class="col-12 col-sm-9">
