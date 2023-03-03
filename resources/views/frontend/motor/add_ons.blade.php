@@ -798,6 +798,7 @@
         }).then((res) => {
             console.log('RoadTax', res);
 
+            res.data.delivery = $('#roadtax-collection').val() === 'delivery';
             $('#h-roadtax').val(JSON.stringify(res.data));
 
             // Update Pricing Display
