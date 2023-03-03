@@ -1,7 +1,7 @@
 @extends('frontend.layouts.app')
 
 @section('title', implode(' | ', [config('app.name'), __('frontend.motor.add_ons_page.add_ons')]))
-    
+
 @section('content')
     <x-motor-layout id="add-ons" current-step="3">
         <x-slot name="content">
@@ -63,7 +63,7 @@
                                                     </div>
                                                     <div class="col-8 d-flex justify-content-between">
                                                         <label for="{{ 'checkbox-' . $_extra_cover->extra_cover_code }}" id="{{ 'label-checkbox-' . $_extra_cover->extra_cover_code }}">{{ $_extra_cover->extra_cover_description }}</label>
-                                                        
+
                                                         @if (strpos($_extra_cover->extra_cover_description, 'Windscreen') !== false)
                                                             <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('frontend.motor.add_ons_page.tooltip.windscreen') }}">
                                                                 <i class="fa-solid fa-circle-question text-primary fa-15x"></i>
@@ -314,7 +314,7 @@
 
         $('#show-more-add-ons').on('click', (e) => {
             let shown = $(e.target).data('shown');
-            
+
             if(!shown) {
                 $(e.target).data('shown', true);
                 $(e.target).text("{{ __('frontend.button.show_less') }}");
@@ -332,13 +332,13 @@
                                 </div>
                                 <div class="col-8 d-flex justify-content-between">
                                     <label for="${'checkbox-' + extra.extra_cover_code}">${extra.extra_cover_description}</label>
-                                    
+
                                     ${getTootip(extra.extra_cover_description)}
                                 </div>
                                 <div class="col-1 text-end">RM</div>
                                 <div id="${extra.extra_cover_code + '-premium'}" class="col-2 text-end premium">${formatMoney(extra.premium)}</div>
                             </div>`;
-                        
+
                     if(extra.option_list) {
                         new_select_fields.push('sum-insured-' + extra.extra_cover_code);
 
@@ -364,7 +364,7 @@
                                     <small>{{ __('frontend.motor.add_ons_page.days') . ':' }}</small>
                                     <select id="${'cart-day-' +  extra.extra_cover_code}" class="cart-day" data-select data-extra-cover-code="${extra.extra_cover_code}">
                         `;
-                         
+
                         extra.cart_list.forEach((cart) => {
                             html += `<option value="${cart.cart_day}" ${cart.cart_day === 7 ? 'selected' : ''}>${cart.cart_day}</option>`;
                         });
@@ -429,7 +429,7 @@
             // Update Tooltip Position
             let percentage = (parseFloat($(e.target).val()) - parseFloat($(e.target).attr('min'))) / (parseFloat($(e.target).attr('max')) - parseFloat($(e.target).attr('min')));
             let correct = Math.round(((percentage - 0.5) * 25 * -1));
-            
+
             $('.tooltip .tooltip-inner').text('RM ' + formatMoney($(e.target).val(), 0).replace('.00', ''));
             $('.tooltip').css('left', Math.ceil((percentage * $(e.target).width()) - ($(e.target).width() / 2) + correct));
         });
@@ -438,7 +438,7 @@
             // Update Tooltip Position
             let percentage = (parseFloat($('#sum-insured-slider').val()) - parseFloat($('#sum-insured-slider').attr('min'))) / (parseFloat($('#sum-insured-slider').attr('max')) - parseFloat($('#sum-insured-slider').attr('min')));
             let correct = Math.round(((percentage - 0.5) * 25 * -1));
-            
+
             $('.tooltip .tooltip-inner').text('RM ' + formatMoney($('#sum-insured-slider').val(), 0).replace('.00', ''));
             $('.tooltip').css('left', Math.ceil((percentage * $('#sum-insured-slider').width()) - ($('#sum-insured-slider').width() / 2) + correct));
         });
@@ -479,9 +479,9 @@
                             </button>
                         </div>
                     </div>`;
-    
+
                 $(html).insertAfter($('.info').last());
-    
+
                 $('.additional-driver-relationship').select2({
                     width: '100%',
                     theme: 'bootstrap-5'
@@ -489,7 +489,9 @@
                     $(this).parsley().validate();
                 });
             } else {
-                swalAlert(`{{ __('frontend.motor.add_ons_page.additional_driver_limit', ['driver' => ${limit}]) }}`, null, false, 'warning', "{{ __('frontend.button.close') }}");
+                let message = "{{ __('frontend.motor.add_ons_page.additional_driver_limit') }}";
+                message.replace(':driver', limit);
+                swalAlert(message, null, false, 'warning', "{{ __('frontend.button.close') }}");
             }
         });
 
@@ -514,7 +516,7 @@
             if(!$(e.target).parent().parent().find('.premium').hasClass('loadingButton')) {
                 $(e.target).parent().parent().find('.premium').text(' ').toggleClass('loadingButton');
             }
-            
+
             if(!$('#pricing-table #add-ons-premium').hasClass('loadingButton')) {
                 $('#pricing-table #add-ons-premium').text(' ').toggleClass('loadingButton');
                 $('#pricing-table #gross-premium').text(' ').toggleClass('loadingButton');
@@ -543,7 +545,7 @@
             } else {
                 // Send de-select Roadtax Event to GA
                 gtag('event', 's_ao_rdt_n', { 'debug_mode': true });
-                
+
                 motor.premium.total_payable -= motor.premium.roadtax - parseFloat(motor.premium.discounted_amount);
                 delete motor.premium.roadtax;
                 delete motor.roadtax;
@@ -653,7 +655,7 @@
         });
 
         $('.card-body').on('change', '.additional-driver-relationship', (e) => {
-            refreshPremium(); 
+            refreshPremium();
         });
 
         $('.card-body').on('click', '.btn-delete-driver', (e) => {
@@ -728,7 +730,7 @@
 
             if(res.data) {
                 console.log('refreshPremium', res);
-    
+
                 motor.premium.total_benefit_amount = res.data.total_benefit_amount;
                 motor.premium.basic_premium = res.data.basic_premium;
                 motor.premium.gross_premium = res.data.gross_premium;
@@ -742,7 +744,7 @@
                 }
 
                 $('#motor').val(JSON.stringify(motor));
-    
+
                 // Update Pricing Card
                 $('#basic-premium').text(formatMoney(motor.premium.basic_premium));
                 $('#ncd').text(formatMoney(motor.premium.ncd_amount));
@@ -750,7 +752,7 @@
                 $('#gross-premium').text(formatMoney(motor.premium.gross_premium));
                 $('#sst').text(formatMoney(motor.premium.sst_amount));
                 $('#total-payable').text(formatMoney(motor.premium.total_payable));
-    
+
                 // Update Add Ons Pricing
                 motor.extra_cover_list.forEach((extra_cover) => {
                     $(`#${$.escapeSelector(extra_cover.extra_cover_code)}-premium`).text(formatMoney(extra_cover.premium)).removeClass('loadingButton');
@@ -761,10 +763,10 @@
                         $(`#${$.escapeSelector(extra_cover.extra_cover_code)}-premium`).text(formatMoney(extra_cover.premium)).removeClass('loadingButton');
                     });
                 }
-    
+
                 // Remove Loading for Next Button
                 $('#btn-next').removeClass('loadingButton');
-    
+
                 // Remove Loading in Pricing Card
                 $('#pricing-table #basic-premium').removeClass('loadingButton');
                 $('#pricing-table #add-ons-premium').removeClass('loadingButton')
@@ -825,16 +827,16 @@
 
                 if(res.data !== '') {
                     $('#motor').val(JSON.stringify(res.data));
-        
+
                     // Update Pricing Card
                     $('#road-tax').text(formatMoney(res.data.roadtax.total)).removeClass('loadingButton');
                     $('#total-payable').text(formatMoney(res.data.premium.total_payable)).removeClass('loadingButton');
                     $('#promo-amount').text(formatMoney(res.data.premium.discounted_amount || 0.00));
-        
+
                     if(parseFloat($('#promo-amount').text()) > 0) {
                         $('#discount').removeClass('d-none');
                     }
-        
+
                     $('#promo-code').val(res.data.promo.code);
                     motor.premium.discounted_amount = res.data.premium.discounted_amount;
                     motor.premium.total_payable = res.data.premium.total_payable;
