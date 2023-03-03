@@ -714,7 +714,7 @@ class AmGeneral implements InsurerLibraryInterface
                 'premium' => floatval($extra_cover->amount),
                 'sum_insured' => floatval($extra_cover->sum_insured) ?? 0,
                 'cart_amount' => $extra_cover->cart_amount ?? 0,
-                'cart_day' => $extra_cover->cart_day ?? 0,
+                'cart_day' => $extra_cover->cart_day,
             ]));
         }
 
