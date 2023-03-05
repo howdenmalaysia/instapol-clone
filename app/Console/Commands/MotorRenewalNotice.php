@@ -93,8 +93,7 @@ class MotorRenewalNotice extends Command
 
                     CronJobs::where('id', $log->id)
                         ->update([
-                            'status' => CronJobs::STATUS_COMPLETED,
-                            'message' => "{$rows} insurance records processed."
+                            'status' => CronJobs::STATUS_COMPLETED
                         ]);
                 });
             } else {
@@ -102,8 +101,7 @@ class MotorRenewalNotice extends Command
                 
                 CronJobs::where('id', $log->id)
                     ->update([
-                        'status' => CronJobs::STATUS_COMPLETED,
-                        'message' => "{$rows} insurance records processed."
+                        'status' => CronJobs::STATUS_COMPLETED
                     ]);
             }
         } catch (Exception $ex) {
