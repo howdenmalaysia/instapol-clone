@@ -603,6 +603,9 @@ class Zurich implements InsurerLibraryInterface
         }     
         $result_data = $result->response->CalculatePremiumResponse->XmlResult;
         $xml_data = simplexml_load_string($result_data);
+        if (isset($xml_data->ErrorDetails)) {
+            return $xml_data;
+        } 
         //respone
         $MotorExtraCoverDetails = [];
         $allowed_extcvr = [];
@@ -1232,7 +1235,9 @@ class Zurich implements InsurerLibraryInterface
                 $quotation->ci_code = 'MX4';
             }
             $premium = $this->getQuotation($quotation);
-
+            if (isset($premium->ErrorDetails)) {
+                return $this->abort($premium->ErrorDetails->Remarks);
+            } 
             $excess_amount = formatNumber($premium->response->PremiumDetails['ExcessAmt']);
             $ncd_amount = formatNumber($premium->response->PremiumDetails['NCDAmt']);
             $basic_premium = formatNumber($premium->response->PremiumDetails['BasicPrem']);
