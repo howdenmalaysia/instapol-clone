@@ -247,6 +247,8 @@
                         showDenyButton: false,
                         showConfirmButton: false,
                     });
+
+                    $('#private-reg').trigger('click');
                 }
 
                 if(!$(e.target).hasClass('active')) {
