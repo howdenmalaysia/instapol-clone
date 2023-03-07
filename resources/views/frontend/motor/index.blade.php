@@ -242,13 +242,13 @@
 
             $('#company-reg, #private-reg').on('click', (e) => {
                 if($(e.target).attr('id') == 'company-reg') {
+                    $('#private-reg').trigger('click');
+
                     Swal.fire({
-                        text: "Coming Soon",
+                        title: "Coming Soon",
                         showDenyButton: false,
                         showConfirmButton: false,
                     });
-
-                    $('#private-reg').trigger('click');
                 }
 
                 if(!$(e.target).hasClass('active')) {
