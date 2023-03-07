@@ -42,8 +42,8 @@
                                                         <div class="btn-group rounded" role="group">
                                                             <input type="radio" id="id-type-1" class="btn-check" name="id_type" value="{{ config('setting.id_type.nric_no') }}" {{ !empty($motor->policy_holder->id_type) && $motor->policy_holder->id_type === config('setting.id_type.nric_no') ? 'checked' : 'checked' }}>
                                                             <label id="private-reg" class="{{ empty($motor->policy_holder->id_type) || (!empty($motor->policy_holder->id_type) && $motor->policy_holder->id_type === config('setting.id_type.nric_no')) ? "btn btn-primary text-white rounded-start border active text-uppercase" : "btn btn-light rounded-start text-uppercase" }}" for="id-type-1">{{ __('frontend.motor.private_registered') }}</label>
-                    
-                                                            <input type="radio" id="id-type-2" class="btn-check" name="id_type" value="{{ config('setting.id_type.company_registration_no') }}" {{ !empty($motor->policy_holder->id_type) && $motor->policy_holder->id_type === config('setting.id_type.company_registration_no') ? 'checked' : '' }}>
+
+                                                            <input type="radio" id="id-type-2" class="btn-check" name="id_type" value="{{ config('setting.id_type.company_registration_no') }}" {{ !empty($motor->policy_holder->id_type) && $motor->policy_holder->id_type === config('setting.id_type.company_registration_no') ? 'checked' : '' }} disabled>
                                                             <label id="company-reg" class="{{ !empty($motor->policy_holder->id_type) && $motor->policy_holder->id_type === config('setting.id_type.company_registration_no') ? "btn btn-primary text-white rounded-end border active text-uppercase" : "btn btn-light rounded-end text-uppercase" }}" for="id-type-2">{{ __('frontend.motor.company_registered') }}</label>
                                                         </div>
                                                     </div>
@@ -241,16 +241,6 @@
             });
 
             $('#company-reg, #private-reg').on('click', (e) => {
-                if($(e.target).attr('id') == 'company-reg') {
-                    $('#private-reg').trigger('click');
-
-                    Swal.fire({
-                        title: "Coming Soon",
-                        showDenyButton: false,
-                        showConfirmButton: false,
-                    });
-                }
-
                 if(!$(e.target).hasClass('active')) {
                     $(e.target).removeClass('btn-light').toggleClass('active btn-primary border text-white');
                     $(e.target).siblings('label.btn').removeClass('active btn-primary border text-white').toggleClass('btn-light');
