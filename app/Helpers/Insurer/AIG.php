@@ -995,7 +995,7 @@ class AIG implements InsurerLibraryInterface
             'makeyear' => $input->vehicle->manufacture_year,
             'maritalstatus' => $marital_status,
             'mtcycrider' => 'S',
-            'name' => $input->input->name ?? $input->insurance->holder->name,
+            'name' => $input->input->name ?? $input->insurance->holder->name ?? 'Tan Ai Ling',
             'ncdamt' => 0,
             'ncdperc' => $input->vehicle->ncd_percentage,
             'newic' => $id_number ?? '',

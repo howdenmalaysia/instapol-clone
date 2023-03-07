@@ -202,7 +202,7 @@ class Zurich implements InsurerLibraryInterface
             return $this->abort($vix->response);
         }
         $get_inception = str_split($vix->response->NxtNCDEffDate, 2);
-        $inception_date =  Carbon::parse($input->vehicle->inception_date)->format('Y-m-d');
+        $inception_date =  Carbon::parse($input->vehicle->inception_date ?? $vix->response->NxtNCDEffDate)->format('Y-m-d');
         $get_expiry = str_split($vix->response->NxtPolExpDate, 2);
         $expiry_date =  $get_expiry[2] . $get_expiry[3] . "-" . $get_expiry[1] .  "-" . $get_expiry[0];
         

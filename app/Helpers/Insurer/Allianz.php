@@ -1220,7 +1220,10 @@ class Allianz implements InsurerLibraryInterface
             return $this->abort($result->response);
         }
         else{
-            if(isset($result->response->UBBStatus)){
+            if(isset($result->response->errors)){
+                return $this->abort(json_encode($result->response->errors));
+            }
+            else if(isset($result->response->UBBStatus)){
                 return $this->abort(json_encode($result->response->UBBStatus));
             }
         }
