@@ -72,13 +72,19 @@ class AIG implements InsurerLibraryInterface
             return $this->abort($vix->response);
         }
         $get_inception = str_split(str_replace('/','',$vix->response->expirydate), 2);
-        $inception_date =  $get_inception[2] . $get_inception[3] . "-" . $get_inception[1] .  "-" . strval(intval($get_inception[0] + 1));
-        $get_expiry = str_split(str_replace('/','',$vix->response->expirydate), 2);
-        $expiry_date =  $get_expiry[2] . strval(intval($get_inception[3]) + 1) . "-" . $get_expiry[1] .  "-" . $get_expiry[0];
-        $today = Carbon::today()->format('Y-m-d');
+        $transfrom_date =  $get_inception[2] . $get_inception[3] . "-" . $get_inception[1] .  "-" . $get_inception[0];
+        $inception_date =  Carbon::parse($transfrom_date)->addDay()->format('Y-m-d');
+        $expiry_date =  Carbon::parse($transfrom_date)->addYear()->format('Y-m-d');
+        $today = Carbon::today();
         // 1. Check inception date
         if($inception_date < $today) {
             return $this->abort('inception date expired');
+        }
+        else {
+            // Check 2 Months Before
+            if (Carbon::parse($today)->addMonths(2)->lessThan($inception_date)) {
+                return $this->abort(__('api.earlier_renewal'), config('setting.response_codes.earlier_renewal'));
+            }
         }
         $uriSegments = explode("/", parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
         if($uriSegments[3] == 'vehicle-details'){
@@ -1047,7 +1053,7 @@ class AIG implements InsurerLibraryInterface
         $xml = view('backend.xml.aig.premium')->with($data)->render();
         // Call API
         $result = $this->cURL($path, $xml);
-
+        
         if (!$result->status) {
             return $this->abort($result->response);
         }
@@ -1063,10 +1069,10 @@ class AIG implements InsurerLibraryInterface
         $refer_code = (string) $result->response->reqdataReturn->refercode;
         if($refer_code != '') {
             $message = (string) $result->response->reqdataReturn->referdesc;
-
-            return $this->abort(__('api.referred_risk', ['company' => $this->company_name, 'reason' => str_replace('^', ', ', $message)]), $refer_code);
+            
+            return $this->abort($message);
         }
-
+        
         $response = (object) [
             'act_premium' => formatNumber((float) $result->response->reqdataReturn->actprem),
             'commission_amount' => formatNumber((float) $result->response->reqdataReturn->commiamt),

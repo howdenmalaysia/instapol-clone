@@ -86,7 +86,12 @@ class Allianz implements InsurerLibraryInterface
         if($inception_date < $today) {
             return $this->abort('inception date expired');
         }
-
+        else {
+            // Check 2 Months Before
+            if (Carbon::parse($today)->addMonths(2)->lessThan($inception_date)) {
+                return $this->abort(__('api.earlier_renewal'), config('setting.response_codes.earlier_renewal'));
+            }
+        }
         // 2. Check Sum Insured -> market price
         $sum_insured = formatNumber($vix->response->nvicList[0]->vehicleMarketValue, 0);
         if($sum_insured < self::MIN_SUM_INSURED || roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_UP, true) > self::MAX_SUM_INSURED) {
