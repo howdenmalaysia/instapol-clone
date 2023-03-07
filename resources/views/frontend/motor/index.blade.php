@@ -191,7 +191,7 @@
                                                 >
                                                 <span id="email-address-errors"></span>
                                             </div>
-                                        </div>  
+                                        </div>
                                         <div class="my-3 row text-end">
                                             <div class="col-12 col-sm-10 col-md-11 col-lg-10 col-xl-10">
                                                 <button type="reset" class="h4 d-inline-block bg-white border-0 text-center text-secondary text-uppercase fw-bold" id="btn-clear">{{ __('frontend.button.clear') }}</button>
@@ -241,6 +241,14 @@
             });
 
             $('#company-reg, #private-reg').on('click', (e) => {
+                if($(e.target).attr('id') == 'company-reg') {
+                    Swal.fire({
+                        text: "Coming Soon",
+                        showDenyButton: false,
+                        showConfirmButton: false,
+                    });
+                }
+
                 if(!$(e.target).hasClass('active')) {
                     $(e.target).removeClass('btn-light').toggleClass('active btn-primary border text-white');
                     $(e.target).siblings('label.btn').removeClass('active btn-primary border text-white').toggleClass('btn-light');
