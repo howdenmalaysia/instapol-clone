@@ -692,8 +692,8 @@ class ZurichTakaful implements InsurerLibraryInterface
             'allowed_extcvr' => $allowed_extcvr,
             'MotorExtraCoverDetails' => $MotorExtraCoverDetails,
             'ReferralDetails' => [
-                'ReferralCode' => $xml_data->ReferralData->Referral_Decline_Code ?? null,
-                'ReferralMessage' => $xml_data->ReferralData->Referral_Message ?? null,
+                'ReferralCode' => $xml_data->ReferralData->Referral_Decline_Code,
+                'ReferralMessage' => $xml_data->ReferralData->Referral_Message,
             ],
             'ErrorDetails' => [
                 'ErrorCode' => $xml_data->Error_Display->Error_Code,
@@ -770,7 +770,7 @@ class ZurichTakaful implements InsurerLibraryInterface
         $no_of_passenger = $input->no_of_passenger;//'5';
         $no_of_drivers = $input->no_of_drivers;//'1';
         $ins_indicator = $input->ins_indicator;//'P';
-        $name = $input->name;//'TAN AI LING';
+        $name = $input->name;//'Tester';
         $ins_nationality = $input->ins_nationality;//'L';
         $new_ic = $input->new_ic;//'530102-06-5226';
         $other_id = $input->other_id;//'';
@@ -1226,7 +1226,7 @@ class ZurichTakaful implements InsurerLibraryInterface
                 'no_of_passenger' => $vehicle_vix->response->seating_capacity,
                 'no_of_drivers' => '1',
                 'ins_indicator' => 'P',
-                'name' => $input->name ?? 'Tan Ai Ling',
+                'name' => $input->name ?? 'Tester',
                 'ins_nationality' => '',
                 'new_ic' => $id_number ?? '',
                 'other_id' => '',
@@ -1500,7 +1500,7 @@ class ZurichTakaful implements InsurerLibraryInterface
             'no_of_passenger' => $input->vehicle->extra_attribute->seating_capacity,
             'no_of_drivers' => '1',
             'ins_indicator' => 'P',
-            'name' => $input->name ?? 'Tan Ai Ling',
+            'name' => $input->name ?? 'Tester',
             'ins_nationality' => '',
             'new_ic' => $id_number ?? '',
             'other_id' => '',
