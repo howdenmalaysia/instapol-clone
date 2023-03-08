@@ -42,8 +42,8 @@
                                                         <div class="btn-group rounded" role="group">
                                                             <input type="radio" id="id-type-1" class="btn-check" name="id_type" value="{{ config('setting.id_type.nric_no') }}" {{ !empty($motor->policy_holder->id_type) && $motor->policy_holder->id_type === config('setting.id_type.nric_no') ? 'checked' : 'checked' }}>
                                                             <label id="private-reg" class="{{ empty($motor->policy_holder->id_type) || (!empty($motor->policy_holder->id_type) && $motor->policy_holder->id_type === config('setting.id_type.nric_no')) ? "btn btn-primary text-white rounded-start border active text-uppercase" : "btn btn-light rounded-start text-uppercase" }}" for="id-type-1">{{ __('frontend.motor.private_registered') }}</label>
-                    
-                                                            <input type="radio" id="id-type-2" class="btn-check" name="id_type" value="{{ config('setting.id_type.company_registration_no') }}" {{ !empty($motor->policy_holder->id_type) && $motor->policy_holder->id_type === config('setting.id_type.company_registration_no') ? 'checked' : '' }}>
+
+                                                            <input type="radio" id="id-type-2" class="btn-check" name="id_type" value="{{ config('setting.id_type.company_registration_no') }}" {{ !empty($motor->policy_holder->id_type) && $motor->policy_holder->id_type === config('setting.id_type.company_registration_no') ? 'checked' : '' }} disabled>
                                                             <label id="company-reg" class="{{ !empty($motor->policy_holder->id_type) && $motor->policy_holder->id_type === config('setting.id_type.company_registration_no') ? "btn btn-primary text-white rounded-end border active text-uppercase" : "btn btn-light rounded-end text-uppercase" }}" for="id-type-2">{{ __('frontend.motor.company_registered') }}</label>
                                                         </div>
                                                     </div>
@@ -191,7 +191,7 @@
                                                 >
                                                 <span id="email-address-errors"></span>
                                             </div>
-                                        </div>  
+                                        </div>
                                         <div class="my-3 row text-end">
                                             <div class="col-12 col-sm-10 col-md-11 col-lg-10 col-xl-10">
                                                 <button type="reset" class="h4 d-inline-block bg-white border-0 text-center text-secondary text-uppercase fw-bold" id="btn-clear">{{ __('frontend.button.clear') }}</button>
