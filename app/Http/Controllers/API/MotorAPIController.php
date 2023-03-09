@@ -216,7 +216,8 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             'additional_driver' => toObject($request->additional_driver ?? []),
             'vehicle_body_type' => $vehicle_body_type_id ?? null,
             'phone_number' => $motor->policy_holder->phone_number,
-            'occupation' => strtoupper($motor->policy_holder->occupation ?? '')
+            'occupation' => strtoupper($motor->policy_holder->occupation ?? ''),
+            'quotation_number' => $motor->quotation_number ?? '',
         ]);
 
         Log::info('[GetQuote] Received Request: ' . json_encode($data));
@@ -249,7 +250,8 @@ class MotorAPIController extends Controller implements MotorAPIInterface
                 'net_premium' => $result->response->net_premium,
                 'extra_cover' => $result->response->extra_cover,
                 'named_drivers_needed' => $result->response->named_drivers_needed,
-                'vehicle' => $result->response->vehicle
+                'vehicle' => $result->response->vehicle,
+                'quotation_number' => $result->response->quotation_number,
             ]);
         } else {
             $quote = new QuoteResponse([
@@ -268,6 +270,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
                 'loading' => $result->response->loading,
                 'total_payable' => $result->response->total_payable,
                 'extra_cover' => $result->response->extra_cover,
+                'quotation_number' => $result->response->quotation_number,
             ]);
         }
 
@@ -322,6 +325,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             'address_two' => strtoupper($motor->policy_holder->address_2),
             'city' => strtoupper($motor->policy_holder->city),
             'occupation' => strtoupper($motor->policy_holder->occupation ?? ''),
+            'quotation_number' => $motor->quotation_number ?? '',
             'promo' => $motor->promo ?? []
         ]);
 
@@ -391,7 +395,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
                 'quotation_date' => Carbon::now()->format('Y-m-d'),
                 'created_by' => $user->id,
                 'updated_by' => $user->id,
-                'contract_number' => $quotation->contract_number ?? null,
+                'contract_number' => $quotation->contract_number ?? $quotation->quotation_number ?? null,
             ]);
 
             // 2b. Generate & Update Insurance Code
@@ -667,6 +671,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
         // Get Insurance Details
         $insurance = Insurance::with([
                 'product',
+                'extra_attribute',
                 'extra_cover',
                 'holder',
                 'motor',
@@ -702,7 +707,8 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             'transaction_reference' => $request->transaction_reference,
             'insurance' => $insurance,
             'insurance_motor' => $insurance_motor,
-            'region' => $postcode->state->region
+            'region' => $postcode->state->region,
+            'quotation_number' => $insurance->contract_number ?? '',
         ];
 
         // Check Insurance Status

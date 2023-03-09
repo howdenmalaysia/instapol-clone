@@ -202,6 +202,7 @@ class MotorController extends Controller
 
         $motor->extra_cover_list = $premium->extra_cover;
         $motor->named_drivers_needed = $premium->named_drivers_needed;
+        $motor->quotation_number = $premium->quotation_number ?? '';
 
         $request->session()->put('motor', $motor);
 

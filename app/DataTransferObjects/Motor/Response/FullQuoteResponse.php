@@ -65,4 +65,7 @@ class FullQuoteResponse extends DataTransferObject
 
     /** @var \App\DataTransferObjects\Motor\Vehicle  */
     public $vehicle;
+
+    /** @var string|null */
+    public $quotation_number;
 }

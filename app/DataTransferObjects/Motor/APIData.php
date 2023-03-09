@@ -99,4 +99,7 @@ class APIData extends DataTransferObject
 
     /** @var object|array|null */
     public $promo;
+    
+    /** @var string|null */
+    public $quotation_number;
 }

@@ -718,8 +718,8 @@ class AmGeneral implements InsurerLibraryInterface
                 'extra_cover_description' => $extra_cover->description,
                 'premium' => floatval($extra_cover->amount),
                 'sum_insured' => floatval($extra_cover->sum_insured) ?? 0,
-                'cart_amount' => $extra_cover->cart_amount ?? 0,
-                'cart_day' => $extra_cover->cart_day,
+                'cart_amount' => (int)$extra_cover->cart_amount ?? 0,
+                'cart_day' => (int)$extra_cover->cart_day,
             ]));
         }
 
@@ -730,33 +730,51 @@ class AmGeneral implements InsurerLibraryInterface
         }
 
         $data = (object) [
-            'name' => $input->insurance->policy_holder->name,
-            'id_type' => $input->insurance->policy_holder->id_type_id,
-            'id_number' => $input->insurance->policy_holder->id_number,
-            'gender' => $input->insurance->policy_holder->gender,
-            'marital_status' => $input->insurance->policy_holder->marital_status,
-            'email' => $input->insurance->policy_holder->email,
-            'phone_number' => '0' . $input->insurance->policy_holder->phone_number,
-            'unit_no' => $input->insurance->address->unit_no,
-            'building_name' => $input->insurance->address->building_name,
-            'address_one' => $input->insurance->address->address_one,
-            'address_two' => $input->insurance->address->address_two,
+            'name' => $input->insurance->holder->name,
+            'id_type' => $input->id_type,
+            'id_number' => $input->id_number,
+            'gender' => $input->insurance->holder->gender,
+            'marital_status' => $input->insurance_motor->marital_status,
+            'email' => $input->email ?? $input->insurance->holder->email_address,
+            'phone_number' => $input->phone_number ?? $input->insurance->holder->phone_number,
+            'unit_no' => '',
+            'building_name' => '',
+            'address_one' => $input->insurance->address->address_one ?? $input->address_one,
+            'address_two' => $input->insurance->address->address_two ?? $input->address_two,
             'city' => $input->insurance->address->city,
-            'postcode' => $input->insurance->address->postcode,
-            'state' => $input->insurance->address->state,
-            'vehicle_number' => $input->insurance_motor->vehicle_number,
+            'postcode' => $input->postcode ?? $input->insurance->address->postcode,
+            'state' => $input->insurance->address->state ?? $input->state,
+            'vehicle_number' => $input->vehicle_number,
+			'nvic' => $input->insurance_motor->nvic,
             'vehicle' => (object) [
                 'nvic' => $input->insurance_motor->nvic,
                 'inception_date' => $input->insurance->inception_date,
                 'expiry_date' => $input->insurance->expiry_date,
-                'extra_attribute' => $extra_attribute,
-                'sum_insured' => $input->insurance_motor->sum_insured
+                'extra_attribute' => (object) [
+					'chassis_number' => $extra_attribute->chassis_number,
+					'cover_type' => $extra_attribute->cover_type,
+					'engine_number' => $extra_attribute->engine_number,
+					'seating_capacity' => $extra_attribute->seating_capacity,
+				],
+                'sum_insured' => formatNumber($input->insurance_motor->market_value),
             ],
             'extra_cover' => $extra_benefits,
-            'occupation' => $input->insurance->policy_holder->occupation,
+            'occupation' => $input->insurance->occupation ?? '',
         ];
 		$set_data = (object)[
 			'input' => $data,
+			"vehicleClass"=>$extra_attribute->amgen_quote_input->vehicleClass,
+			"scopeOfCover"=>$data->vehicle->extra_attribute->cover_type,
+			"roadTaxOption"=>$extra_attribute->amgen_quote_input->isRoadTaxAvail,
+			"vehBodyTypeCode"=>$vehicle->extra_attribute->amgen_quote_input->vehicle_body_code ?? '01',
+			"sumInsured"=>$data->vehicle->sum_insured,
+			"saveInd"=> 'Y',
+			"ptvSelectInd"=>'N',
+			"namedDriversList"=>$extra_attribute->amgen_quote_input->namedDriversList,
+			"vehicleAgeLoadPercent"=>'',
+			"insuredAgeLoadPercent"=>'',
+			"claimsExpLoadPercent"=>'',
+			'fullquote' => false,
 		];
         $result = $this->Q_GetQuote($set_data);
 
@@ -765,11 +783,11 @@ class AmGeneral implements InsurerLibraryInterface
         }
 
 		//get quotationNo
-		if(strlen($input->insurance->address->state) > 30){
-			$state = substr($input->insurance->address->state, 0, 30);
+		if(strlen($input->insurance->address->state ?? $input->state) > 30){
+			$state = substr($input->insurance->address->state ?? $input->state, 0, 30);
 		}
-		if($input->insurance->policy_holder->id_type_id == '1'){
-			$dobs = str_split($input->insurance->policy_holder->id_number, 2);
+		if($input->id_type == '1'){
+			$dobs = str_split($input->id_number, 2);
 			$id_number = $dobs[0] . $dobs[1] . $dobs[2] . "-" . $dobs[3] .  "-" . $dobs[4] . $dobs[5];
 			$year = intval($dobs[0]);
 			if ($year >= 10) {
@@ -778,39 +796,39 @@ class AmGeneral implements InsurerLibraryInterface
 				$year += 2000;
 			}
 			$dob = $dobs[2] . "-" . $dobs[1] . "-" . strval($year);
-			$nric_number = $input->insurance->policy_holder->id_number;
+			$nric_number = $input->id_number;
 		}
-		else if($input->insurance->policy_holder->id_type_id == '4'){
-			if ($this->isNewBusinessRegistrationNumber($input->insurance->policy_holder->id_number)) {
-				$new_business_registration_number = $input->insurance->policy_holder->id_number;
+		else if($input->id_type == '4'){
+			if ($this->isNewBusinessRegistrationNumber($input->id_number)) {
+				$new_business_registration_number = $input->id_number;
 			} else {
-				$business_registration_number = $input->insurance->policy_holder->id_number;
+				$business_registration_number = $input->id_number;
 			}
 		}
 
 		$text = (object)[
-			'id_type' => $input->insurance->policy_holder->id_type,
-			'id_number' => $input->insurance->policy_holder->id_number,
+			'id_type' => $input->id_type,
+			'id_number' => $input->id_number,
 			"newICNo"=>$nric_number ?? '',
 			"vehicleClass"=>$extra_attribute->amgen_quote_input->vehicleClass,
-			"vehicleNo"=>$input->insurance_motor->vehicle_number,
+			"vehicleNo"=>$input->vehicle_number,
 			"brand"=>$this->brand,
 			"dob"=>$dob ?? '',
-			"clientName"=>$input->insurance->policy_holder->name ?? config('app.name'),
-			"genderCode"=>$input->insurance->policy_holder->gender,
-			"maritalStatusCode"=>$input->insurance->policy_holder->marital_status,
-			"insuredAddress1"=>$input->insurance->address->address_one ?? '11 FLOOR AIK HUA',
-			"insuredAddress2"=>isset($input->insurance->address->address_two) ? (empty($input->insurance->address->address_two) ? $input->insurance->address->city . ', ' . $input->insurance->address->state : $input->insurance->address->address_two) : '',
-			"insuredAddress3"=>isset($input->insurance->address->address_two) ? (empty($input->insurance->address->address_two) ? '' : $input->insurance->address->city . ', ' . $input->insurance->address->state) : '',
+			"clientName"=>$input->insurance->holder->name,
+			"genderCode"=>$input->insurance->holder->gender,
+			"maritalStatusCode"=>$input->insurance_motor->marital_status,
+			"insuredAddress1"=>$input->insurance->address->address_one ?? $input->address_one,
+			"insuredAddress2"=>isset($input->insurance->address->address_two) ? (empty($input->insurance->address->address_two ?? $input->address_two) ? $input->insurance->address->city . ', ' . $state : $input->insurance->address->address_two ?? $input->address_two) : '',
+			"insuredAddress3"=>isset($input->insurance->address->address_two) ? (empty($input->insurance->address->address_two ?? $input->address_two) ? '' : $input->insurance->address->city . ', ' . $state) : '',
 			"insuredAddress4"=> '',
-			"vehicleKeptAddress1"=>$input->insurance->address->address_one ?? '11 FLOOR AIK HUA',
-			"vehicleKeptAddress2"=>isset($input->insurance->address->address_two) ? (empty($input->insurance->address->address_two) ? $input->insurance->address->city . ', ' : $input->insurance->address->address_two) : '',
-			"vehicleKeptAddress3"=>isset($input->insurance->address->address_two) ? (empty($input->insurance->address->address_two) ? '' : $input->insurance->address->city . ', ') : '',
+			"vehicleKeptAddress1"=>substr($input->insurance->address->address_one ?? $input->address_one, 0, 30),
+			"vehicleKeptAddress2"=>substr(isset($input->insurance->address->address_two) ? (empty($input->insurance->address->address_two ?? $input->address_two) ? $input->insurance->address->city . ', ' . $state : $input->insurance->address->address_two ?? $input->address_two) : '', 0, 30),
+			"vehicleKeptAddress3"=>substr(isset($input->insurance->address->address_two) ? (empty($input->insurance->address->address_two ?? $input->address_two) ? '' : $input->insurance->address->city . ', ' . $state) : '', 0, 30),
 			"vehicleKeptAddress4"=> $state ?? '',
-			"insuredPostCode"=>$input->insurance->address->postcode,
-			"vehiclePostCode"=>$input->insurance->address->postcode,
-			"mobileNo"=>$input->insurance->policy_holder->phone_number ?? '0123456789',
-			"emailId"=>$input->insurance->policy_holder->email,
+			"insuredPostCode"=>$input->postcode ?? $input->insurance->address->postcode,
+			"vehiclePostCode"=>$input->postcode ?? $input->insurance->address->postcode,
+			"mobileNo"=>$input->phone_number ?? $input->insurance->holder->phone_number,
+			"emailId"=>$input->email ?? $input->insurance->holder->email_address,
 			"garagedCode"=>'01',
 			"safetyCode"=>'99',
 			"newBusRegNo"=> $new_business_registration_number ?? '',
@@ -824,7 +842,7 @@ class AmGeneral implements InsurerLibraryInterface
 			return $this->abort($add_quote->response);
 		}
         $response = (object) [
-            'policy_number' => $add_quote->response->coverNoteNo
+            'policy_number' => $add_quote->response->quotationNo
         ];
 
         return (object) ['status' => true, 'response' => $response];

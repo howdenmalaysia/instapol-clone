@@ -327,6 +327,7 @@ class Zurich implements InsurerLibraryInterface
 			'occupation' => $input->occupation,
 			'age' => $input->age,
 			'additional_driver' => $input->additional_driver,
+            'quotation_number' => $input->quotation_number,
 		];
 
 		$result = $this->premiumDetails($data);
@@ -374,7 +375,7 @@ class Zurich implements InsurerLibraryInterface
         $data["cn_mail"] = $CNMailId;
 
         //basic details
-        $quotationNo = $input->quotationNo ?? '';
+        $quotationNo = $input->quotationNo;
         $agent_code = $this->agent_code;
         $trans_type = $input->trans_type;
         $VehNo = $input->VehNo;
@@ -1105,6 +1106,7 @@ class Zurich implements InsurerLibraryInterface
         $vehicle = $input->vehicle ?? null;
         $ncd_amount = $basic_premium = $total_benefit_amount = $gross_premium = $sst_percent = $sst_amount = $stamp_duty = $excess_amount = $total_payable = 0;
         $pa = null;
+        $quotation_no = $input->quotation_number ?? '';
         $region = '';
         if($input->region == 'West'){
             $region = 'W';
@@ -1243,7 +1245,14 @@ class Zurich implements InsurerLibraryInterface
             $premium = $this->getQuotation($quotation);
             if (isset($premium->ErrorDetails)) {
                 return $this->abort($premium->ErrorDetails->Remarks);
-            } 
+            }
+            if(isset($premium->response->QuotationInfo)){
+                foreach($premium->response->QuotationInfo as $key => $quotation){
+                    if($key == 'QuotationNo'){
+                        $quotation_no = (string)$quotation;
+                    }
+                }
+            }
             $excess_amount = formatNumber($premium->response->PremiumDetails['ExcessAmt']);
             $ncd_amount = formatNumber($premium->response->PremiumDetails['NCDAmt']);
             $basic_premium = formatNumber($premium->response->PremiumDetails['BasicPrem']);
@@ -1455,7 +1464,7 @@ class Zurich implements InsurerLibraryInterface
             'transaction_ref_no' => $this->participant_code."0000008",//
             'VehNo' => $input->vehicle_number,
             'getmail' => $input->email,
-            'quotationNo' => '',
+            'quotationNo' => $quotation_no,
             'trans_type' => 'B',
             'pre_VehNo' => $input->vehicle_number,
             'product_code' => 'PC01',
@@ -1573,6 +1582,7 @@ class Zurich implements InsurerLibraryInterface
             'total_benefit_amount' => formatNumber($total_benefit_amount),
             'total_payable' => formatNumber($premium_data['TtlPayablePremium']),
             'named_drivers_needed' => true,
+            'quotation_number' => $quotation_no,
         ]);
         if($full_quote) {
             // Revert to premium without extra covers
@@ -2496,7 +2506,7 @@ class Zurich implements InsurerLibraryInterface
             'transaction_ref_no' => $this->participant_code."0000008",//
             'VehNo' => $input->vehicle_number,
             'getmail' => $input->email ?? $input->insurance->holder->email_address,
-            'quotationNo' => '',
+            'quotationNo' => $input->quotation_number,
             'trans_type' => 'B',
             'pre_VehNo' => $input->vehicle_number,
             'product_code' => 'PC01',

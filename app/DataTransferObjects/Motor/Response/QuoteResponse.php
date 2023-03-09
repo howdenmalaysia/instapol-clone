@@ -53,4 +53,7 @@ class QuoteResponse extends DataTransferObject
 
     /** @var int|float|null */
     public $net_premium;
+
+    /** @var string|null */
+    public $quotation_number;
 }
