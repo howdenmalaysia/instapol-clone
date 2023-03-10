@@ -2088,6 +2088,7 @@ class AmGeneral implements InsurerLibraryInterface
             'path' => $path,
             'request_header' => json_encode($options['headers']),
             'request' => json_encode(isset($options['form_params']) ? $options['form_params'] : $this->decrypt($encrypted_request)),
+            'encrypted_request' => json_encode(isset($options['form_params']) ? NULL : $encrypted_request),
         ]);
 
         if ($result->status) {
@@ -2095,7 +2096,8 @@ class AmGeneral implements InsurerLibraryInterface
 			APILogs::find($log->id)
             ->update([
                 'response_header' => json_encode($result->response_header),
-                'response' => isset($options['form_params']) ? $result->response : $this->decrypt(json_decode($result->response)->responseData)
+                'response' => isset($options['form_params']) ? $result->response : $this->decrypt(json_decode($result->response)->responseData),
+                'encrypted_response' => isset($options['form_params']) ? NULL : json_decode($result->response)->responseData
             ]);
 
             $json = json_decode($result->response);
@@ -2111,7 +2113,8 @@ class AmGeneral implements InsurerLibraryInterface
 			APILogs::find($log->id)
             ->update([
                 'response_header' => json_encode($result->response_header),
-                'response' => isset($options['form_params']) ? json_encode($result->response) : $this->decrypt(json_decode($result->response)->responseData)
+                'response' => isset($options['form_params']) ? json_encode($result->response) : $this->decrypt(json_decode($result->response)->responseData),
+                'encrypted_response' => isset($options['form_params']) ? NULL : json_decode($result->response)->responseData
             ]);
             $message = !empty($result->response) ? $result->response : __('api.empty_response', ['company' => $this->company_name]);
             if(isset($result->response->status_code)){

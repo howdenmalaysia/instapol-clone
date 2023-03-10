@@ -77,7 +77,9 @@ class Allianz implements InsurerLibraryInterface
         if(!$vix->status && is_string($vix->response)) {
             return $this->abort($vix->response);
         }
-
+        if(empty($vix->response->nvicList)){
+            return $this->abort('Empty nvicList!');
+        }
         $inception_date = $vix->response->polEffectiveDate;
         $expiry_date = $vix->response->polExpiryDate;
         
@@ -154,8 +156,8 @@ class Allianz implements InsurerLibraryInterface
                 'model' => $vix->response->vehicleModel,
                 'model_code' => intval($vix->response->modelCode),
                 'manufacture_year' => intval($vix->response->yearOfManufacture),
-                'max_sum_insured' => roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_UP, true, self::MAX_SUM_INSURED),
-                'min_sum_insured' => roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_DOWN, false, self::MIN_SUM_INSURED),
+                'max_sum_insured' => $sum_insured,
+                'min_sum_insured' => $sum_insured,
                 'sum_insured' => $sum_insured,
                 'sum_insured_type' => 'Agreed Value',
                 'ncd_percentage' => floatval($vix->response->ncdPercentage),
@@ -636,17 +638,6 @@ class Allianz implements InsurerLibraryInterface
             // Include Extra Covers to Get Premium
             $input->extra_cover = $extra_cover_list;
         }
-        else{//update sum_insured
-            // get premium
-            $get_quotation = (object)[
-                'input'=>$input,
-                'vix'=>$vehicle,
-            ];
-            $upd_sum_insured = $this->getQuotation($get_quotation);
-            if (!$upd_sum_insured->status) {
-                return $this->abort($upd_sum_insured->response);
-            }
-        }
 
         // get premium
         $get_quotation = (object)[
@@ -694,7 +685,7 @@ class Allianz implements InsurerLibraryInterface
             'net_premium' => formatNumber($motor_premium->response->premium->premiumDueRoundedAfterPTV - $motor_premium->response->premium->commissionAmount),
             'extra_cover' => $this->sortExtraCoverList($input->extra_cover),
             'personal_accident' => $pa,
-            'sum_insured' => formatNumber($vehicle->sum_insured ?? 0),
+            'sum_insured' => formatNumber(empty($input->vehicle->sum_insured) ? $vehicle->sum_insured : $input->vehicle->sum_insured),
             'sum_insured_type' => $vehicle->sum_insured_type,
             'min_sum_insured' => formatNumber($vehicle->min_sum_insured),
             'max_sum_insured' => formatNumber($vehicle->max_sum_insured),
@@ -1130,16 +1121,13 @@ class Allianz implements InsurerLibraryInterface
                 foreach($qParams->vix->extra_attribute->avvariant->VariantGrp as $value){
                     if($value->AvCode == $avcode){
                         $qParams->vix->sum_insured = $value->SumInsured;
-                        $qParams->vix->min_sum_insured = roundSumInsured($value->SumInsured, self::ADJUSTMENT_RATE_DOWN, false, self::MIN_SUM_INSURED);
-                        $qParams->vix->max_sum_insured = roundSumInsured($value->SumInsured, self::ADJUSTMENT_RATE_UP, true, self::MAX_SUM_INSURED);
+                        $qParams->vix->min_sum_insured = $value->SumInsured;
+                        $qParams->vix->max_sum_insured = $value->SumInsured;
                     }
                 }
             }
         }
-        $contractNumber = $qParams->input->vehicle->extra_attribute->contractNumber;
-        if(empty($contractNumber)){
-            $contractNumber = $qParams->vix->extra_attribute->contractNumber;
-        }
+        $contractNumber = $qParams->vix->extra_attribute->contractNumber;
         $text = '{
             "partnerId": "HOWDEN",
             "contractNumber": "'.$contractNumber.'",
@@ -1247,7 +1235,7 @@ class Allianz implements InsurerLibraryInterface
             $index = 1;
             foreach($input->input->extra_cover as $extra_cover){
                 $coverCode = $extra_cover->coverCode ?? $extra_cover->extra_cover_code;
-                $coverSumInsured = $extra_cover->coverSumInsured ?? $extra_cover->sum_insured;
+                $coverSumInsured = $extra_cover->sum_insured;
                 if($index == $count_ec){
                     if($coverCode == 'PAB-ERW'){
                         $plan_type = $extra_cover->plan_type ?? $extra_cover->sum_insured;

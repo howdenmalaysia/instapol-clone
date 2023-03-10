@@ -134,8 +134,8 @@ class AIG implements InsurerLibraryInterface
                 'model' => $input->vehicle->model,
                 'model_code' => intval($vix->response->ismmodelcode),
                 'manufacture_year' => intval($vix->response->makeyear),
-                'max_sum_insured' => roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_UP, true, self::MAX_SUM_INSURED),
-                'min_sum_insured' => roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_DOWN, false, self::MIN_SUM_INSURED),
+                'max_sum_insured' => (float)roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_UP, true, self::MAX_SUM_INSURED),
+                'min_sum_insured' => (float)roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_DOWN, false, self::MIN_SUM_INSURED),
                 'sum_insured' => $sum_insured,
                 'sum_insured_type' => 'Market Value',
                 'ncd_percentage' => floatval($vix->response->ncdperc),
@@ -1072,7 +1072,7 @@ class AIG implements InsurerLibraryInterface
             
             return $this->abort($message);
         }
-        
+
         $response = (object) [
             'act_premium' => formatNumber((float) $result->response->reqdataReturn->actprem),
             'commission_amount' => formatNumber((float) $result->response->reqdataReturn->commiamt),
@@ -1180,7 +1180,7 @@ class AIG implements InsurerLibraryInterface
         // Check for Error
         $error = '';
         if((string)$result_data->respcode != '1'){
-            return $this->abort($result_data->RespDesc);
+            return $this->abort($result_data->RespDesc ?? $result_data->respdesc);
         }
 
         return new ResponseData([

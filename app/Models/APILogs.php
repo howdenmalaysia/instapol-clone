@@ -17,8 +17,10 @@ class APILogs extends Model
         'path',
         'request_header',
         'request',
+        'encrypted_request',
         'response_header',
-        'response'
+        'response',
+        'encrypted_response'
     ];
 
     protected $table = 'api_logs';

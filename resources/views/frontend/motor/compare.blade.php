@@ -354,7 +354,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-12 fw-bold">{{ __('frontend.motor.vehicle_details.variant') }}</div>
-                                <div class="col-12">{{ session('motor')->vehicle->variant }}</div>
+                                <div id="variant_display" class="col-12">{{ session('motor')->vehicle->variant }}</div>
                             </div>
                         </div>
                     </div>
@@ -491,6 +491,13 @@
 
             $('#occupation').on('change', () => {
                 $('#occupation-error').addClass('d-none');
+            });
+
+            $('#allianz-variant').on('change', function(){
+                var varianttext = allianz_variant.find((variant) => {
+                    return variant.AvCode = $('#allianz-variant').val();
+                }).Variant;
+                $('#variant_display').text(varianttext);
             });
 
             $('#avcode-next').on('click', async () => {
