@@ -56,6 +56,8 @@ class Kernel extends ConsoleKernel
         // 2. Motor Renewal Notice [1 Month, 2 Weeks, 1 Week] (Before Expiry)
         $schedule->command(MotorRenewalNotice::class)->dailyAt('10:00');
 
+        // 3. Drop Off Report
+        $schedule->command(DropOffReport::class)->hourly();
     }
 
     /**
