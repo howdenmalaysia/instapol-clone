@@ -26,8 +26,8 @@
                         <form action="{{ route('motor.add-ons') }}" method="POST" id="add-ons-form">
                             @csrf
                             <div class="card-body">
-                                <h3 class="card-title fw-bold border-bottom pb-4 px-md-3 mt-3">{{ __('frontend.motor.add_ons_page.sum_insured_amount') }}</h3>
-                                <h5 class="card-text">{{ __('frontend.motor.add_ons_page.sum_insured') }}</h5>
+                                <h3 id="valuation-section-title" class="card-title fw-bold border-bottom pb-4 px-md-3 mt-3">{{ __('frontend.motor.add_ons_page.sum_insured_amount') }}</h3>
+                                <h5 id="valuation-text" class="card-text">{{ __('frontend.motor.add_ons_page.sum_insured') }}</h5>
                                 <div class="pb-4 px-md-3">
                                     @if (session('motor')->vehicle->min_sum_insured !== session('motor')->vehicle->max_sum_insured)
                                         <label class="float-left text-primary fw-bold">{{ 'RM ' . number_format(session('motor')->vehicle->min_sum_insured) }}</label>
@@ -311,6 +311,11 @@
         // Show Sum Insured Slider by Default
         $('#sum-insured-slider').trigger('input');
         $('#sum-insured-tooltip').tooltip('show');
+
+        if(motor.product_id == 3) {
+            $('#valuation-text').text("{{ __('frontend.motor.compare_page.agreed_value') }}");
+            $('#valuation-section-title').text("{{ __('frontend.motor.compare_page.agreed_value') }}");
+        }
 
         $('#show-more-add-ons').on('click', (e) => {
             let shown = $(e.target).data('shown');
