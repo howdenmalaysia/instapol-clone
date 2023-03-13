@@ -502,7 +502,7 @@
 
             $('#avcode-next').on('click', async () => {
                 if($('#allianz-variant').val() != '') {
-                    motor.vehicle.extra_attribute.avcode = $('#allianz-variant').val();
+                    motor.vehicle.extra_attribute.AvCode = $('#allianz-variant').val();
                     motor.vehicle.variant = allianz_variant.find((variant) => {
                         return variant.AvCode = $('#allianz-variant').val();
                     }).Variant;

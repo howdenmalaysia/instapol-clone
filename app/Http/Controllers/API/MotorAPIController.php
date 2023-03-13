@@ -206,9 +206,8 @@ class MotorAPIController extends Controller implements MotorAPIInterface
                     'contractNumber' => $motor->vehicle->extra_attribute->contractNumber ?? '',
                     'vehtypecode' => $motor->vehicle->extra_attribute->vehtypecode ?? '',
                     'covercode' => $motor->vehicle->extra_attribute->covercode ?? '',
-                    'avvariant' => $motor->vehicle->extra_attribute->avvariant ?? '',
+                    'AvCode' => $motor->vehicle->extra_attribute->AvCode ?? '',
 					'amgen_quote_input' => $motor->vehicle->extra_attribute->amgen_quote_input ?? '',
-					'avcode' => $motor->vehicle->extra_attribute->avcode ?? '',
 					'avMakeCode' => $motor->vehicle->extra_attribute->avMakeCode ?? '',
                 ]
             ]),
