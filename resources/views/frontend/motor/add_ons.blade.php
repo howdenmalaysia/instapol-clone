@@ -817,8 +817,8 @@
             $('#road-tax').text(formatMoney(res.data.total));
             motor.premium.total_payable += parseFloat(res.data.total);
             motor.premium.roadtax = res.data.total;
-            motor.roadtax.delivery = $('#roadtax-collection').val() === 'delivery'
             motor.roadtax = res.data;
+            motor.roadtax.delivery = $('#roadtax-collection').val() === 'delivery'
             $('#motor').val(JSON.stringify(motor));
             $('#total-payable').text(formatMoney(motor.premium.total_payable));
 
