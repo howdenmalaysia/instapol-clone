@@ -205,8 +205,8 @@
 
                         if(responses === products.length) {
                             swalAlert('An Error Encountered in Retrieving Vehicle Details. Please Contact Howden Specialist.', () => {
-                                window.location = "{{ route('motor.index') }}"
-                            });
+                                showLiveChat();
+                            }, false, 'error', 'Contact Howden Specialist');
                         }
 
                         return;
@@ -259,8 +259,8 @@
                     } else {
                         if(++responses === products.length) {
                             swalAlert('An Error Encountered in Retrieving Vehicle Details. Please Contact Howden Specialist.', () => {
-                                window.location = "{{ route('motor.index') }}"
-                            });
+                                showLiveChat();
+                            }, false, 'error', 'Contact Howden Specialist');
                         }
                     }
 
