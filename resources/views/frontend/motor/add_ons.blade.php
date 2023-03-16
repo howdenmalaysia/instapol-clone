@@ -461,9 +461,12 @@
                 limit = 8;
             } else if([3].includes(motor.product_id)) {
                 limit = 2;
+            } else if([14].includes(motor.product_id)) {
+                limit = 9;
             }
 
-            if(![10, 12, 3].includes(motor.product_id) || ([10, 12, 3].includes(motor.product_id) && count <= limit)) {
+
+            if(![10, 12, 3, 14].includes(motor.product_id) || ([10, 12, 3, 14].includes(motor.product_id) && count <= limit)) {
                 let html = `
                     <div class="row info px-md-3 driver-${count}">
                         <div class="col-4">
