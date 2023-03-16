@@ -824,7 +824,7 @@ return [
             'collection_method' => 'Collection Method',
             'delivery' => 'Non-Digital (Deliver to Your Dootstep)',
             'myjpj' => 'Digital (Display in MyJPJ App)',
-            'roadtax_notes' => 'Before transacting using this method, you MUST downoad and register your MyJPJ application. Your ELMM / Digital Driving License will be available on your MyJPJ applicationn within 24 hours. Download the MyJPJ App from the Apple App Store or Google Play Store.',
+            'roadtax_notes' => 'e-Road Tax is for private vehicles only. Before choosing this method, you MUST download MyJPJ mobile app and register.Your e-Road Tax will be available on your MyJPJ App within 24 hours.Download MyJPJ App from Apple App Store or Google Play Store.',
             'additional_driver_note' => 'Only named driver will be protected from the policy and it may impacts the premium price under additional coverages. Refer pricing summary (on the left) for details.',
             'additional_driver_limit' => 'You are allowed to add up to :driver additional drivers (including holder).',
             'add_driver' => 'Add Driver',
