@@ -27,9 +27,6 @@ Route::middleware(['web', 'cors'])->group(function() {
     Route::get('/term-of-use', [HomeController::class, 'termsAndConditions'])->name('frontend.term-of-use');
     Route::get('/claims', [HomeController::class, 'claims'])->name('frontend.claims');
 
-    Route::get('/mcash-motor', [HomeController::class, 'UnderMaintenance'])->name('frontend.UnderMaintenance');
-    Route::any('/motor',[HomeController::class, 'UnderMaintenance2'])->name('frontend.UnderMaintenance2');
-
     Route::group(
         [
             'prefix' => 'motor',
@@ -68,4 +65,6 @@ Route::middleware(['web'])->group(function() {
     Route::redirect('/travel', config('setting.redirects.travel'));
     Route::redirect('/doc-pro', config('setting.redirects.doc_pro'));
    Route::redirect('/landlord', config('setting.redirects.landlord'));
+   Route::redirect('/miea', config('setting.redirects.miea'));
+
 });

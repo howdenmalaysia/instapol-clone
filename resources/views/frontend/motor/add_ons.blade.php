@@ -461,9 +461,12 @@
                 limit = 8;
             } else if([3].includes(motor.product_id)) {
                 limit = 2;
+            } else if([14].includes(motor.product_id)) {
+                limit = 9;
             }
 
-            if(![10, 12, 3].includes(motor.product_id) || count <= limit) {
+
+            if(![10, 12, 3, 14].includes(motor.product_id) || ([10, 12, 3, 14].includes(motor.product_id) && count <= limit)) {
                 let html = `
                     <div class="row info px-md-3 driver-${count}">
                         <div class="col-4">
@@ -832,8 +835,8 @@
             $('#road-tax').text(formatMoney(res.data.total));
             motor.premium.total_payable += parseFloat(res.data.total);
             motor.premium.roadtax = res.data.total;
-            motor.roadtax.delivery = $('#roadtax-collection').val() === 'delivery'
             motor.roadtax = res.data;
+            motor.roadtax.delivery = $('#roadtax-collection').val() === 'delivery'
             $('#motor').val(JSON.stringify(motor));
             $('#total-payable').text(formatMoney(motor.premium.total_payable));
 

@@ -1,6 +1,6 @@
 <s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
     <s:Body>
-        <GetVehicleModel xmlns="https://gtws2.zurich.com.my/ziapps/zurichinsurance">
+        <GetVehicleModel xmlns="https://api.zurich.com.my/v1/general/insurance/motor">
             <ModelInputInfo>{{ $data }}</ModelInputInfo>
         </GetVehicleModel>
     </s:Body>
