@@ -1082,6 +1082,11 @@ class AmGeneral implements InsurerLibraryInterface
 
 					return $this->abort($message);
 				}
+				if(isset($B57C_decrypted->errorMessage)){
+					$message = !empty($B57C_decrypted->errorMessage) ? $B57C_decrypted->errorMessage : __('api.empty_response', ['company' => $this->company_name]);
+
+					return $this->abort($message);
+				}
 				$B57C_ext_cvr = $B57C_decrypted->extraCoverageList[0];
 				$B57C_exist = true;
 			}
@@ -2087,8 +2092,8 @@ class AmGeneral implements InsurerLibraryInterface
             'domain' => $this->host.':'.$this->port,
             'path' => $path,
             'request_header' => json_encode($options['headers']),
-            'request' => json_encode(isset($options['form_params']) ? $options['form_params'] : $this->decrypt($encrypted_request)),
-            'encrypted_request' => json_encode(isset($options['form_params']) ? NULL : $encrypted_request),
+            'request' => json_encode(empty($function) ? $options['form_params'] : $this->decrypt($encrypted_request)),
+            'encrypted_request' => json_encode(empty($function) ? NULL : $encrypted_request),
         ]);
 
         if ($result->status) {
@@ -2096,8 +2101,8 @@ class AmGeneral implements InsurerLibraryInterface
 			APILogs::find($log->id)
             ->update([
                 'response_header' => json_encode($result->response_header),
-                'response' => isset($options['form_params']) ? $result->response : $this->decrypt(json_decode($result->response)->responseData),
-                'encrypted_response' => isset($options['form_params']) ? NULL : json_decode($result->response)->responseData
+                'response' => empty($function) ? $result->response : $this->decrypt(json_decode($result->response)->responseData),
+                'encrypted_response' => empty($function) ? NULL : json_decode($result->response)->responseData
             ]);
 
             $json = json_decode($result->response);
@@ -2113,8 +2118,8 @@ class AmGeneral implements InsurerLibraryInterface
 			APILogs::find($log->id)
             ->update([
                 'response_header' => json_encode($result->response_header),
-                'response' => isset($options['form_params']) ? json_encode($result->response) : $this->decrypt(json_decode($result->response)->responseData),
-                'encrypted_response' => isset($options['form_params']) ? NULL : json_decode($result->response)->responseData
+                'response' => empty($function) ? json_encode($result->response) : $this->decrypt(json_decode($result->response)->responseData),
+                'encrypted_response' => is_object($result->response) ? json_encode($result->response) : $result->response
             ]);
             $message = !empty($result->response) ? $result->response : __('api.empty_response', ['company' => $this->company_name]);
             if(isset($result->response->status_code)){

@@ -669,7 +669,7 @@
             $('#body-type-modal').modal('show');
         });
 
-        $('.card-body').on('change', '.additional-driver-relationship', (e) => {
+        $('#additional-driver').on('change', '.additional-driver-relationship', (e) => {
             refreshPremium();
         });
 
