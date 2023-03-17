@@ -33,12 +33,7 @@
                                 <a href="{{ config('setting.whatsapp.url') . config('setting.whatsapp.number') }}">{{ config('setting.whatsapp.number') }}</a>
                             </td>
                         </tr>
-                        <tr>
-                            <th>{{ __('frontend.claims_page.whatsapp') . ' ' . __('frontend.claims_page.link') }}</th>
-                            <td>
-                                <a href="{{ config('setting.whatsapp.link') }}">{{ config('setting.whatsapp.link') }}</a>
-                            </td>
-                        </tr>
+                       
                         <tr>
                             <th>{{ __('frontend.claims_page.scan_qr') }}</th>
                             <td>

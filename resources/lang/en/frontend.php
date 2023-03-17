@@ -479,7 +479,7 @@ return [
         ]
     ],
     'claims_page' => [
-        'description' => 'As your insurance broker, we continuously work to protect the best interests of our customers. If you have any issues with the use of instaPol or your claim, we are here to help. You may contact us in as many convenience ways as possible.',
+        'description' => 'As your insurance broker, we are dedicated to safeguarding the best interests of our valued customers. If you have any issues with the use of instaPol or you claims, we are here to help. You may contact us through any of our available channels.',
         'contact_us' => 'Contact Us',
         'customer_service_careline' => 'Customer Service Careline',
         'whatsapp' => 'WhatsApp',

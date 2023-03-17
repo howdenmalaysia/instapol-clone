@@ -559,7 +559,7 @@
                 // Send de-select Roadtax Event to GA
                 gtag('event', 's_ao_rdt_n', { 'debug_mode': true });
 
-                motor.premium.total_payable -= parseFloat(motor.premium.roadtax) - parseFloat(motor.premium.discounted_amount || 0);
+                motor.premium.total_payable -= parseFloat(motor.premium.roadtax || 0) - parseFloat(motor.premium.discounted_amount || 0);
                 delete motor.premium.roadtax;
                 delete motor.roadtax;
                 $('#motor').val(JSON.stringify(motor));
@@ -669,7 +669,8 @@
         });
 
         $('#body-type-wrapper').on('click', () => {
-            $('#body-type-modal').modal('show');
+            $('#roadtax-checkbox').prop('checked', false).trigger('change');
+            $('#roadtax-checkbox').attr('checked', true).trigger('change');
         });
 
         $('#additional-driver').on('change', '.additional-driver-relationship', (e) => {
