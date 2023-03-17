@@ -95,7 +95,7 @@ class PromoController extends Controller
         /// d. Domain Restriction
         if($code->restrict_domain) {
             $allowed_domain = explode(', ', str_replace('.', '\.', $code->allowed_domain));
-            
+
             if(!preg_match('/^(.*)@' . implode('|', $allowed_domain) . '/i', $motor->policy_holder->email)) {
                 return $this->abort(__('api.promo_domain_not_allowed'));
             }
@@ -154,7 +154,7 @@ class PromoController extends Controller
 
         try {
             DB::beginTransaction();
-            
+
             if(!empty($motor->insurance_code)) {
                 // 4a. Add Use Count
                 Promotion::where('code', $request->code)
@@ -173,9 +173,9 @@ class PromoController extends Controller
                     'discount_amount' => $discount_amount,
                 ]);
             }
-            
+
             $motor->promo = $code;
-            $motor->premium->discounted_amount = $discount_amount;
+            $motor->premium->discounted_amount = floatval($discount_amount);
 
             DB::commit();
             return $motor;
