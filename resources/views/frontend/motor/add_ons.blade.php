@@ -656,7 +656,8 @@
         });
 
         $('#body-type-wrapper').on('click', () => {
-            $('#body-type-modal').modal('show');
+            $('#roadtax-checkbox').removeAttr('checked');
+            $('#roadtax-checkbox').attr('checked', true);
         });
 
         $('.card-body').on('change', '.additional-driver-relationship', (e) => {
