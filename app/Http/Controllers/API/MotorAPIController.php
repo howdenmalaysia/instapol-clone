@@ -625,7 +625,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
         }
 
         // Collection Method - MyJPJ App
-        if(!$request->delivery) {
+        if(!(bool) $request->delivery) {
             $delivery_fee->amount = 0;
         }
 
