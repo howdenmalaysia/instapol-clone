@@ -656,8 +656,12 @@
         });
 
         $('#body-type-wrapper').on('click', () => {
-            $('#roadtax-checkbox').prop('checked', false).trigger('change');
-            $('#roadtax-checkbox').attr('checked', true).trigger('change');
+            if(!$('#roadtax-checkbox').prop('checked')) {
+                $('#roadtax-checkbox').prop('checked', true).trigger('change');
+            } else {
+                $('#roadtax-checkbox').prop('checked', false).trigger('change');
+                $('#roadtax-checkbox').prop('checked', true).trigger('change');
+            }
         });
 
         $('.card-body').on('change', '.additional-driver-relationship', (e) => {
