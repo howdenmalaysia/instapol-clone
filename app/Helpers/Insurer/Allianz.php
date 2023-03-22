@@ -144,6 +144,7 @@ class Allianz implements InsurerLibraryInterface
         $VehModelCode = '';
         $get_variant = $avvariant->response->VariantGrp[0]->Variant;
         $AvCode = $avvariant->response->VariantGrp[0]->AvCode;
+        $sum_insured = (double)$avvariant->response->VariantGrp[0]->SumInsured;
         foreach($avvariant->response->VariantGrp as $variantlist){
             array_push($variant_list,$variantlist->Variant);
             if($input->variant == $variantlist->Variant){
