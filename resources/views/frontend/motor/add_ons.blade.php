@@ -503,7 +503,7 @@
                 });
             } else {
                 let message = "{{ __('frontend.motor.add_ons_page.additional_driver_limit') }}";
-                message.replace(':driver', limit);
+                message = message.replace(':driver', limit);
                 swalAlert(message, null, false, 'warning', "{{ __('frontend.button.close') }}");
             }
         });
@@ -669,8 +669,12 @@
         });
 
         $('#body-type-wrapper').on('click', () => {
-            $('#roadtax-checkbox').prop('checked', false).trigger('change');
-            $('#roadtax-checkbox').attr('checked', true).trigger('change');
+            if(!$('#roadtax-checkbox').prop('checked')) {
+                $('#roadtax-checkbox').prop('checked', true).trigger('change');
+            } else {
+                $('#roadtax-checkbox').prop('checked', false).trigger('change');
+                $('#roadtax-checkbox').prop('checked', true).trigger('change');
+            }
         });
 
         $('#additional-driver').on('change', '.additional-driver-relationship', (e) => {
