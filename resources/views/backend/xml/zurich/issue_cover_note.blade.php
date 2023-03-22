@@ -1,6 +1,6 @@
 <s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
     <s:Body>
-        <IssueCoverNote xmlns="https://api.zurich.com.my/v1/general/insurance/motor">
+        <IssueCoverNote xmlns="https://gtws2.zurich.com.my/ziapps/zurichinsurance">
             <XmlRequest>
                 <![CDATA[<RequestData>
                     <ParticipantDetails>
