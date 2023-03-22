@@ -364,7 +364,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
 
             $insurance_id = null;
             if(!empty($insurance_motor)) {
-                if(Insurance::find($insurance_motor->insurance_id)->exists()) {
+                if(!empty(Insurance::where('id', $insurance_motor->insurance_id)->get())) {
                     $insurance_id = $insurance_motor->insurance_id;
                 }
             }
