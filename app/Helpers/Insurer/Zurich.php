@@ -514,7 +514,7 @@ class Zurich implements InsurerLibraryInterface
                         'unit_amount' => (double)$cart_amount,
                         'ECD_eff_date' => Carbon::now()->format('d/m/Y'),
                         'ECD_exp_date' => Carbon::now()->addYear()->subDay()->format('d/m/Y'),
-                        'ECD_sum_insured' => $extcover->sum_insured ?? 0,
+                        'ECD_sum_insured' => $extcover->sum_insured ?? $input->sum_insured ?? 0,
                         'no_of_unit' => 1
                     ]);
                 }
@@ -528,7 +528,7 @@ class Zurich implements InsurerLibraryInterface
                                 'ext_cov_code' => $extcover->extra_cover_code,
                                 'ECD_eff_date' => Carbon::now()->format('d/m/Y'),
                                 'ECD_exp_date' => Carbon::now()->addYear()->subDay()->format('d/m/Y'),
-                                'ECD_sum_insured' => $extcover->sum_insured ?? $sum_insured,
+                                'ECD_sum_insured' => $extcover->sum_insured ?? $input->sum_insured ?? $sum_insured,
                                 'no_of_unit' => 1
                             ]);
                         }
@@ -539,7 +539,7 @@ class Zurich implements InsurerLibraryInterface
                                 'ext_cov_code' => $extcover->extra_cover_code,
                                 'ECD_eff_date' => Carbon::now()->format('d/m/Y'),
                                 'ECD_exp_date' => Carbon::now()->addYear()->subDay()->format('d/m/Y'),
-                                'ECD_sum_insured' => $extcover->sum_insured ?? $sum_insured,
+                                'ECD_sum_insured' => $extcover->sum_insured ?? $input->sum_insured ?? $sum_insured,
                                 'no_of_unit' => 1
                             ]);
                         }
@@ -587,7 +587,7 @@ class Zurich implements InsurerLibraryInterface
                 'ext_cov_code' => '07',
                 'ECD_eff_date' => Carbon::now()->format('d/m/Y'),
                 'ECD_exp_date' => Carbon::now()->addYear()->subDay()->format('d/m/Y'),
-                'ECD_sum_insured' => $sum_insured ?? '0',
+                'ECD_sum_insured' => $sum_insured ?? $input->sum_insured ?? '0',
                 'no_of_unit' => 1
             ]);
         }
@@ -1507,7 +1507,7 @@ class Zurich implements InsurerLibraryInterface
             'postcode' => $input->postcode,
             'state' => $this->getStateCode(ucwords(strtolower($input->state))),
             'country' => 'MAS',
-            'sum_insured' => $input->vehicle->sum_insured,
+            'sum_insured' => empty($input->vehicle->sum_insured) ? $vehicle->sum_insured : $input->vehicle->sum_insured,
             'av_ind' => 'N',
             'vol_excess' => '',
             'pac_ind' => 'N',
