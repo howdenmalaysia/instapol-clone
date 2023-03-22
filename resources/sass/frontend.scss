@@ -14,11 +14,11 @@ body {
             font-weight: bold;
             font-size: 15px;
             text-decoration: none;
-    
+
             &:hover, &:focus {
                 color: rgba($color: $white, $alpha: .75);
             }
-    
+
             .dropdown-item {
                 &:hover {
                     background-color: $primary;
@@ -60,7 +60,7 @@ body {
         content: ' ';
         min-height: 75vh;
     }
-    
+
     // Home Page
     #landing-banner {
         .modal-content {
@@ -92,6 +92,10 @@ body {
         .tenang {
             height: 190px;
             width: 101%;
+        }
+
+        #product-card {
+            z-index: 99;
         }
     }
 
@@ -196,12 +200,12 @@ body {
             .modal-content {
                 display: contents;
             }
-    
+
             .btn-close {
                 right: 210px;
                 top: 10px;
             }
-    
+
             @media (max-width: 991px) {
                 .btn-close {
                     right: 135px;
@@ -252,7 +256,7 @@ body {
     .rounded {
         border-radius: 1rem !important;
     }
-    
+
     button.rounded {
         border-radius: 10rem !important;
     }
@@ -293,7 +297,7 @@ body {
     .loadingButton {
         position: relative;
         pointer-events: none;
-        
+
         &:before {
             content: "";
             position: absolute;
@@ -304,7 +308,7 @@ body {
             background-color: inherit;
             border-radius: 2rem !important;
         }
-        
+
         &:after {
             font-family: "Font Awesome 6 Free";
             font-weight: 900;
