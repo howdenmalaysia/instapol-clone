@@ -202,6 +202,7 @@ class Allianz implements InsurerLibraryInterface
             'contractNumber' => $vix->response->contractNumber,
             'avMakeCode' => $vix->response->avMakeCode,
             'AvCode' => $AvCode,
+            'cover_type' => $vix->response->coverType,
             'response' => new VIXNCDResponse([
                 'body_type_code' => null,
                 'body_type_description' => null,
