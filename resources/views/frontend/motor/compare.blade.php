@@ -98,7 +98,7 @@
                                                                         <label id="male-label" class="{{ session('motor')->policy_holder->gender === 'M' ? 'btn btn-primary text-white rounded-start border active' : 'btn btn-light rounded-end' }}" for="male">
                                                                             {{ __('frontend.motor.compare_page.male') }}
                                                                         </label>
-                                
+
                                                                         <input
                                                                             type="radio"
                                                                             id="female"
@@ -502,12 +502,14 @@
 
             $('#avcode-next').on('click', async () => {
                 if($('#allianz-variant').val() != '') {
-                    motor.vehicle.extra_attribute.AvCode = $('#allianz-variant').val();
-                    motor.vehicle.variant = allianz_variant.find((variant) => {
-                        return variant.AvCode = $('#allianz-variant').val();
-                    }).Variant;
+                    motor.vehicle.extra_attribute.avcode = allianz_variant.find((variant) => {
+                        return variant.Variant = $('#allianz-variant').val();
+                    }).AvCode;
+
+                    motor.vehicle.variant =$('#allianz-variant').val();
 
                     $('#motor').val(JSON.stringify(motor));
+                    $('#av-code').val(motor.vehicle.extra_attribute.avcode);
 
                     await getPremium([motor.product_id]);
                     $('#product-form').submit();
@@ -533,7 +535,7 @@
                         swalAlert('You may choose up to 3 insurers for comparison', null, false, 'warning', 'Okay');
                         return;
                     }
-    
+
                     let premium = premiums[product_id];
                     let product = products.filter((product) => {
                         return product.id === product_id;
@@ -541,7 +543,7 @@
                     let benefits = JSON.parse(product.benefits.benefits);
                     let formatted_sum_insured = formatMoney(premium.sum_insured);
                     let buy_now_text = "{{ __('frontend.button.buy') }}";
-    
+
                     // Populate
                     /// 1. Insurer Name
                     $('#insurer-name-row').append(`
@@ -560,7 +562,7 @@
                             </div>
                         </td>
                     `);
-    
+
                     /// 3. Vehicle Sum Insured
                     $('#valuation-row').append(`
                         <td class="${product_id}">
@@ -568,7 +570,7 @@
                             <p>RM ${formatted_sum_insured}</p>
                         </td>
                     `);
-    
+
                     /// 4. Product Features
                     $('#basic-info-row').append(`
                         <th class="bg-primary text-white ${product_id}">
@@ -590,13 +592,13 @@
                             <p>${benefits.workshops}</p>
                         </td>
                     `);
-    
+
                     let html = '';
                     benefits.mobile_accident_response.forEach((item) => {
                         html += `<p><i class="fa-regular fa-check text-primary"></i> ${item}</p>`;
                     });
                     $('#mobile-accident-response-row').append(`<td class="${product_id}">${html}</td>`);
-    
+
                     $('#repair-warranty-row').append(`
                         <td class="${product_id}">
                             <p>${benefits.repair_warranty}</p>
@@ -612,7 +614,7 @@
                             <p>${benefits.excess}</p>
                         </td>
                     `);
-    
+
                     /// 5. Add Ons
                     //// i. Populate a Button
                     $('#view-add-ons-row').append(`
@@ -622,7 +624,7 @@
                             </div>
                         </td>
                     `);
-    
+
                     //// ii. Store all available Add Ons to an array [Group by Extra Cover Code]
                     premium.extra_cover.forEach((add_ons) => {
                         switch(add_ons.extra_cover_code) {
@@ -636,7 +638,7 @@
                                 add_ons_available['Accessories'].push(product_id);
                                 break;
                             }
-                            case '97A': { // Gas Conversion Kit & Tank 
+                            case '97A': { // Gas Conversion Kit & Tank
                                 add_ons_available['Gas Conversion Kit & Tank'].push(product_id);
                                 break;
                             }
@@ -688,11 +690,11 @@
 
                     //// iv. Render
                     renderAddOns();
-    
+
                     /// 6. Update the Button Text after comparison
                     if($(e.target).hasClass('btn-outline-primary')) {
                         $(e.target).addClass('btn-primary text-white').removeClass('btn-outline-primary').text('Remove');
-    
+
                         if(!$('.row.compare').is(':visible')) {
                             $('.row.compare').show();
                         }
@@ -787,7 +789,7 @@
                             allianz_variant = res.data.response;
 
                             res.data.response.forEach((variant) => {
-                                $('#allianz-variant').append(`<option value="${variant.AvCode}">${variant.Variant} (Sum Insured: ${'RM ' + formatMoney(variant.SumInsured)})</option>`);
+                                $('#allianz-variant').append(`<option value="${variant.Variant}">${variant.Variant} (Sum Insured: ${'RM ' + formatMoney(variant.SumInsured)})</option>`);
                             });
                         })
                     }
@@ -797,7 +799,7 @@
                     $(`#insurer-${product.id} .btn-buy`).attr('disabled', true);
                     $(`#insurer-${product.id} .btn-compare`).attr('disabled', true);
                     $(`#insurer-${product.id} .btn-view-details`).attr('disabled', true);
-                    
+
                     $(`#insurer-${product.id} .premium`).text("{{ __('frontend.motor.compare_page.offline') }}").data('premium', '0');
 
                     sortPrice();
