@@ -1785,14 +1785,17 @@ class AmGeneral implements InsurerLibraryInterface
 				'status'=>$response->status,
 				'response'=>$response->response,
 			];
-			return $error;
+			return $this->abort($response->response);
         }
 	}
 
 	private function getOccupationCode($occupation = 'EXECUTIVE'){
 		// check master data
 		if (empty($this->master_data)) {
-			$this->getMasterData();
+			$check = $this->getMasterData();
+			if (!$check->status) {
+				return $this->abort($check->response);
+			}
 		}
 
 		// return other by default
@@ -1811,7 +1814,10 @@ class AmGeneral implements InsurerLibraryInterface
 	private function getNationalityCode($id = null){
 		// check master data
 		if (empty($this->master_data)) {
-			$this->getMasterData();
+			$check = $this->getMasterData();
+			if (!$check->status) {
+				return $this->abort($check->response);
+			}
 		}
 
 		// return other by default
@@ -2118,7 +2124,7 @@ class AmGeneral implements InsurerLibraryInterface
 			APILogs::find($log->id)
             ->update([
                 'response_header' => json_encode($result->response_header),
-                'response' => empty($function) ? json_encode($result->response) : $this->decrypt(json_decode($result->response)->responseData),
+                'response' => empty($function) ? json_encode($result->response) : (isset(json_decode($result->response)->responseData) ? $this->decrypt(json_decode($result->response)->responseData) : $result->response),
                 'encrypted_response' => is_object($result->response) ? json_encode($result->response) : $result->response
             ]);
             $message = !empty($result->response) ? $result->response : __('api.empty_response', ['company' => $this->company_name]);
