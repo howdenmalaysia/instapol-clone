@@ -765,6 +765,7 @@
 
                     if(response.data.total_payable) {
                         motor.product_id = product.id;
+                        motor.vehicle.variant = response.data.vehicle.variant;
                         motor.vehicle.sum_insured = response.data.sum_insured;
                         motor.vehicle.sum_insured_type = response.data.sum_insured_type;
                         $('#motor').val(JSON.stringify(motor));
