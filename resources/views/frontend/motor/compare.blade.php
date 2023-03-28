@@ -504,7 +504,7 @@
                     $('#motor').val(JSON.stringify(motor));
                     $('#av-code').val(motor.vehicle.extra_attribute.avcode);
 
-                    await getPremium([motor.product_id]);
+                    await getPremium([{id: motor.product_id}]);
                     $('#product-form').submit();
                 } else {
                     $('#avcode-error').text("{{ __('frontend.motor.compare_page.avcode_error') }}").removeClass('d-none');
@@ -757,6 +757,11 @@
                     premiums[product.id] = response.data;
 
                     if(response.data.total_payable) {
+                        motor.product_id = product.id;
+                        motor.vehicle.sum_insured = response.data.sum_insured;
+                        motor.vehicle.sum_insured_type = response.data.sum_insured_type;
+                        $('#motor').val(JSON.stringify(motor));
+
                         $(`#insurer-${product.id} .premium`).text('RM ' + formatMoney(response.data.total_payable)).data('premium', response.data.total_payable.toString());
                         $(`#insurer-${product.id} .valuation`).text(response.data.sum_insured_type === 'Agreed Value' ? agreed_value_text : market_value_text);
                         $(`#insurer-${product.id} .sum-insured`).text('RM ' + formatMoney(response.data.sum_insured));
