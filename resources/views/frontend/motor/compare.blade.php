@@ -502,14 +502,14 @@
 
             $('#avcode-next').on('click', async () => {
                 if($('#allianz-variant').val() != '') {
-                    motor.vehicle.extra_attribute.avcode = allianz_variant.find((variant) => {
-                        return variant.Variant = $('#allianz-variant').val();
+                    motor.vehicle.extra_attribute.AvCode = allianz_variant.find((variant) => {
+                        return variant.Variant == $('#allianz-variant').val();
                     }).AvCode;
 
-                    motor.vehicle.variant =$('#allianz-variant').val();
+                    motor.vehicle.variant = $('#allianz-variant').val();
 
                     $('#motor').val(JSON.stringify(motor));
-                    $('#av-code').val(motor.vehicle.extra_attribute.avcode);
+                    $('#av-code').val(motor.vehicle.extra_attribute.AvCode);
 
                     await getPremium([{id: motor.product_id}]);
                     $('#product-form').submit();
