@@ -500,6 +500,9 @@
                     }).AvCode;
 
                     motor.vehicle.variant = $('#allianz-variant').val();
+                    motor.vehicle.sum_insured = allianz_variant.find((variant) => {
+                        return variant.Variant == $('#allianz-variant').val();
+                    }).SumInsured;
 
                     $('#motor').val(JSON.stringify(motor));
                     $('#av-code').val(motor.vehicle.extra_attribute.AvCode);
