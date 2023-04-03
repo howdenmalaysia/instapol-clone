@@ -495,7 +495,7 @@
 
             $('#allianz-variant').on('change', function(){
                 var varianttext = allianz_variant.find((variant) => {
-                    return variant.AvCode = $('#allianz-variant').val();
+                    return variant.Variant = $('#allianz-variant').val();
                 }).Variant;
                 $('#variant_display').text(varianttext);
             });

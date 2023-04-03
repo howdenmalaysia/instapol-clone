@@ -186,9 +186,9 @@ class MotorAPIController extends Controller implements MotorAPIInterface
                 'inception_date' => Carbon::parse($motor->vehicle->inception_date)->format('Y-m-d'),
                 'expiry_date' => empty($motor->vehicle->expiry_date) ? Carbon::parse($motor->vehicle->inception_date)->addYear()->subDay()->format('Y-m-d') : Carbon::parse($motor->vehicle->expiry_date)->format('Y-m-d'),
                 'sum_insured_type' => $motor->vehicle->sum_insured_type ?? '',
-                'sum_insured' => $motor->vehicle->sum_insured ?? 0.00,
-                'min_sum_insured' => $motor->vehicle->min_sum_insured ?? 0.00,
-                'max_sum_insured' => $motor->vehicle->max_sum_insured ?? 0.00,
+                'sum_insured' => floatval($motor->vehicle->sum_insured ?? 0.00),
+                'min_sum_insured' => floatval($motor->vehicle->min_sum_insured ?? 0.00),
+                'max_sum_insured' => floatval($motor->vehicle->max_sum_insured ?? 0.00),
                 'extra_attribute' => (object) [
                     'class_code' => $motor->vehicle->extra_attribute->class_code ?? '',
                     'coverage_code' => $motor->vehicle->extra_attribute->coverage_code ?? '',
@@ -785,36 +785,36 @@ class MotorAPIController extends Controller implements MotorAPIInterface
 
                 break;
             }
-            case 6:{
-                return new AIG($insurer->id, $insurer->name);
+            // case 6:{
+            //     return new AIG($insurer->id, $insurer->name);
 
-                break;
-            }
+            //     break;
+            // }
             case 9: {
                 return new PacificOrient($insurer->id, $insurer->name);
 
                 break;
             }
-            case 10:{
-                return new Zurich($insurer->id, $insurer->name);
+            // case 10:{
+            //     return new Zurich($insurer->id, $insurer->name);
 
-                break;
-            }
-            case 12:{
-                return new ZurichTakaful($insurer->id, $insurer->name);
+            //     break;
+            // }
+            // case 12:{
+            //     return new ZurichTakaful($insurer->id, $insurer->name);
 
-                break;
-            }
-            case 14: {
-                return new Liberty($insurer->id, $insurer->name);
+            //     break;
+            // }
+            // case 14: {
+            //     return new Liberty($insurer->id, $insurer->name);
 
-                break;
-            }
-            case 15: {
-                return new BerjayaSompo($insurer->id, $insurer->name);
+            //     break;
+            // }
+            // case 15: {
+            //     return new BerjayaSompo($insurer->id, $insurer->name);
 
-                break;
-            }
+            //     break;
+            // }
             default: {
                 throw new ModelNotFoundException(__('api.invalid_product'));
             }
