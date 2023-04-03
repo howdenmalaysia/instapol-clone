@@ -107,7 +107,7 @@ class MotorController extends Controller
         $product_ids = [];
         foreach($products as $product) {
             //  ['Pacific & Orient Insurance', 'Zurich General Insurance Malaysia Berhad', 'Zurich General Insurance Malaysia Berhad']
-            if(in_array($product->id, [9, 10, 12])) {
+            if(in_array($product->id, [9, 10, 12,3,7,10])) {
                 array_push($product_ids, $product->id);
             }
         }
