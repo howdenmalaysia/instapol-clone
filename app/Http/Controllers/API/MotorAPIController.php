@@ -785,36 +785,36 @@ class MotorAPIController extends Controller implements MotorAPIInterface
 
                 break;
             }
-            // case 6:{
-            //     return new AIG($insurer->id, $insurer->name);
+            case 6:{
+                return new AIG($insurer->id, $insurer->name);
 
-            //     break;
-            // }
+                break;
+            }
             case 9: {
                 return new PacificOrient($insurer->id, $insurer->name);
 
                 break;
             }
-            // case 10:{
-            //     return new Zurich($insurer->id, $insurer->name);
+            case 10:{
+                return new Zurich($insurer->id, $insurer->name);
 
-            //     break;
-            // }
-            // case 12:{
-            //     return new ZurichTakaful($insurer->id, $insurer->name);
+                break;
+            }
+            case 12:{
+                return new ZurichTakaful($insurer->id, $insurer->name);
 
-            //     break;
-            // }
-            // case 14: {
-            //     return new Liberty($insurer->id, $insurer->name);
+                break;
+            }
+            case 14: {
+                return new Liberty($insurer->id, $insurer->name);
 
-            //     break;
-            // }
-            // case 15: {
-            //     return new BerjayaSompo($insurer->id, $insurer->name);
+                break;
+            }
+            case 15: {
+                return new BerjayaSompo($insurer->id, $insurer->name);
 
-            //     break;
-            // }
+                break;
+            }
             default: {
                 throw new ModelNotFoundException(__('api.invalid_product'));
             }
