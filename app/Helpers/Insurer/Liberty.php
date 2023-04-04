@@ -399,7 +399,7 @@ class Liberty implements InsurerLibraryInterface
 
         // Add in Additional Named Driver if applicable
         if (isset($input->additional_driver)) {
-            if (count($input->additional_driver) > 0 && array_search('07', array_column($input->extra_cover, 'extra_cover_code')) == false) {
+            if (count($input->additional_driver) > 1 && array_search('07', array_column($input->extra_cover, 'extra_cover_code')) == false) {
                 array_push($input->extra_cover, new ExtraCover([
                     'extra_cover_code' => '07',
                     'extra_cover_description' => $this->getExtraBenefitDescription('07', $vehicle->engine_capacity),
