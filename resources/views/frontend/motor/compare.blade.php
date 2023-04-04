@@ -493,7 +493,7 @@
                 $('#occupation-error').addClass('d-none');
             });
 
-            $('#avcode-next').on('click', async () => {
+            $('#avcode-next').on('click', () => {
                 if($('#allianz-variant').val() != '') {
                     motor.vehicle.extra_attribute.AvCode = allianz_variant.find((variant) => {
                         return variant.Variant == $('#allianz-variant').val();
@@ -504,11 +504,11 @@
                         return variant.Variant == $('#allianz-variant').val();
                     }).SumInsured;
 
+
                     $('#motor').val(JSON.stringify(motor));
                     $('#av-code').val(motor.vehicle.extra_attribute.AvCode);
 
-                    await getPremium([{id: motor.product_id}]);
-                    $('#product-form').submit();
+                    getPremium([{id: motor.product_id}], true);
                 } else {
                     $('#avcode-error').text("{{ __('frontend.motor.compare_page.avcode_error') }}").removeClass('d-none');
                 }
@@ -726,7 +726,7 @@
             });
         });
 
-        function getPremium(ids = []) {
+        function getPremium(ids = [], isRefresh = false) {
             if(ids.length > 0) {
                 products = ids;
             }
@@ -795,6 +795,11 @@
                             });
                         })
                     }
+
+                    if(isRefresh) {
+                        $('#insurance-premium').val(JSON.stringify(premiums[product_id]));
+                        $('#product-form').submit();
+                    }
                 }).catch((error) => {
                     console.log(error.response);
 
@@ -805,6 +810,11 @@
                     $(`#insurer-${product.id} .premium`).text("{{ __('frontend.motor.compare_page.offline') }}").data('premium', '0');
 
                     sortPrice();
+
+                    if(isRefresh) {
+                        $('#insurance-premium').val(JSON.stringify(premiums[product_id]));
+                        $('#product-form').submit();
+                    }
                 });
             });
         }
