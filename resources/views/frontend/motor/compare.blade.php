@@ -797,7 +797,7 @@
                     }
 
                     if(isRefresh) {
-                        $('#insurance-premium').val(JSON.stringify(premiums[product_id]));
+                        $('#insurance-premium').val(JSON.stringify(response.data));
                         $('#product-form').submit();
                     }
                 }).catch((error) => {
@@ -812,7 +812,7 @@
                     sortPrice();
 
                     if(isRefresh) {
-                        $('#insurance-premium').val(JSON.stringify(premiums[product_id]));
+                        $('#insurance-premium').val(JSON.stringify(premiums[product.id]));
                         $('#product-form').submit();
                     }
                 });
