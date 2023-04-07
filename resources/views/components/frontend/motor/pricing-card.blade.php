@@ -71,7 +71,7 @@
                     {{ '- ' . __('frontend.price_card.promo') }}
                 </td>
                 <td class="text-end text-primary fw-bold">RM</td>
-                <td id="promo-amount" class="text-end text-primary fw-bold">{{ session('motor')->premium->discounted_amount ?? '-' }}</td>
+                <td id="promo-amount" class="text-end text-primary fw-bold">{{ number_format(session('motor')->premium->discounted_amount ?? 0, 2) }}</td>
             </tr>
             @if ($promo || !empty(session('motor')->promo))
                 <tr>
@@ -126,7 +126,7 @@
             function checkPromo(isAuto = false) {
                 // Send Use Promo Event to GA
                 gtag('event', 'motor_use_promo', { 'debug_mode': true });
-                
+
                 instapol.post("{{ route('motor.api.use-promo') }}", {
                     motor: motor,
                     code: $('#promo-code').val(),
@@ -136,7 +136,7 @@
 
                     if(res.data !== '') {
                         $('#motor').val(JSON.stringify(res.data));
-    
+
                         // Update Pricing Card
                         $('#basic-premium').text(formatMoney(res.data.premium.basic_premium)).removeClass('loadingButton');
                         $('#gross-premium').text(formatMoney(res.data.premium.gross_premium)).removeClass('loadingButton');
@@ -144,14 +144,14 @@
                         $('#road-tax').text(formatMoney(res.data.roadtax.total)).removeClass('loadingButton');
                         $('#total-payable').text(formatMoney(res.data.premium.total_payable)).removeClass('loadingButton');
                         $('#promo-amount').text(formatMoney(res.data.premium.discounted_amount || 0.00));
-    
+
                         if(parseFloat($('#promo-amount').text()) > 0) {
                             $('#discount').removeClass('d-none');
                         }
-    
+
                         $('#promo-code').val(res.data.promo.code);
                         $('#check-promo').removeClass('loadingButton');
-    
+
                         motor.premium.discounted_amount = res.data.premium.discounted_amount;
                         $('#motor').val(JSON.stringify(motor));
                     }
