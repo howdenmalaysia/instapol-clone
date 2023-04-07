@@ -17,9 +17,9 @@
                 </div>
             </div>
         </div>
-        <div class="row text-center justify-content-center mt-5">
+        <div class="row text-center justify-content-center mt-5 px-3">
             @foreach (__('frontend.home_page.points_easy') as $index => $point)
-                <div class="col-4">
+                <div class="col-4 mx-2">
                     <x-description-with-numbering :number="$index" :title="$point['title']" :description="$point['description']" />
                 </div>
             @endforeach
