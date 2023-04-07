@@ -61,7 +61,7 @@
                                                             {{ $_extra_cover->readonly ? 'disabled' : '' }}
                                                         />
                                                     </div>
-                                                    <div class="col-8 d-flex justify-content-between">
+                                                    <div class="col-7 col-md-8 d-flex justify-content-between">
                                                         <label for="{{ 'checkbox-' . $_extra_cover->extra_cover_code }}" id="{{ 'label-checkbox-' . $_extra_cover->extra_cover_code }}">{{ $_extra_cover->extra_cover_description }}</label>
 
                                                         @if (strpos($_extra_cover->extra_cover_description, 'Windscreen') !== false)
@@ -106,7 +106,7 @@
                                                             @endif
                                                         @endif
                                                     </div>
-                                                    <div class="col-1 text-end">RM</div>
+                                                    <div class="col-2 col-md-1 text-end">RM</div>
                                                     <div id="{{ $_extra_cover->extra_cover_code . '-premium' }}" class="col-2 text-end premium">{{ number_format($_extra_cover->premium, 2) }}</div>
                                                 </div>
                                                 @if (!empty($_extra_cover->option_list))
@@ -181,7 +181,7 @@
                                                     @endforeach
                                                 </select>
                                             </div>
-                                            <div class="col-1 align-self-end">
+                                            <div class="col-1 px-0 px-md-3 align-self-end">
                                                 <button type="button" class="btn btn-danger text-white btn-delete-driver" data-id="0">
                                                     <i class="fa-solid fa-trash" data-id="0"></i>
                                                 </button>

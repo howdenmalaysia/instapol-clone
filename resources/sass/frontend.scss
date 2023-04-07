@@ -81,7 +81,7 @@ body {
                 right: 100px;
                 top: 15px;
             }
-            
+
             img {
                 max-height: 650px;
                 text-align: center;
@@ -195,6 +195,17 @@ body {
                 background-image: url(../images/bg-partner.png);
             }
         }
+
+        @include media-breakpoint-down(sm) {
+            .icon-motor {
+                margin-top: -15px;
+                width: 210px;
+            }
+
+            .vehicle-details {
+                padding-bottom: 30px;
+            }
+        }
     }
 
     #vehicle-details, #compare, #add-ons, #policy-holder, #payment-summary, #payment-success {
@@ -232,11 +243,7 @@ body {
 
         .insurer-card {
             .insurer-logo {
-                height: 110px;
-
-                img {
-                    height: 100px;
-                }
+                height: 100px;
             }
         }
     }
@@ -353,6 +360,20 @@ body {
 
         .stepper-label {
             bottom: 35px;
+        }
+
+        @include media-breakpoint-down(md) {
+            .bs-stepper-circle {
+                width: 55px;
+                height: 55px;
+                font-size: 20px;
+            }
+
+            .stepper-label {
+                bottom: 30px;
+                font-size: 13px;
+                white-space: pre-wrap;
+            }
         }
     }
 
