@@ -106,8 +106,8 @@ class MotorController extends Controller
         $products = Product::with('insurance_company')->get();
         $product_ids = [];
         foreach($products as $product) {
-            //  ['Allianz', 'AIG', 'Liberty']
-            if(in_array($product->id, [3, 6, 14])) {
+            //  ['AIG', 'Allianz', 'AmGen']
+            if(in_array($product->id, [1, 3, 6])) {
                 array_push($product_ids, $product->id);
             }
         }
