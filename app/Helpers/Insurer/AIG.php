@@ -2213,7 +2213,7 @@ class AIG implements InsurerLibraryInterface
     {
         // Concatenate URL
         $url = $this->url .'/'. $path.'?wsdl';
-        
+
         // Check XML Error
         libxml_use_internal_errors(true);
 
@@ -2225,7 +2225,7 @@ class AIG implements InsurerLibraryInterface
                 'Accept' => 'application/xml',
                 // 'Content-Type' => 'text/xml; charset=utf-8',
                 // 'Accept' => 'text/xml; charset=utf-8',
-                'SOAPAction' => $this->url .$path.'?wsdl',
+                'SOAPAction' => $this->url .'/'.$path.'?wsdl',
             ],
             'body' => $xml
         ];
