@@ -2213,7 +2213,7 @@ class AIG implements InsurerLibraryInterface
     {
         // Concatenate URL
         $url = $this->url .'/'. $path.'?wsdl';
-        
+
         // Check XML Error
         libxml_use_internal_errors(true);
 
