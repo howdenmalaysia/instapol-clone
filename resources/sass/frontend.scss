@@ -71,6 +71,22 @@ body {
             right: 10px;
             top: 10px;
         }
+
+        img {
+            max-height: 700px;
+        }
+
+        @include media-breakpoint-down(lg) {
+            .btn-close {
+                right: 100px;
+                top: 15px;
+            }
+            
+            img {
+                max-height: 650px;
+                text-align: center;
+            }
+        }
     }
 
     #promo-carousel {

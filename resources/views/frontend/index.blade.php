@@ -14,19 +14,19 @@
                             <div class="col-xl-11 col-12">
                                 <div id="product-card" class="card text-center ps-4 pe-3 py-5 shadow rounded">
                                     <div class="row">
-                                        <div id="motor-link" class="col d-flex align-items-center text-decoration-none">
+                                        <div id="motor-link" class="col d-flex align-items-center text-decoration-none justify-content-center">
                                             <x-product :image-path="asset('images/icons/motor.png')" :alt="__('frontend.products.motor')" :name="__('frontend.products.motor')" />
                                         </div>
-                                        <a href="/motor-extended" class="col d-flex align-items-center text-decoration-none">
+                                        <a href="/motor-extended" class="col d-flex align-items-center text-decoration-none justify-content-center">
                                             <x-product :image-path="asset('images/icons/extended-motor.png')" :alt="__('frontend.products.motor_extended')" :name="__('frontend.products.motor_extended')" />
                                         </a>
-                                        <a href="/bike" class="col d-flex align-items-center text-decoration-none">
+                                        <a href="/bike" class="col d-flex align-items-center text-decoration-none justify-content-center">
                                             <x-product :image-path="asset('images/icons/bicycle.png')" :alt="__('frontend.products.bicycle')" :name="__('frontend.products.bicycle')" />
                                         </a>
-                                        <a href="/travel" class="col d-flex align-items-center text-decoration-none">
+                                        <a href="/travel" class="col d-flex align-items-center text-decoration-none justify-content-center">
                                             <x-product :image-path="asset('images/icons/travel.png')" :alt="__('frontend.products.travel')" :name="__('frontend.products.travel')" />
                                         </a>
-                                        <a href="/doc-pro" class="col d-flex align-items-center text-decoration-none">
+                                        <a href="/doc-pro" class="col d-flex align-items-center text-decoration-none justify-content-center mt-4 mt-md-0">
                                             <x-product :image-path="asset('images/icons/doc-pro.png')" :alt="__('frontend.products.doc_pro')" :name="__('frontend.products.doc_pro')" />
                                         </a>
                                     </div>
@@ -39,11 +39,11 @@
                     <div class="container-fluid py-4 text-center">
                         <h3 class="fw-bold text-uppercase text-primary aos-init" data-aos="fade-up" data-aos-duration="1000">{{ __('frontend.general.coming_soon') }}</h3>
                         <div class="row justify-content-center mb-5">
-                            <div class="col-2 aos-init" data-aos="flip-left" data-aos-duration="2000">
+                            <div class="col-6 col-sm-5 col-md-4 col-lg-3 aos-init" data-aos="flip-left" data-aos-duration="2000">
                                 <img src="{{ asset('images/icons/coming-soon/medical-cover.png') }}" alt="{{ __('frontend.products.medical_cover') }}" class="mb-3">
                                 <h5 class="title">{{ __('frontend.products.medical_cover') }}</h5>
                             </div>
-                            <div class="col-2 aos-init" data-aos="flip-left" data-aos-duration="2000">
+                            <div class="col-6 col-sm-5 col-md-4 col-lg-3 aos-init" data-aos="flip-left" data-aos-duration="2000">
                                 <img src="{{ asset('images/icons/coming-soon/houseowner.png') }}" alt="{{ __('frontend.products.houseowner') }}" class="mb-3">
                                 <h5 class="title">{{ __('frontend.products.houseowner') }}</h5>
                             </div>

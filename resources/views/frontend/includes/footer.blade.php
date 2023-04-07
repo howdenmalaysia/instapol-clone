@@ -13,7 +13,7 @@
                         {{ __('frontend.footer.copyright'). ' ' . config('app.name') . '. ' . __('frontend.footer.all_rights_reserved') }}
                     </p>
             </div>
-            <div class="col-md-5 text-end">
+            <div class="col-md-5 text-md-end">
                 <p class="mb-3 fw-normal">{{ __('frontend.footer.owned_by') }}</p>
                 <x-howden-logo width="250" />
                 <p class="m-0 mt-3 font-howden">Howden Insurance Brokers Sdn. Bhd. (197801001023)</p>
