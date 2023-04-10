@@ -145,12 +145,14 @@ class Allianz implements InsurerLibraryInterface
         $get_variant = $avvariant->response->VariantGrp[0]->Variant;
         $AvCode = $avvariant->response->VariantGrp[0]->AvCode;
         $sum_insured = (double)$avvariant->response->VariantGrp[0]->SumInsured;
-        foreach($avvariant->response->VariantGrp as $variantlist){
-            array_push($variant_list,$variantlist->Variant);
-            if($input->variant == $variantlist->Variant){
-                $get_variant = $variantlist->Variant;
-                $sum_insured = formatNumber($variantlist->SumInsured, 0);
-                $AvCode = $variantlist->AvCode;
+        if(isset($input->variant) && ! empty($input->variant)){
+            foreach($avvariant->response->VariantGrp as $variantlist){
+                array_push($variant_list,$variantlist->Variant);
+                if($input->variant == $variantlist->Variant){
+                    $get_variant = $variantlist->Variant;
+                    $sum_insured = formatNumber($variantlist->SumInsured, 0);
+                    $AvCode = $variantlist->AvCode;
+                }
             }
         }
         foreach($nvic as $_nvic) {    
@@ -188,7 +190,7 @@ class Allianz implements InsurerLibraryInterface
             ],
         ];
         $get_quotation = (object)[
-            'input'=>$input->input,
+            'input'=>$input->input ?? $input,
             'vix'=>$set_vehicle,
         ];
         $motor_premium = $this->getQuotation($get_quotation);
@@ -1184,11 +1186,11 @@ class Allianz implements InsurerLibraryInterface
             $age = '';
 		}
         //check avcode selected or default first variant's avcode
-        $avcode = $qParams->input->vehicle->extra_attribute->AvCode;
+        $avcode = $qParams->input->vehicle->extra_attribute->AvCode ?? '';
         if(empty($avcode)){
             $avcode = $qParams->vix->extra_attribute->AvCode;
         }
-        $SumInsured = $qParams->input->vehicle->sum_insured;
+        $SumInsured = $qParams->input->vehicle->sum_insured ?? '';
         if(empty($SumInsured)){
             $SumInsured = $qParams->vix->sum_insured;
         }
@@ -1203,7 +1205,7 @@ class Allianz implements InsurerLibraryInterface
                 "identityNumber": "'.$qParams->input->id_number.'",
                 "gender": "'.$qParams->input->gender.'",
                 "birthDate": "'.$dob.'",
-                "maritalStatus": "'.$this->getMaritalStatusCode($qParams->input->marital_status).'",
+                "maritalStatus": "'.$this->getMaritalStatusCode(! empty($qParams->input->marital_status) ? $qParams->input->marital_status : 'S').'",
                 "postalCode": "'.$qParams->input->postcode.'",
                 "noOfClaims": "0"
             },
