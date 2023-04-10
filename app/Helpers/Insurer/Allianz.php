@@ -424,7 +424,20 @@ class Allianz implements InsurerLibraryInterface
     
     public function avVariant(object $input) : object
     {
-        $region = "?region=".$input->region;
+        $region = 'W';
+        if(strtoupper($input->region) == 'WEST'){
+            $region = 'W';
+        }
+        else if(strtoupper($input->region) == 'EAST'){
+            $region = 'E';
+        }
+        else if(strtoupper($input->region) == 'W'){
+            $region = 'W';
+        }
+        else if(strtoupper($input->region) == 'E'){
+            $region = 'E';
+        }
+        $region = "?region=".$region;
         $make_code = "&makeCode=".$input->makeCode;
         $model_code = "";
         if(isset($input->modelCode) && $input->modelCode != ''){
