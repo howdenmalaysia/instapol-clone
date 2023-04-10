@@ -477,15 +477,18 @@
                 }
             });
 
-            $('#occupation-next').on('click', async () => {
+            $('#occupation-next').on('click', (e) => {
+                $(e.target).addClass('loadingButton');
+
                 if($('#occupation').val() != '') {
                     motor.policy_holder.occupation = $('#occupation').val();
                     $('#motor').val(JSON.stringify(motor));
 
-                    await getPremium([motor.product_id]);
-                    $('#product-form').submit();
+                    getPremium([{id: motor.product_id}], true);
+                    $(e.target).removeClass('loadingButton');
                 } else {
                     $('#occupation-error').text("{{ __('frontend.motor.compare_page.occupation_error') }}").removeClass('d-none');
+                    $(e.target).removeClass('loadingButton');
                 }
             });
 
@@ -493,7 +496,9 @@
                 $('#occupation-error').addClass('d-none');
             });
 
-            $('#avcode-next').on('click', () => {
+            $('#avcode-next').on('click', (e) => {
+                $(e.target).addClass('loadingButton');
+
                 if($('#allianz-variant').val() != '') {
                     motor.vehicle.extra_attribute.AvCode = allianz_variant.find((variant) => {
                         return variant.Variant == $('#allianz-variant').val();
@@ -504,13 +509,14 @@
                         return variant.Variant == $('#allianz-variant').val();
                     }).SumInsured;
 
-
                     $('#motor').val(JSON.stringify(motor));
                     $('#av-code').val(motor.vehicle.extra_attribute.AvCode);
 
                     getPremium([{id: motor.product_id}], true);
+                    $(e.target).removeClass('loadingButton');
                 } else {
                     $('#avcode-error').text("{{ __('frontend.motor.compare_page.avcode_error') }}").removeClass('d-none');
+                    $(e.target).removeClass('loadingButton');
                 }
             });
 

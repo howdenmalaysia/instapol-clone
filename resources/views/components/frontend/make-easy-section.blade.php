@@ -3,7 +3,7 @@
         <div class="row justify-content-center">
             <div class="col-12">
                 <div class="row justify-content-center">
-                    <div class="col-6">
+                    <div class="col-12 col-md-6">
                         <div class="text-center align-items-end">
                             <h2 class="text-uppercase fw-bold">
                                 {{ __('frontend.general.how') }}
