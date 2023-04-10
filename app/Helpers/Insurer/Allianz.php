@@ -238,7 +238,7 @@ class Allianz implements InsurerLibraryInterface
             "ClaimsExp": "0",
             "ReconInd": "N",
             "ExcessWaiveInd": "'.$input->excessWaiveInd.'",
-            "CheckUbbInd": 1,
+            "CheckUbbInd": 2,
             "Policy": {
                 "PolicyEffectiveDate": "'.$input->inception_date.'",
                 "PolicyExpiryDate": "'.$input->expiry_date.'",
@@ -388,7 +388,20 @@ class Allianz implements InsurerLibraryInterface
     
     public function avModel(object $input) : object
     {
-        $region = "?region=".$input->region;
+        $region = 'W';
+        if(strtoupper($input->region) == 'WEST'){
+            $region = 'W';
+        }
+        else if(strtoupper($input->region) == 'EAST'){
+            $region = 'E';
+        }
+        else if(strtoupper($input->region) == 'W'){
+            $region = 'W';
+        }
+        else if(strtoupper($input->region) == 'E'){
+            $region = 'E';
+        }
+        $region = "?region=".$region;
         $make_code = "&makeCode=".$input->makeCode;
         $model_code = "";
         if(isset($input->modelCode) && $input->modelCode != ''){
