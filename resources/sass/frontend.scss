@@ -171,6 +171,17 @@ body {
                     height: 3.4rem;
                 }
             }
+
+            @include media-breakpoint-down(xs) {
+                .icon-motor {
+                    margin-top: -15px;
+                    width: 210px;
+                }
+
+                .vehicle-details {
+                    padding-bottom: 30px;
+                }
+            }
         }
 
         #extend-info-form {
@@ -194,16 +205,11 @@ body {
                 padding: 20px 200px;
                 background-image: url(../images/bg-partner.png);
             }
-        }
 
-        @include media-breakpoint-down(sm) {
-            .icon-motor {
-                margin-top: -15px;
-                width: 210px;
-            }
-
-            .vehicle-details {
-                padding-bottom: 30px;
+            @include media-breakpoint-down(sm) {
+                .container-fluid {
+                    padding: 20px;
+                }
             }
         }
     }

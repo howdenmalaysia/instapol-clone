@@ -52,7 +52,7 @@
                                                     <div class="mt-2 col-9 col-sm-12 col-lg-3">
                                                         <h5 class="text-center text-uppercase title">{{ __('frontend.motor.car_plate') }}</h5>
                                                     </div>
-                                                    <div class="col-9 col-sm-11 col-lg-7 col-xs-3 col-md-10">
+                                                    <div class="col-9 col-md-10 col-lg-7">
                                                         <input
                                                             id="vehicle-no"
                                                             class="uppercase form-control"
@@ -71,7 +71,7 @@
                                                         >
                                                         <span id="vehicle-number-errors"></span>
                                                     </div>
-                                                    <div class="col-1 col-xs-3">
+                                                    <div class="col-3 col-md-1">
                                                         <button type="button" id="vehicle-no-continue" class="btn btn-primary text-white rounded-circle px-3 py-2">
                                                             <i class="fa-solid fa-play align-middle"></i>
                                                         </button>
@@ -275,10 +275,11 @@
                     // Set User Data to GA
                     gtag('set', {
                         'user_data': {
-                            'email_address': $('#email-address').val(),
+                            'email': $('#email-address').val(),
                             'phone_number': '+6' + $('#phone-number').val().replace('-', ''),
                             'address': {
                                 'postal_code': $('#postcode').val(),
+                                'country': 'MY'
                             }
                         }
                     });
