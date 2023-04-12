@@ -485,7 +485,6 @@
                     $('#motor').val(JSON.stringify(motor));
 
                     getPremium([{id: motor.product_id}], true);
-                    $(e.target).removeClass('loadingButton');
                 } else {
                     $('#occupation-error').text("{{ __('frontend.motor.compare_page.occupation_error') }}").removeClass('d-none');
                     $(e.target).removeClass('loadingButton');
@@ -513,7 +512,6 @@
                     $('#av-code').val(motor.vehicle.extra_attribute.AvCode);
 
                     getPremium([{id: motor.product_id}], true);
-                    $(e.target).removeClass('loadingButton');
                 } else {
                     $('#avcode-error').text("{{ __('frontend.motor.compare_page.avcode_error') }}").removeClass('d-none');
                     $(e.target).removeClass('loadingButton');
