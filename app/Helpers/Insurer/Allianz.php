@@ -292,9 +292,7 @@ class Allianz implements InsurerLibraryInterface
                 ]);
             }
             else{
-                if(!$result->status) {
-                    return $this->abort(json_encode($result->response->ReferRiskList));
-                }
+                return $this->abort(json_encode($result->response->ReferRiskList));
             }
         }
     }
@@ -1251,7 +1249,22 @@ class Allianz implements InsurerLibraryInterface
             'SumInsured' => $SumInsured,
         ];
         $checkUBB = $this->checkUBB($ubb);
-
+         
+        if(!$checkUBB->status) {
+            return $this->abort($checkUBB->response);
+        }
+        else{
+            if(empty($checkUBB->response->ReferRiskList)){
+                return new ResponseData([
+                    'status' => $checkUBB->status,
+                    'response' => $checkUBB->response
+                ]);
+            }
+            else{
+                return $this->abort(json_encode($checkUBB->response->ReferRiskList));
+            }
+        }
+        
         return new ResponseData([
             'status' => $result->status,
             'response' => $result->response
@@ -1380,6 +1393,36 @@ class Allianz implements InsurerLibraryInterface
                 $index++;
             }
         }
+        //additional driver
+        if(empty($input->input->additional_driver)){
+            $driver_input = '"unlimitedDriverInd": false,
+            "driverDetails": [],';
+        }
+        else{
+            if(count($input->input->additional_driver) == 1){
+                $driver_input = '"unlimitedDriverInd": false,
+                "driverDetails": [],';
+            }
+            else if(count($input->input->additional_driver) == 2){
+                $driver_input = '"unlimitedDriverInd": false,
+                "driverDetails": [{
+                        fullName: "Policy Holder Driver",
+                        identityNumber:"'.$input->input->id_number.'"
+                    }';
+                $index = 1;
+                foreach($input->input->additional_driver as $value){
+                    $driver_input .= ',{
+                        fullName: "Additional  Driver '.$index .'",
+                        identityNumber:"'.$value->id_number.'"
+                    }';
+                }
+                $driver_input .= '],';
+            }
+            else if(count($input->input) >= 3){
+                
+            } 
+        }
+        // dd($input->input->additional_driver, empty($input->input->additional_driver));
         $name = $input->input->name ?? 'Tan Ai Ling';//name is mandotory input
         //check avcode selected or default first variant's avcode
         $avcode = $input->input->vehicle->extra_attribute->AvCode;
@@ -1403,13 +1446,7 @@ class Allianz implements InsurerLibraryInterface
             "calculateDiscount": {
               "discountPercentage": "0"
             },
-            "unlimitedDriverInd": false,
-            "driverDetails": [
-              {
-                "fullName": "'.$name.'",
-                "identityNumber": "'.$input->input->id_number.'"
-              }
-            ],
+            '.$driver_input.'
             "vehicle": {
               "avCode": "'.$avcode.'"
             }
