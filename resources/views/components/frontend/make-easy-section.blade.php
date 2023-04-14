@@ -3,7 +3,7 @@
         <div class="row justify-content-center">
             <div class="col-12">
                 <div class="row justify-content-center">
-                    <div class="col-6">
+                    <div class="col-12 col-md-6">
                         <div class="text-center align-items-end">
                             <h2 class="text-uppercase fw-bold">
                                 {{ __('frontend.general.how') }}
@@ -17,9 +17,9 @@
                 </div>
             </div>
         </div>
-        <div class="row text-center justify-content-center mt-5">
+        <div class="row text-center justify-content-center mt-5 px-3">
             @foreach (__('frontend.home_page.points_easy') as $index => $point)
-                <div class="col-4">
+                <div class="col-4 mx-2">
                     <x-description-with-numbering :number="$index" :title="$point['title']" :description="$point['description']" />
                 </div>
             @endforeach

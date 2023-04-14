@@ -2,7 +2,7 @@
     <table id="pricing-table" class="table table-borderless">
         <thead>
             <tr class="align-middle">
-                <td class="w-50 mt-1" colspan="3">
+                <td class="w-50 mt-1 text-center" colspan="3">
                     <img src="{{ $insurerLogo }}" alt="{{ $insurerName }}" class="img-fluid" />
                 </th>
             </tr>

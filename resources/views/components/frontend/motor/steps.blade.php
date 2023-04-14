@@ -1,6 +1,6 @@
 <section id="steps">
     <div class="container">
-        <div class="row bg-white rounded position-relative mx-4 pt-4 pb-5 white-glow">
+        <div class="row bg-white rounded position-relative mx-1 mx-sm-3 mx-md-4 px-3 px-lg-0 pt-4 pb-5 white-glow">
             <div class="bs-stepper d-flex justify-content-center pb-4">
                 <div class="col-12 col-lg-10">
                     <div class="bs-stepper-header">

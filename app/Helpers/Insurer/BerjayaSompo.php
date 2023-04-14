@@ -498,7 +498,7 @@ class BerjayaSompo implements InsurerLibraryInterface
             'net_premium' => formatNumber($motor_premium->response->AMT_PAY_CLIENT - $motor_premium->response->COMMISSION),
             'extra_cover' => $input->extra_cover,
             'personal_accident' => $pa,
-            'quotation_number' => $motor_premium->response->QUOTATION_NO,
+            //'quotation_number' => $motor_premium->response->QUOTATION_NO,
             'sum_insured' => formatNumber($motor_premium->response->SUM_INSURED),
             'sum_insured_type' => $vehicle->sum_insured_type,
             'min_sum_insured' => formatNumber($vehicle->min_sum_insured),
@@ -635,7 +635,7 @@ class BerjayaSompo implements InsurerLibraryInterface
         ]);
     }
 
-    private function getQuotation(object $input, string $type = 'MQT')
+    private function getQuotation(object $input, string $type = 'MQTRR')
     {
         // Format Address
         $address = [$input->unit_no ?? '', $input->building_name ?? '', $input->address_one ?? 'Level 27, Menara Etiqa', $input->address_two ?? ''];

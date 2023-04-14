@@ -71,6 +71,22 @@ body {
             right: 10px;
             top: 10px;
         }
+
+        img {
+            max-height: 700px;
+        }
+
+        @include media-breakpoint-down(lg) {
+            .btn-close {
+                right: 100px;
+                top: 15px;
+            }
+
+            img {
+                max-height: 650px;
+                text-align: center;
+            }
+        }
     }
 
     #promo-carousel {
@@ -155,6 +171,17 @@ body {
                     height: 3.4rem;
                 }
             }
+
+            @include media-breakpoint-down(xs) {
+                .icon-motor {
+                    margin-top: -15px;
+                    width: 210px;
+                }
+
+                .vehicle-details {
+                    padding-bottom: 30px;
+                }
+            }
         }
 
         #extend-info-form {
@@ -177,6 +204,12 @@ body {
             .container-fluid {
                 padding: 20px 200px;
                 background-image: url(../images/bg-partner.png);
+            }
+
+            @include media-breakpoint-down(sm) {
+                .container-fluid {
+                    padding: 20px;
+                }
             }
         }
     }
@@ -216,11 +249,7 @@ body {
 
         .insurer-card {
             .insurer-logo {
-                height: 110px;
-
-                img {
-                    height: 100px;
-                }
+                height: 100px;
             }
         }
     }
@@ -337,6 +366,20 @@ body {
 
         .stepper-label {
             bottom: 35px;
+        }
+
+        @include media-breakpoint-down(md) {
+            .bs-stepper-circle {
+                width: 55px;
+                height: 55px;
+                font-size: 20px;
+            }
+
+            .stepper-label {
+                bottom: 30px;
+                font-size: 13px;
+                white-space: pre-wrap;
+            }
         }
     }
 

@@ -11,8 +11,8 @@
                 <div class="col-12 p-0">
                     <div class="header">
                         <div class="container">
-                            <div class="row text-center">
-                                <div class="col-12 col-lg-7 tag-line">
+                            <div class="row text-center justify-content-center">
+                                <div class="col-11 col-lg-7 tag-line">
                                     <h1 class="title text-uppercase text-white aos-init" data-aos="fade-right" data-aos-duration="1000">{{ __('frontend.motor.compare_and_buy') }}</h1>
                                     <p class="text-white aos-init" data-aos="fade-right" data-aos-duration="2000">{{ __('frontend.motor.compare_desc') }}</p>
                                 </div>
@@ -49,10 +49,10 @@
                                                     </div>
                                                 </div>
                                                 <div class="row mt-4 align-items-center">
-                                                    <div class="mt-2 col-12 col-lg-3">
+                                                    <div class="mt-2 col-9 col-sm-12 col-lg-3">
                                                         <h5 class="text-center text-uppercase title">{{ __('frontend.motor.car_plate') }}</h5>
                                                     </div>
-                                                    <div class="col-11 col-lg-7 col-xs-3 col-md-10">
+                                                    <div class="col-9 col-md-10 col-lg-7">
                                                         <input
                                                             id="vehicle-no"
                                                             class="uppercase form-control"
@@ -71,7 +71,7 @@
                                                         >
                                                         <span id="vehicle-number-errors"></span>
                                                     </div>
-                                                    <div class="col-1 col-xs-3">
+                                                    <div class="col-3 col-md-1">
                                                         <button type="button" id="vehicle-no-continue" class="btn btn-primary text-white rounded-circle px-3 py-2">
                                                             <i class="fa-solid fa-play align-middle"></i>
                                                         </button>
@@ -93,11 +93,11 @@
                             <div class="container d-flex justify-content-center rounded">
                                 <div id="extend-info-form" class="col-10 col-lg-9 rounded white-glow pl-4">
                                     <div class="card-body b-form">
-                                        <div class="mt-5 mb-2 row">
-                                            <div class="col-12 col-lg-5">
+                                        <div class="mt-5 mb-4 mb-md-2 row align-items-center">
+                                            <div class="col-5 col-lg-5">
                                                 <h4 class="title text-uppercase text-end mb-0">{{ __('frontend.motor.postcode') }}</h4>
                                             </div>
-                                            <div class="col-10 col-lg-5">
+                                            <div class="col-6 col-lg-5">
                                                 <input
                                                     class="form-control rounded"
                                                     type="text"
@@ -118,11 +118,11 @@
                                                 <span id="vehicle-postcode-errors"></span>
                                             </div>
                                         </div>
-                                        <div class="mb-2 row">
-                                            <div class="col-12 col-lg-5">
+                                        <div class="mb-4 mb-md-2 row align-items-center">
+                                            <div class="col-5 col-lg-5">
                                                 <h4 id="id-number-label" class="title text-uppercase text-end mb-0">{{ __('frontend.motor.nric') }}</h4>
                                             </div>
-                                            <div class="col-10 col-lg-5">
+                                            <div class="col-6 col-lg-5">
                                                 <input
                                                     id="id-number"
                                                     class="form-control rounded"
@@ -141,11 +141,11 @@
                                                 <span id="id-number-errors"></span>
                                             </div>
                                         </div>
-                                        <div class="mb-2 row">
-                                            <div class="col-12 col-lg-5">
+                                        <div class="mb-4 mb-md-2 row align-items-center">
+                                            <div class="col-5 col-lg-5">
                                                 <h4 class="title text-uppercase text-end mb-0">{{ __('frontend.motor.phone') }}</h4>
                                             </div>
-                                            <div class="col-10 col-lg-5">
+                                            <div class="col-6 col-lg-5">
                                                 <input
                                                     id="phone-number"
                                                     class="form-control rounded"
@@ -168,11 +168,11 @@
                                                 <span id="phone-number-errors"></span>
                                             </div>
                                         </div>
-                                        <div class="mb-2 row" id="four-row">
-                                            <div class="col-12 col-lg-5">
+                                        <div class="mb-4 mb-md-2 row align-items-center" id="four-row">
+                                            <div class="col-5 col-lg-5">
                                                 <h4 class="title text-uppercase text-end mb-0">{{ __('frontend.motor.email') }}</h4>
                                             </div>
-                                            <div class="col-10 col-lg-5">
+                                            <div class="col-6 col-lg-5">
                                                 <input
                                                     id="email-address"
                                                     class="form-control rounded"
@@ -193,7 +193,7 @@
                                             </div>
                                         </div>
                                         <div class="my-3 row text-end">
-                                            <div class="col-12 col-sm-10 col-md-11 col-lg-10 col-xl-10">
+                                            <div class="col-11 col-sm-10 col-md-11 col-lg-10 col-xl-10">
                                                 <button type="reset" class="h4 d-inline-block bg-white border-0 text-center text-secondary text-uppercase fw-bold" id="btn-clear">{{ __('frontend.button.clear') }}</button>
                                                 <button type="button" class="h4 bg-primary d-inline-block text-white border-0 text-center text-uppercase fw-bold" id="btn-continue">{{ __('frontend.button.continue') }}</button>
                                             </div>
@@ -275,10 +275,11 @@
                     // Set User Data to GA
                     gtag('set', {
                         'user_data': {
-                            'email_address': $('#email-address').val(),
+                            'email': $('#email-address').val(),
                             'phone_number': '+6' + $('#phone-number').val().replace('-', ''),
                             'address': {
                                 'postal_code': $('#postcode').val(),
+                                'country': 'MY'
                             }
                         }
                     });

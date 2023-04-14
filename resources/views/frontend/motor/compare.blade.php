@@ -20,7 +20,7 @@
             <div class="row">
                 <div class="col-12">
                     <div class="row" id="compare-wrapper">
-                        <div class="col-12 col-md-4 mb-4">
+                        <div class="col-12 col-md-5 col-xl-4 mb-4">
                             <div class="row">
                                 <div class="col-12">
                                     <div class="card border-0 rounded">
@@ -164,7 +164,7 @@
                             </div>
                         </div>
                         @foreach ($products as $product)
-                            <div class="col-4 border shadow rounded my-3 insurer-card">
+                            <div class="col-6 col-lg-4 border shadow rounded my-3 insurer-card">
                                 <div class="row" id={{ 'insurer-' . $product->id }} data-insurer-id="{{ $product->insurance_company->id }}">
                                     <div class="col-12">
                                         <div class="row p-3">
@@ -175,7 +175,7 @@
                                                         <img
                                                             src="{{ asset("images/insurer/{$product->insurance_company->logo}") }}"
                                                             alt="{{ $product->insurance_company->name }}"
-                                                            class="img-fluid d-block p-2 mx-auto align-self-center"
+                                                            class="img-fluid d-block p-2 mx-auto align-self-center insurer-logo"
                                                             width="200"
                                                         >
                                                     </div>
@@ -183,10 +183,10 @@
                                             </div>
                                             <div class="col-12 text-center align-self-center">
                                                 <div class="row">
-                                                    <div class="col-6">
+                                                    <div class="col-4 col-md-6">
                                                         <p class="text-primary fs-4 fw-bold mb-0">Price</p>
                                                     </div>
-                                                    <div class="col-6 text-end">
+                                                    <div class="col-8 col-md-6 text-end">
                                                         <p class="text-primary fs-4 fw-bold mb-0 premium" data-premium="0.00">RM 0.00</p>
                                                     </div>
                                                 </div>
@@ -477,15 +477,17 @@
                 }
             });
 
-            $('#occupation-next').on('click', async () => {
+            $('#occupation-next').on('click', (e) => {
+                $(e.target).addClass('loadingButton');
+
                 if($('#occupation').val() != '') {
                     motor.policy_holder.occupation = $('#occupation').val();
                     $('#motor').val(JSON.stringify(motor));
 
-                    await getPremium([motor.product_id]);
-                    $('#product-form').submit();
+                    getPremium([{id: motor.product_id}], true);
                 } else {
                     $('#occupation-error').text("{{ __('frontend.motor.compare_page.occupation_error') }}").removeClass('d-none');
+                    $(e.target).removeClass('loadingButton');
                 }
             });
 
@@ -493,7 +495,9 @@
                 $('#occupation-error').addClass('d-none');
             });
 
-            $('#avcode-next').on('click', () => {
+            $('#avcode-next').on('click', (e) => {
+                $(e.target).addClass('loadingButton');
+
                 if($('#allianz-variant').val() != '') {
                     motor.vehicle.extra_attribute.AvCode = allianz_variant.find((variant) => {
                         return variant.Variant == $('#allianz-variant').val();
@@ -504,13 +508,13 @@
                         return variant.Variant == $('#allianz-variant').val();
                     }).SumInsured;
 
-
                     $('#motor').val(JSON.stringify(motor));
                     $('#av-code').val(motor.vehicle.extra_attribute.AvCode);
 
                     getPremium([{id: motor.product_id}], true);
                 } else {
                     $('#avcode-error').text("{{ __('frontend.motor.compare_page.avcode_error') }}").removeClass('d-none');
+                    $(e.target).removeClass('loadingButton');
                 }
             });
 
