@@ -18,6 +18,7 @@ use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 
 class Allianz implements InsurerLibraryInterface
 {
@@ -109,7 +110,12 @@ class Allianz implements InsurerLibraryInterface
                 config('setting.response_codes.sum_insured_referred')
             );
         }
-        $nvic = explode('|', (string) $vix->response->nvicList[0]->nvic);
+        if(empty($vix->response->nvicList)){
+            return $this->abort('Getting empty nvic List!');
+        }
+        else{
+            $nvic = $vix->response->nvicList;
+        }
 
         //get avmodel
         $vehicleModel = $vix->response->vehicleModel;
@@ -155,11 +161,11 @@ class Allianz implements InsurerLibraryInterface
                 }
             }
         }
-        foreach($nvic as $_nvic) {    
+        foreach($nvic as $_nvic) {
             array_push($variants, new VariantData([
-                'nvic' => $_nvic,
-                'sum_insured' => floatval($sum_insured),
-                'variant' => $get_variant ?? ''
+                'nvic' => $_nvic->nvic,
+                'sum_insured' => floatval($_nvic->vehicleMarketValue),
+                'variant' => $_nvic->vehicleVariant
             ]));
         }
         $set_vehicle = (object)[
@@ -237,7 +243,7 @@ class Allianz implements InsurerLibraryInterface
             "ReferenceNo": "'.$input->contractNumber.'",
             "ProductCat": "MT",
             "SourceSystem": "PARTNER_ID",
-            "ClaimsExp": "0",
+            "ClaimsExp": 0,
             "ReconInd": "N",
             "ExcessWaiveInd": "'.$input->excessWaiveInd.'",
             "CheckUbbInd": 2,
@@ -245,35 +251,35 @@ class Allianz implements InsurerLibraryInterface
                 "PolicyEffectiveDate": "'.$input->inception_date.'",
                 "PolicyExpiryDate": "'.$input->expiry_date.'",
                 "Client": {
-                    "IdentificationNumber": "'.$input->id_number.'",
+                    "IdentificationNumber": '.$input->id_number.',
                     "IdType": "'.$input->id_type.'",
-                    "Age": "'.$input->age.'"
+                    "Age": '.$input->age.'
                 },
                 "RiskList": [{
-                    "RiskId": "1",
+                    "RiskId": 1,
                     "InsuredPerson": {
-                        "IdentificationNumber": "'.$input->id_number.'",
+                        "IdentificationNumber": '.$input->id_number.',
                         "IdType": "NRIC"
                     },
                     "Vehicle": {
                         "AvCode": "'.$input->AvCode.'",
-                        "Capacity": "'.$input->Capacity.'",
-                        "MakeCode": "'.$input->MakeCode.'",
+                        "Capacity": '.$input->Capacity.',
+                        "MakeCode": '.$input->MakeCode.',
                         "Model": "'.$input->Model.'",
-                        "PiamModel": "28",
+                        "PiamModel": 28,
                         "Seat": '.$input->Seat.',
                         "VehicleNo": "'.$input->VehicleNo.'",
-                        "YearOfManufacture": "'.$input->YearOfManufacture.'",
+                        "YearOfManufacture": '.$input->YearOfManufacture.',
                         "NamedDriverList": [{
-                            "Age": "'.$input->age.'",
-                            "IdentificationNumber": "'.$input->id_number.'"
+                            "Age": '.$input->age.',
+                            "IdentificationNumber": '.$input->id_number.'
                         }],
                         "HighPerformanceInd": "'.$input->HighPerformanceInd.'",
                         "HrtvInd": "'.$input->HrtvInd.'"
                     },
                     "CoverList": [{
                         "CoverPremium": {
-                            "SumInsured": "'.$input->SumInsured.'"
+                            "SumInsured": '.$input->SumInsured.'
                         }
                     }]
                 }]
@@ -747,12 +753,16 @@ class Allianz implements InsurerLibraryInterface
             }
         }
         $input->extra_cover = $new_extracover_list;
-
+        //get additional driver amount
+        $additional_driver_amount = 0;
+        if(isset($motor_premium->response->unlimitedDriverInfo->amount)){
+            $additional_driver_amount = $motor_premium->response->unlimitedDriverInfo->amount;
+        }
         $response = new PremiumResponse([
             'basic_premium' => formatNumber($motor_premium->response->premium->basicPremium),
             'ncd_percentage' => $motor_premium->response->premium->ncdPct,
             'ncd_amount' => formatNumber($motor_premium->response->premium->ncdAmt),
-            'total_benefit_amount' => formatNumber($total_benefit_amount),
+            'total_benefit_amount' => formatNumber($total_benefit_amount + $additional_driver_amount),
             'gross_premium' => formatNumber($motor_premium->response->premium->grossPremium),
             'sst_percent' => formatNumber($motor_premium->response->premium->serviceTaxPercentage),
             'sst_amount' => formatNumber($motor_premium->response->premium->serviceTaxAmount),
@@ -954,153 +964,104 @@ class Allianz implements InsurerLibraryInterface
 
     public function submission(object $input) : object
     {
-        // Get Extra Attribute
-        $extra_attribute = json_decode($input->insurance->extra_attribute->value);
-
-        switch($input->id_type) {
-            case config('setting.id_type.company_registration_no'): {
-                $input->company_registration_number = $input->id_number;
-
-                break;
+        $dobs = explode(" ", $input->insurance->holder->date_of_birth);
+        $dob = $dobs[0];
+        $phone_code = $input->insurance->holder->phone_code;
+        $phone_number = $input->insurance->holder->phone_number;
+        $phone = str_split($input->insurance->holder->phone_number, 2);
+        $phone_prefix = $phone_code . $phone[0];
+        $mobile = str_replace($phone[0],"",$phone_number);
+        //check driver
+        $e_hailing = false;
+        foreach($input->insurance->extra_cover as $value){
+            if($value == 'A202'){
+                $e_hailing = true;
             }
-            default: {
-                return $this->abort(__('api.unsupported_id_type'), config('setting.response_codes.unsupported_id_types'));
+        }
+        if($e_hailing){
+            if($input->insurance_motor->number_of_drivers >= 3){
+                $driver = '"driverDetails": [],';
+            }
+            else{
+                $driver = '"driverDetails": [{
+                    "fullName":"'.$input->insurance->holder->name.'",
+                    "identityNumber":'.$input->insurance->holder->id_number.',
+                    "driverType":"EHAIL"
+                    }';
+                foreach($input->insurance_motor->driver as $value){
+                    $driver .= ',{
+                        "fullName":"'.$value->name.'",
+                        "identityNumber":'.$value->id_number.',
+                        "driverType":"EHAIL"
+                        }';
+                }
+                $driver .= '],';
             }
         }
-        
-        $input->vehicle = (object) [
-            'inception_date' => $input->insurance->inception_date,
-            'manufacture_year' => $input->insurance_motor->manufacture_year,
-            'ncd_percentage' => $input->insurance_motor->ncd_percentage,
-            'nvic' => $input->insurance_motor->nvic,
-            'sum_insured' => formatNumber($input->insurance_motor->sum_insured),
-            'extra_attribute' => (object) [
-                'chassis_number' => $extra_attribute->chassis_number,
-                'cover_type' => $extra_attribute->cover_type,
-                'engine_number' => $extra_attribute->engine_number,
-                'seating_capacity' => $extra_attribute->seating_capacity,
-                'request_id' => $extra_attribute->request_id,
-            ],
-        ];
-
-        // Generate Additional Drivers List
-        $additional_driver_list = [];
-        foreach($input->insurance_motor->driver as $driver) {
-            array_push($additional_driver_list, (object) [
-                'age' => getAgeFromIC($driver->id_number),
-                'gender' => $this->getGender(getGenderFromIC($driver->id_number)),
-                'id_number' => $driver->id_number,
-                'name' => $driver->name,
-                'relationship' => $driver->relationship_id
-            ]);
+        else{
+            if($input->insurance_motor->number_of_drivers >= 3){
+                $driver = '"driverDetails": [],';
+            }
+            else{
+                $driver = '"driverDetails": [{
+                    "fullName":"'.$input->insurance->holder->name.'",
+                    "identityNumber":'.$input->insurance->holder->id_number.'
+                    }';
+                foreach($input->insurance_motor->driver as $value){
+                    $driver .= ',{
+                        "fullName":"'.$value->name.'",
+                        "identityNumber":'.$value->id_number.'
+                        }';
+                }
+                $driver .= '],';
+            }
         }
-
-        // Generate Selected Extra Cover
-        $selected_extra_cover = [];
-        foreach ($input->insurance->extra_cover as $extra_cover) {
-            array_push($selected_extra_cover, new ExtraCover([
-                'extra_cover_code' => $extra_cover->code,
-                'extra_cover_description' => $extra_cover->description,
-                'premium' => floatval($extra_cover->amount),
-                'sum_insured' => floatval($extra_cover->sum_insured) ?? 0,
-                'cart_amount' => $extra_cover->cart_amount ?? 0,
-                'cart_day' => $extra_cover->cart_day ?? 0,
-            ]));
-        }
-
-        $input->additional_driver = $additional_driver_list;
-        $input->extra_cover = $selected_extra_cover;
-        
-        $premium_result = $this->getQuotation($input);
-
-        if(!$premium_result->status) {
-            return $this->abort($premium_result->response);
-        }
-
-        $input->premium_details = $premium_result;
-        $input->vehicle->extra_attributes->request_id = $premium_result->request_id;
-        
-        $result = $this->issueCoverNote($input);
-
-        if(!$result->status) {
-            return $this->abort($result->response);
-        }
-
-        return new ResponseData([
-            'response' => (object) [
-                'policy_number' => $result->response->policyNo
-            ]
-        ]);
-    }
-
-    public function Getsubmission(object $input) : object
-    {
-        $dobs = str_split($input->id_number, 2);
-        $id_number = $dobs[0] . $dobs[1] . $dobs[2] . "-" . $dobs[3] .  "-" . $dobs[4] . $dobs[5];
-        $year = intval($dobs[0]);
-		if ($year >= 10) {
-			$year += 1900;
-		} else {
-			$year += 2000;
-		}
-		$dob = strval($year) . "-" . $dobs[1] . "-" . $dobs[2];
-        $postcode_details = $this->postalCode($input->postcode);
-        $get_vehicle_details = (object)[
-            'vehicle_number' => $input->vehicle_number,
-            'id_type' => $input->id_type,
-            'id_number' => $input->id_number,
-            'postcode' => $postcode_details->Postcode,
-        ];
-        $vix = $this->vehicleDetails($get_vehicle_details);
         $text = '{
             "salesChannel": "PTR",
             "contract": {
-              "contractNumber": "'.$vix->contractNumber.'"
+              "contractNumber": "'.$input->insurance->contract_number.'"
             },
             "person": {
-              "identityType": "'.$this->id_type($input->id_type).'",
-              "identityNumber": "'.$input->id_number.'",
-              "fullName": "TAN AI LING",
+              "identityType": "'.$this->id_type($input->insurance->holder->id_type_id).'",
+              "identityNumber": '.$input->insurance->holder->id_number.',
+              "fullName": "'.$input->insurance->holder->name.'",
               "birthDate": "'.$dob.'",
-              "gender": "'.$input->gender.'",
-              "email": "'.$input->email.'",
-              "postalCode": "'.$postcode_details->Postcode.'",
-              "mobilePrefix": 6012,
-              "mobile": 23456789,
-              "addressLine1": "'.$input->address_one.'",
-              "addressLine2": "'.$input->address_two.'",
-              "addressLine3": null
+              "gender": "'.$input->insurance->holder->gender.'",
+              "email": "'.$input->insurance->holder->email_address.'",
+              "postalCode": "'.$input->insurance->address->postcode.'",
+              "mobilePrefix": '.$phone_prefix.',
+              "mobile": '.$mobile.',
+              "addressLine1": "'.$input->insurance->address->address_one.'",
+              "addressLine2": "'.$input->insurance->address->address_two.'",
+              "addressLine3": "'.$input->insurance->address->city.'"
             },
             "vehicle": {
-              "nvicCode": "'.$input->vehicle_number.'",
-              "vehicleEngineCC": "'.$input->vehicle->engine_capacity.'",
-              "yearOfManufacture": "'.$input->vehicle->manufacture_year.'",
-              "occupantsNumber": '.$input->vehicle->extra_attribute->seating_capacity.'
-            },
-            "driverDetails": [
-              {
-                "fullName": "TAN AI LING",
-                "identityNumber": "'.$input->id_number.'"
-              }
-            ],
-            "payment": {
-              "paymentMode": "ONLCCN",
-              "paymentBankRef": 123456,
-              "paymentId": 2,
-              "paymentDate": "2018-12-06 09:36:19",
-              "paymentAmount": "50.00"
+              "nvicCode": "'.$input->insurance_motor->nvic.'",
+              "vehicleEngineCC": '.$input->insurance_motor->engine_capacity.',
+              "yearOfManufacture": '.$input->insurance_motor->manufactured_year.',
+              "occupantsNumber": '.$input->insurance_motor->seating_capacity.'
+            },'
+            .$driver.
+            '"payment": {
+              "paymentMode": "",
+              "paymentBankRef": ,
+              "paymentId": "",
+              "paymentDate": "'.$input->payment_date.'",
+              "paymentAmount": '.$input->payment_amount.'"
             }
           }';
-
 		$result = $this->cURL("getData", "submission", $text);
 
         if(!$result->status) {
             return $this->abort($result->response);
         }
-        return new ResponseData([
-            'status' => $result->status,
-            'response' => $result->response
-        ]);
+
+        
+        $response = (object) [
+            'contract_number' => $input->insurance->contract_number
+        ];
+
+        return (object) ['status' => true, 'response' => $response];
     }
 
     public function abort(string $message, int $code = 490) : ResponseData
@@ -1200,25 +1161,25 @@ class Allianz implements InsurerLibraryInterface
             "expirationDate": "'.Carbon::parse($qParams->vix->expiry_date)->format('Y-m-d').'",
             "person": {
                 "identityType": "'.$id_type.'",
-                "identityNumber": "'.$qParams->input->id_number.'",
+                "identityNumber": '.$qParams->input->id_number.',
                 "gender": "'.$qParams->input->gender.'",
                 "birthDate": "'.$dob.'",
-                "maritalStatus": "'.$this->getMaritalStatusCode(! empty($qParams->input->marital_status) ? $qParams->input->marital_status : 'S').'",
-                "postalCode": "'.$qParams->input->postcode.'",
-                "noOfClaims": "0"
+                "maritalStatus": '.$this->getMaritalStatusCode(! empty($qParams->input->marital_status) ? $qParams->input->marital_status : 'S').',
+                "postalCode": '.$qParams->input->postcode.',
+                "noOfClaims": 0
             },
             "calculateDiscount": {
-                "discountPercentage": "0"
+                "discountPercentage": 0
             },
             "vehicle": {
                 "vehicleLicenseId": "'.$qParams->input->vehicle_number.'",
-                "vehicleMake": "'.$qParams->vix->extra_attribute->make_code.'",
-                "vehicleModel": "'.$qParams->vix->extra_attribute->model_code.'",
+                "vehicleMake": '.$qParams->vix->extra_attribute->make_code.',
+                "vehicleModel": '.$qParams->vix->extra_attribute->model_code.',
                 "vehicleEngineCC": '.$qParams->vix->engine_capacity.',
-                "yearOfManufacture": "'.$qParams->vix->manufacture_year.'",
+                "yearOfManufacture": '.$qParams->vix->manufacture_year.',
                 "occupantsNumber": '.$qParams->vix->extra_attribute->seating_capacity.',
                 "ncdPercentage": '.$qParams->vix->ncd_percentage.',
-                "sumInsured": "'.$SumInsured.'",
+                "sumInsured": '.$SumInsured.',
                 "avCode": "'.$avcode.'",
                 "mvInd": "N"
             }
@@ -1254,13 +1215,7 @@ class Allianz implements InsurerLibraryInterface
             return $this->abort($checkUBB->response);
         }
         else{
-            if(empty($checkUBB->response->ReferRiskList)){
-                return new ResponseData([
-                    'status' => $checkUBB->status,
-                    'response' => $checkUBB->response
-                ]);
-            }
-            else{
+            if(!empty($checkUBB->response->ReferRiskList)){
                 return $this->abort(json_encode($checkUBB->response->ReferRiskList));
             }
         }
@@ -1283,9 +1238,9 @@ class Allianz implements InsurerLibraryInterface
             "sourceSystem": "PARTNER_ID",
             "vehicleLicenseId": "'.$input->vehicle_number.'",
             "identityType": "'.$id_type.'",
-            "identityNumber": "'.$input->id_number.'",
-            "checkUbbInd": "1",
-            "postalCode": "'.$input->postcode.'"
+            "identityNumber": '.$input->id_number.',
+            "checkUbbInd": 1,
+            "postalCode": '.$input->postcode.'
         }';
         $result = $this->cURL("getData", "vehicleDetails", $text);
 
@@ -1406,23 +1361,23 @@ class Allianz implements InsurerLibraryInterface
             else if(count($input->input->additional_driver) == 2){
                 $driver_input = '"unlimitedDriverInd": false,
                 "driverDetails": [{
-                        fullName: "Policy Holder Driver",
-                        identityNumber:"'.$input->input->id_number.'"
+                        "fullName": "Policy Holder Driver",
+                        "identityNumber":'.$input->input->id_number.'
                     }';
                 $index = 1;
                 foreach($input->input->additional_driver as $value){
                     $driver_input .= ',{
-                        fullName: "Additional  Driver '.$index .'",
-                        identityNumber:"'.$value->id_number.'"
+                        "fullName": "Additional  Driver '.$index .'",
+                        "identityNumber":'.$value->id_number.'
                     }';
                 }
                 $driver_input .= '],';
             }
-            else if(count($input->input) >= 3){
-                
+            else if(count($input->input->additional_driver) >= 3){
+                $driver_input = '"unlimitedDriverInd": true,
+                "driverDetails": [],';
             } 
         }
-        // dd($input->input->additional_driver, empty($input->input->additional_driver));
         $name = $input->input->name ?? 'Tan Ai Ling';//name is mandotory input
         //check avcode selected or default first variant's avcode
         $avcode = $input->input->vehicle->extra_attribute->AvCode;
@@ -1444,7 +1399,7 @@ class Allianz implements InsurerLibraryInterface
               '.$additional_cover.'
             ],
             "calculateDiscount": {
-              "discountPercentage": "0"
+              "discountPercentage": 0
             },
             '.$driver_input.'
             "vehicle": {

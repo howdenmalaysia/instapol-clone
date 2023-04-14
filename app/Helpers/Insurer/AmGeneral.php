@@ -1779,6 +1779,11 @@ class AmGeneral implements InsurerLibraryInterface
             }
 
 			$this->master_data = $decrypted;
+			$response = (object)[
+				'status'=>$response->status,
+				'response'=>$response->response,
+			];
+			return $response;
         }
         else{
 			$error = (object)[
