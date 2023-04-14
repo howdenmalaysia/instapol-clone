@@ -1798,7 +1798,7 @@ class AmGeneral implements InsurerLibraryInterface
 		// check master data
 		if (empty($this->master_data)) {
 			$check = $this->getMasterData();
-			if (!$check->status) {
+			if ($check->status == false) {
 				return $this->abort($check->response);
 			}
 		}
