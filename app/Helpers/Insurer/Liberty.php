@@ -28,7 +28,7 @@ class Liberty implements InsurerLibraryInterface
     // Settings
     private const COMPANY_CODE = '30';
     private const MIN_SUM_INSURED = 10000;
-    private const MAX_SUM_INSURED = 500000;
+    private const MAX_SUM_INSURED = 750000;
     private const TIMESTAMP_FORMAT = 'Y-m-d H:i:s.u';
     private const EXTRA_BENEFIT_LIST = [
         '101', '105', '111', '112', '25',

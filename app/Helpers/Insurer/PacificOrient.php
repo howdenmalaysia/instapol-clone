@@ -42,7 +42,7 @@ class PacificOrient implements InsurerLibraryInterface
     private const PERMITTED_DRIVERS = '01'; // Private Car – Insured & 2 Others
     private const ALLOWED_GAP_IN_COVER = 7; // Days
     private const MIN_SUM_INSURED = 10000;
-    private const MAX_SUM_INSURED = 500000;
+    private const MAX_SUM_INSURED = 850000;
     private const ADJUSTMENT_RATE_UP = 10;
     private const ADJUSTMENT_RATE_DOWN = 10;
 
@@ -52,7 +52,7 @@ class PacificOrient implements InsurerLibraryInterface
     {
         $this->company_id = $company_id;
         $this->company_name = $company_name;
-        
+
         $this->agent_code = config('insurer.config.pno.agent_code');
         $this->user_id = config('insurer.config.pno.user_id');
         $this->host = config('insurer.config.pno.host');
@@ -100,7 +100,7 @@ class PacificOrient implements InsurerLibraryInterface
         foreach($nvic as $_nvic) {
             // Get Vehicle Details From Mapping Files
             $details = $this->getModelDetails($_nvic);
-    
+
             array_push($variants, new VariantData([
                 'nvic' => $_nvic,
                 'sum_insured' => floatval($vix->response->sum_insured),
@@ -282,7 +282,7 @@ class PacificOrient implements InsurerLibraryInterface
 
                         break;
                     }
-                    case '72': 
+                    case '72':
                     case '111': {
                         $sum_insured_amount = $vehicle_vix->response->sum_insured;
                         break;
@@ -303,7 +303,7 @@ class PacificOrient implements InsurerLibraryInterface
         $formatted_extra_cover = array_filter($input->extra_cover, function ($extra_cover) {
             return $extra_cover->extra_cover_code != '06';
         });
-        
+
         $data = (object) [
             'age' => $input->age,
             'additional_driver' => $input->additional_driver,
@@ -338,7 +338,7 @@ class PacificOrient implements InsurerLibraryInterface
                         if($extra_cover->extra_cover_code != '06') {
                             $extra_cover->selected = (float) $extra->premium == 0;
                         }
-    
+
                         if(!empty($extra->sumInsured)) {
                             $extra_cover->sum_insured = formatNumber((float) $extra->sumInsured);
                         }
@@ -474,7 +474,7 @@ class PacificOrient implements InsurerLibraryInterface
         }
 
         $input->postcode = $input->insurance->address->postcode;
-        
+
         $input->vehicle = (object) [
             'expiry_date' => $input->insurance->expiry_date,
             'inception_date' => $input->insurance->inception_date,
@@ -516,7 +516,7 @@ class PacificOrient implements InsurerLibraryInterface
 
         $input->additional_driver = $additional_driver_list;
         $input->extra_cover = $selected_extra_cover;
-        
+
         $premium_result = $this->getPremium($input);
 
         if(!$premium_result->status) {
@@ -532,7 +532,7 @@ class PacificOrient implements InsurerLibraryInterface
 
         $input->premium_details = $premium_result->response;
         $input->vehicle->extra_attribute->request_id = $premium_result->response->request_id;
-        
+
         $result = $this->issueCoverNote($input);
 
         if(!$result->status) {
@@ -560,7 +560,7 @@ class PacificOrient implements InsurerLibraryInterface
         ];
 
         $xml = view('backend.xml.pacific.get_token')->with($data)->render();
-        
+
         $result = $this->cURL($path, $xml, self::SOAP_ACTION_DOMAIN . '/IAccessToken/GetAccessToken');
 
         $data = $result->response->GetAccessTokenResponse->GetAccessTokenResult;
@@ -724,7 +724,7 @@ class PacificOrient implements InsurerLibraryInterface
             'anti_theft' => self::ANTI_THEFT_DEVICE,
             'chassis_number' => $input->vehicle->extra_attribute->chassis_number,
             'city' => $input->insurance->address->city,
-            'commission_amount' => formatNumber($input->premium_details->gross_premium * 0.1), 
+            'commission_amount' => formatNumber($input->premium_details->gross_premium * 0.1),
             'commission_rate' => 10,
             'country_code' => self::COUNTRY,
             'cover_region_code' => substr(strtoupper($input->region), 0, 1),
@@ -999,7 +999,7 @@ class PacificOrient implements InsurerLibraryInterface
 
             $_extra_cover->sequence = $sequence;
         }
-        
+
         $sorted = array_values(Arr::sort($extra_cover_list, function ($value) {
             return $value->sequence;
         }));
