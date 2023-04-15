@@ -43,8 +43,6 @@ class BerjayaSompo implements InsurerLibraryInterface
     private const ADJUSTMENT_RATE_DOWN = 10;
     private const ADJUSTMENT_RATE_UP = 0;
     private const DATE_FORMAT = 'd-m-Y';
-    private const MIN_SUM_INSURED = 10000;
-    private const MAX_SUM_INSURED = 500000;
     private const ALLOWED_GAP_IN_COVER = 15;
 
     private const EXTRA_COVERAGE_LIST = ['89A', '97', '112', '25', '97A', '111', '101', 'PLC', '72', 'LOUP', 'PA*P', 'EHRP', 'SPTP', 'BTWP', 'TOWP'];
@@ -127,15 +125,6 @@ class BerjayaSompo implements InsurerLibraryInterface
             if (Carbon::parse($today)->addMonths(2)->lessThan($inception_date)) {
                 return $this->abort(__('api.earlier_renewal'), config('setting.response_codes.earlier_renewal'));
             }
-        }
-
-        // Check Sum Insured
-        $sum_insured = formatNumber($vix->response->SUM_INSURED, 0);
-        if ($sum_insured < self::MIN_SUM_INSURED || roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_UP, true) > self::MAX_SUM_INSURED) {
-            return $this->abort(__('api.sum_insured_referred_between', [
-                'min_sum_insured' => self::MIN_SUM_INSURED,
-                'max_sum_insured' => self::MAX_SUM_INSURED
-            ]), config('setting.response_codes.sum_insured_referred'));
         }
 
         $variants = [];
@@ -805,7 +794,7 @@ class BerjayaSompo implements InsurerLibraryInterface
         $jwk = JWKFactory::createFromSecret(openssl_pbkdf2($this->client_key, $this->encryption_salt, 32, 65536, 'sha256'), ['alg' => 'A256KW', 'enc' => 'A256CBC-HS512']);
         $jwe = $encrypter->create()->withPayload(json_encode($data))->withSharedProtectedHeader(['alg' => 'A256KW', 'enc' => 'A256CBC-HS512'])->addRecipient($jwk)->build();
         $encrypted = $serializer->serialize($jwe, 0);
-        
+
         return $encrypted;
     }
 
