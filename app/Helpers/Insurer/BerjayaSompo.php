@@ -44,8 +44,9 @@ class BerjayaSompo implements InsurerLibraryInterface
     private const ADJUSTMENT_RATE_UP = 0;
     private const DATE_FORMAT = 'd-m-Y';
     private const ALLOWED_GAP_IN_COVER = 15;
-
+    // Updated 2.16
     private const EXTRA_COVERAGE_LIST = ['89A', '97', '112', '25', '97A', '111', '101', 'PLC', '72', 'LOUP', 'PA*P', 'EHRP', 'SPTP', 'BTWP', 'TOWP'];
+    //private const EXTRA_COVERAGE_LIST = ['89', '97', '112', '25', '97A', '111', '07', 'ALD', '101', 'PLC', '72', '57', '22', 'TTN', 'ONE', 'UE', 'AR', '109', 'A001', 'PLC1', 'LOUP', 'PEFP', 'PA*P', 'CHIP', 'PPGP', 'ENCP', 'D**P', 'TYR', 'MEX', 'KEY', 'A002', 'EHRP', 'SPTP', 'BTWP', 'TOWP', 'AL*P', 'FGAP', 'CSFM', '89A'];
     private const CART_AMOUNT_LIST = [50, 100, 200];
     private const CART_DAY_LIST = [7, 14, 21];
 
@@ -840,6 +841,7 @@ class BerjayaSompo implements InsurerLibraryInterface
             'path' => $path,
             'request_header' => json_encode($request_options['headers']),
             'request' => json_encode($form),
+            'encrypted_request' => $this->encrypt($form),
         ]);
 
         // API call
@@ -850,7 +852,7 @@ class BerjayaSompo implements InsurerLibraryInterface
             APILogs::find($log->id)
                 ->update([
                     'response_header' => json_encode($result->response_header),
-                    'response' => json_encode($result->response)
+                    'response' => json_encode($result->response),
                 ]);
 
             return $this->abort('An Error Encountered. ' . json_encode($result->response));
@@ -863,7 +865,8 @@ class BerjayaSompo implements InsurerLibraryInterface
             APILogs::find($log->id)
                 ->update([
                     'response_header' => json_encode($result->response_header),
-                    'response' => json_encode($decrypted_response)
+                    'response' => json_encode($decrypted_response),
+                    'encrypted_response' => $result->response,
                 ]);
 
             if(isset($decrypted_response->status) && !$decrypted_response->status) {

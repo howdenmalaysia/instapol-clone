@@ -170,7 +170,7 @@
                                             </div>
                                             <div class="col-4">
                                                 <label for="driver-id-number-0" class="form-label">{{ __('frontend.fields.id_number') }}</label>
-                                                <input type="text" id="driver-id-number-0" class="form-control text-uppercase additional-driver-id-number" />
+                                                <input type="text" id="driver-id-number-0" class="form-control text-uppercase additional-driver-id-number" maxlength="12" />
                                             </div>
                                             <div class="col-3">
                                                 <label for="driver-relationship-0" class="form-label">{{ __('frontend.fields.relationship') }}</label>
@@ -475,7 +475,7 @@
                         </div>
                         <div class="col-4">
                             <label for="driver-id-number-${count}" class="form-label">{{ __('frontend.fields.id_number') }}</label>
-                            <input type="text" id="driver-id-number-${count}" class="form-control additional-driver-id-number" />
+                            <input type="text" id="driver-id-number-${count}" class="form-control additional-driver-id-number" maxlength="12" />
                         </div>
                         <div class="col-3">
                             <label for="driver-relationship-${count}" class="form-label">{{ __('frontend.fields.relationship') }}</label>
@@ -506,6 +506,11 @@
                 message = message.replace(':driver', limit);
                 swalAlert(message, null, false, 'warning', "{{ __('frontend.button.close') }}");
             }
+        });
+
+        $('.additional-driver-id-number').on('change', (e) => {
+            // Replaces all invalid characters (other than alphanumeric)
+            $(e.target).val($(e.target).val().replace(/\W|[_]/, ''));
         });
 
         $('#btn-continue-modal').on('click', () => {
