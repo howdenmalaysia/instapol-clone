@@ -243,7 +243,7 @@
                         case 463: // Undergoing Renewal
                         case 464: // Invalid ID Number / Mismatch
                         case 465: // Invalid Vehicle Number
-                        case 461: // Sum Insured Referred
+                        // case 461: // Sum Insured Referred
                         case 462: { // Gap In Cover
                             shouldStop = true
 
