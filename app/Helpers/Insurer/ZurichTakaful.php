@@ -2437,13 +2437,13 @@ class ZurichTakaful implements InsurerLibraryInterface
         // Get Extra Attribute
         $extra_attribute = json_decode($input->insurance->extra_attribute->value);
 
-        switch($input->id_type) {
+        switch($input->insurance->holder->id_type_id) {
             case config('setting.id_type.nric_no'): {
                 $input->gender = $input->insurance->holder->gender;
                 $input->age = $input->insurance->holder->age;
                 $input->marital_status = $this->getMaritalStatusCode($input->insurance_motor->marital_status);
-                $id_number = $input->id_number;
-                $dobs = str_split($input->id_number, 2);
+                $id_number = $input->insurance->holder->id_number;
+                $dobs = str_split($input->insurance->holder->id_number, 2);
                 $year = intval($dobs[0]);
                 if ($year >= 10) {
                     $year += 1900;
@@ -2455,7 +2455,7 @@ class ZurichTakaful implements InsurerLibraryInterface
                 break;
             }
             case config('setting.id_type.company_registration_no'): {
-                $input->company_registration_number = $input->id_number;
+                $input->company_registration_number = $input->insurance->holder->id_number;
                 $input->gender = $this->getGender('O');
                 $input->marital_status = $this->getMaritalStatusCode('O');
 
@@ -2500,6 +2500,7 @@ class ZurichTakaful implements InsurerLibraryInterface
 
         // Generate Selected Extra Cover
         $selected_extra_cover = [];
+        $e_hailing = false;
         foreach($input->insurance->extra_cover as $extra_cover) {
             array_push($selected_extra_cover, (object) [
                 'extra_cover_code' => $extra_cover->code,
@@ -2509,23 +2510,26 @@ class ZurichTakaful implements InsurerLibraryInterface
                 'cart_day' => $extra_cover->cart_day,
                 'cart_amount' => $extra_cover->cart_amount ?? 0,
             ]);
+			if($extra_cover->code == '221'){
+				$e_hailing = true;
+			}
         }
 
         $input->additional_driver = $additional_driver_list;
         $input->extra_cover = $selected_extra_cover;
 
         $region = '';
-        if($input->region == 'West'){
+        if($input->insurance_motor->region == 'West'){
             $region = 'W';
         }
-        else if($input->region == 'East'){
+        else if($input->insurance_motor->region == 'East'){
             $region = 'E';
         }
         $quotation = (object)[
             'request_datetime' => Carbon::now()->format('Y/M/d h:i:s A'),
             'transaction_ref_no' => $this->participant_code."0000008",//
             'VehNo' => $input->vehicle_number,
-            'getmail' => $input->email ?? $input->insurance->holder->email_address,
+            'getmail' => $input->insurance->holder->email_address ?? $input->email,
             'quotationNo' => $input->quotation_number,
             'trans_type' => 'B',
             'pre_VehNo' => $input->vehicle_number,
@@ -2558,18 +2562,18 @@ class ZurichTakaful implements InsurerLibraryInterface
             'new_ic' => $id_number ?? '',
             'other_id' => '',
             'date_of_birth' => $dob ?? '',
-            'age' => $input->age,
-            'gender' => $input->gender,
-            'marital_sts' => $input->marital_status,
+            'age' => $input->insurance->holder->age,
+            'gender' => $input->insurance->holder->gender,
+            'marital_sts' => $input->insurance_motor->marital_status,
             'occupation' => self::OCCUPATION,
-            'mobile_no' => $input->phone_number ?? $input->insurance->holder->phone_number,
+            'mobile_no' => $input->insurance->holder->phone_number ?? $input->phone_number,
             'off_ph_no' => '',
-            'email' => $input->email ?? $input->insurance->holder->email_address,
+            'email' => $input->insurance->holder->email_address ?? $input->email,
             'address' => $input->insurance->address->address_one ?? $input->address_one . $input->insurance->address->address_two ?? $input->address_two,
-            'postcode' => $input->postcode,
+            'postcode' => $input->insurance->address->postcode,
             'state' => $this->getStateCode(ucwords(strtolower($input->insurance->address->state ?? $input->state))),
             'country' => 'MAS',
-            'sum_insured' => $input->sum_insured ?? $input->vehicle->sum_insured,
+            'sum_insured' => formatNumber($input->insurance_motor->market_value),
             'av_ind' => 'N',
             'vol_excess' => '',
             'pac_ind' => 'N',
@@ -2584,7 +2588,7 @@ class ZurichTakaful implements InsurerLibraryInterface
             'nationality' => 'MAS',
             'additional_driver' => $input->additional_driver,
         ];
-        if($input->id_type == 4){
+        if($input->insurance->holder->id_type_id == 4){
             $quotation->other_id = $company_registration_number;
             $quotation->ins_indicator = 'C';
             $quotation->ci_code = 'MX4';
@@ -2605,7 +2609,7 @@ class ZurichTakaful implements InsurerLibraryInterface
             'transaction_ref_no' => $this->participant_code."0000008",
             'request_datetime' => Carbon::now()->format('Y-m-d\TH:i:s.u'),
             'quotationNo' => $quotationNo,
-            'getmail' => $input->email ?? $input->insurance->holder->email_address,
+            'getmail' => $input->insurance->holder->email_address ?? $input->email,
         ];
         $result = $this->issueCoverNote($covernote_data);
 
