@@ -48,7 +48,7 @@
                                     <h3 class="card-title fw-bold border-bottom py-4 px-md-3">{{ __('frontend.motor.add_ons_page.additional_coverage') }}</h3>
                                     <div id="add-on-item">
                                         @foreach (array_chunk(session('motor')->extra_cover_list, 5)[0] as $_extra_cover)
-                                            <div class="mb-2 extra-coverage">
+                                            <div class="mb-2 mt-3 extra-coverage">
                                                 <div class="row px-md-3">
                                                     <div class="col-1">
                                                         <input
@@ -106,12 +106,12 @@
                                                             @endif
                                                         @endif
                                                     </div>
-                                                    <div class="col-2 col-md-1 text-end">RM</div>
-                                                    <div id="{{ $_extra_cover->extra_cover_code . '-premium' }}" class="col-2 text-end premium">{{ number_format($_extra_cover->premium, 2) }}</div>
+                                                    <div class="col-1 p-0 text-end">RM</div>
+                                                    <div id="{{ $_extra_cover->extra_cover_code . '-premium' }}" class="col-3 col-md-2 text-end premium">{{ number_format($_extra_cover->premium, 2) }}</div>
                                                 </div>
                                                 @if (!empty($_extra_cover->option_list))
                                                     <div class="row">
-                                                        <div class="col-5 px-md-3 mb-3 ms-3">
+                                                        <div class="col-11 col-md-5 px-md-3 mb-3 ms-3">
                                                             @if (!empty($_extra_cover->option_list->description))
                                                                 <small>{{ $_extra_cover->option_list->description . ':' }}</small>
                                                             @endif
@@ -129,7 +129,7 @@
                                                 @endif
                                                 @if (!empty($_extra_cover->cart_list))
                                                     <div class="row">
-                                                        <div class="col-5 px-md-3 mb-3 ms-3">
+                                                        <div class="col-11 col-md-5 px-md-3 mb-3 ms-3">
                                                             <small>{{ __('frontend.motor.add_ons_page.days') . ':' }}</small>
                                                             <select id="{{ 'cart-day-' .  $_extra_cover->extra_cover_code }}" class="cart-day" data-select data-extra-cover-code="{{ $_extra_cover->extra_cover_code }}">
                                                                 @foreach ($_extra_cover->cart_list as $cart)
@@ -137,7 +137,7 @@
                                                                 @endforeach
                                                             </select>
                                                         </div>
-                                                        <div class="col-5 px-md-3 mb-3 ms-3">
+                                                        <div class="col-11 col-md-5 px-md-3 mb-3 ms-3">
                                                             <small>{{ __('frontend.motor.add_ons_page.amount') . ':' }}</small>
                                                             <select id="{{ 'cart-amount-' .  $_extra_cover->extra_cover_code }}" class="cart-amount" data-select data-extra-cover-code="{{ $_extra_cover->extra_cover_code }}">
                                                                 @foreach ($_extra_cover->cart_list[0]->cart_amount_list as $cart_amount)
@@ -202,8 +202,8 @@
                                         </div>
                                         <div class="col-8">
                                             <div class="row align-items-center">
-                                                <div class="col-3">{{ __('frontend.motor.add_ons_page.road_tax_fee') }}</div>
-                                                <div id="body-type-wrapper" class="col-9 d-flex justify-content-between align-items-center">
+                                                <div class="col-7 col-md-4">{{ __('frontend.motor.add_ons_page.road_tax_fee') }}</div>
+                                                <div id="body-type-wrapper" class="col-12 col-md-8 d-flex justify-content-between align-items-center">
                                                     <select name="body_type" id="body-type" class="form-control w-75" disabled>
                                                         <option value="">{{ __('frontend.motor.add_ons_page.body_type') }}</option>
                                                         <option value="saloon">{{ __('frontend.motor.add_ons_page.body_type_modal.saloon') }}</option>
@@ -212,26 +212,26 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-1 text-end">RM</div>
-                                        <div id="roadtax-price-display" class="col-2 text-end t-end">{{ number_format(session('motor')->roadtax->roadtax_price ?? 0, 2) }}</div>
+                                        <div class="col-1 p-0 text-end">RM</div>
+                                        <div id="roadtax-price-display" class="col-2 ps-0 text-end">{{ number_format(session('motor')->roadtax->roadtax_price ?? 0, 2) }}</div>
                                     </div>
                                     <div class="row align-items-center px-md-3 mt-2">
                                         <div class="col-1"></div>
                                         <div class="col-8">{{ __('frontend.motor.add_ons_page.myeg_fee') }}</div>
-                                        <div class="col-1 text-end">RM</div>
-                                        <div id="myeg-fee-display" class="col-2 text-end">{{ number_format(session('motor')->roadtax->myeg_fee ?? 0, 2) }}</div>
+                                        <div class="col-1 p-0 text-end">RM</div>
+                                        <div id="myeg-fee-display" class="col-2 ps-0 text-end">{{ number_format(session('motor')->roadtax->myeg_fee ?? 0, 2) }}</div>
                                     </div>
                                     <div class="row align-items-center px-md-3 mt-2">
                                         <div class="col-1"></div>
                                         <div class="col-8">{{ __('frontend.motor.add_ons_page.eservice_fee') }}</div>
-                                        <div class="col-1 text-end">RM</div>
-                                        <div id="eservice-fee-display" class="col-2 text-end">{{ number_format(session('motor')->roadtax->eservice_fee ?? 0, 2) }}</div>
+                                        <div class="col-1 p-0 text-end">RM</div>
+                                        <div id="eservice-fee-display" class="col-2 ps-0 text-end">{{ number_format(session('motor')->roadtax->eservice_fee ?? 0, 2) }}</div>
                                     </div>
                                     <div class="row align-items-center px-md-3 mt-2">
                                         <div class="col-1"></div>
                                         <div class="col-8">{{ __('frontend.motor.add_ons_page.service_tax') }}</div>
-                                        <div class="col-1 text-end">RM</div>
-                                        <div id="service-tax-display" class="col-2 text-end">{{ number_format(session('motor')->roadtax->sst ?? 0, 2) }}</div>
+                                        <div class="col-1 p-0 text-end">RM</div>
+                                        <div id="service-tax-display" class="col-2 ps-0 text-end">{{ number_format(session('motor')->roadtax->sst ?? 0, 2) }}</div>
                                     </div>
                                 </div>
                             </div>
@@ -335,13 +335,13 @@
                                 <div class="col-1">
                                     <input type="checkbox" id="${'checkbox-' + extra.extra_cover_code}" class="form-check-input extra-coverage-checkbox" name="extra_coverage[]" value="${extra.extra_cover_code}" ${extra.selected ? 'checked' : ''} />
                                 </div>
-                                <div class="col-8 d-flex justify-content-between">
+                                <div class="col-7 col-md-8 d-flex justify-content-between">
                                     <label for="${'checkbox-' + extra.extra_cover_code}">${extra.extra_cover_description}</label>
 
                                     ${getTootip(extra.extra_cover_description)}
                                 </div>
-                                <div class="col-1 text-end">RM</div>
-                                <div id="${extra.extra_cover_code + '-premium'}" class="col-2 text-end premium">${formatMoney(extra.premium)}</div>
+                                <div class="col-1 p-0 text-end">RM</div>
+                                <div id="${extra.extra_cover_code + '-premium'}" class="col-3 col-md-2 text-end premium">${formatMoney(extra.premium)}</div>
                             </div>`;
 
                     if(extra.option_list) {
