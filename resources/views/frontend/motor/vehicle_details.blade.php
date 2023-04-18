@@ -80,7 +80,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-lg-6">
+                    <div class="col-12 col-lg-6 mt-4 mt-md-0">
                         <div class="row mb-3">
                             <div class="col-12">
                                 <h5 class="text-primary fw-bold">{{ __('frontend.motor.vehicle_details.insurance_information') }}</h5>

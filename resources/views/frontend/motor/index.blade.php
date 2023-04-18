@@ -76,7 +76,6 @@
                                                             <i class="fa-solid fa-play align-middle"></i>
                                                         </button>
                                                     </div>
-                                                    <div class="col-1"></div>
                                                 </div>
                                             </div>
                                             @if ($errors->any())

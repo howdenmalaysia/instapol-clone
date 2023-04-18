@@ -4,7 +4,7 @@
             <div class="row align-items-center borderborder -primary border-5 rounded-pill p-3 mb-4 bg-white">
                 @foreach ($insurers as $insurer)
                     @if (!$insurer->coming_soon)
-                        <div class="col-2">
+                        <div class="col-4 col-sm-2">
                             <img src="{{ asset("images/insurer/{$insurer->logo}") }}" class="img-fluid">
                         </div>
                     @endif
@@ -19,7 +19,7 @@
             </div>
             @foreach ($insurers as $insurer)
                 @if ($insurer->coming_soon)
-                    <div class="col-3">
+                    <div class="col-4 col-sm-2">
                         <img src="{{ asset("images/insurer/coming-soon/{$insurer->logo}") }}" class="img-fluid">
                     </div>
                 @endif

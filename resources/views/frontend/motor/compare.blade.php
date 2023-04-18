@@ -164,7 +164,7 @@
                             </div>
                         </div>
                         @foreach ($products as $product)
-                            <div class="col-6 col-lg-4 border shadow rounded my-3 insurer-card">
+                            <div class="col-12 col-md-6 col-lg-4 border shadow rounded my-3 insurer-card">
                                 <div class="row" id={{ 'insurer-' . $product->id }} data-insurer-id="{{ $product->insurance_company->id }}">
                                     <div class="col-12">
                                         <div class="row p-3">
