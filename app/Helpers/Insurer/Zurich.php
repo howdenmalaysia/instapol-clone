@@ -36,7 +36,7 @@ class Zurich implements InsurerLibraryInterface
     '112','19','20E','20W','22','25','25E','25W','57','72','89','89A','97','97A','D1','TW1','TW2',
     '200','201','202','203','207','221','01A','07','100'];
     private const MIN_SUM_INSURED = 10000;
-    private const MAX_SUM_INSURED = 800000;
+    private const MAX_SUM_INSURED = 500000;
     private const ADJUSTMENT_RATE_UP = 10;
     private const ADJUSTMENT_RATE_DOWN = 10;
     private const OCCUPATION = '99';
