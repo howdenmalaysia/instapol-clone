@@ -44,6 +44,8 @@ class BerjayaSompo implements InsurerLibraryInterface
     private const ADJUSTMENT_RATE_UP = 0;
     private const DATE_FORMAT = 'd-m-Y';
     private const ALLOWED_GAP_IN_COVER = 15;
+    private const MIN_SUM_INSURED = 10000;
+    private const MAX_SUM_INSURED = 500000;
     // Updated 2.16
     private const EXTRA_COVERAGE_LIST = ['89A', '97', '112', '25', '97A', '111', '101', 'PLC', '72', 'LOUP', 'PA*P', 'EHRP', 'SPTP', 'BTWP', 'TOWP'];
     //private const EXTRA_COVERAGE_LIST = ['89', '97', '112', '25', '97A', '111', '07', 'ALD', '101', 'PLC', '72', '57', '22', 'TTN', 'ONE', 'UE', 'AR', '109', 'A001', 'PLC1', 'LOUP', 'PEFP', 'PA*P', 'CHIP', 'PPGP', 'ENCP', 'D**P', 'TYR', 'MEX', 'KEY', 'A002', 'EHRP', 'SPTP', 'BTWP', 'TOWP', 'AL*P', 'FGAP', 'CSFM', '89A'];
@@ -134,6 +136,8 @@ class BerjayaSompo implements InsurerLibraryInterface
             'sum_insured' => floatval($vix->response->SUM_INSURED),
             'variant' => $this->getModelDetails($vix->response->NVIC_CODE)->variant,
         ]));
+
+        $sum_insured = $vix->response->SUM_INSURED;
 
         return (object) [
             'status' => true,
