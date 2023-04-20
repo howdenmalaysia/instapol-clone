@@ -478,7 +478,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-1 align-self-end">
+                        <div class="col-1 px-0 align-self-end">
                             <button type="button" class="btn btn-danger text-white btn-delete-driver" data-id="${count}">
                                 <i class="fa-solid fa-trash" data-id="${count}"></i>
                             </button>
