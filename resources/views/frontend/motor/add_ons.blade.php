@@ -683,6 +683,7 @@
         });
 
         $('#additional-driver').on('change', '.additional-driver-relationship', (e) => {
+            $('#add-additional-driver').addClass('loadingButton');
             refreshPremium();
         });
 
