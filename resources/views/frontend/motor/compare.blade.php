@@ -329,6 +329,11 @@
                 <x-slot name="title">{{ __('frontend.motor.compare_page.need_vehicle_information') }}</x-slot>
                 <x-slot name="body">
                     <div class="row">
+                        <div class="col-12">
+                            <p class="fw-bold text-danger">{{ __('frontend.motor.compare_page.recon_declaration') }}</p>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="col-6">
                             <div class="row">
                                 <div class="col-12 fw-bold">{{ __('frontend.motor.vehicle_details.car_number') }}</div>

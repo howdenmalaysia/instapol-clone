@@ -583,6 +583,7 @@ return [
             'verify_variant' => 'Please verify your car variant again as below',
             'affect_premium' => 'The total premium will be affected by your choice of variant and sum insured',
             'avcode_error' => 'Please select a variant to continue.',
+            'recon_declaration' => 'I declare that my vehicle is NOT reconditioned and acknowledges that claims settlement can be disputed due to false declaration.',
             'compare_details' => [
                 'valuation' => 'Agreed / Market Value',
                 'basic_information' => 'Basic Information',
