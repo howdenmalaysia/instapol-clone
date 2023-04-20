@@ -495,7 +495,7 @@
                 });
             } else {
                 let message = "{{ __('frontend.motor.add_ons_page.additional_driver_limit') }}";
-                message = message.replace(':driver', limit);
+                message = message.replace(':driver', limit + 1);
                 swalAlert(message, null, false, 'warning', "{{ __('frontend.button.close') }}");
             }
         });
