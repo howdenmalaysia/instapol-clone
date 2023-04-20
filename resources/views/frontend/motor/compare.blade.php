@@ -561,7 +561,7 @@
                     $('#buy-now-btn-row').append(`
                         <td class="bg-primary p-0 ${product_id}">
                             <div class="d-grid gap-1">
-                                <button type="button" class="btn btn-danger text-white text-uppercase btn-buy" data-product_id="${product_id}">
+                                <button type="button" class="btn btn-success text-white text-uppercase btn-buy" data-product_id="${product_id}">
                                     ${buy_now_text}
                                 </button>
                             </div>
