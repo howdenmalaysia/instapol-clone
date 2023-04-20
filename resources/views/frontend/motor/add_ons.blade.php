@@ -670,6 +670,7 @@
         });
 
         $('.card-body').on('change', '.additional-driver-relationship', (e) => {
+            $('#add-additional-driver').addClass('loadingButton');
             refreshPremium();
         });
 
@@ -781,6 +782,7 @@
 
                 // Remove Loading for Next Button
                 $('#btn-next').removeClass('loadingButton');
+                $('#add-additional-driver').removeClass('loadingButton');
 
                 // Remove Loading in Pricing Card
                 $('#pricing-table #basic-premium').removeClass('loadingButton');
