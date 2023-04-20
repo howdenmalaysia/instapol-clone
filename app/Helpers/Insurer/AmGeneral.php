@@ -156,22 +156,6 @@ class AmGeneral implements InsurerLibraryInterface
                 return $this->abort(__('api.earlier_renewal'), config('setting.response_codes.earlier_renewal'));
             }
         }
-        // 2. Check Sum Insured -> market price
-        $sum_insured = formatNumber($vix_variant->response->sumInsured, 0);
-        if($sum_insured < self::MIN_SUM_INSURED || roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_UP, true) > self::MAX_SUM_INSURED) {
-            return $this->abort(__('api.sum_insured_referred_between', [
-                'min_sum_insured' => self::MIN_SUM_INSURED,
-                'max_sum_insured' => self::MAX_SUM_INSURED
-            ]), config('setting.response_codes.sum_insured_referred'));
-        }
-        
-        $sum_insured_type = "Agreed Value";
-        if ($sum_insured < self::MIN_SUM_INSURED || $sum_insured > self::MAX_SUM_INSURED) {
-            return $this->abort(
-                __('api.sum_insured_referred_between', ['min_sum_insured' => self::MIN_SUM_INSURED, 'max_sum_insured' => self::MAX_SUM_INSURED]),
-                config('setting.response_codes.sum_insured_referred')
-            );
-        }
 
 		//product
 		$scope = false;
@@ -181,9 +165,26 @@ class AmGeneral implements InsurerLibraryInterface
 				$scope = true;
 			}
 		}
-		if(! $scope){
-			return $this->abort('Scope of cover '. $this->scopeOfCover . ' not available for this car.');
-		}
+
+        // 2. Check Sum Insured -> market price
+        $sum_insured = formatNumber($vix_variant->response->sumInsured, 0);
+		$MIN_SUM_INSURED = $get_product->minSumInsured ?? $vix_variant->response->productList[0]->minSumInsured;
+		$MAX_SUM_INSURED = $get_product->maxSumInsured ?? $vix_variant->response->productList[0]->maxSumInsured;
+        if($sum_insured < $MIN_SUM_INSURED || roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_UP, true) > $MAX_SUM_INSURED) {
+            return $this->abort(__('api.sum_insured_referred_between', [
+                'min_sum_insured' => $MIN_SUM_INSURED,
+                'max_sum_insured' => $MAX_SUM_INSURED
+            ]), config('setting.response_codes.sum_insured_referred'));
+        }
+        
+        $sum_insured_type = "Agreed Value";
+        if ($sum_insured < $MIN_SUM_INSURED || $sum_insured > $MAX_SUM_INSURED) {
+            return $this->abort(
+                __('api.sum_insured_referred_between', ['min_sum_insured' => $MIN_SUM_INSURED, 'max_sum_insured' => $MAX_SUM_INSURED]),
+                config('setting.response_codes.sum_insured_referred')
+            );
+        }
+
 		if($input->id_type == '1'){
 			$dobs = str_split($input->id_number, 2);
 			$id_number = $dobs[0] . $dobs[1] . $dobs[2] . "-" . $dobs[3] .  "-" . $dobs[4] . $dobs[5];
@@ -220,27 +221,27 @@ class AmGeneral implements InsurerLibraryInterface
         return (object) [
             'status' => true,
 			'header' => $vix_variant->header,
-			'vehicleClass' => $get_product->vehicleClass,
+			'vehicleClass' => $get_product->vehicleClass ?? $vix_variant->response->productList[0]->vehicleClass,
 			'isRoadTaxAvail' => $vix_variant->response->isRoadTaxAvail,
-			'extraCoverageList' => $get_product->extraCoverageList,
+			'extraCoverageList' => $get_product->extraCoverageList ?? $vix_variant->response->productList[0]->extraCoverageList,
 			'defaultDriver' => $defaultDriver,
             'response' => new VIXNCDResponse([
                 'chassis_number' => $vix->response->chassisNo,
-                'coverage' => $this->coverage_type($get_product->scopeOfCover),
-                'cover_type' => $get_product->scopeOfCover,
+                'coverage' => $this->coverage_type($this->scopeOfCover),
+                'cover_type' => $this->scopeOfCover,
                 'engine_capacity' => $vix_variant->response->capacity,
                 'engine_number' => $vix->response->engineNo,
                 'expiry_date' => Carbon::parse($expiry_date)->format('d M Y'),
                 'inception_date' => Carbon::parse($inception_date)->format('d M Y'),
                 'make' => $get_make[0],
                 'manufacture_year' => $vix_variant->response->mfgYear,
-                'max_sum_insured' => roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_UP, true, self::MAX_SUM_INSURED),
-                'min_sum_insured' => roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_DOWN, false, self::MIN_SUM_INSURED),
+                'max_sum_insured' => roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_UP, true, $MAX_SUM_INSURED),
+                'min_sum_insured' => roundSumInsured($sum_insured, self::ADJUSTMENT_RATE_DOWN, false, $MIN_SUM_INSURED),
                 'model' => $vix_variant->response->modelDesc,
-                'ncd_percentage' => floatval($get_product->ncdPercent),
+                'ncd_percentage' => floatval($get_product->ncdPercent ?? $vix_variant->response->productList[0]->ncdPercent),
                 'seating_capacity' => 0,
                 'sum_insured' => $sum_insured,
-                'sum_insured_type' => $get_product->basisofCoverage,
+                'sum_insured_type' => $get_product->basisofCoverage ?? $vix_variant->response->productList[0]->basisofCoverage,
                 'variants' => $variants,
                 'vehicle_number' => $input->vehicle_number,
                 'vehicle_body_code' => null
