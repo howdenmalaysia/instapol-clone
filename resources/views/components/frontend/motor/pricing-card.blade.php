@@ -19,14 +19,14 @@
                 <td id="basic-premium" class="text-end">{{ $basicPremium }}</td>
             </tr>
             <tr>
-                <td>
+                <td class="text-danger">
                     {{ '- ' . __('frontend.price_card.ncd') . '(' . session('motor')->vehicle->ncd_percentage . '%)' }}
                     <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('frontend.price_card.tooltip.ncd') }}">
                         <i class="fa-solid fa-circle-question text-primary fa-15x"></i>
                     </span>
                 </td>
-                <td class="text-end">RM</td>
-                <td id="ncd" class="text-end">{{ $ncdAmount }}</td>
+                <td class="text-end text-danger">RM</td>
+                <td id="ncd" class="text-end text-danger">{{ $ncdAmount }}</td>
             </tr>
             <tr>
                 <td>
@@ -67,11 +67,11 @@
                 <td id="road-tax" class="text-end">{{ $roadtaxTotal }}</td>
             </tr>
             <tr id="discount" class="{{ !empty(session('motor')->premium->discounted_amount) ? '' : 'd-none' }}">
-                <td class="fw-bold text-primary">
+                <td class="fw-bold text-danger">
                     {{ '- ' . __('frontend.price_card.promo') }}
                 </td>
-                <td class="text-end text-primary fw-bold">RM</td>
-                <td id="promo-amount" class="text-end text-primary fw-bold">{{ number_format(session('motor')->premium->discounted_amount ?? 0, 2) }}</td>
+                <td class="text-end text-danger fw-bold">RM</td>
+                <td id="promo-amount" class="text-end text-danger fw-bold">{{ number_format(session('motor')->premium->discounted_amount ?? 0, 2) }}</td>
             </tr>
             @if ($promo || !empty(session('motor')->promo))
                 <tr>
