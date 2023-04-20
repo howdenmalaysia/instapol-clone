@@ -19,7 +19,7 @@
                 <td id="basic-premium" class="text-end">{{ $basicPremium }}</td>
             </tr>
             <tr>
-                <td class="text-danger">
+                <td class="fw-bold text-danger">
                     {{ '- ' . __('frontend.price_card.ncd') . '(' . session('motor')->vehicle->ncd_percentage . '%)' }}
                     <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('frontend.price_card.tooltip.ncd') }}">
                         <i class="fa-solid fa-circle-question text-primary fa-15x"></i>
