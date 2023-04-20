@@ -389,7 +389,8 @@ body {
     }
 
     .btn:focus {
-        &:not(.btn-link) {
+        &:not(.btn-link),
+        &:not(.btn-buy) {
             background-color: $primary;
         }
     }
