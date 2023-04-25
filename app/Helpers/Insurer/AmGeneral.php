@@ -1264,7 +1264,10 @@ class AmGeneral implements InsurerLibraryInterface
 
 		// nationalityCode only Applicable to Individual Clients
 		$nationalityCode = (!empty($cParams->id_number) && ($cParams->id_type != '4')) ? $this->getNationalityCode() : '';
-		if($cParams->genderCode == 'O'){
+		if(empty($cParams->genderCode)){
+			$gender = 'M';
+		}
+		else if($cParams->genderCode == 'O'){
 			$gender = 'C';
 		}
 		else{
@@ -1361,7 +1364,10 @@ class AmGeneral implements InsurerLibraryInterface
 		// nationalityCode only Applicable to Individual Clients
 		$nationalityCode = (!empty($cParams->id_number) && ($cParams->id_type != '4')) ? $this->getNationalityCode() : '';
 		
-		if($cParams->gender == 'O'){
+		if(empty($cParams->gender)){
+			$gender = 'M';
+		}
+		else if($cParams->gender == 'O'){
 			$gender = 'C';
 		}
 		else{
