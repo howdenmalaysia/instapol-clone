@@ -83,7 +83,7 @@ class InsurerSettlement extends Command
                 ->where('insurance_status', Insurance::STATUS_PAYMENT_ACCEPTED)
                 ->get()
                 ->groupBy('product_id');
-    
+
             if(empty($records)) {
                 $message = 'No Eligible Records Found!';
 
@@ -101,7 +101,7 @@ class InsurerSettlement extends Command
 
                 return;
             }
-    
+
             $rows = 0;
 
             $records->each(function($insurances, $product_id) use($start_date, &$rows) {
@@ -110,7 +110,7 @@ class InsurerSettlement extends Command
 
                 $product = Product::with(['insurance_company'])
                     ->findOrFail($product_id);
-    
+
                 $insurances->map(function($insurance) use(
                     $product,
                     &$rows,
@@ -128,17 +128,17 @@ class InsurerSettlement extends Command
                         ])
                         ->where('insurance_id', $insurance->id)
                         ->first();
-                    
+
                     $discount_amount = 0;
                     if(!empty($insurance->promo)) {
                         $discount_amount = $insurance->promo->discount_amoumt;
                         $total_discount += $discount_amount;
                     }
-    
+
                     if(!empty($insurance_motor->roadtax)) {
                         $total_eservice_fee += $insurance_motor->roadtax->e_service_fee;
                     }
-    
+
                     $eghl_log = EGHLLog::where('payment_id', 'LIKE', '%' . $insurance->code . '%')
                         ->where('txn_status', 0)
                         ->latest()
@@ -190,7 +190,7 @@ class InsurerSettlement extends Command
                             $total_transfer
                         ];
                     }
-    
+
                     $rows++;
                 });
 
@@ -200,14 +200,14 @@ class InsurerSettlement extends Command
                 foreach($row_data as $product_id => $values) {
                     $product = Product::with(['insurance_company'])
                         ->findOrFail($product_id);
-    
+
                     $insurer_name = Str::snake(ucwords($product->insurance_company->name));
-    
+
                     $filename = "{$insurer_name}{$product->insurance_company->id}_settlement_{$start_date}.xlsx";
                     array_push($filenames, $filename);
                     Excel::store(new InsurerReportExport($values), $filename);
                 }
-    
+
                 $data = [
                     'insurer_name' => $product->insurance_company->name,
                     'start_date' => $start_date,
@@ -225,20 +225,29 @@ class InsurerSettlement extends Command
                         number_format($insurer_net_transfer, 2)
                     ]]
                 ];
-    
+
                 Log::info("[Cron - Insurer Settlement] Sending Settlement Report to {$product->insurance_company->name} [{$product->insurance_company->email_to},{$product->insurance_company->email_cc}]");
-    
-                
+
+
                 Mail::to(explode(',', $product->insurance_company_email_to))
                     ->cc(explode(',', $product->insurance_company->email_cc . ',' . config('setting.howden.affinity_team_email')))
                     ->bcc(config('setting.howden.it_dev_mail'))
                     ->send(new InsurerSettlementMail($filenames, $data));
-    
+
                 Log::info("[Cron - Insurer Settlement] Report to {$product->insurance_company->name} sent successfully.");
             });
 
-
             Log::info("[Cron - Insurer Settlement] {$rows} records processed. [{$start_date} to {$end_date}]");
+
+            CronJobs::create([
+                'description' => 'Send Settlement Report to Insurers',
+                'param' => json_encode([
+                    'start_date' => $start_date,
+                    'end_date' => $end_date,
+                    'frequency' => $this->argument('frequency')
+                ]),
+                'status' => CronJobs::STATUS_COMPLETED
+            ]);
 
             $this->info("{$rows} records processed");
         } catch (Exception $ex) {
@@ -248,7 +257,8 @@ class InsurerSettlement extends Command
                     'start_date' => $start_date,
                     'end_date' => $end_date,
                     'frequency' => $this->argument('frequency')
-                ])
+                ]),
+                'status' => CronJobs::STATUS_FAILED
             ]);
 
             Log::error("[Cron - Insurer Settlement] An Error Encountered. {$ex->getMessage()}");

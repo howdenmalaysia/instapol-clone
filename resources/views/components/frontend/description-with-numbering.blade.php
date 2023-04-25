@@ -1,8 +1,8 @@
 <div class="row justify-content-center mb-2">
     <div class="d-flex justify-content-center align-items-center">
         <div class="row">
-            <div class="col-2 bg-primary text-white fw-bold rounded-circle me-2 numbering">{{ $number }}</div>
-            <div class="col-10">
+            <div class="col-2 bg-primary text-white fw-bold rounded-circle me-md-2 numbering">{{ $number }}</div>
+            <div class="col-9">
                 <h3 class="fw-bold mb-0">{{ $title }}</h3>
             </div>
         </div>

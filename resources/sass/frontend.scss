@@ -78,7 +78,7 @@ body {
 
         @include media-breakpoint-down(lg) {
             .btn-close {
-                right: 100px;
+                right: 20px;
                 top: 15px;
             }
 
@@ -105,11 +105,6 @@ body {
         margin-bottom: 50px;
         padding: 20px 0px;
 
-        .tenang {
-            height: 190px;
-            width: 101%;
-        }
-
         #product-card {
             z-index: 99;
         }
@@ -120,7 +115,7 @@ body {
             background-color: #f6f5f5;
         }
 
-        @include media-breakpoint-down(sm) {
+        @include media-breakpoint-down(md) {
             img {
                 width: 75%;
             }
@@ -134,12 +129,12 @@ body {
             font-size: 1.3rem;
         }
 
-        @include media-breakpoint-down(sm) {
+        @include media-breakpoint-down(md) {
             .numbering {
                 height: 1.5rem;
                 width: 1.5rem;
-                font-size: 1.1rem;
-                padding-left: .55rem;
+                font-size: 1rem;
+                padding-left: .5rem;
             }
         }
     }
@@ -149,7 +144,7 @@ body {
         background-position: center;
         background-size: cover;
 
-        @include media-breakpoint-down(sm) {
+        @include media-breakpoint-up(md) {
             .description {
                 width: 50%;
             }
@@ -178,7 +173,8 @@ body {
         #motor-details {
             .icon-motor {
                 z-index: 3;
-                margin-top: -28px;
+                margin-top: 24px;
+                width: 135px;
             }
 
             .vehicle-details {
@@ -193,10 +189,10 @@ body {
                 }
             }
 
-            @include media-breakpoint-down(sm) {
+            @include media-breakpoint-up(md) {
                 .icon-motor {
-                    margin-top: 24px;
-                    width: 135px;
+                    margin-top: -15px;
+                    width: 210px;
                 }
 
                 .vehicle-details {
@@ -204,10 +200,9 @@ body {
                 }
             }
 
-            @include media-breakpoint-down(md) {
+            @include media-breakpoint-up(md) {
                 .icon-motor {
-                    margin-top: -15px;
-                    width: 210px;
+                    margin-top: -28px;
                 }
             }
         }
@@ -234,9 +229,9 @@ body {
                 background-image: url(../images/bg-partner.png);
             }
 
-            @include media-breakpoint-down(sm) {
+            @include media-breakpoint-down(md) {
                 .container-fluid {
-                    padding: 20px;
+                    padding: 10px 30px;
                 }
             }
         }
@@ -396,7 +391,7 @@ body {
             bottom: 35px;
         }
 
-        @include media-breakpoint-down(sm) {
+        @include media-breakpoint-up(md) {
             .bs-stepper-circle {
                 width: 35px;
                 height: 35px;
@@ -411,7 +406,7 @@ body {
             }
         }
 
-        @include media-breakpoint-down(md) {
+        @include media-breakpoint-up(lg) {
             .bs-stepper-circle {
                 width: 55px;
                 height: 55px;
@@ -432,7 +427,8 @@ body {
     }
 
     .btn:focus {
-        &:not(.btn-link) {
+        &:not(.btn-link),
+        &:not(.btn-buy) {
             background-color: $primary;
         }
     }

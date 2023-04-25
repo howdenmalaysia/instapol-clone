@@ -269,7 +269,7 @@
                     </table>
                 </div>
             </div>
-            <x-modal id="occupation-modal" maxWidth="md" headerClass="bg-primary text-white" backdrop-static not-closable>
+            <x-modal id="occupation-modal" maxWidth="md" headerClass="bg-primary text-white">
                 <x-slot name="title">{{ __('frontend.motor.compare_page.need_occupation') }}</x-slot>
                 <x-slot name="body">
                     <div class="row">
@@ -325,9 +325,14 @@
                     <button type="button" id="occupation-next" class="btn btn-primary text-white text-uppercase">{{ __('frontend.button.get_quotation') }}</button>
                 </x-slot>
             </x-modal>
-            <x-modal id="avcode-modal" maxWidth="md" headerClass="bg-primary text-white" backdrop-static not-closable>
+            <x-modal id="avcode-modal" maxWidth="md" headerClass="bg-primary text-white">
                 <x-slot name="title">{{ __('frontend.motor.compare_page.need_vehicle_information') }}</x-slot>
                 <x-slot name="body">
+                    <div class="row">
+                        <div class="col-12">
+                            <p class="fw-bold text-danger">{{ __('frontend.motor.compare_page.recon_declaration') }}</p>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-6">
                             <div class="row">
@@ -556,7 +561,7 @@
                     $('#buy-now-btn-row').append(`
                         <td class="bg-primary p-0 ${product_id}">
                             <div class="d-grid gap-1">
-                                <button type="button" class="btn btn-primary text-white text-uppercase btn-buy" data-product_id="${product_id}">
+                                <button type="button" class="btn btn-success text-white text-uppercase btn-buy" data-product_id="${product_id}">
                                     ${buy_now_text}
                                 </button>
                             </div>

@@ -486,7 +486,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-1 align-self-end">
+                        <div class="col-1 px-0 align-self-end">
                             <button type="button" class="btn btn-danger text-white btn-delete-driver" data-id="${count}">
                                 <i class="fa-solid fa-trash" data-id="${count}"></i>
                             </button>
@@ -503,7 +503,7 @@
                 });
             } else {
                 let message = "{{ __('frontend.motor.add_ons_page.additional_driver_limit') }}";
-                message = message.replace(':driver', limit);
+                message = message.replace(':driver', limit + 1);
                 swalAlert(message, null, false, 'warning', "{{ __('frontend.button.close') }}");
             }
         });
@@ -683,6 +683,7 @@
         });
 
         $('#additional-driver').on('change', '.additional-driver-relationship', (e) => {
+            $('#add-additional-driver').addClass('loadingButton');
             refreshPremium();
         });
 
@@ -799,6 +800,7 @@
 
                 // Remove Loading for Next Button
                 $('#btn-next').removeClass('loadingButton');
+                $('#add-additional-driver').removeClass('loadingButton');
 
                 // Remove Loading in Pricing Card
                 $('#pricing-table #basic-premium').removeClass('loadingButton');
