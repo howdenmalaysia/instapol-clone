@@ -1253,14 +1253,14 @@ class Allianz implements InsurerLibraryInterface
         }';
         $result = $this->cURL("getData", "vehicleDetails", $text);
 
-        if(!$result->status) {
-            return $this->abort($result->response);
-        }
-        else{
+        // if(!$result->status) {
+        //     return $this->abort($result->response);
+        // }
+        // else{
             if(isset($result->response->UBBStatus)){
                 return $this->abort(json_encode($result->response->UBBStatus));
             }
-        }
+        // }
         
         return new ResponseData([
             'status' => $result->status,
