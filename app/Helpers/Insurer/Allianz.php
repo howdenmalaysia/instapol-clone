@@ -78,6 +78,15 @@ class Allianz implements InsurerLibraryInterface
         if(!$vix->status && is_string($vix->response)) {
             return $this->abort($vix->response);
         }
+        else if($vix->status){
+            if(isset($vix->response->errors)){
+                // return $this->abort(json_encode($result->response->errors));
+                return $this->abort(__('api.allianz_error'),
+                    config('setting.response_codes.general_error')
+                );
+            }
+        }
+
         if(empty($vix->response->nvicList)){
             return $this->abort('Empty nvicList!');
         }
@@ -1248,10 +1257,7 @@ class Allianz implements InsurerLibraryInterface
             return $this->abort($result->response);
         }
         else{
-            if(isset($result->response->errors)){
-                return $this->abort(json_encode($result->response->errors));
-            }
-            else if(isset($result->response->UBBStatus)){
+            if(isset($result->response->UBBStatus)){
                 return $this->abort(json_encode($result->response->UBBStatus));
             }
         }
