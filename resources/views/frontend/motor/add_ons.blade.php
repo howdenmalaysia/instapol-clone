@@ -161,7 +161,20 @@
                                     <div id="additional-driver" class="mt-3">
                                         <h3 class="card-title fw-bold border-bottom py-4 px-md-3">{{ __('frontend.motor.add_ons_page.additional_driver') }}</h3>
                                         <div class="alert alert-success mx-md-3" role="alert">
-                                            {{ __('frontend.motor.add_ons_page.additional_driver_note') }}
+                                            @if($product->insurance_company-> id == 7)
+                                                <input
+                                                    type="checkbox"
+                                                    id="chkunlimiteddrivers"
+                                                    class="form-check-input extra-coverage-checkbox"
+                                                    name="chkunlimiteddrivers"
+                                                    value="1"
+                                                > Unlimited additional drivers selected, RM20 will be changed.</input>
+                                                    <div class="col-md-12 mb-2" style="margin-left: 1.1rem !important" >
+                                                    <div style="display: none"  id="showadditionalnote" name="shownote" >
+                                                    {{ __('frontend.motor.add_ons_page.additional_driver_note') }}
+                                                    </div>
+                                                </div>
+                                            @endif
                                         </div>
                                         <div class="row info px-md-3 driver-0">
                                             <div class="col-4">
@@ -301,6 +314,13 @@
 
 @push('after-scripts')
 <script>
+    $('#chkunlimiteddrivers').on('change', (e) => {
+        if($(e.target).is(':checked')) {
+            $("#showadditionalnote").show();
+        } else {
+            $("#showadditionalnote").hide();
+        }
+    });
     let motor = JSON.parse($('#motor').val());
     var request = 0;
 
