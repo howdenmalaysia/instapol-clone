@@ -1570,13 +1570,8 @@ class Allianz implements InsurerLibraryInterface
                 return $this->abort($message);
             }
             $result->response = $json;
-        } else {
-            $message = !empty($result->response) ? $result->response : __('api.empty_response', ['company' => $this->company]);
-            if(isset($result->response->status_code)){
-                $message = $result->response->status_code;
-            }
-            return $this->abort($message);
         }
+        
         return (object)$result;
 	}
 }
