@@ -82,7 +82,9 @@ class Allianz implements InsurerLibraryInterface
             if($vix->response->UBBStatus->ReferRiskList[0]->ReferCode  == "RP007"){
                 return $this->abort(__('api.allianz_error'), config('setting.response_codes.blacklisted_vehicle'));
             }
-            return $this->abort(json_encode($vix->response->UBBStatus));
+            else{
+                return $this->abort(json_encode($vix->response->UBBStatus));
+            }
         }
         if(isset($vix->response->errors)){
             return $this->abort(json_encode($vix->response->errors));
