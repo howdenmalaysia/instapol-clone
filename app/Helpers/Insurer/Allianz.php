@@ -74,14 +74,15 @@ class Allianz implements InsurerLibraryInterface
             'postcode' => $input->postcode
         ];
         $vix = $this->getVIXNCD($data);
-
         if(!$vix->status && is_string($vix->response)) {
             return $this->abort($vix->response);
         }
-        else if($vix->status){
-            if(isset($vix->response->errors)){
+        //checking blacklisted car
+        if(isset($vix->response->UBBStatus)){
+            if($vix->response->UBBStatus->ReferRiskList[0]->ReferCode  == "RP007"){
                 return $this->abort(__('api.allianz_error'), config('setting.response_codes.blacklisted_vehicle'));
             }
+            return $this->abort(json_encode($vix->response->UBBStatus));
         }
 
         if(empty($vix->response->nvicList)){
@@ -1249,15 +1250,6 @@ class Allianz implements InsurerLibraryInterface
             "postalCode": '.$input->postcode.'
         }';
         $result = $this->cURL("getData", "vehicleDetails", $text);
-
-        // if(!$result->status) {
-        //     return $this->abort($result->response);
-        // }
-        // else{
-            if(isset($result->response->UBBStatus)){
-                return $this->abort(json_encode($result->response->UBBStatus));
-            }
-        // }
         
         return new ResponseData([
             'status' => $result->status,
