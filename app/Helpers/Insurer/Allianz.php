@@ -80,10 +80,7 @@ class Allianz implements InsurerLibraryInterface
         }
         else if($vix->status){
             if(isset($vix->response->errors)){
-                // return $this->abort(json_encode($result->response->errors));
-                return $this->abort(__('api.allianz_error'),
-                    config('setting.response_codes.general_error')
-                );
+                return $this->abort(__('api.allianz_error'), config('setting.response_codes.blacklisted_vehicle'));
             }
         }
 
@@ -1571,7 +1568,7 @@ class Allianz implements InsurerLibraryInterface
             }
             $result->response = $json;
         }
-        
+
         return (object)$result;
 	}
 }
