@@ -34,6 +34,7 @@ return [
         'invalid_vehicle_number' => 465,
         'data_not_found' => 466,
         'unable_to_get_ncd' => 467,
+        'blacklisted_vehicle' => 468,
 
         // Logic Related
         'unsupported_id_types' => 480,
