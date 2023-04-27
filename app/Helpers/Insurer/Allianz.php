@@ -1056,7 +1056,7 @@ class Allianz implements InsurerLibraryInterface
             .$driver.
             '"payment": {
               "paymentMode": "",
-              "paymentBankRef": ,
+              "paymentBankRef": "",
               "paymentId": "",
               "paymentDate": "'.$input->payment_date.'",
               "paymentAmount": '.$input->payment_amount.'"
