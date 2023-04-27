@@ -244,7 +244,8 @@
                         case 464: // Invalid ID Number / Mismatch
                         case 465: // Invalid Vehicle Number
                         // case 461: // Sum Insured Referred
-                        case 462: { // Gap In Cover
+                        case 462: // Gap In Cover
+                        case 468: { // Blacklisted Vehicle
                             shouldStop = true
 
                             break;
