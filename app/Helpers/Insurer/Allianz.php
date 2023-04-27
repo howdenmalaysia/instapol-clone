@@ -84,6 +84,9 @@ class Allianz implements InsurerLibraryInterface
             }
             return $this->abort(json_encode($vix->response->UBBStatus));
         }
+        if(isset($vix->response->errors)){
+            return $this->abort(json_encode($vix->response->errors));
+        }
 
         if(empty($vix->response->nvicList)){
             return $this->abort('Empty nvicList!');
