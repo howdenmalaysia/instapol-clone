@@ -161,35 +161,57 @@
                                     <div id="additional-driver" class="mt-3">
                                         <h3 class="card-title fw-bold border-bottom py-4 px-md-3">{{ __('frontend.motor.add_ons_page.additional_driver') }}</h3>
                                         <div class="alert alert-success mx-md-3" role="alert">
+                                            @if($product->insurance_company-> id == 7)
+                                                <div class="d-flex">
+                                                <input
+                                                    type="checkbox"
+                                                    id="chkunlimiteddrivers"
+                                                    class="form-check-input extra-driver"
+                                                    name="chkunlimiteddrivers"
+                                                    value="1"
+                                                ><div style="margin-left: 1rem !important">Unlimited additional drivers. RM20 will be added to your premium as part of Additional Coverages.</div> </input>
+                                                <span data-bs-toggle="tooltip" data-bs-placement="top" title="This extension gives you coverage for any authorised drivers that might operate your vehicle. Drivers under the age of 21 years old or hold a Provisional (P) or Learner (L) driver's license is not applicable.">
+                                                                                <i class="fa-solid fa-circle-question text-primary fa-15x" style="margin-left: 1rem !important"></i>
+                                                                            </span>
+                                                </div>
+                                                    <div class="col-md-12 mb-2" style="margin-left: 2rem !important" >
+                                                    <div style="display: none"  id="showadditionalnote" name="shownote" >
+                                                    Unlimited additional drivers. RM20 will be added to your premium as part of Additional Coverages.
+                                                    </div>
+                                                </div>
+                                            @else
                                             {{ __('frontend.motor.add_ons_page.additional_driver_note') }}
+                                            @endif
                                         </div>
-                                        <div class="row info px-md-3 driver-0">
-                                            <div class="col-4">
-                                                <label for="driver-name-0" class="form-label uppercase">{{ __('frontend.fields.name') }}</label>
-                                                <input type="text" id="driver-name-0" class="form-control text-uppercase additional-driver-name" />
+                                        <div id="driveraddons">
+                                            <div class="row info px-md-3 driver-0">
+                                                <div class="col-4">
+                                                    <label for="driver-name-0" class="form-label uppercase">{{ __('frontend.fields.name') }}</label>
+                                                    <input type="text" id="driver-name-0" class="form-control text-uppercase additional-driver-name" />
+                                                </div>
+                                                <div class="col-4">
+                                                    <label for="driver-id-number-0" class="form-label">{{ __('frontend.fields.id_number') }}</label>
+                                                    <input type="text" id="driver-id-number-0" class="form-control text-uppercase additional-driver-id-number" maxlength="12" />
+                                                </div>
+                                                <div class="col-3">
+                                                    <label for="driver-relationship-0" class="form-label">{{ __('frontend.fields.relationship') }}</label>
+                                                    <select id="driver-relationship-0" class="form-control additional-driver-relationship" data-select>
+                                                        <option value=""></option>
+                                                        @foreach ($relationships as $relationship)
+                                                            <option value="{{ $relationship->id }}">{{ __("frontend.relationships.{$relationship->name}") }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="col-1 px-0 px-md-3 align-self-end">
+                                                    <button type="button" class="btn btn-danger text-white btn-delete-driver" data-id="0">
+                                                        <i class="fa-solid fa-trash" data-id="0"></i>
+                                                    </button>
+                                                </div>
                                             </div>
-                                            <div class="col-4">
-                                                <label for="driver-id-number-0" class="form-label">{{ __('frontend.fields.id_number') }}</label>
-                                                <input type="text" id="driver-id-number-0" class="form-control text-uppercase additional-driver-id-number" maxlength="12" />
-                                            </div>
-                                            <div class="col-3">
-                                                <label for="driver-relationship-0" class="form-label">{{ __('frontend.fields.relationship') }}</label>
-                                                <select id="driver-relationship-0" class="form-control additional-driver-relationship" data-select>
-                                                    <option value=""></option>
-                                                    @foreach ($relationships as $relationship)
-                                                        <option value="{{ $relationship->id }}">{{ __("frontend.relationships.{$relationship->name}") }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                            <div class="col-1 px-0 px-md-3 align-self-end">
-                                                <button type="button" class="btn btn-danger text-white btn-delete-driver" data-id="0">
-                                                    <i class="fa-solid fa-trash" data-id="0"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                        <div class="row px-md-3">
-                                            <div class="col-12 text-end mt-3">
-                                                <button type="button" id="add-additional-driver" class="btn btn-primary text-white px-4 rounded">{{ __('frontend.motor.add_ons_page.add_driver') }}</button>
+                                            <div class="row px-md-3">
+                                                <div class="col-12 text-end mt-3">
+                                                    <button type="button" id="add-additional-driver" class="btn btn-primary text-white px-4 rounded">{{ __('frontend.motor.add_ons_page.add_driver') }}</button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -301,6 +323,41 @@
 
 @push('after-scripts')
 <script>
+    $('#chkunlimiteddrivers').on('change', (e) => {
+        gtag('event', 's_ao_add', { 'debug_mode': true });
+
+        if(!$(e.target).parent().parent().find('.premium').hasClass('loadingButton')) {
+            $(e.target).parent().parent().find('.premium').text(' ').toggleClass('loadingButton');
+        }
+
+        if(!$('#pricing-table #add-ons-premium').hasClass('loadingButton')) {
+            $('#pricing-table #add-ons-premium').text(' ').toggleClass('loadingButton');
+            $('#pricing-table #gross-premium').text(' ').toggleClass('loadingButton');
+            $('#pricing-table #sst').text(' ').toggleClass('loadingButton');
+            $('#pricing-table #total-payable').text(' ').toggleClass('loadingButton');
+            $('#btn-next').toggleClass('loadingButton');
+        }
+
+        if($(`#label-${$(e.target).attr('id')}`).text().includes('Drivers')) {
+            if($(e.target).is(':checked')) {
+                $('#additional-driver').slideUp('slow');
+            } else {
+                $('#additional-driver').slideDown('slow');
+            }
+        }
+
+
+        if($(e.target).is(':checked')) {
+            $("#showadditionalnote").show();
+            $('#driveraddons').hide();
+            refreshPremium();
+        } else {
+            $("#showadditionalnote").hide();
+            $('#driveraddons').show();
+            refreshPremium();
+        }
+    });
+
     let motor = JSON.parse($('#motor').val());
     var request = 0;
 
@@ -744,15 +801,40 @@
         });
 
         let additional_driver = [];
-        $('.additional-driver-name').each((index, element) => {
-            if($(element).val() != '' && $($('.additional-driver-id-number')[index]).val() != '' && $($('.additional-driver-relationship')[index]).val() != '') {
-                additional_driver.push({
-                    name: $(element).val().toUpperCase(),
-                    id_number: $($('.additional-driver-id-number')[index]).val(),
-                    relationship: $($('.additional-driver-relationship')[index]).val()
-                });
-            }
-        });
+        if($('.extra-driver').is(':checked')){
+            //additional_driver = Array.apply( null, { length: 4 } );
+            additional_driver.push({
+                name: 'Howden1',
+                id_number: 000000000000,
+                relationship: 1
+            });
+            additional_driver.push({
+                name: 'Howden1',
+                id_number: 000000000000,
+                relationship: 1
+            });
+            additional_driver.push({
+                name: 'Howden1',
+                id_number: 000000000000,
+                relationship: 1
+            });
+            additional_driver.push({
+                name: 'Howden1',
+                id_number: 000000000000,
+                relationship: 1
+            });
+        }else{
+            $('.additional-driver-name').each((index, element) => {
+                console.log($($('.additional-driver-relationship')[index]).val());
+                if($(element).val() != '' && $($('.additional-driver-id-number')[index]).val() != '' && $($('.additional-driver-relationship')[index]).val() != '') {
+                    additional_driver.push({
+                        name: $(element).val().toUpperCase(),
+                        id_number: $($('.additional-driver-id-number')[index]).val(),
+                        relationship: $($('.additional-driver-relationship')[index]).val()
+                    });
+                }
+            });
+        }
 
         instapol.post("{{ route('motor.api.quote') }}", {
             product_id: motor.product_id,
