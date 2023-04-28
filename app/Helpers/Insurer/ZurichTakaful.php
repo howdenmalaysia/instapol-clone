@@ -2519,10 +2519,10 @@ class ZurichTakaful implements InsurerLibraryInterface
         $input->extra_cover = $selected_extra_cover;
 
         $region = '';
-        if($input->insurance_motor->region == 'West'){
+        if($input->region == 'West'){
             $region = 'W';
         }
-        else if($input->insurance_motor->region == 'East'){
+        else if($input->region == 'East'){
             $region = 'E';
         }
         $quotation = (object)[
