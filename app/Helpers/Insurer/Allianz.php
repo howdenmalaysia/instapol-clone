@@ -1058,7 +1058,7 @@ class Allianz implements InsurerLibraryInterface
               "paymentMode": "",
               "paymentBankRef": "",
               "paymentId": "",
-              "paymentDate": "'.$input->payment_date.'",
+              "paymentDate": "'.$input->payment_datetime.'",
               "paymentAmount": '.$input->payment_amount.'
             }
           }';
