@@ -1409,6 +1409,18 @@ return [
             'total_premium' => 'Total Annual Premium / Total Annual Contribution',
             'you_might_interested' => 'You might also be interested in',
         ],
+        'payment_failure_page' => [
+            'payment_failed' => 'Payment Failed',
+            'messages' => [
+                'line_1' => 'Oops! Your transaction is <span class="text-danger fw-bold">unsuccessful<span>.',
+                'line_2' => 'For any inquiries, please email us at <a href="mailto:instaPol@my.howdengroup.com">instaPol@my.howdengroup.com</a>.',
+            ],
+            'purchase_summary' => 'Purchase Summary',
+            'insurance_company' => 'Insurance Company',
+            'transaction_number' => 'Transaction Reference Number',
+            'total_premium' => 'Total Annual Premium',
+            'you_might_interested' => 'You might also be interested in',
+        ],
     ],
     'products' => [
         'motor' => 'Motor Insurance',
