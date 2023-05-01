@@ -65,8 +65,8 @@ return [
         'howden' => [
             'bank_code' => 'CIMB Bank Berhad',
             'bank_account_no' => '8000283395',
-            'email_to' => 'luke.chai@my.howdengroup.com',
-            'email_cc' => 'affinitydept@my.howdengroup.com,fazira.husin@my.howdengroup.com,rachel.lee@my.howdengroup.com,sitisuhaila.baharuddin@my.howdengroup.com',
+            'email_to' => empty(env('HOWDEN_INTERNAL')) ? [] : explode(',', env('HOWDEN_INTERNAL')),
+            'email_cc' => empty(env('HOWDEN_INTERNAL_CC')) ? [] : explode(',', env('HOWDEN_INTERNAL_CC')),
         ],
         'eghl' => empty(env('EGHL_SETTLEMENT')) ? [] : explode(',', env('EGHL_SETTLEMENT'))
     ]
