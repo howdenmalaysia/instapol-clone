@@ -37,8 +37,6 @@ Route::middleware(['web', 'cors'])->group(function() {
             Route::post('/vehicle-details', [MotorController::class, 'vehicleDetails_POST']);
             Route::get('/compare', [MotorController::class, 'compare'])->name('motor.compare');
             Route::post('/compare', [MotorController::class, 'compare_POST']);
-            Route::get('/compare-detail', [MotorController::class, 'compareDetail'])->name('motor.compare-detail');
-            Route::post('/compare-detail', [MotorController::class, 'compareDetail_POST']);
             Route::get('/add-ons', [MotorController::class, 'addOns'])->name('motor.add-ons');
             Route::post('/add-ons', [MotorController::class, 'addOns_POST']);
             Route::get('/policy-holder', [MotorController::class, 'policyHolder'])->name('motor.policy-holder');
