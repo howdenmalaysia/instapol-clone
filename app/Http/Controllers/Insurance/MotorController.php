@@ -459,33 +459,54 @@ class MotorController extends Controller
 
         $insurance = Insurance::findByInsuranceCode($insurance_code);
 
-        // Send Success Email
-        $data = (object) [
-            'insurance_code' => $insurance->insurance_code,
-            'insured_name' => $insurance->holder->name,
-            'product_name' => $insurance->product->name,
-            'total_premium' => number_format($insurance->amount, 2),
-            'total_payable' => number_format($insurance->amount, 2)
-        ];
+        if($insurance->insurance_status === Insurance::STATUS_PAYMENT_ACCEPTED || $insurance->insurance_status === Insurance::STATUS_POLICY_ISSUED) {
+            // Send Success Email
+            $data = (object) [
+                'insurance_code' => $insurance->insurance_code,
+                'insured_name' => $insurance->holder->name,
+                'product_name' => $insurance->product->name,
+                'total_premium' => number_format($insurance->amount, 2),
+                'total_payable' => number_format($insurance->amount, 2)
+            ];
 
-        $user = User::where('email', $insurance->holder->email_address)->first();
-        if(empty($user)) {
-            User::create([
-                'email' => $insurance->holder->email_address,
-                'name' => $insurance->holder->name,
-                'password' => Hash::make(Str::random(8)),
-            ]);
+            $user = User::where('email', $insurance->holder->email_address)->first();
+            if(empty($user)) {
+                User::create([
+                    'email' => $insurance->holder->email_address,
+                    'name' => $insurance->holder->name,
+                    'password' => Hash::make(Str::random(8)),
+                ]);
+            }
+
+            $cc_list = config('setting.howden.email_cc_list');
+            array_merge($cc_list, config('setting.howden.affinity_team_email'));
+
+            Mail::to($insurance->holder->email_address)
+                ->cc($cc_list)
+                ->bcc(config('setting.howden.it_dev_mail'))
+                ->send(new PaymentReceipt($data));
+
+            return view('frontend.motor.payment_success')
+                ->with([
+                    'insurance' => $insurance,
+                    'total_payable' => number_format($insurance->amount, 2)
+                ]);
+        } else {
+            return redirect()->route('motor.payment-failed');
+        }
+    }
+
+    public function paymentFailure(Request $request)
+    {
+        if(empty($request->session()->get('motor'))) {
+            return redirect()->route('motor.index');
         }
 
-        $cc_list = config('setting.howden.email_cc_list');
-        array_merge($cc_list, config('setting.howden.affinity_team_email'));
+        $insurance_code = $request->session()->get('motor');
 
-        Mail::to($insurance->holder->email_address)
-            ->cc($cc_list)
-            ->bcc(config('setting.howden.it_dev_mail'))
-            ->send(new PaymentReceipt($data));
+        $insurance = Insurance::findByInsuranceCode($insurance_code);
 
-        return view('frontend.motor.payment_success')
+        return view('frontend.motor.payment_failed')
             ->with([
                 'insurance' => $insurance,
                 'total_payable' => number_format($insurance->amount, 2)

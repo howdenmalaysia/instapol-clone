@@ -703,6 +703,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             'payment_method' => $request->payment_method,
             'payment_amount' => formatNumber($request->payment_amount),
             'payment_date' => Carbon::parse($request->payment_date)->format('Y-m-d'),
+            'payment_datetime' => Carbon::parse($request->payment_date)->format('Y-m-d H:i:s'),
             'transaction_reference' => $request->transaction_reference,
             'insurance' => $insurance,
             'insurance_motor' => $insurance_motor,

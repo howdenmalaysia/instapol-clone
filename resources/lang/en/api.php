@@ -22,7 +22,7 @@ return [
     'invalid_vehicle_number' => 'Your vehicle registration number is either invalid or does not match the registered owner of the vehicle. Please WhatsApp us for help.',
     'invalid_id_number' => 'Your ID number is either invalid OR your car number is not match the registered owner of the vehicle. Please WhatsApp us for help.',
     'unable_to_get_ncd' => 'Unfortunately, we\'re unable to get the NCD for your vehicle. Please WhatsApp us for help.',
-    'allianz_error' => 'Error in IDNo1 or IDNo2, or ID does not match. Ensure IdNo1 or IdNo2 is correct. Ensure the insurance/takaful code is correct.',
+    'allianz_error' => 'Blacklisted vehicle.',
 
     // Logic Related
     'invalid_product' => 'Product not found.',

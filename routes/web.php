@@ -46,6 +46,7 @@ Route::middleware(['web', 'cors'])->group(function() {
             Route::post('/policy-holder', [MotorController::class, 'policyHolder_POST']);
             Route::get('/payment/summary', [MotorController::class, 'paymentSummary'])->name('motor.payment-summary');
             Route::get('/payment/success', [MotorController::class, 'paymentSuccess'])->name('motor.payment-success');
+            Route::get('/payment/failed', [MotorController::class, 'paymentFailure'])->name('motor.payment-failed');
         }
     );
 });

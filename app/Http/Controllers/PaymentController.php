@@ -198,7 +198,9 @@ class PaymentController extends Controller
                     $helper->submission($data);
                 }
 
-                break;
+                $request->session()->put(Str::before($request->Param6, '-'), $insurance->insurance_code);
+
+                return redirect()->route(Str::before($request->Param6, '-') . '.payment-success');
             }
             case '1': {
                 if ($insurance->insurance_status == Insurance::STATUS_NEW_QUOTATION || $insurance->insurance_status == Insurance::STATUS_PAYMENT_FAILURE) {
@@ -214,12 +216,10 @@ class PaymentController extends Controller
                     ]);
                 }
 
-                break;
+                $request->session()->put(Str::before($request->Param6, '-'), $insurance->insurance_code);
+
+                return redirect()->route(Str::before($request->Param6, '-') . '.payment-failed');
             }
         }
-
-        $request->session()->put(Str::before($request->Param6, '-'), $insurance->insurance_code);
-
-        return redirect()->route(Str::before($request->Param6, '-') . '.payment-success');
     }
 }
