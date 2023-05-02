@@ -83,7 +83,7 @@ class HowdenSettlement extends Command
                 ->where('insurance_status', Insurance::STATUS_PAYMENT_ACCEPTED)
                 ->get()
                 ->groupBy('product_id');
-    
+
             if(empty($records)) {
                 $message = 'No Eligible Records Found!';
 
@@ -101,7 +101,7 @@ class HowdenSettlement extends Command
 
                 return;
             }
-    
+
             $rows = $total_commission = $total_eservice_fee = $total_sst = $total_payment_gateway_charges = $total_premium = $total_outstanding = 0;
             $row_data = $details = [];
 
@@ -120,7 +120,7 @@ class HowdenSettlement extends Command
                 $insurer_net_transfer = 0;
                 $product = Product::with(['insurance_company'])
                     ->findOrFail($product_id);
-    
+
                 $insurances->map(function($insurance) use(
                     $product,
                     &$rows,
@@ -139,14 +139,14 @@ class HowdenSettlement extends Command
                         ])
                         ->where('insurance_id', $insurance->id)
                         ->first();
-                    
+
                     $discount_amount = 0;
                     $discount_target = '';
                     if(!empty($insurance->promo)) {
                         $discount_amount = $insurance->promo->discount_amoumt;
                         $total_discount += $discount_amount;
                     }
-    
+
                     $roadtax_premium = 0;
                     if(!empty($insurance_motor->roadtax)) {
                         $roadtax_premium = floatval($insurance_motor->roadtax->roadtax_renewal_fee) +
@@ -156,7 +156,7 @@ class HowdenSettlement extends Command
 
                         $total_eservice_fee += $insurance_motor->roadtax->e_service_fee;
                     }
-    
+
                     $eghl_log = EGHLLog::where('payment_id', 'LIKE', '%' . $insurance->code . '%')
                         ->where('txn_status', 0)
                         ->latest()
@@ -249,7 +249,7 @@ class HowdenSettlement extends Command
                             !empty($insurance->promo) ? $insurance->promo->promo->code : ''
                         ];
                     }
-    
+
                     $rows++;
                 });
 
@@ -304,7 +304,7 @@ class HowdenSettlement extends Command
                 'error_message' => $ex->getMessage()
             ]);
 
-            Log::error("[Cron - Howden Internal Settlement] An Error Encountered. {$ex->getMessage()}");
+            Log::error("[Cron - Howden Internal Settlement] An Error Encountered. [{$ex->getMessage()}] \n" . $ex);
         }
     }
 }
