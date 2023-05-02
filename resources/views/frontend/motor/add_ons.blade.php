@@ -176,7 +176,7 @@
                                                 </div>
                                                     <div class="col-md-12 mb-2" style="margin-left: 2rem !important" >
                                                     <div style="display: none"  id="showadditionalnote" name="shownote" >
-                                                    Unlimited additional drivers. RM20 will be added to your premium as part of Additional Coverages.
+                                                    {{ __('frontend.motor.add_ons_page.additional_driver_note') }}
                                                     </div>
                                                 </div>
                                             @else
@@ -679,15 +679,39 @@
 
             // Consolidate Additional Drivers
             let additional_driver = [];
-            $('.additional-driver-name').each((index, element) => {
-                if($(`#driver-name-${index}`).val() != '') {
-                    additional_driver.push({
-                        name: $(`#driver-name-${index}`).val().toUpperCase(),
-                        id_number: $(`#driver-id-number-${index}`).val(),
-                        relationship: $(`#driver-relationship-${index}`).val()
-                    });
-                }
-            });
+            if($('.extra-driver').is(':checked')){
+                //additional_driver = Array.apply( null, { length: 4 } );
+                additional_driver.push({
+                    name: 'Howden1',
+                    id_number: 000000000000,
+                    relationship: 1
+                });
+                additional_driver.push({
+                    name: 'Howden1',
+                    id_number: 000000000000,
+                    relationship: 1
+                });
+                additional_driver.push({
+                    name: 'Howden1',
+                    id_number: 000000000000,
+                    relationship: 1
+                });
+                additional_driver.push({
+                    name: 'Howden1',
+                    id_number: 000000000000,
+                    relationship: 1
+                });
+            }else{
+                $('.additional-driver-name').each((index, element) => {
+                    if($(`#driver-name-${index}`).val() != '') {
+                        additional_driver.push({
+                            name: $(`#driver-name-${index}`).val().toUpperCase(),
+                            id_number: $(`#driver-id-number-${index}`).val(),
+                            relationship: $(`#driver-relationship-${index}`).val()
+                        });
+                    }
+                });
+            }
 
             $('#h-additional-driver').val(JSON.stringify(additional_driver));
 

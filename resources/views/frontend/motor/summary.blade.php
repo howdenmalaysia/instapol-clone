@@ -235,6 +235,8 @@
                                                 </div>
                                             </div>
                                             @if (!empty($motor->driver))
+                                                @if(count($motor->driver) >= 3)
+                                                @else
                                                 <div class="row">
                                                     <div class="col-4 fw-bold">{{ __('frontend.fields.name') }}</div>
                                                     <div class="col-4 fw-bold">{{ __('frontend.fields.id_number') }}</div>
@@ -247,6 +249,7 @@
                                                         <div class="col-4">{{ $relationships->where('id', $driver->relationship_id)->first()->name }}</div>
                                                     </div>
                                                 @endforeach
+                                                @endif
                                             @else
                                                 <div class="row">
                                                     <div class="col-12 text-center">
