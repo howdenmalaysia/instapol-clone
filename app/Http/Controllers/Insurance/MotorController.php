@@ -107,7 +107,7 @@ class MotorController extends Controller
         $product_ids = [];
         foreach($products as $product) {
             //  ['Allianz', 'AIG', 'Liberty']
-            if(in_array($product->id, [3, 6, 14])) {
+            if(in_array($product->id, [3, 6, 10, 14])) {
                 array_push($product_ids, $product->id);
             }
         }
