@@ -18,7 +18,7 @@ use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Log;
+use App\Models\EGHLLog;
 
 class Allianz implements InsurerLibraryInterface
 {
@@ -1028,6 +1028,12 @@ class Allianz implements InsurerLibraryInterface
                 $driver .= '],';
             }
         }
+        //getting EGHL log
+        // Payment Gateway Charges
+        $eghl_log = EGHLLog::where('payment_id', 'LIKE', '%' . $input->insurance_code . '%')
+        ->where('txn_status', 0)
+        ->latest()
+        ->first();
         $text = '{
             "salesChannel": "PTR",
             "contract": {
@@ -1055,9 +1061,9 @@ class Allianz implements InsurerLibraryInterface
             },'
             .$driver.
             '"payment": {
-              "paymentMode": "",
-              "paymentBankRef": "",
-              "paymentId": "",
+              "paymentMode": "ONLCCN",
+              "paymentBankRef": "'.$eghl_log->bank_reference.'",
+              "paymentId": "2",
               "paymentDate": "'.$input->payment_datetime.'",
               "paymentAmount": '.$input->payment_amount.'
             }
