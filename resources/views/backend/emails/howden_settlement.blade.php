@@ -11,7 +11,7 @@
 <p>Net Transfer Amount (Howden) = RM {{ number_format($net_transfer_amount, 2) }}</p>
 <p>Total Outstanding Amount = RM {{ number_format($total_outstanding, 2) }}</p>
 
-<table border="1">
+<table border="1" style="border-collapse: collapse;">
     <tr>
         <th>Insurer</th>
         <th>Total Number of Transactions (#)</th>
