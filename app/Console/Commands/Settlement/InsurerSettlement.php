@@ -80,7 +80,7 @@ class InsurerSettlement extends Command
                     'premium'
                 ])
                 ->whereBetween('updated_at', [$start_date, $end_date])
-                ->where('insurance_status', Insurance::STATUS_PAYMENT_ACCEPTED)
+                ->whereIn('insurance_status', [Insurance::STATUS_PAYMENT_ACCEPTED, Insurance::STATUS_POLICY_ISSUED])
                 ->get()
                 ->groupBy('product_id');
 
