@@ -77,25 +77,11 @@ class EGHLSettlement extends Command
                 ->whereNull('settlement_on')
                 ->whereIn('insurance_status', [Insurance::STATUS_PAYMENT_ACCEPTED, Insurance::STATUS_POLICY_ISSUED])
                 ->get();
-    
+
             if(empty($records)) {
-                $message = 'No Eligible Records Found!';
-
-                Log::error("[Cron - eGHL Settlement] {$message}");
-
-                CronJobs::create([
-                    'description' => 'Send Settlement Report to eGHL',
-                    'param' => json_encode([
-                        'start_date' => $start_date,
-                        'end_date' => $end_date
-                    ]),
-                    'status' => CronJobs::STATUS_FAILED,
-                    'error_message' => $message
-                ]);
-        
-                return;
+                throw new Exception('No Eligible Records Found!');
             }
-    
+
             $rows = $total_roadtax = $total_gateway_charges = 0;
             $total_amount = $row_data = [];
             $records->map(function($insurance) use(&$rows, &$total_amount, &$total_roadtax, &$total_gateway_charges) {
@@ -128,28 +114,28 @@ class EGHLSettlement extends Command
                     ->where('txn_status', 0)
                     ->latest()
                     ->first();
-                
+
                 $total_gateway_charges += getGatewayCharges($insurance->amount, $eghl_log->service_id, $eghl_log->payment_method);
-    
+
                 $rows++;
             });
-            
+
             $product_ids = array_keys($total_amount);
             $total_commissions = 0;
-    
+
             foreach($product_ids as $product_id) {
                 $product = Product::with(['insurance_company'])
                     ->find($product_id);
-    
+
                 $email_cc = $product->insurance_company->email_cc;
                 if(empty($email_cc)) {
                     $email_cc = implode(',', config('setting.howden.affinity_team_email'));
                 } else {
                     $email_cc = implode(',', [$email_cc, implode(',', config('setting.howden.affinity_team_email'))]);
                 }
-    
+
                 $total_commissions += $total_amount[$product_id] * 0.1;
-                
+
                 array_push($row_data, [
                     $total_amount[$product_id] * 0.9,
                     $product->insurance_company->bank_code,
@@ -163,7 +149,7 @@ class EGHLSettlement extends Command
             }
 
             $start_date = Carbon::parse($start_date)->format(self::DATE_FORMAT);
-    
+
             // Howden's Comms
             array_push($row_data, [
                 $total_commissions + $total_roadtax + $total_gateway_charges,
@@ -175,14 +161,14 @@ class EGHLSettlement extends Command
                 config('setting.settlement.howden.email_cc'),
                 'N/A'
             ]);
-    
+
             $filename = "eghl_settlement_{$start_date}.xlsx";
             Excel::store(new EGHLReportExport($row_data), $filename);
-    
+
             Mail::to(config('setting.settlement.eghl'))
                 ->bcc(config('setting.howden.it_dev_mail'))
                 ->send(new EGHLSettlementMail($filename, $start_date));
-    
+
             CronJobs::create([
                 'description' => 'Send Settlement Report to eGHL',
                 'param' => json_encode([
@@ -191,12 +177,12 @@ class EGHLSettlement extends Command
                 ]),
                 'status' => CronJobs::STATUS_COMPLETED
             ]);
-    
+
             Insurance::whereIn('id', $records->pluck('id'))
                 ->update([
                     'settlement_on' => Carbon::now()->format(self::DATETIME_FORMAT)
                 ]);
-            
+
             Log::info("[Cron - eGHL Settlement] {$rows} records processed. [{$start_date} to {$end_date}]");
             $this->info("{$rows} records processed.");
         } catch (Exception $ex) {

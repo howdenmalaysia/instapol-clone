@@ -83,26 +83,12 @@ class HowdenSettlement extends Command
                 ->whereIn('insurance_status', [Insurance::STATUS_PAYMENT_ACCEPTED, Insurance::STATUS_POLICY_ISSUED])
                 ->get()
                 ->groupBy('product_id');
-    
+
             if(empty($records)) {
-                $message = 'No Eligible Records Found!';
-
-                Log::error("[Cron - Howden Internal Settlement] {$message}");
-
-                CronJobs::create([
-                    'description' => 'Send Settlement Report to Howden Internal',
-                    'param' => json_encode([
-                        'start_date' => $start_date,
-                        'end_date' => $end_date
-                    ]),
-                    'status' => CronJobs::STATUS_FAILED,
-                    'error_message' => $message
-                ]);
-
-                return;
+                throw new Exception('No Eligible Records Found!');
             }
-    
-            $rows = $total_commission = $total_eservice_fee = $total_sst = $total_payment_gateway_charges = $total_premium = $total_outstanding = 0;
+
+            $rows = $total_commission = $total_eservice_fee = $total_sst = $total_discount = $total_payment_gateway_charges = $total_premium = $total_outstanding = 0;
             $row_data = $details = [];
 
             $records->each(function($insurances, $product_id) use(
@@ -120,7 +106,7 @@ class HowdenSettlement extends Command
                 $insurer_net_transfer = 0;
                 $product = Product::with(['insurance_company'])
                     ->findOrFail($product_id);
-    
+
                 $insurances->map(function($insurance) use(
                     $product,
                     &$rows,
@@ -139,14 +125,14 @@ class HowdenSettlement extends Command
                         ])
                         ->where('insurance_id', $insurance->id)
                         ->first();
-                    
+
                     $discount_amount = 0;
                     $discount_target = '';
                     if(!empty($insurance->promo)) {
                         $discount_amount = $insurance->promo->discount_amoumt;
                         $total_discount += $discount_amount;
                     }
-    
+
                     $roadtax_premium = 0;
                     if(!empty($insurance_motor->roadtax)) {
                         $roadtax_premium = floatval($insurance_motor->roadtax->roadtax_renewal_fee) +
@@ -156,7 +142,7 @@ class HowdenSettlement extends Command
 
                         $total_eservice_fee += $insurance_motor->roadtax->e_service_fee;
                     }
-    
+
                     $eghl_log = EGHLLog::where('payment_id', 'LIKE', '%' . $insurance->code . '%')
                         ->where('txn_status', 0)
                         ->latest()
@@ -249,7 +235,7 @@ class HowdenSettlement extends Command
                             !empty($insurance->promo) ? $insurance->promo->promo->code : ''
                         ];
                     }
-    
+
                     $rows++;
                 });
 
