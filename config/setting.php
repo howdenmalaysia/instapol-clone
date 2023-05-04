@@ -47,7 +47,12 @@ return [
         'short_code' => env('HOWDEN_SHORT_CODE'),
         'affinity_team_email' => empty(env('AFFINITY_TEAM_EMAIL')) ? [] : explode(',', env('AFFINITY_TEAM_EMAIL')),
         'email_cc_list' => empty(env('EMAIL_CC_LIST')) ? [] : explode(',', env('EMAIL_CC_LIST')),
-        'it_dev_mail' => empty(env('HOWDEN_IT_DEV_MAIL')) ? [] : explode(',', env('HOWDEN_IT_DEV_MAIL'))
+        'it_dev_mail' => empty(env('HOWDEN_IT_DEV_MAIL')) ? [] : explode(',', env('HOWDEN_IT_DEV_MAIL')),
+        'contact_list' => [
+            'jeffery_chan' => 'jeffreycw.chan@my.howdengroup.com',
+            'phoebie_wong' => 'phoebie.wong@my.howdengroup.com',
+            'cheng_lai_fah' => 'laifah.cheng@my.howdengroup.com'
+        ]
     ],
     'payment' => [
         'gateway' => [

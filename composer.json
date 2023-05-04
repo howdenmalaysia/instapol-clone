@@ -9,7 +9,7 @@
     "license": "MIT",
     "require": {
         "php": "^7.3",
-        "albertcht/invisible-recaptcha": "^1.9",
+        "akki-io/laravel-google-analytics": "*",
         "barryvdh/laravel-dompdf": "^2.0",
         "doctrine/dbal": "^3.5",
         "fideloper/proxy": "^4.2",

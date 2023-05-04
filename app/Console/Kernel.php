@@ -8,6 +8,7 @@ use App\Console\Commands\Settlement\EGHLSettlement;
 use App\Console\Commands\Settlement\HowdenSettlement;
 use App\Console\Commands\Settlement\InsurerSettlement;
 use App\Console\Commands\Settlement\MonthlySettlement;
+use App\Console\Commands\TrendReport;
 use Carbon\Carbon;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -53,7 +54,10 @@ class Kernel extends ConsoleKernel
         // 2. Motor Renewal Notice [1 Month, 2 Weeks, 1 Week] (Before Expiry)
         $schedule->command(MotorRenewalNotice::class)->dailyAt('10:00');
 
-        // 3. Drop Off Report
+        // 3. Trend Report
+        $schedule->command(TrendReport::class)->weeklyOn(1, '08:30');
+
+        // 4. Drop Off Report
         $schedule->command(DropOffReport::class)->hourly();
     }
 
