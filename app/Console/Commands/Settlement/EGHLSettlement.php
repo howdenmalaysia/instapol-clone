@@ -68,12 +68,15 @@ class EGHLSettlement extends Command
             // Throw Error
             $day = Carbon::now()->englishDayOfWeek;
             Log::error("[Cron - eGHL Settlement] Shouldn't run settlement today, {$day}.");
-            return;
+            return 0;
         }
 
         try {
             $records = Insurance::with(['product'])
-                ->whereBetween('updated_at', [$start_date, $end_date])
+                ->where(function($query) use($start_date, $end_date) {
+                    $query->whereBetween('created_at', [$start_date, $end_date])
+                        ->orWhereBetween('updated_at', [$start_date, $end_date]);
+                })
                 ->whereNull('settlement_on')
                 ->whereIn('insurance_status', [Insurance::STATUS_PAYMENT_ACCEPTED, Insurance::STATUS_POLICY_ISSUED])
                 ->get();
@@ -100,6 +103,10 @@ class EGHLSettlement extends Command
                         floatval($insurance_motor->roadtax->service_tax);
                 }
 
+                if(!empty($insurance->promo)) {
+                    $roadtax_premium -= $insurance->promo->discount_amount;
+                }
+
                 $total_roadtax += $roadtax_premium;
 
                 // Total Payable
@@ -110,7 +117,7 @@ class EGHLSettlement extends Command
                 }
 
                 // Payment Gateway Charges
-                $eghl_log = EGHLLog::where('payment_id', 'LIKE', '%' . $insurance->code . '%')
+                $eghl_log = EGHLLog::where('payment_id', 'LIKE', '%' . $insurance->insurance_code . '%')
                     ->where('txn_status', 0)
                     ->latest()
                     ->first();
@@ -157,8 +164,8 @@ class EGHLSettlement extends Command
                 config('setting.settlement.howden.bank_account_no'),
                 $start_date,
                 $start_date,
-                config('setting.settlement.howden.email_to'),
-                config('setting.settlement.howden.email_cc'),
+                implode(', ', config('setting.settlement.howden.email_to')),
+                implode(', ', config('setting.settlement.howden.email_cc')),
                 'N/A'
             ]);
 
