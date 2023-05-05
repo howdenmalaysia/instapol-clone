@@ -26,4 +26,6 @@ class Promotion extends Model
     ];
 
     const DT_ROADTAX = 'road_tax';
+    const DT_TOTALPAYABLE = 'total_payable';
+    const DT_GROSS_PREMIUM = 'gross_premium';
 }
