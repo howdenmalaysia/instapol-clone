@@ -85,9 +85,9 @@ class EGHLSettlement extends Command
                 throw new Exception('No Eligible Records Found!');
             }
 
-            $rows = $total_roadtax = $total_gateway_charges = 0;
+            $rows = $total_roadtax = $total_gateway_charges = $total_commissions = 0;
             $total_amount = $row_data = [];
-            $records->map(function($insurance) use(&$rows, &$total_amount, &$total_roadtax, &$total_gateway_charges) {
+            $records->map(function($insurance) use(&$rows, &$total_amount, &$total_roadtax, &$total_gateway_charges, &$total_commissions) {
                 // Roadtax Amount
                 $insurance_motor = InsuranceMotor::with([
                         'roadtax'
@@ -110,10 +110,12 @@ class EGHLSettlement extends Command
                 $total_roadtax += $roadtax_premium;
 
                 // Total Payable
+                $commission = $insurance->premium->gross_premium * 0.1;
+                $total_commissions += $commission;
                 if(array_key_exists($insurance->product_id, $total_amount)) {
-                    $total_amount[$insurance->product_id] += floatval($insurance->amount) - $roadtax_premium;
+                    $total_amount[$insurance->product_id] += floatval($insurance->amount) - $roadtax_premium - $commission;
                 } else {
-                    $total_amount[$insurance->product_id] = floatval($insurance->amount) - $roadtax_premium;
+                    $total_amount[$insurance->product_id] = floatval($insurance->amount) - $roadtax_premium - $commission;
                 }
 
                 // Payment Gateway Charges
@@ -128,8 +130,6 @@ class EGHLSettlement extends Command
             });
 
             $product_ids = array_keys($total_amount);
-            $total_commissions = 0;
-
             foreach($product_ids as $product_id) {
                 $product = Product::with(['insurance_company'])
                     ->find($product_id);
@@ -141,10 +141,8 @@ class EGHLSettlement extends Command
                     $email_cc = implode(',', [$email_cc, implode(',', config('setting.howden.affinity_team_email'))]);
                 }
 
-                $total_commissions += $total_amount[$product_id] * 0.1;
-
                 array_push($row_data, [
-                    $total_amount[$product_id] * 0.9,
+                    $total_amount[$product_id],
                     $product->insurance_company->bank_code,
                     $product->insurance_company->bank_account_no,
                     $start_date,
@@ -159,7 +157,7 @@ class EGHLSettlement extends Command
 
             // Howden's Comms
             array_push($row_data, [
-                $total_commissions + $total_roadtax + $total_gateway_charges,
+                $total_commissions + $total_roadtax - $total_gateway_charges,
                 config('setting.settlement.howden.bank_code'),
                 config('setting.settlement.howden.bank_account_no'),
                 $start_date,
