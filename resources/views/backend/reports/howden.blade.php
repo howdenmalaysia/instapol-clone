@@ -21,7 +21,8 @@
             <th>Discount (Total Payable)</th>
             <th>Discount (Premium Only)</th>
             <th>Discount (Road Tax Only)</th>
-            <th>RoaxTax - Renewal Fee</th>
+            <th>Digital / Physical RoadTax</th>
+            <th>RoadTax - Renewal Fee</th>
             <th>RoadTax - MYEG Fee</th>
             <th>RoadTax - eService Fee</th>
             <th>Roadtax - Service Tax</th>

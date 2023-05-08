@@ -14,7 +14,7 @@ class HowdenReportExport implements FromView, WithColumnFormatting, ShouldAutoSi
 
     public function __construct(array $data)
     {
-        $this->data = $data;    
+        $this->data = $data;
     }
 
     /**
@@ -38,17 +38,18 @@ class HowdenReportExport implements FromView, WithColumnFormatting, ShouldAutoSi
             'R' => '#,##0.00_-',
             'S' => '#,##0.00_-',
             'T' => '#,##0.00_-',
-            'U' => '#,##0.00_-',
             'V' => '#,##0.00_-',
             'W' => '#,##0.00_-',
             'X' => '#,##0.00_-',
             'Y' => '#,##0.00_-',
+            'Z' => '#,##0.00_-',
             'AA' => '#,##0.00_-',
             'AB' => '#,##0.00_-',
             'AC' => '#,##0.00_-',
             'AD' => '#,##0.00_-',
             'AE' => '#,##0.00_-',
             'AF' => '#,##0.00_-',
+            'AG' => '#,##0.00_-',
         ];
     }
 }
