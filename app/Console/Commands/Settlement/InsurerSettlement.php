@@ -219,7 +219,7 @@ class InsurerSettlement extends Command
 
 
                 Mail::to(explode(',', $product->insurance_company->email_to))
-                    ->cc(explode(',', $product->insurance_company->email_cc . ',' . config('setting.howden.affinity_team_email')))
+                    ->cc(explode(',', $product->insurance_company->email_cc) . ',' . config('setting.howden.affinity_team_email'))
                     ->bcc(config('setting.howden.it_dev_mail'))
                     ->send(new InsurerSettlementMail($filenames, $data));
 
