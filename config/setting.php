@@ -74,6 +74,9 @@ return [
             'email_to' => empty(env('HOWDEN_INTERNAL')) ? [] : explode(',', env('HOWDEN_INTERNAL')),
             'email_cc' => empty(env('HOWDEN_INTERNAL_CC')) ? [] : explode(',', env('HOWDEN_INTERNAL_CC')),
         ],
-        'eghl' => empty(env('EGHL_SETTLEMENT')) ? [] : explode(',', env('EGHL_SETTLEMENT'))
+        'eghl' => [
+            'to' => empty(env('EGHL_SETTLEMENT')) ? [] : explode(',', env('EGHL_SETTLEMENT')),
+            'cc' => empty(env('EGHL_SETTLEMENT_CC')) ? [] : explode(',', env('EGHL_SETTLEMENT_CC'))
+        ]
     ]
 ];
