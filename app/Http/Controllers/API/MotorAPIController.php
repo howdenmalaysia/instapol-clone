@@ -124,7 +124,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
 
             return $data->all();
         } catch(Exception $ex) {
-            Log::error("[API/GetVehicleDetails] An error occurred. {$ex->getMessage()}");
+            Log::error("[API/GetVehicleDetails] An error occurred. [{$ex->getMessage()}] \n" . $ex);
 
             return $this->abort($ex->getMessage());
         }
@@ -598,7 +598,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
 
             return $quote->all();
         } catch (Exception $ex) {
-            Log::error("[API/CreateQuotation] An Error Encountered. {$ex->getMessage()}");
+            Log::error("[API/CreateQuotation] An Error Encountered. [{$ex->getMessage()}] \n" . $ex);
             DB::rollBack();
         }
     }
@@ -766,7 +766,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
                 json_decode(json_encode($result), true)
             ]);
         } catch (Exception $ex) {
-            Log::error("[API/Policy Submission] An Error Encountered. {$ex->getMessage()}");
+            Log::error("[API/Policy Submission] An Error Encountered. [{$ex->getMessage()}]" . $ex);
             abort(500, $ex->getMessage());
         }
     }

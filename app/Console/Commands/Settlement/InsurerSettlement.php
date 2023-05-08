@@ -79,27 +79,16 @@ class InsurerSettlement extends Command
                     'promo',
                     'premium'
                 ])
-                ->whereBetween('updated_at', [$start_date, $end_date])
-                ->where('insurance_status', Insurance::STATUS_PAYMENT_ACCEPTED)
+                ->where(function($query) use($start_date, $end_date) {
+                    $query->whereBetween('created_at', [$start_date, $end_date])
+                        ->orWhereBetween('updated_at', [$start_date, $end_date]);
+                })
+                ->whereIn('insurance_status', [Insurance::STATUS_PAYMENT_ACCEPTED, Insurance::STATUS_POLICY_ISSUED])
                 ->get()
                 ->groupBy('product_id');
 
             if(empty($records)) {
-                $message = 'No Eligible Records Found!';
-
-                Log::error("[Cron - Insurer Settlement] {$message}.");
-
-                CronJobs::create([
-                    'description' => 'Send Settlement Report to Insurers',
-                    'param' => json_encode([
-                        'start_date' => $start_date,
-                        'end_date' => $end_date
-                    ]),
-                    'status' => CronJobs::STATUS_FAILED,
-                    'error_message' => $message
-                ]);
-
-                return;
+                throw new Exception('No Eligible Records Found!');
             }
 
             $rows = 0;
@@ -229,7 +218,7 @@ class InsurerSettlement extends Command
                 Log::info("[Cron - Insurer Settlement] Sending Settlement Report to {$product->insurance_company->name} [{$product->insurance_company->email_to},{$product->insurance_company->email_cc}]");
 
 
-                Mail::to(explode(',', $product->insurance_company_email_to))
+                Mail::to(explode(',', $product->insurance_company->email_to))
                     ->cc(explode(',', $product->insurance_company->email_cc . ',' . config('setting.howden.affinity_team_email')))
                     ->bcc(config('setting.howden.it_dev_mail'))
                     ->send(new InsurerSettlementMail($filenames, $data));
@@ -261,7 +250,7 @@ class InsurerSettlement extends Command
                 'status' => CronJobs::STATUS_FAILED
             ]);
 
-            Log::error("[Cron - Insurer Settlement] An Error Encountered. {$ex->getMessage()}");
+            Log::error("[Cron - Insurer Settlement] An Error Encountered. [{$ex->getMessage()}] \n" . $ex);
         }
 
     }

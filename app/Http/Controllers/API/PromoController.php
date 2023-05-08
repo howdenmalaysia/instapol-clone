@@ -180,7 +180,7 @@ class PromoController extends Controller
             DB::commit();
             return $motor;
         } catch (Exception $ex) {
-            Log::error("[API/UsePromoCode] An Error Encountered. {$ex->getMessage()}");
+            Log::error("[API/UsePromoCode] An Error Encountered. [{$ex->getMessage()}] \n" . $ex);
             DB::rollback();
 
             return $this->abort("An Error Encountered. {$ex->getMessage()}");

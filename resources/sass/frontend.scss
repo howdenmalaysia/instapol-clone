@@ -144,7 +144,7 @@ body {
         background-position: center;
         background-size: cover;
 
-        @include media-breakpoint-up(md) {
+        @include media-breakpoint-up(lg) {
             .description {
                 width: 50%;
             }
@@ -181,7 +181,7 @@ body {
                 z-index: 2;
                 background-position: center;
                 margin-top: -12px;
-                padding-bottom: 68px;
+                padding-bottom: 30px;
 
                 #vehicle-no {
                     border-radius: 2rem;
@@ -196,13 +196,14 @@ body {
                 }
 
                 .vehicle-details {
-                    padding-bottom: 30px;
+                    padding-bottom: 68px;
                 }
             }
 
-            @include media-breakpoint-up(md) {
+            @include media-breakpoint-down(md) {
                 .icon-motor {
-                    margin-top: -28px;
+                    margin-top: 30px;
+                    width: 120px;
                 }
             }
         }

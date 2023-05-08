@@ -49,7 +49,7 @@ class InsuranceCompanySeeder extends Seeder
                 'email_cc' => 'amgeneral-broking-spst@amgeneralinsurance.com,norhaya-mustapa@amgeneralinsurance.com,geoffery-yeo@amgeneralinsurance.com'
             ],
             [
-                'name' => 'Zurich Takaful',
+                'name' => 'Zurich General Takaful Malaysia Berhad',
                 'logo' => 'zurich-takaful.png',
                 'sequence' => 4,
                 'active' => 1,
@@ -60,7 +60,7 @@ class InsuranceCompanySeeder extends Seeder
                 'email_cc' => 'meiying.tang@zurich.com.my'
             ],
             [
-                'name' => 'Zurich',
+                'name' => 'Zurich General Insurance Malaysia Berhad',
                 'logo' => 'zurich.png',
                 'sequence' => 5,
                 'active' => 1,
