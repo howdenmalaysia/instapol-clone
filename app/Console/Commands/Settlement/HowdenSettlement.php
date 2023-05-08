@@ -251,7 +251,7 @@ class HowdenSettlement extends Command
                 ]);
             });
 
-            $start_date = Carbon::parse($start_date)->format(self::DATE_FORMAT);
+            $start = Carbon::parse($start_date)->format(self::DATE_FORMAT);
 
             $filenames = [];
             foreach($row_data as $product_id => $values) {
@@ -259,13 +259,14 @@ class HowdenSettlement extends Command
                     ->findOrFail($product_id);
 
                 $insurer_name = Str::snake(ucwords($product->insurance_company->name));
-                $filename = "{$insurer_name}{$product->insurance_company->id}_settlement_{$start_date}.xlsx";
+                $filename = "{$insurer_name}{$product->insurance_company->id}_settlement_{$start}.xlsx";
                 array_push($filenames, $filename);
                 Excel::store(new HowdenReportExport($values), $filename);
             }
 
             $data = [
-                'start_date' => $start_date,
+                'start_date' => $start,
+                'end_date' => Carbon::parse($end_date)->format(self::DATE_FORMAT),
                 'total_commission' => $total_commission,
                 'total_eservice_fee' => $total_eservice_fee,
                 'total_sst' => $total_sst,

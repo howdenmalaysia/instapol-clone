@@ -82,7 +82,7 @@ class InsurerSettlement extends Command
 
             $rows = 0;
 
-            $records->each(function($insurances, $product_id) use($start_date, &$rows) {
+            $records->each(function($insurances, $product_id) use($start_date, $end_date, &$rows) {
                 $total_commission = $total_eservice_fee = $total_sst = $total_payment_gateway_charges = $total_premium = $total_outstanding = $insurer_net_transfer = 0;
                 $row_data = [];
 
@@ -172,7 +172,7 @@ class InsurerSettlement extends Command
                     $rows++;
                 });
 
-                $start_date = Carbon::parse($start_date)->format(self::DATE_FORMAT);
+                $start = Carbon::parse($start_date)->format(self::DATE_FORMAT);
 
                 $filenames = [];
                 foreach($row_data as $product_id => $values) {
@@ -181,14 +181,15 @@ class InsurerSettlement extends Command
 
                     $insurer_name = Str::snake(ucwords($product->insurance_company->name));
 
-                    $filename = "{$insurer_name}{$product->insurance_company->id}_settlement_{$start_date}.xlsx";
+                    $filename = "{$insurer_name}{$product->insurance_company->id}_settlement_{$start}.xlsx";
                     array_push($filenames, $filename);
                     Excel::store(new InsurerReportExport($values), $filename);
                 }
 
                 $data = [
                     'insurer_name' => $product->insurance_company->name,
-                    'start_date' => $start_date,
+                    'start_date' => $start,
+                    'end_date' => Carbon::parse($end_date)->format(self::DATE_FORMAT),
                     'total_commission' => $total_commission,
                     'total_eservice_fee' => $total_eservice_fee,
                     'total_sst' => $total_sst,
