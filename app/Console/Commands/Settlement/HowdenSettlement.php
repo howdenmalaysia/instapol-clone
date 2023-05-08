@@ -259,7 +259,7 @@ class HowdenSettlement extends Command
                     ->findOrFail($product_id);
 
                 $insurer_name = Str::snake(ucwords($product->insurance_company->name));
-                $filename = "{$insurer_name}{$product->insurance_company->id}_settlement_{$start_date}.xlsx";
+                $filename = "{$insurer_name}{$product->insurance_company->id}_settlement_{$start}.xlsx";
                 array_push($filenames, $filename);
                 Excel::store(new HowdenReportExport($values), $filename);
             }
