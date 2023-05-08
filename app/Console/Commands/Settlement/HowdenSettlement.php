@@ -96,6 +96,7 @@ class HowdenSettlement extends Command
             $row_data = $details = [];
 
             $records->each(function($insurances, $product_id) use(
+                $start_date,
                 &$rows,
                 &$row_data,
                 &$total_commission,
@@ -112,6 +113,7 @@ class HowdenSettlement extends Command
                     ->findOrFail($product_id);
 
                 $insurances->map(function($insurance) use(
+                    $start_date,
                     $product,
                     &$rows,
                     &$row_data,
@@ -146,7 +148,7 @@ class HowdenSettlement extends Command
                         $total_eservice_fee += $insurance_motor->roadtax->e_service_fee;
                         $total_sst += $insurance_motor->roadtax->service_tax;
 
-                        $physical = $insurance_motor->roadtax->myeg_fee - 2.75 > 0;
+                        $physical = $insurance_motor->roadtax->myeg_fee - (2.75 * 1.06) > 0;
                     }
 
                     if(!empty($discount_amount) && $insurance->promo->promotion->discount_target === Promotion::DT_ROADTAX) {
@@ -168,14 +170,14 @@ class HowdenSettlement extends Command
 
                     $gateway_charges = getGatewayCharges($insurance->amount, $eghl_log->service_id, $eghl_log->payment_method);
                     $total_payment_gateway_charges += $gateway_charges;
-                    $total_commission += $commission + $roadtax_premium - $gateway_charges;
+                    $total_commission += $commission;
 
                     if(array_key_exists($product->id, $row_data)) {
                         array_push($row_data[$product->id], [
-                            $insurance->created_at,
+                            $start_date,
                             $insurance->id,
                             $product->insurance_company->name,
-                            $insurance->updated_at->format(self::DATETIME_FORMAT),
+                            $insurance->created_at->format(self::DATETIME_FORMAT),
                             $insurance->inception_date,
                             $insurance->policy_number ?? $insurance->cover_note_number ?? $insurance->contract_number,
                             $insurance_motor->vehicle_number,
@@ -192,7 +194,7 @@ class HowdenSettlement extends Command
                             $insurance->promo->promotion->discount_target === Promotion::DT_TOTALPAYABLE ? $discount_amount : '',
                             $insurance->promo->promotion->discount_target === Promotion::DT_GROSS_PREMIUM ? $discount_amount : '',
                             $insurance->promo->promotion->discount_target === Promotion::DT_ROADTAX ? $discount_amount : '',
-                            empty($insurance_motor->roadtax->roadtax_renewal_fee) ? '-' : ($physical ? 'Yes' : 'No'),
+                            empty($insurance_motor->roadtax->roadtax_renewal_fee) ? '-' : ($physical ? 'Physical' : 'Digital'),
                             $insurance_motor->roadtax->roadtax_renewal_fee ?? '',
                             $insurance_motor->roadtax->myeg_fee ?? '',
                             $insurance_motor->roadtax->e_service_fee ?? '',
@@ -211,10 +213,10 @@ class HowdenSettlement extends Command
                         ]);
                     } else {
                         $row_data[$product->id][] = [
-                            $insurance->created_at,
+                            $start_date,
                             $insurance->id,
                             $product->insurance_company->name,
-                            $insurance->updated_at->format(self::DATETIME_FORMAT),
+                            $insurance->created_at->format(self::DATETIME_FORMAT),
                             $insurance->inception_date,
                             $insurance->policy_number ?? $insurance->cover_note_number ?? $insurance->contract_number,
                             $insurance_motor->vehicle_number,
@@ -231,7 +233,7 @@ class HowdenSettlement extends Command
                             $insurance->promo->promotion->discount_target === Promotion::DT_TOTALPAYABLE ? $discount_amount : '',
                             $insurance->promo->promotion->discount_target === Promotion::DT_GROSS_PREMIUM ? $discount_amount : '',
                             $insurance->promo->promotion->discount_target === Promotion::DT_ROADTAX ? $discount_amount : '',
-                            empty($insurance_motor->roadtax->roadtax_renewal_fee) ? '-' : ($physical ? 'Yes' : 'No'),
+                            empty($insurance_motor->roadtax->roadtax_renewal_fee) ? '-' : ($physical ? 'Physical' : 'Digital'),
                             $insurance_motor->roadtax->roadtax_renewal_fee ?? '',
                             $insurance_motor->roadtax->myeg_fee ?? '',
                             $insurance_motor->roadtax->e_service_fee ?? '',
@@ -282,7 +284,7 @@ class HowdenSettlement extends Command
                 'total_discount' => $total_discount,
                 'total_payment_gateway_charges' => $total_payment_gateway_charges,
                 'net_transfer_amount_insurer' => $total_premium,
-                'net_transfer_amount' => $total_commission,
+                'net_transfer_amount' => $total_commission + $total_roadtax_premium - $total_payment_gateway_charges,
                 'total_outstanding' => $total_outstanding,
                 'details' => $details
             ];
