@@ -275,7 +275,7 @@ class MonthlySettlement extends Command
 
             $this->info("{$rows} records processed");
         } catch (Exception $ex) {
-            CronJobs::updateOrCreate([
+            CronJobs::create([
                 'description' => 'Send Settlement Report to Insurers',
                 'param' => json_encode([
                     'start_date' => $start_date,
