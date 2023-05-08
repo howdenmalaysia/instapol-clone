@@ -58,18 +58,19 @@ class EGHLSettlement extends Command
         if(!empty($this->argument('start_date')) && !empty($this->argument('end_date'))) {
             $start_date = Carbon::parse($this->argument('start_date'))->startOfDay()->format(self::DATETIME_FORMAT);
             $end_date = Carbon::parse($this->argument('end_date'))->endOfDay()->format(self::DATETIME_FORMAT);
-        } else if(Carbon::now()->englishDayOfWeek === 'Wednesday') {
-            $start_date = Carbon::parse('last Friday')->startOfDay()->format(self::DATETIME_FORMAT); // Last Friday 00:00:00
-            $end_date = Carbon::now()->subDay()->endOfDay()->format(self::DATETIME_FORMAT); // Yesterday 23:59:59
-        } else if (Carbon::now()->englishDayOfWeek === 'Friday') {
-            $start_date = Carbon::parse('last Wednesday')->startOfDay()->format(self::DATETIME_FORMAT); // Last Wednesday 00:00:00
-            $end_date = Carbon::now()->subDay()->endOfDay()->format(self::DATETIME_FORMAT); // Yesterday 23:59:59
-        } else {
-            // Throw Error
-            $day = Carbon::now()->englishDayOfWeek;
-            Log::error("[Cron - eGHL Settlement] Shouldn't run settlement today, {$day}.");
-            return 0;
         }
+        // } else if(Carbon::now()->englishDayOfWeek === 'Wednesday') {
+        //     $start_date = Carbon::parse('last Friday')->startOfDay()->format(self::DATETIME_FORMAT); // Last Friday 00:00:00
+        //     $end_date = Carbon::now()->subDay()->endOfDay()->format(self::DATETIME_FORMAT); // Yesterday 23:59:59
+        // } else if (Carbon::now()->englishDayOfWeek === 'Friday') {
+        //     $start_date = Carbon::parse('last Wednesday')->startOfDay()->format(self::DATETIME_FORMAT); // Last Wednesday 00:00:00
+        //     $end_date = Carbon::now()->subDay()->endOfDay()->format(self::DATETIME_FORMAT); // Yesterday 23:59:59
+        // } else {
+        //     // Throw Error
+        //     $day = Carbon::now()->englishDayOfWeek;
+        //     Log::error("[Cron - eGHL Settlement] Shouldn't run settlement today, {$day}.");
+        //     return 0;
+        // }
 
         try {
             $records = Insurance::with(['product'])
