@@ -907,6 +907,7 @@ class AmGeneral implements InsurerLibraryInterface
 			"paymentAmount"=>$input->payment_amount,
 			"payBy"=> '',
 			"bankApprovalCode"=>$eghl_log->bank_reference,
+			'header'=>$add_quote->header,
 		];
 
 		$covernote = $this->GetCovernoteSubmission($cn_data);
