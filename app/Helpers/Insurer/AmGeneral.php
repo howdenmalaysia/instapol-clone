@@ -108,7 +108,7 @@ class AmGeneral implements InsurerLibraryInterface
 				$this->scopeOfCover = 'COMP PLUS';
 			}
 			else if($input->product_id == 2){
-				$this->scopeOfCover = 'ÇOMP PREM';
+				$this->scopeOfCover = 'COMP PREM';
 			}
 		}
 
@@ -345,10 +345,10 @@ class AmGeneral implements InsurerLibraryInterface
 		//chceking product id for scope
 		if(isset($input->product_id)){
 			if($input->product_id == 1){
-				$this->scopeOfCover = 'ÇOMP PLUS';
+				$this->scopeOfCover = 'COMP PLUS';
 			}
 			else if($input->product_id == 2){
-				$this->scopeOfCover = 'ÇOMP PREM';
+				$this->scopeOfCover = 'COMP PREM';
 			}
 		}
 
@@ -740,10 +740,10 @@ class AmGeneral implements InsurerLibraryInterface
 		//chceking product id for scope
 		if(isset($input->product_id)){
 			if($input->product_id == 1){
-				$this->scopeOfCover = 'ÇOMP PLUS';
+				$this->scopeOfCover = 'COMP PLUS';
 			}
 			else if($input->product_id == 2){
-				$this->scopeOfCover = 'ÇOMP PREM';
+				$this->scopeOfCover = 'COMP PREM';
 			}
 		}
 		// Get Extra Attribute
@@ -874,7 +874,7 @@ class AmGeneral implements InsurerLibraryInterface
 			"vehicleKeptAddress4"=> isset($address_set[3]) ? $address_set[3] : '',
 			"insuredPostCode"=>$input->insurance->address->postcode ?? $input->postcode,
 			"vehiclePostCode"=>$input->insurance->address->postcode ?? $input->postcode,
-			"mobileNo"=>$input->insurance->holder->phone_number ?? $input->phone_number,
+			"mobileNo"=> $input->insurance->holder->phone_code . ($input->insurance->holder->phone_number ?? $input->phone_number),
 			"emailId"=>$input->insurance->holder->email_address ?? $input->email,
 			"garagedCode"=>'01',
 			"safetyCode"=>'99',
@@ -936,10 +936,10 @@ class AmGeneral implements InsurerLibraryInterface
 		//chceking product id for scope
 		if(isset($input->product_id)){
 			if($input->product_id == 1){
-				$this->scopeOfCover = 'ÇOMP PLUS';
+				$this->scopeOfCover = 'COMP PLUS';
 			}
 			else if($input->product_id == 2){
-				$this->scopeOfCover = 'ÇOMP PREM';
+				$this->scopeOfCover = 'COMP PREM';
 			}
 		}
 		
