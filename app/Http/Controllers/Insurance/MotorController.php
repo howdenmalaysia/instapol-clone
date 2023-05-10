@@ -163,6 +163,10 @@ class MotorController extends Controller
             }
         }
 
+        // Update Quotation Flag
+        Quotation::where('id', $session->quotation_id)
+            ->update(['compare_page' => 1]);
+
         $products = Product::with(['insurance_company', 'benefits'])->get();
 
         return view('frontend.motor.compare')->with(['products' => $products]);

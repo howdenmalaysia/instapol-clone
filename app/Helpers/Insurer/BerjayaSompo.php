@@ -172,7 +172,7 @@ class BerjayaSompo implements InsurerLibraryInterface
         $pa = null;
 
         if ($full_quote) {
-            $vehicle_vix = $this->vehicleDetails($input);
+            /* $vehicle_vix = $this->vehicleDetails($input);
 
             if (!$vehicle_vix->status) {
                 return $this->abort($vehicle_vix->response, $vehicle_vix->code);
@@ -195,29 +195,29 @@ class BerjayaSompo implements InsurerLibraryInterface
 
             if (empty($selected_variant)) {
                 return $this->abort(trans('api.variant_not_match'));
-            }
+            } */
 
             // set vehicle
             $vehicle = new Vehicle([
-                'make' => $vehicle_vix->response->make,
-                'model' => $vehicle_vix->response->model,
-                'nvic' => $selected_variant->nvic,
-                'variant' => $selected_variant->variant,
-                'engine_capacity' => $vehicle_vix->response->engine_capacity,
-                'manufacture_year' => $vehicle_vix->response->manufacture_year,
-                'ncd_percentage' => $vehicle_vix->response->ncd_percentage,
-                'coverage' => $vehicle_vix->response->coverage,
-                'inception_date' => Carbon::createFromFormat('d M Y', $vehicle_vix->response->inception_date)->format('Y-m-d'),
-                'expiry_date' => Carbon::createFromFormat('d M Y', $vehicle_vix->response->expiry_date)->format('Y-m-d'),
-                'sum_insured_type' => $vehicle_vix->response->sum_insured_type,
-                'sum_insured' => $vehicle_vix->response->sum_insured,
-                'min_sum_insured' => $vehicle_vix->response->min_sum_insured,
-                'max_sum_insured' => $vehicle_vix->response->max_sum_insured,
+                'make' => $input->vehicle->make,
+                'model' => $input->vehicle->model,
+                'nvic' => $input->nvic,
+                'variant' => $input->vehicle->variant,
+                'engine_capacity' => $input->vehicle->engine_capacity,
+                'manufacture_year' => $input->vehicle->manufacture_year,
+                'ncd_percentage' => $input->vehicle->ncd_percentage,
+                'coverage' => $input->vehicle->coverage,
+                'inception_date' => date('d M Y', strtotime($input->vehicle->inception_date)),
+                'expiry_date' => date('d M Y', strtotime($input->vehicle->expiry_date)),
+                'sum_insured_type' => $input->vehicle->sum_insured_type,
+                'sum_insured' => $input->vehicle->sum_insured,
+                'min_sum_insured' => $input->vehicle->min_sum_insured,
+                'max_sum_insured' => $input->vehicle->max_sum_insured,
                 'extra_attribute' => (object) [
-                    'chassis_number' => $vehicle_vix->response->chassis_number,
-                    'cover_type' => $vehicle_vix->response->cover_type,
-                    'engine_number' => $vehicle_vix->response->engine_number,
-                    'seating_capacity' => $vehicle_vix->response->seating_capacity,
+                    'chassis_number' => $input->vehicle->extra_attribute->chassis_number,
+                    'cover_type' => $input->vehicle->extra_attribute->cover_type,
+                    'engine_number' => $input->vehicle->extra_attribute->engine_number,
+                    'seating_capacity' => $input->vehicle->extra_attribute->seating_capacity,
                 ],
             ]);
 

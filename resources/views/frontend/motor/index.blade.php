@@ -71,7 +71,7 @@
                                                         >
                                                         <span id="vehicle-number-errors"></span>
                                                     </div>
-                                                    <div class="col-3 col-md-1">
+                                                    <div class="col-3 col-md-1 ps-0 ps-md-3">
                                                         <button type="button" id="vehicle-no-continue" class="btn btn-primary text-white rounded-circle px-3 py-2">
                                                             <i class="fa-solid fa-play align-middle"></i>
                                                         </button>

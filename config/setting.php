@@ -50,7 +50,12 @@ return [
         'short_code' => env('HOWDEN_SHORT_CODE'),
         'affinity_team_email' => empty(env('AFFINITY_TEAM_EMAIL')) ? [] : explode(',', env('AFFINITY_TEAM_EMAIL')),
         'email_cc_list' => empty(env('EMAIL_CC_LIST')) ? [] : explode(',', env('EMAIL_CC_LIST')),
-        'it_dev_mail' => empty(env('HOWDEN_IT_DEV_MAIL')) ? [] : explode(',', env('HOWDEN_IT_DEV_MAIL'))
+        'it_dev_mail' => empty(env('HOWDEN_IT_DEV_MAIL')) ? [] : explode(',', env('HOWDEN_IT_DEV_MAIL')),
+        'contact_list' => [
+            'jeffery_chan' => 'jeffreycw.chan@my.howdengroup.com',
+            'phoebie_wong' => 'phoebie.wong@my.howdengroup.com',
+            'cheng_lai_fah' => 'laifah.cheng@my.howdengroup.com'
+        ]
     ],
     'payment' => [
         'gateway' => [
@@ -66,9 +71,12 @@ return [
         'howden' => [
             'bank_code' => 'CIMB Bank Berhad',
             'bank_account_no' => '8000283395',
-            'email_to' => 'luke.chai@my.howdengroup.com',
-            'email_cc' => 'affinitydept@my.howdengroup.com,fazira.husin@my.howdengroup.com,rachel.lee@my.howdengroup.com,sitisuhaila.baharuddin@my.howdengroup.com',
+            'email_to' => empty(env('HOWDEN_INTERNAL')) ? [] : explode(',', env('HOWDEN_INTERNAL')),
+            'email_cc' => empty(env('HOWDEN_INTERNAL_CC')) ? [] : explode(',', env('HOWDEN_INTERNAL_CC')),
         ],
-        'eghl' => empty(env('EGHL_SETTLEMENT')) ? [] : explode(',', env('EGHL_SETTLEMENT'))
+        'eghl' => [
+            'to' => empty(env('EGHL_SETTLEMENT')) ? [] : explode(',', env('EGHL_SETTLEMENT')),
+            'cc' => empty(env('EGHL_SETTLEMENT_CC')) ? [] : explode(',', env('EGHL_SETTLEMENT_CC'))
+        ]
     ]
 ];

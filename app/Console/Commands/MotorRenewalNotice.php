@@ -67,7 +67,7 @@ class MotorRenewalNotice extends Command
                 })
                 ->whereIn('insurance_status', [Insurance::STATUS_PAYMENT_ACCEPTED, Insurance::STATUS_POLICY_ISSUED])
                 ->get();
-    
+
             if(count($insurance) > 0) {
                 $insurance->map(function($_ins) use($log, $rows) {
                     // Generate query strings
@@ -77,7 +77,7 @@ class MotorRenewalNotice extends Command
 
                     $tag = '';
                     $iv = strtotime('now');
-        
+
                     $query_param = '?p=' . base64_encode(openssl_encrypt($details, 'aes-256-gcm', 'Fr0mR3n3w@lN0TiC3', 0, $iv, $tag)) . '&t=' . base64_encode($iv . '::' . $tag);
 
                     $data = (object) [
@@ -98,14 +98,14 @@ class MotorRenewalNotice extends Command
                 });
             } else {
                 Log::info("[Motor Renewal Notice] None of the insurance records expires in [{$first}, {$second}, {$third}]");
-                
+
                 CronJobs::where('id', $log->id)
                     ->update([
                         'status' => CronJobs::STATUS_COMPLETED
                     ]);
             }
         } catch (Exception $ex) {
-            Log::error("[Motor Renewal Notice] An Error Encountered. {$ex->getMessage()}");
+            Log::error("[Motor Renewal Notice] An Error Encountered. [{$ex->getMessage()}] \n" . $ex);
 
             CronJobs::where('id', $log->id)
                 ->update([
