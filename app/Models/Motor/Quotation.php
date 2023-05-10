@@ -23,4 +23,9 @@ class Quotation extends Model
         'compare_page',
         'updated_at',
     ];
+
+    public function insurance_motor()
+    {
+        return $this->hasOne(InsuranceMotor::class, 'vehicle_number', 'vehicle_number');
+    }
 }

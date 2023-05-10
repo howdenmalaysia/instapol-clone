@@ -7,23 +7,22 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class EGHLSettlementMail extends Mailable
+class DropOffReportMail extends Mailable
 {
     use Queueable, SerializesModels;
-    public $attachment;
-    public $start_date;
-    public $end_date;
+
+    protected $attachment;
+    protected $batch;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct(string $path, string $start_date, string $end_date)
+    public function __construct(string $path, string $batch)
     {
         $this->attachment = $path;
-        $this->start_date = $start_date;
-        $this->end_date = $end_date;
+        $this->batch = $batch;
     }
 
     /**
@@ -33,8 +32,9 @@ class EGHLSettlementMail extends Mailable
      */
     public function build()
     {
-        return $this->subject((app()->environment('local', 'development') ? '[Dev] ' : '') .  "[eGHL-Howden] Settlement for {$this->start_date} to {$this->end_date}")
-            ->view('backend.emails.eghl_settlement')
+        return $this->subject((app()->environment('local', 'development') ? '[Dev] ' : '') .  "Hourly Drop-off Report for {$this->batch}")
+            ->view('backend.emails.drop_off_report')
+            ->with(['batch' => $this->batch])
             ->attachFromStorage($this->attachment);
     }
 }
