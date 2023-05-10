@@ -874,7 +874,7 @@ class AmGeneral implements InsurerLibraryInterface
 			"vehicleKeptAddress4"=> isset($address_set[3]) ? $address_set[3] : '',
 			"insuredPostCode"=>$input->insurance->address->postcode ?? $input->postcode,
 			"vehiclePostCode"=>$input->insurance->address->postcode ?? $input->postcode,
-			"mobileNo"=> $input->insurance->holder->phone_code . ($input->insurance->holder->phone_number ?? $input->phone_number),
+			"mobileNo"=> '0' . ($input->insurance->holder->phone_number ?? $input->phone_number),
 			"emailId"=>$input->insurance->holder->email_address ?? $input->email,
 			"garagedCode"=>'01',
 			"safetyCode"=>'99',
