@@ -49,7 +49,7 @@ class AmGeneral implements InsurerLibraryInterface
 	
 	private object $master_data;
 	private string $encrypt_method = "AES-256-CBC";
-	private string $scopeOfCover = "COMP PREM";
+	private string $scopeOfCover;
     private const MIN_SUM_INSURED = 10000;
     private const MAX_SUM_INSURED = 500000;
     private const ADJUSTMENT_RATE_UP = 10;
@@ -63,6 +63,7 @@ class AmGeneral implements InsurerLibraryInterface
     {
         $this->company_id = $insurer_id;
         $this->company_name = $insurer_name;
+		$this->scopeOfCover = 'COMP PLUS';
 
 		$this->client_id = config('insurer.config.am_config.client_id');
 		$this->client_secret = config('insurer.config.am_config.client_secret');
@@ -101,6 +102,16 @@ class AmGeneral implements InsurerLibraryInterface
 
     public function vehicleDetails(object $input) : object
     {
+		//chceking product id for scope
+		if(isset($input->product_id)){
+			if($input->product_id == 1){
+				$this->scopeOfCover = 'COMP PLUS';
+			}
+			else if($input->product_id == 2){
+				$this->scopeOfCover = 'ÇOMP PREM';
+			}
+		}
+
 		$vix = $this->Q_GetProductList($input);
         if(!$vix->status && is_string($vix->response)) {
             return $this->abort($vix->response);
@@ -331,6 +342,15 @@ class AmGeneral implements InsurerLibraryInterface
 		$vehicle = $input->vehicle ?? null;
         $ncd_amount = $basic_premium = $total_benefit_amount = $gross_premium = $sst_percent = $sst_amount = $stamp_duty = $excess_amount = $total_payable = 0;
         $pa = null;
+		//chceking product id for scope
+		if(isset($input->product_id)){
+			if($input->product_id == 1){
+				$this->scopeOfCover = 'ÇOMP PLUS';
+			}
+			else if($input->product_id == 2){
+				$this->scopeOfCover = 'ÇOMP PREM';
+			}
+		}
 
 		if($input->id_type == '1'){
 			$dobs = str_split($input->id_number, 2);
@@ -717,6 +737,15 @@ class AmGeneral implements InsurerLibraryInterface
 
     public function submission(object $input) : object
     {
+		//chceking product id for scope
+		if(isset($input->product_id)){
+			if($input->product_id == 1){
+				$this->scopeOfCover = 'ÇOMP PLUS';
+			}
+			else if($input->product_id == 2){
+				$this->scopeOfCover = 'ÇOMP PREM';
+			}
+		}
 		// Get Extra Attribute
         $extra_attribute = json_decode($input->insurance->extra_attribute->value);
 
@@ -904,6 +933,16 @@ class AmGeneral implements InsurerLibraryInterface
 	
     public function quotation(object $input) : object
     {
+		//chceking product id for scope
+		if(isset($input->product_id)){
+			if($input->product_id == 1){
+				$this->scopeOfCover = 'ÇOMP PLUS';
+			}
+			else if($input->product_id == 2){
+				$this->scopeOfCover = 'ÇOMP PREM';
+			}
+		}
+		
         $data = (object) [
             'vehicle_number' => $input->vehicle_number,
             'id_type' => $input->id_type,

@@ -776,6 +776,11 @@ class MotorAPIController extends Controller implements MotorAPIInterface
         $insurer = Product::findOrFail($product_id)->insurance_company;
 
         switch($product_id) {
+            case 1:{
+                return new AmGeneral($insurer->id, $insurer->name);
+
+                break;
+            }
             case 2:{
                 return new AmGeneral($insurer->id, $insurer->name);
 
