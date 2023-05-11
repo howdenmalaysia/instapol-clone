@@ -9,17 +9,19 @@ class ImageCarousel extends Component
     public $id;
     public $interval;
     public $images;
+    public $mobile;
 
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct(string $id, string $interval = '5000', array $images)
+    public function __construct(string $id, string $interval = '5000', array $images, array $mobile)
     {
         $this->id = $id;
         $this->interval = $interval;
         $this->images = $images;
+        $this->mobile = $mobile;
     }
 
     /**

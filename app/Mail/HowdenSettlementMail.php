@@ -32,7 +32,7 @@ class HowdenSettlementMail extends Mailable
      */
     public function build()
     {
-        $mail = $this->subject((app()->environment('local', 'development') ? '[Dev] ' : '') .  "[instaPol] Settlement Details for {$this->data['start_date']}")
+        $mail = $this->subject((app()->environment('local', 'development') ? '[Dev] ' : '') .  "[instaPol] Settlement Details for {$this->data['start_date']} to {$this->data['end_date']}")
         ->view('backend.emails.howden_settlement', $this->data);
 
         foreach($this->files as $file) {
