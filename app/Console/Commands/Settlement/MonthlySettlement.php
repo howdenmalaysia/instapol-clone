@@ -53,7 +53,7 @@ class MonthlySettlement extends Command
     public function handle()
     {
         Log::info("[Cron - Monthly Settlement] Start Generating Reports.");
-        
+
         $start_date = $end_date = Carbon::now()->format(self::DATE_FORMAT);
         if(!empty($this->argument('start_date')) && !empty($this->argument('end_date'))) {
             $start_date = Carbon::parse($this->argument('start_date'))->format(self::DATE_FORMAT);
@@ -82,11 +82,11 @@ class MonthlySettlement extends Command
                 ->whereIn('insurance_status', [Insurance::STATUS_PAYMENT_ACCEPTED, Insurance::STATUS_POLICY_ISSUED])
                 ->get()
                 ->groupBy('product_id');
-    
+
             if(empty($records)) {
                 throw new Exception('No Eligible Records Found!');
             }
-    
+
             $rows = $total_commission = $total_eservice_fee = $total_sst = $total_payment_gateway_charges = $total_premium = $total_outstanding = 0;
             $row_data = $details = [];
 
@@ -104,7 +104,7 @@ class MonthlySettlement extends Command
                 $insurer_net_transfer = 0;
                 $product = Product::with(['insurance_company'])
                     ->findOrFail($product_id);
-    
+
                 $insurances->map(function($insurance) use(
                     $product,
                     &$rows,
@@ -123,14 +123,14 @@ class MonthlySettlement extends Command
                         ])
                         ->where('insurance_id', $insurance->id)
                         ->first();
-                    
+
                     $discount_amount = 0;
                     $discount_target = '';
                     if(!empty($insurance->promo)) {
                         $discount_amount = $insurance->promo->discount_amoumt;
                         $total_discount += $discount_amount;
                     }
-    
+
                     $roadtax_premium = 0;
                     if(!empty($insurance_motor->roadtax)) {
                         $roadtax_premium = floatval($insurance_motor->roadtax->roadtax_renewal_fee) +
@@ -140,7 +140,7 @@ class MonthlySettlement extends Command
 
                         $total_eservice_fee += $insurance_motor->roadtax->e_service_fee;
                     }
-    
+
                     $eghl_log = EGHLLog::where('payment_id', 'LIKE', '%' . $insurance->code . '%')
                         ->where('txn_status', 0)
                         ->latest()
@@ -230,7 +230,7 @@ class MonthlySettlement extends Command
                             !empty($insurance->promo) ? $insurance->promo->promo->code : ''
                         ];
                     }
-    
+
                     $rows++;
                 });
 
@@ -266,10 +266,19 @@ class MonthlySettlement extends Command
                 'details' => $details
             ];
 
-            Mail::to(explode(',', config('setting.settlement.howden.email_to')))
-                ->cc(explode(',', config('setting.settlement.howden.email_cc')))
+            Mail::to(config('setting.settlement.howden.email_to'))
+                ->cc(config('setting.settlement.howden.email_cc'))
                 ->bcc(config('setting.howden.it_dev_mail'))
                 ->send(new HowdenSettlementMail($filenames, $data));
+
+            CronJobs::create([
+                'description' => 'Send Monthly Settlement Report to Howden',
+                'param' => json_encode([
+                    'start_date' => $start_date,
+                    'end_date' => $end_date,
+                ]),
+                'status' => CronJobs::STATUS_COMPLETED
+            ]);
 
             Log::info("[Cron - Howden Internal Settlement] {$rows} records processed. [{$start_date} to {$end_date}]");
 
