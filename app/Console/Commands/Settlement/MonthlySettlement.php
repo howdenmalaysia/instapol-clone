@@ -11,7 +11,6 @@ use App\Models\Motor\InsuranceMotor;
 use App\Models\Motor\Product;
 use App\Models\Promotion;
 use Carbon\Carbon;
-use COM;
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
@@ -291,15 +290,15 @@ class MonthlySettlement extends Command
                 'details' => $details
             ];
 
-            // Mail::to(explode(',', config('setting.settlement.howden.email_to')))
-            //     ->cc(explode(',', config('setting.settlement.howden.email_cc')))
-            //     ->bcc(config('setting.howden.it_dev_mail'))
-            //     ->send(new HowdenSettlementMail($filenames, $data));
-
-            Mail::to('davidchoy98@gmail.com')
-                // ->cc(explode(',', config('setting.settlement.howden.email_cc')))
-                // ->bcc(config('setting.howden.it_dev_mail'))
+            Mail::to(config('setting.settlement.howden.email_to'))
+                ->cc(config('setting.settlement.howden.email_cc'))
+                ->bcc(config('setting.howden.it_dev_mail'))
                 ->send(new HowdenSettlementMail($filenames, $data));
+
+            // Mail::to('davidchoy98@gmail.com')
+            //     // ->cc(explode(',', config('setting.settlement.howden.email_cc')))
+            //     // ->bcc(config('setting.howden.it_dev_mail'))
+            //     ->send(new HowdenSettlementMail($filenames, $data));
 
             CronJobs::create([
                 'description' => 'Send Monthly Settlement Report to Howden',
