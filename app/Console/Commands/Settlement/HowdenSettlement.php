@@ -61,18 +61,6 @@ class HowdenSettlement extends Command
             $start_date = Carbon::parse($this->argument('start_date'))->startOfDay()->format(self::DATETIME_FORMAT);
             $end_date = Carbon::parse($this->argument('end_date'))->endOfDay()->format(self::DATETIME_FORMAT);
         }
-        // } else if(Carbon::now()->englishDayOfWeek === 'Wednesday') {
-        //     $start_date = Carbon::parse('last Friday')->startOfDay()->format(self::DATETIME_FORMAT); // Last Friday 00:00:00
-        //     $end_date = Carbon::now()->subDay()->endOfDay()->format(self::DATETIME_FORMAT); // Yesterday 23:59:59
-        // } else if (Carbon::now()->englishDayOfWeek === 'Friday') {
-        //     $start_date = Carbon::parse('last Wednesday')->startOfDay()->format(self::DATETIME_FORMAT); // Last Wednesday 00:00:00
-        //     $end_date = Carbon::now()->subDay()->endOfDay()->format(self::DATETIME_FORMAT); // Yesterday 23:59:59
-        // } else {
-        //     // Throw Error
-        //     $day = Carbon::now()->englishDayOfWeek;
-        //     Log::error("[Cron - eGHL Settlement] Shouldn't run settlement today, {$day}.");
-        //     return 0;
-        // }
 
         try {
             $records = Insurance::with([
@@ -172,7 +160,7 @@ class HowdenSettlement extends Command
                     $gateway_charges = getGatewayCharges($insurance->amount, $eghl_log->service_id, $eghl_log->payment_method);
                     $total_payment_gateway_charges += $gateway_charges;
                     $total_commission += $commission;
-
+                    Log::info('[GetLog] Received Request: ' . json_encode($insurance));
                     if(array_key_exists($product->id, $row_data)) {
                         array_push($row_data[$product->id], [
                             $start_date,
@@ -263,7 +251,7 @@ class HowdenSettlement extends Command
                 ]);
             });
 
-            $start_date = Carbon::parse($start_date)->format(self::DATE_FORMAT);
+            $start = Carbon::parse($start_date)->format(self::DATE_FORMAT);
 
             $filenames = [];
             foreach($row_data as $product_id => $values) {
@@ -277,7 +265,8 @@ class HowdenSettlement extends Command
             }
 
             $data = [
-                'start_date' => $start_date,
+                'start_date' => $start,
+                'end_date' => Carbon::parse($end_date)->format(self::DATE_FORMAT),
                 'total_commission' => $total_commission,
                 'total_eservice_fee' => $total_eservice_fee,
                 'total_sst' => $total_sst,
