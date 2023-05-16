@@ -279,8 +279,8 @@ class HowdenSettlement extends Command
                 'details' => $details
             ];
 
-            Mail::to(explode(',', config('setting.settlement.howden.email_to')))
-                ->cc(explode(',', config('setting.settlement.howden.email_cc')))
+            Mail::to(config('setting.settlement.howden.email_to'))
+                ->cc(config('setting.settlement.howden.email_cc'))
                 ->bcc(config('setting.howden.it_dev_mail'))
                 ->send(new HowdenSettlementMail($filenames, $data));
 
