@@ -172,8 +172,8 @@ class MonthlySettlement extends Command
                     if(array_key_exists($product->id, $row_data)) {
                         array_push($row_data[$product->id], [
                             $start_date,
-                            $insurance->id,
-                            $product->insurance_company->name,
+                            $insurance->insurance_code,
+                            $product->name,
                             $insurance->created_at->format(self::DATE_FORMAT),
                             $insurance->inception_date,
                             $insurance->policy_number ?? $insurance->cover_note_number ?? $insurance->contract_number,
@@ -197,8 +197,6 @@ class MonthlySettlement extends Command
                             $insurance_motor->roadtax->e_service_fee ?? '',
                             $insurance_motor->roadtax->service_tax ?? '',
                             $roadtax_premium,
-                            $insurance_motor->roadtax->e_service_fee ?? '',
-                            $insurance_motor->roadtax->service_tax ?? '',
                             number_format($insurance->amount, 2),
                             $eghl_log->service_id === 'CBI' ? $gateway_charges : '',
                             $eghl_log->payment_method === 'CC' ? $gateway_charges : '',
@@ -213,8 +211,8 @@ class MonthlySettlement extends Command
                     } else {
                         $row_data[$product->id][] = [
                             $start_date,
-                            $insurance->id,
-                            $product->insurance_company->name,
+                            $insurance->insurance_code,
+                            $product->name,
                             $insurance->created_at->format(self::DATE_FORMAT),
                             $insurance->inception_date,
                             $insurance->policy_number ?? $insurance->cover_note_number ?? $insurance->contract_number,
@@ -294,11 +292,6 @@ class MonthlySettlement extends Command
                 ->cc(config('setting.settlement.howden.email_cc'))
                 ->bcc(config('setting.howden.it_dev_mail'))
                 ->send(new HowdenSettlementMail($filenames, $data));
-
-            // Mail::to('davidchoy98@gmail.com')
-            //     // ->cc(explode(',', config('setting.settlement.howden.email_cc')))
-            //     // ->bcc(config('setting.howden.it_dev_mail'))
-            //     ->send(new HowdenSettlementMail($filenames, $data));
 
             CronJobs::create([
                 'description' => 'Send Monthly Settlement Report to Howden',
