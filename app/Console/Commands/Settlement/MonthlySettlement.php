@@ -146,11 +146,8 @@ class MonthlySettlement extends Command
                         ->latest()
                         ->first();
 
-                    if($eghl_log->service_id === 'CBI') {
-                        $total_payment_gateway_charges += number_format($insurance->amount * 0.015, 2);
-                    } else if($eghl_log->service_id === 'CBH') {
-                        $total_payment_gateway_charges += number_format($insurance->amount * 0.018, 2);
-                    }
+                    $gateway_charges = getGatewayCharges($insurance->amount, $eghl_log->service_id, $eghl_log->payment_method);
+                    $total_payment_gateway_charges += $gateway_charges;
 
                     $payable = $insurance->premium->gross_premium + $insurance->premium->service_tax_amount + $insurance->premium->stamp_duty;
                     $commission = $insurance->premium->gross_premium * 0.1;
@@ -164,9 +161,9 @@ class MonthlySettlement extends Command
                     if(array_key_exists($product->id, $row_data)) {
                         array_push($row_data[$product->id], [
                             $start_date,
-                            $insurance->id,
-                            $product->insurance_company->name,
-                            $insurance->updated_at->format(self::DATE_FORMAT),
+                            $insurance->insurance_code,
+                            $product->name,
+                            $insurance->created_at->format(self::DATE_FORMAT),
                             $insurance->inception_date,
                             $insurance->policy_number,
                             $insurance_motor->vehicle_number,
@@ -185,9 +182,11 @@ class MonthlySettlement extends Command
                             '',
                             $insurance_motor->roadtax->e_service_fee ?? '',
                             $insurance_motor->roadtax->service_tax ?? '',
-                            $insurance->amount,
-                            $eghl_log->service_id === 'CBI' ? number_format($insurance->amount * 0.015, 2) : '',
-                            $eghl_log->service_id === 'CBH' ? number_format($insurance->amount * 0.018, 2) : '',
+                            $roadtax_premium,
+                            number_format($insurance->amount, 2),
+                            $eghl_log->service_id === 'CBI' ? $gateway_charges : '',
+                            $eghl_log->payment_method === 'CC' ? $gateway_charges : '',
+                            $eghl_log->payment_method === 'WA' ? $gateway_charges : '',
                             'N/A',
                             ($insurance->amount - $roadtax_premium) * 0.9,
                             ($insurance->amount - $roadtax_premium) * 0.1 + $roadtax_premium,
@@ -198,9 +197,9 @@ class MonthlySettlement extends Command
                     } else {
                         $row_data[$product->id][] = [
                             $start_date,
-                            $insurance->id,
-                            $product->insurance_company->name,
-                            $insurance->updated_at->format(self::DATE_FORMAT),
+                            $insurance->insurance_code,
+                            $product->name,
+                            $insurance->created_at->format(self::DATE_FORMAT),
                             $insurance->inception_date,
                             $insurance->policy_number,
                             $insurance_motor->vehicle_number,
