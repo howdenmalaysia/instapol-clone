@@ -21,6 +21,7 @@ use Maatwebsite\Excel\Facades\Excel;
 class MonthlySettlement extends Command
 {
     const DATE_FORMAT = 'Y-m-d';
+    const DATETIME_FORMAT = 'Y-m-d H:i:s';
 
     /**
      * The name and signature of the console command.
@@ -174,7 +175,7 @@ class MonthlySettlement extends Command
                             $start_date,
                             $insurance->insurance_code,
                             $product->name,
-                            $insurance->created_at->format(self::DATE_FORMAT),
+                            $insurance->created_at->format(self::DATETIME_FORMAT),
                             $insurance->inception_date,
                             $insurance->policy_number ?? $insurance->cover_note_number ?? $insurance->contract_number,
                             $insurance_motor->vehicle_number,
@@ -188,9 +189,9 @@ class MonthlySettlement extends Command
                             number_format($insurance->amount - $roadtax_premium, 2),
                             number_format($net_premium, 2),
                             $commission,
-                            optional(optional($insurance->promo)->promotion)->discount_target === Promotion::DT_TOTALPAYABLE ? $discount_amount : '',
-                            optional(optional($insurance->promo)->promotion)->discount_target === Promotion::DT_GROSS_PREMIUM ? $discount_amount : '',
-                            optional(optional($insurance->promo)->promotion)->discount_target === Promotion::DT_ROADTAX ? $discount_amount : '',
+                            !empty($insurance->promo) && $insurance->promo->promotion->discount_target === Promotion::DT_TOTALPAYABLE ? $discount_amount : '',
+                            !empty($insurance->promo) && $insurance->promo->promotion->discount_target === Promotion::DT_GROSS_PREMIUM ? $discount_amount : '',
+                            !empty($insurance->promo) && $insurance->promo->promotion->discount_target === Promotion::DT_ROADTAX ? $discount_amount : '',
                             empty($insurance_motor->roadtax->roadtax_renewal_fee) ? '-' : ($physical ? 'Physical' : 'Digital'),
                             $insurance_motor->roadtax->roadtax_renewal_fee ?? '',
                             $insurance_motor->roadtax->myeg_fee ?? '',
@@ -206,14 +207,14 @@ class MonthlySettlement extends Command
                             number_format($commission + $roadtax_premium - $gateway_charges, 2),
                             $insurance->referrer,
                             Str::afterLast($insurance->holder->email_address, '@'),
-                            !empty($insurance->promo) ? $insurance->promo->promo->code : ''
+                            !empty($insurance->promo) ? $insurance->promo->promotion->code : ''
                         ]);
                     } else {
                         $row_data[$product->id][] = [
                             $start_date,
                             $insurance->insurance_code,
                             $product->name,
-                            $insurance->created_at->format(self::DATE_FORMAT),
+                            $insurance->created_at->format(self::DATETIME_FORMAT),
                             $insurance->inception_date,
                             $insurance->policy_number ?? $insurance->cover_note_number ?? $insurance->contract_number,
                             $insurance_motor->vehicle_number,
@@ -227,17 +228,15 @@ class MonthlySettlement extends Command
                             number_format($insurance->amount - $roadtax_premium, 2),
                             number_format($net_premium, 2),
                             $commission,
-                            optional(optional($insurance->promo)->promotion)->discount_target === Promotion::DT_TOTALPAYABLE ? $discount_amount : '',
-                            optional(optional($insurance->promo)->promotion)->discount_target === Promotion::DT_GROSS_PREMIUM ? $discount_amount : '',
-                            optional(optional($insurance->promo)->promotion)->discount_target === Promotion::DT_ROADTAX ? $discount_amount : '',
+                            !empty($insurance->promo) && $insurance->promo->promotion->discount_target === Promotion::DT_TOTALPAYABLE ? $discount_amount : '',
+                            !empty($insurance->promo) && $insurance->promo->promotion->discount_target === Promotion::DT_GROSS_PREMIUM ? $discount_amount : '',
+                            !empty($insurance->promo) && $insurance->promo->promotion->discount_target === Promotion::DT_ROADTAX ? $discount_amount : '',
                             empty($insurance_motor->roadtax->roadtax_renewal_fee) ? '-' : ($physical ? 'Physical' : 'Digital'),
                             $insurance_motor->roadtax->roadtax_renewal_fee ?? '',
                             $insurance_motor->roadtax->myeg_fee ?? '',
                             $insurance_motor->roadtax->e_service_fee ?? '',
                             $insurance_motor->roadtax->service_tax ?? '',
                             $roadtax_premium,
-                            $insurance_motor->roadtax->e_service_fee ?? '',
-                            $insurance_motor->roadtax->service_tax ?? '',
                             number_format($insurance->amount, 2),
                             $eghl_log->service_id === 'CBI' ? $gateway_charges : '',
                             $eghl_log->payment_method === 'CC' ? $gateway_charges : '',
@@ -247,7 +246,7 @@ class MonthlySettlement extends Command
                             number_format($commission + $roadtax_premium - $gateway_charges, 2),
                             $insurance->referrer,
                             Str::afterLast($insurance->holder->email_address, '@'),
-                            !empty($insurance->promo) ? $insurance->promo->promo->code : ''
+                            !empty($insurance->promo) ? $insurance->promo->promotion->code : ''
                         ];
                     }
 
