@@ -59,18 +59,19 @@ class InsurerSettlement extends Command
         if(!empty($this->argument('start_date')) && !empty($this->argument('end_date'))) {
             $start_date = Carbon::parse($this->argument('start_date'))->startOfDay()->format(self::DATETIME_FORMAT);
             $end_date = Carbon::parse($this->argument('end_date'))->endOfDay()->format(self::DATETIME_FORMAT);
-        } else if(Carbon::now()->englishDayOfWeek === 'Wednesday') {
-            $start_date = Carbon::parse('last Friday')->startOfDay()->format(self::DATETIME_FORMAT); // Last Friday 00:00:00
-            $end_date = Carbon::now()->subDay()->endOfDay()->format(self::DATETIME_FORMAT); // Yesterday 23:59:59
-        } else if (Carbon::now()->englishDayOfWeek === 'Friday') {
-            $start_date = Carbon::parse('last Wednesday')->startOfDay()->format(self::DATETIME_FORMAT); // Last Wednesday 00:00:00
-            $end_date = Carbon::now()->subDay()->endOfDay()->format(self::DATETIME_FORMAT); // Yesterday 23:59:59
-        } else {
-            // Throw Error
-            $day = Carbon::now()->englishDayOfWeek;
-            Log::error("[Cron - Insurer Settlement] Shouldn't run settlement today, {$day}.");
-            return;
         }
+        // } else if(Carbon::now()->englishDayOfWeek === 'Wednesday') {
+        //     $start_date = Carbon::parse('last Friday')->startOfDay()->format(self::DATETIME_FORMAT); // Last Friday 00:00:00
+        //     $end_date = Carbon::now()->subDay()->endOfDay()->format(self::DATETIME_FORMAT); // Yesterday 23:59:59
+        // } else if (Carbon::now()->englishDayOfWeek === 'Friday') {
+        //     $start_date = Carbon::parse('last Wednesday')->startOfDay()->format(self::DATETIME_FORMAT); // Last Wednesday 00:00:00
+        //     $end_date = Carbon::now()->subDay()->endOfDay()->format(self::DATETIME_FORMAT); // Yesterday 23:59:59
+        // } else {
+        //     // Throw Error
+        //     $day = Carbon::now()->englishDayOfWeek;
+        //     Log::error("[Cron - Insurer Settlement] Shouldn't run settlement today, {$day}.");
+        //     return;
+        // }
 
         try {
             $records = Insurance::with([
@@ -79,27 +80,16 @@ class InsurerSettlement extends Command
                     'promo',
                     'premium'
                 ])
-                ->whereBetween('updated_at', [$start_date, $end_date])
+                ->where(function($query) use($start_date, $end_date) {
+                    $query->whereBetween('created_at', [$start_date, $end_date])
+                        ->orWhereBetween('updated_at', [$start_date, $end_date]);
+                })
                 ->whereIn('insurance_status', [Insurance::STATUS_PAYMENT_ACCEPTED, Insurance::STATUS_POLICY_ISSUED])
                 ->get()
                 ->groupBy('product_id');
 
             if(empty($records)) {
-                $message = 'No Eligible Records Found!';
-
-                Log::error("[Cron - Insurer Settlement] {$message}.");
-
-                CronJobs::create([
-                    'description' => 'Send Settlement Report to Insurers',
-                    'param' => json_encode([
-                        'start_date' => $start_date,
-                        'end_date' => $end_date
-                    ]),
-                    'status' => CronJobs::STATUS_FAILED,
-                    'error_message' => $message
-                ]);
-
-                return;
+                throw new Exception('No Eligible Records Found!');
             }
 
             $rows = 0;
@@ -162,9 +152,9 @@ class InsurerSettlement extends Command
                     if(array_key_exists($product->id, $row_data)) {
                         array_push($row_data[$product->id], [
                             $insurance->id,
-                            $insurance->updated_at->format(self::DATETIME_FORMAT),
+                            $insurance->created_at->format(self::DATETIME_FORMAT),
                             $insurance->inception_date,
-                            $insurance->policy_number,
+                            $insurance->policy_number ?? $insurance->cover_note_number ?? $insurance->contract_number,
                             $insurance_motor->vehicle_number,
                             $insurance->holder->name,
                             $insurance->premium->gross_premium,
@@ -177,9 +167,9 @@ class InsurerSettlement extends Command
                     } else {
                         $row_data[$product->id][] = [
                             $insurance->id,
-                            $insurance->updated_at->format(self::DATETIME_FORMAT),
+                            $insurance->created_at->format(self::DATETIME_FORMAT),
                             $insurance->inception_date,
-                            $insurance->policy_number,
+                            $insurance->policy_number ?? $insurance->cover_note_number ?? $insurance->contract_number,
                             $insurance_motor->vehicle_number,
                             $insurance->holder->name,
                             $insurance->premium->gross_premium,
@@ -228,9 +218,8 @@ class InsurerSettlement extends Command
 
                 Log::info("[Cron - Insurer Settlement] Sending Settlement Report to {$product->insurance_company->name} [{$product->insurance_company->email_to},{$product->insurance_company->email_cc}]");
 
-
-                Mail::to(explode(',', $product->insurance_company_email_to))
-                    ->cc(explode(',', $product->insurance_company->email_cc . ',' . config('setting.howden.affinity_team_email')))
+                Mail::to(explode(',', $product->insurance_company->email_to))
+                    ->cc(array_merge(explode(',', $product->insurance_company->email_cc), config('setting.howden.affinity_team_email')))
                     ->bcc(config('setting.howden.it_dev_mail'))
                     ->send(new InsurerSettlementMail($filenames, $data));
 

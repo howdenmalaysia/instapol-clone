@@ -31,7 +31,7 @@ class EGHLSettlementMail extends Mailable
      */
     public function build()
     {
-        return $this->subject((app()->environment('local', 'development') ? '[Dev] ' : '') .  "[eGHL-Howden] Settlement for {$this->start_date}")
+        return $this->subject((app()->environment('local', 'development') ? '[Dev] ' : '') .  "[eGHL-Howden] Settlement for {$this->start_date} to {$this->end_date}")
             ->view('backend.emails.eghl_settlement')
             ->attachFromStorage($this->attachment);
     }
