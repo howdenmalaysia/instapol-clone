@@ -177,12 +177,11 @@ class EGHLSettlement extends Command
             $filename = "eghl_settlement_{$start_date}.xlsx";
             Excel::store(new EGHLReportExport($row_data), $filename);
 
+            $empty = floatval($total_commissions + $total_roadtax - $total_gateway_charges) === 0.00;
             Mail::to(config('setting.settlement.eghl.to'))
                 ->cc(array_merge(config('setting.settlement.eghl.cc'), config('setting.howden.affinity_team_email')))
                 ->bcc(config('setting.howden.it_dev_mail'))
-                ->send(new EGHLSettlementMail($filename, $start_date, $end_date));
-            $empty = $total_commissions + $total_roadtax - $total_gateway_charges == 0;
-            $empty = floatval($total_commissions + $total_roadtax - $total_gateway_charges) === 0.00;
+                ->send(new EGHLSettlementMail($filename, $start_date, $empty));
 
             CronJobs::create([
                 'description' => 'Send Settlement Report to eGHL',
