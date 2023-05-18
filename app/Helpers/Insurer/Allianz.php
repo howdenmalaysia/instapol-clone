@@ -18,7 +18,7 @@ use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Log;
+use App\Models\EGHLLog;
 
 class Allianz implements InsurerLibraryInterface
 {
@@ -74,10 +74,22 @@ class Allianz implements InsurerLibraryInterface
             'postcode' => $input->postcode
         ];
         $vix = $this->getVIXNCD($data);
-
         if(!$vix->status && is_string($vix->response)) {
             return $this->abort($vix->response);
         }
+        //checking blacklisted car
+        if(isset($vix->response->UBBStatus)){
+            if($vix->response->UBBStatus->ReferRiskList[0]->ReferCode  == "RP007"){
+                return $this->abort(__('api.allianz_error'), config('setting.response_codes.blacklisted_vehicle'));
+            }
+            else{
+                return $this->abort(json_encode($vix->response->UBBStatus));
+            }
+        }
+        if(isset($vix->response->errors)){
+            return $this->abort(json_encode($vix->response->errors));
+        }
+
         if(empty($vix->response->nvicList)){
             return $this->abort('Empty nvicList!');
         }
@@ -1016,6 +1028,12 @@ class Allianz implements InsurerLibraryInterface
                 $driver .= '],';
             }
         }
+        //getting EGHL log
+        // Payment Gateway Charges
+        $eghl_log = EGHLLog::where('payment_id', 'LIKE', '%' . $input->insurance_code . '%')
+        ->where('txn_status', 0)
+        ->latest()
+        ->first();
         $text = '{
             "salesChannel": "PTR",
             "contract": {
@@ -1043,11 +1061,11 @@ class Allianz implements InsurerLibraryInterface
             },'
             .$driver.
             '"payment": {
-              "paymentMode": "",
-              "paymentBankRef": ,
-              "paymentId": "",
-              "paymentDate": "'.$input->payment_date.'",
-              "paymentAmount": '.$input->payment_amount.'"
+              "paymentMode": "ONLCCN",
+              "paymentBankRef": "'.$eghl_log->bank_reference.'",
+              "paymentId": "2",
+              "paymentDate": "'.$input->payment_datetime.'",
+              "paymentAmount": '.$input->payment_amount.'
             }
           }';
 		$result = $this->cURL("getData", "submission", $text);
@@ -1243,18 +1261,6 @@ class Allianz implements InsurerLibraryInterface
             "postalCode": '.$input->postcode.'
         }';
         $result = $this->cURL("getData", "vehicleDetails", $text);
-
-        if(!$result->status) {
-            return $this->abort($result->response);
-        }
-        else{
-            if(isset($result->response->errors)){
-                return $this->abort(json_encode($result->response->errors));
-            }
-            else if(isset($result->response->UBBStatus)){
-                return $this->abort(json_encode($result->response->UBBStatus));
-            }
-        }
         
         return new ResponseData([
             'status' => $result->status,
@@ -1564,13 +1570,8 @@ class Allianz implements InsurerLibraryInterface
                 return $this->abort($message);
             }
             $result->response = $json;
-        } else {
-            $message = !empty($result->response) ? $result->response : __('api.empty_response', ['company' => $this->company]);
-            if(isset($result->response->status_code)){
-                $message = $result->response->status_code;
-            }
-            return $this->abort($message);
         }
+
         return (object)$result;
 	}
 }
