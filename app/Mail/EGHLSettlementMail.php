@@ -12,7 +12,6 @@ class EGHLSettlementMail extends Mailable
     use Queueable, SerializesModels;
     public $attachment;
     public $start_date;
-    public $end_date;
     public $empty;
 
     /**
@@ -20,11 +19,10 @@ class EGHLSettlementMail extends Mailable
      *
      * @return void
      */
-    public function __construct(string $path, string $start_date, string $end_date, bool $empty)
+    public function __construct(string $path, string $start_date, bool $empty)
     {
         $this->attachment = $path;
         $this->start_date = $start_date;
-        $this->end_date = $end_date;
         $this->empty = $empty;
     }
 
@@ -35,7 +33,7 @@ class EGHLSettlementMail extends Mailable
      */
     public function build()
     {
-        return $this->subject((app()->environment('local', 'development') ? '[Dev] ' : '') .  "[eGHL-Howden] Settlement for {$this->start_date} to {$this->end_date}")
+        return $this->subject((app()->environment('local', 'development') ? '[Dev] ' : '') .  "[eGHL-Howden] Settlement for {$this->start_date}")
             ->view('backend.emails.eghl_settlement', ['empty' => $this->empty])
             ->attachFromStorage($this->attachment);
     }

@@ -182,6 +182,7 @@ class EGHLSettlement extends Command
                 ->bcc(config('setting.howden.it_dev_mail'))
                 ->send(new EGHLSettlementMail($filename, $start_date, $end_date));
             $empty = $total_commissions + $total_roadtax - $total_gateway_charges == 0;
+            $empty = floatval($total_commissions + $total_roadtax - $total_gateway_charges) === 0.00;
 
             CronJobs::create([
                 'description' => 'Send Settlement Report to eGHL',
