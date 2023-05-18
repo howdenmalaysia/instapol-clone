@@ -76,12 +76,16 @@ class EGHLSettlement extends Command
 
         try {
             $records = Insurance::with(['product'])
-                ->where(function($query) use($start_date, $end_date) {
-                    $query->whereBetween('created_at', [$start_date, $end_date])
-                        ->orWhereBetween('updated_at', [$start_date, $end_date]);
-                })
                 ->whereNull('settlement_on')
                 ->whereIn('insurance_status', [Insurance::STATUS_PAYMENT_ACCEPTED, Insurance::STATUS_POLICY_ISSUED])
+                ->where(function($query) use($start_date, $end_date) {
+                    $query->where('created_at', '>=', $start_date)
+                        ->where('created_at', '<=', $end_date)
+                        ->orWhere(function($query_2) use($start_date, $end_date) {
+                            $query_2->where('updated_at', '>=', $start_date)
+                                ->where('updated_at', '<=', $end_date);
+                        });
+                })
                 ->get();
 
             if(empty($records)) {
@@ -174,8 +178,10 @@ class EGHLSettlement extends Command
             Excel::store(new EGHLReportExport($row_data), $filename);
 
             Mail::to(config('setting.settlement.eghl.to'))
-                ->bcc(array_merge(config('setting.settlement.eghl.to'), config('setting.howden.it_dev_mail')))
-                ->send(new EGHLSettlementMail($filename, $start_date));
+                ->cc(array_merge(config('setting.settlement.eghl.cc'), config('setting.howden.affinity_team_email')))
+                ->bcc(config('setting.howden.it_dev_mail'))
+                ->send(new EGHLSettlementMail($filename, $start_date, $end_date));
+            $empty = $total_commissions + $total_roadtax - $total_gateway_charges == 0;
 
             CronJobs::create([
                 'description' => 'Send Settlement Report to eGHL',
