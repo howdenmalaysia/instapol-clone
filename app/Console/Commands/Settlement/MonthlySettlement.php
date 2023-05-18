@@ -290,7 +290,7 @@ class MonthlySettlement extends Command
             Mail::to(config('setting.settlement.howden.email_to'))
                 ->cc(config('setting.settlement.howden.email_cc'))
                 ->bcc(config('setting.howden.it_dev_mail'))
-                ->send(new HowdenSettlementMail($filenames, $data));
+                ->send(new HowdenSettlementMail($filenames, $data, true));
 
             CronJobs::create([
                 'description' => 'Send Monthly Settlement Report to Howden',
