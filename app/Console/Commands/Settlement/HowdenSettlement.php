@@ -164,8 +164,8 @@ class HowdenSettlement extends Command
                     if(array_key_exists($product->id, $row_data)) {
                         array_push($row_data[$product->id], [
                             $start_date,
-                            $insurance->id,
-                            $product->insurance_company->name,
+                            $insurance->insurance_code,
+                            $product->name,
                             $insurance->created_at->format(self::DATETIME_FORMAT),
                             $insurance->inception_date,
                             $insurance->policy_number ?? $insurance->cover_note_number ?? $insurance->contract_number,
@@ -180,9 +180,9 @@ class HowdenSettlement extends Command
                             number_format($insurance->amount - $roadtax_premium, 2),
                             number_format($net_premium, 2),
                             $commission,
-                            $insurance->promo->promotion->discount_target === Promotion::DT_TOTALPAYABLE ? $discount_amount : '',
-                            $insurance->promo->promotion->discount_target === Promotion::DT_GROSS_PREMIUM ? $discount_amount : '',
-                            $insurance->promo->promotion->discount_target === Promotion::DT_ROADTAX ? $discount_amount : '',
+                            !empty($insurance->promo) && $insurance->promo->promotion->discount_target === Promotion::DT_TOTALPAYABLE ? $discount_amount : '',
+                            !empty($insurance->promo) && $insurance->promo->promotion->discount_target === Promotion::DT_GROSS_PREMIUM ? $discount_amount : '',
+                            !empty($insurance->promo) && $insurance->promo->promotion->discount_target === Promotion::DT_ROADTAX ? $discount_amount : '',
                             empty($insurance_motor->roadtax->roadtax_renewal_fee) ? '-' : ($physical ? 'Physical' : 'Digital'),
                             $insurance_motor->roadtax->roadtax_renewal_fee ?? '',
                             $insurance_motor->roadtax->myeg_fee ?? '',
@@ -203,8 +203,8 @@ class HowdenSettlement extends Command
                     } else {
                         $row_data[$product->id][] = [
                             $start_date,
-                            $insurance->id,
-                            $product->insurance_company->name,
+                            $insurance->insurance_code,
+                            $product->name,
                             $insurance->created_at->format(self::DATETIME_FORMAT),
                             $insurance->inception_date,
                             $insurance->policy_number ?? $insurance->cover_note_number ?? $insurance->contract_number,
@@ -219,9 +219,9 @@ class HowdenSettlement extends Command
                             number_format($insurance->amount - $roadtax_premium, 2),
                             number_format($net_premium, 2),
                             $commission,
-                            $insurance->promo->promotion->discount_target === Promotion::DT_TOTALPAYABLE ? $discount_amount : '',
-                            $insurance->promo->promotion->discount_target === Promotion::DT_GROSS_PREMIUM ? $discount_amount : '',
-                            $insurance->promo->promotion->discount_target === Promotion::DT_ROADTAX ? $discount_amount : '',
+                            !empty($insurance->promo) && $insurance->promo->promotion->discount_target === Promotion::DT_TOTALPAYABLE ? $discount_amount : '',
+                            !empty($insurance->promo) && $insurance->promo->promotion->discount_target === Promotion::DT_GROSS_PREMIUM ? $discount_amount : '',
+                            !empty($insurance->promo) && $insurance->promo->promotion->discount_target === Promotion::DT_ROADTAX ? $discount_amount : '',
                             empty($insurance_motor->roadtax->roadtax_renewal_fee) ? '-' : ($physical ? 'Physical' : 'Digital'),
                             $insurance_motor->roadtax->roadtax_renewal_fee ?? '',
                             $insurance_motor->roadtax->myeg_fee ?? '',
@@ -279,8 +279,8 @@ class HowdenSettlement extends Command
                 'details' => $details
             ];
 
-            Mail::to(explode(',', config('setting.settlement.howden.email_to')))
-                ->cc(explode(',', config('setting.settlement.howden.email_cc')))
+            Mail::to(config('setting.settlement.howden.email_to'))
+                ->cc(config('setting.settlement.howden.email_cc'))
                 ->bcc(config('setting.howden.it_dev_mail'))
                 ->send(new HowdenSettlementMail($filenames, $data));
 
