@@ -152,7 +152,7 @@ class InsurerSettlement extends Command
                     if(array_key_exists($product->id, $row_data)) {
                         array_push($row_data[$product->id], [
                             $insurance->id,
-                            $insurance->created_at->format(self::DATETIME_FORMAT),
+                            $insurance->updated_at->format(self::DATETIME_FORMAT),
                             $insurance->inception_date,
                             $insurance->policy_number ?? $insurance->cover_note_number ?? $insurance->contract_number,
                             $insurance_motor->vehicle_number,
@@ -167,7 +167,7 @@ class InsurerSettlement extends Command
                     } else {
                         $row_data[$product->id][] = [
                             $insurance->id,
-                            $insurance->created_at->format(self::DATETIME_FORMAT),
+                            $insurance->updated_at->format(self::DATETIME_FORMAT),
                             $insurance->inception_date,
                             $insurance->policy_number ?? $insurance->cover_note_number ?? $insurance->contract_number,
                             $insurance_motor->vehicle_number,
