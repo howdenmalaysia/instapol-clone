@@ -180,7 +180,8 @@ class EGHLSettlement extends Command
 
             Insurance::whereIn('id', $records->pluck('id'))
                 ->update([
-                    'settlement_on' => Carbon::now()->format(self::DATETIME_FORMAT)
+                    'settlement_on' => Carbon::now()->format(self::DATETIME_FORMAT),
+                    'timestamps' => false
                 ]);
 
             Log::info("[Cron - eGHL Settlement] {$rows} records processed. [{$start_date} to {$end_date}]");
