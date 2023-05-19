@@ -55,7 +55,7 @@ class InsurerSettlement extends Command
     {
         Log::info("[Cron - Insurer Settlement] Start Generating Reports.");
 
-        $start_date = $end_date = Carbon::now()->format(self::DATETIME_FORMAT);
+        $start_date = $end_date = Carbon::now()->subDay()->format(self::DATETIME_FORMAT);
         if(!empty($this->argument('start_date')) && !empty($this->argument('end_date'))) {
             $start_date = Carbon::parse($this->argument('start_date'))->startOfDay()->format(self::DATETIME_FORMAT);
             $end_date = Carbon::parse($this->argument('end_date'))->endOfDay()->format(self::DATETIME_FORMAT);
@@ -200,28 +200,18 @@ class InsurerSettlement extends Command
 
                 $data = [
                     'insurer_name' => $product->insurance_company->name,
-                    'start_date' => $start_date,
-                    'total_commission' => $total_commission,
-                    'total_eservice_fee' => $total_eservice_fee,
-                    'total_sst' => $total_sst,
-                    'total_discount' => $total_discount,
-                    'total_payment_gateway_charges' => $total_payment_gateway_charges,
-                    'net_transfer_amount_insurer' => $total_premium - $total_commission,
-                    'net_transfer_amount' => $total_commission,
-                    'total_outstanding' => $total_outstanding,
-                    'details' => [[
-                        $product->insurance_company->name,
-                        $insurances->count(),
-                        number_format($insurer_net_transfer, 2)
-                    ]]
+                    'start_date' => $start,
+                    'end_date' => Carbon::parse($end_date)->format(self::DATE_FORMAT)
                 ];
 
-                Log::info("[Cron - Insurer Settlement] Sending Settlement Report to {$product->insurance_company->name} [{$product->insurance_company->email_to},{$product->insurance_company->email_cc}]");
+                if($rows > 0) {
+                    Log::info("[Cron - Insurer Settlement] Sending Settlement Report to {$product->insurance_company->name} [{$product->insurance_company->email_to},{$product->insurance_company->email_cc}]");
 
-                Mail::to(explode(',', $product->insurance_company->email_to))
-                    ->cc(array_merge(explode(',', $product->insurance_company->email_cc), config('setting.howden.affinity_team_email')))
-                    ->bcc(config('setting.howden.it_dev_mail'))
-                    ->send(new InsurerSettlementMail($filenames, $data));
+                    Mail::to(explode(',', $product->insurance_company->email_to))
+                        ->cc(array_merge(explode(',', $product->insurance_company->email_cc), config('setting.howden.affinity_team_email')))
+                        ->bcc(config('setting.howden.it_dev_mail'))
+                        ->send(new InsurerSettlementMail($filenames, $data));
+                }
 
                 Log::info("[Cron - Insurer Settlement] Report to {$product->insurance_company->name} sent successfully.");
             });
