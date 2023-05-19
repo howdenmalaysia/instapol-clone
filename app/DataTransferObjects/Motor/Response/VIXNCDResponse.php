@@ -89,5 +89,20 @@ class VIXNCDResponse extends DataTransferObject
 
     /** @var string|null */
     public $vehicle_body_code;
+
+    /** @var float|null */
+    public $windscreen_franchise;
+
+    /** @var float|null */
+    public $windscreen_local;
+
+    /** @var int|null */
+    public $ins_code;
+
+    /** @var int|null */
+    public $pre_ins_code;
+
+    /** @var float|null */
+    public $cur_ncd_percentage;
 }
 
