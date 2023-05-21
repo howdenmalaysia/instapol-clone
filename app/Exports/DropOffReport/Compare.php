@@ -78,7 +78,7 @@ class Compare implements FromCollection, WithColumnFormatting, WithEvents, WithH
         $vehicle = json_decode($param->h_vehicle);
 
         if(!empty($vehicle)) {
-            $make_model = implode(' ', [$vehicle->make . $vehicle->model]);
+            $make_model = implode(' ', [$vehicle->make, $vehicle->model]);
         }
 
         return [
