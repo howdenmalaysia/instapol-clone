@@ -228,7 +228,7 @@ if(!function_exists('raceChecker')) {
 if(!function_exists('getGatewayCharges')) {
     function getGatewayCharges(float $amount, string $service_id, string $payment_method) {
         $gateway_charges = 0;
-        
+
         if($service_id === 'CBI') {
             $gateway_charges = 0.8;
         } else if($service_id === 'CBH') {
@@ -236,6 +236,8 @@ if(!function_exists('getGatewayCharges')) {
                 $gateway_charges = number_format($amount * 0.018, 2);
             } else if($payment_method === 'WA') {
                 $gateway_charges = number_format($amount * 0.015, 2);
+            } else if($payment_method === 'DD') {
+                $gateway_charges = 0.8;
             }
         }
 
@@ -246,10 +248,10 @@ if(!function_exists('getGatewayCharges')) {
 if(!function_exists('roundPricing')) {
     function roundPricing(float $price) {
         $rounded = $price;
-        
+
         if(floor($price) !== $price) {
             $last = (int) substr(explode('.', $price)[1], -1, 1);
-    
+
             if($last < 3 || $last >= 8) {
                 $rounded = round($price, 1);
             } else if($last >= 3 && $last < 8) {
