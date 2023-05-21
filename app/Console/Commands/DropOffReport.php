@@ -42,26 +42,38 @@ class DropOffReport extends Command
     {
         Log::info("[Cron - Drop-Off Report] Start Generating Report.");
 
-        $start_time = $end_time = Carbon::now()->format('HH');
-        if(!empty($this->argument('start_hour')) && !empty($this->argument('end_hour'))) {
-            $start_time = $this->argument('start_hour') . ':00:00';
-            $end_time = $this->argument('end_hour') . ':59:59';
-        }
-
-        // Drop Off Pages
-        $landing = $vehicle_details = $compare = $add_ons = $policy_holder = $summary = [];
-
-        $quotations = Quotation::where('created_at', '>=', $start_time)
-            ->where('created_at', '<=', $end_time)
-            ->get();
-
-        // i. Drop off at Vehicle Details Page
-        $quotations->map(function($quote) use(&$vehicle_details) {
-            if($quote->compare_page === 0) {
-                array_push($vehicle_details, $quote);
+        try {
+            $date = Carbon::now()->format('Y-m-d');
+            $date = '2023-05-09';
+            $start_time = $end_time = implode(' ', [$date, Carbon::now()->startOfHour()->format('H:i')]);
+            if(!empty($this->argument('start_hour')) && !empty($this->argument('end_hour'))) {
+                $start_time = $date . ' ' . $this->argument('start_hour') . ':00:00';
+                $end_time = $date . ' ' . $this->argument('end_hour') . ':59:59';
             }
-        });
 
-        
+            if(!empty($this->argument('date'))) {
+                $date = Carbon::parse($this->argument('date'))->format('Y-m-d');
+            }
+
+            Log::info("[Cron - Drop-Off Report] Handing Over to Exports.");
+            $batch_name = Carbon::parse($start_time)->format('Y-m-d_H_i') . '_' . Carbon::parse($end_time)->format('H_i');
+            $file = "{$batch_name}_drop_off_report.xlsx";
+            $export = new DropOffReportExport($start_time, $end_time);
+            $result = $export->store($file);
+
+            if(!$result) {
+                throw new Exception('Failed to Genearte Excel File.');
+            }
+
+            $range = Carbon::parse($start_time)->format('Y-m-d H:i') . '_' . Carbon::parse($end_time)->format('H:i');
+
+            Mail::to(config('setting.howden.affinity_team_email'))
+                ->bcc(config('setting.howden.it_dev_mail'))
+                ->send(new DropOffReportMail($file, $range));
+
+            Log::info("[Cron - Drop-Off Report] Drop-off Report Generated Successfully.");
+        } catch (Exception $ex) {
+            Log::error("[Cron - Drop-Off Report] An Error Encountered While Generating the Report. [{$ex->getMessage()}] \n" . $ex);
+        }
     }
 }
