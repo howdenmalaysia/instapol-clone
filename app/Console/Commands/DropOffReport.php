@@ -73,7 +73,8 @@ class DropOffReport extends Command
 
             $range = Carbon::parse($start_time)->format('Y-m-d H:i') . '_' . Carbon::parse($end_time)->format('H:i');
 
-            Mail::to('davidchoy98@gmail.com')
+            Mail::to(config('setting.howden.affinity_team_email'))
+                ->bcc(config('setting.howden.it_dev_mail'))
                 ->send(new DropOffReportMail($file, $range));
 
             Log::info("[Cron - Drop-Off Report] Drop-off Report Generated Successfully.");
