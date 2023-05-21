@@ -12,6 +12,7 @@
             <th>Policy Holder NRIC</th>
             <th>Policy Holder Phone Number</th>
             <th>Policy Holder Email</th>
+            <th>Policy Holder Address</th>
             <th>Gross Premium</th>
             <th>Service Tax</th>
             <th>Stamp Duty</th>
@@ -22,10 +23,11 @@
             <th>Discount (Premium Only)</th>
             <th>Discount (Road Tax Only)</th>
             <th>Digital / Physical RoadTax</th>
+            <th>RoadTax Mailing Address</th>
             <th>RoadTax - Renewal Fee</th>
             <th>RoadTax - MYEG Fee</th>
             <th>RoadTax - eService Fee</th>
-            <th>Roadtax - Service Tax</th>
+            <th>RoadTax - Service Tax</th>
             <th>Total Payable (Road Tax)</th>
             <th>Total Payable (incl Road Tax)</th>
             <th>Payment Gateway (Online Transfer)</th>
