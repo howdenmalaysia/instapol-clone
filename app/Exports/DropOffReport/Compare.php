@@ -85,6 +85,7 @@ class Compare implements FromCollection, WithColumnFormatting, WithEvents, WithH
             $result->updated_at,
             $result->vehicle_number,
             $make_model,
+            $vehicle->policy_expiry_date,
             $param->id_number,
             $param->postcode,
             $param->phone_number,
