@@ -61,26 +61,36 @@ class Compare implements FromCollection, WithColumnFormatting, WithEvents, WithH
         return [
             'Access Date & Time',
             'Vehicle Number',
+            'Vehicle Details',
+            'Expiry Date',
             'ID Number',
             'Postcode',
             'Phone Number',
             'Email Address',
-            'Remarks'
+            'Remarks',
+            'Referrer'
         ];
     }
 
     public function map($result): array
     {
         $param = json_decode($result->request_param);
+        $vehicle = json_decode($param->h_vehicle);
+
+        if(!empty($vehicle)) {
+            $make_model = implode(' ', [$vehicle->make . $vehicle->model]);
+        }
 
         return [
             $result->updated_at,
             $result->vehicle_number,
+            $make_model,
             $param->id_number,
             $param->postcode,
             $param->phone_number,
             $result->email_address,
-            $result->remarks
+            $result->remarks,
+            $result->referrer
         ];
     }
 

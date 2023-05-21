@@ -36,7 +36,7 @@ class PaymentSummary implements FromCollection, WithColumnFormatting, WithEvents
     public function collection()
     {
         // Drop off at Summary Page
-        $summary = Insurance::with(['product', 'holder', 'motor'])
+        $summary = Insurance::with(['product', 'holder', 'motor', 'address'])
             ->where('updated_at', '>=', $this->start_time)
             ->where('updated_at', '<=', $this->end_time)
             ->whereIn('insurance_status', [Insurance::STATUS_NEW_QUOTATION, Insurance::STATUS_PAYMENT_FAILURE])
@@ -54,8 +54,16 @@ class PaymentSummary implements FromCollection, WithColumnFormatting, WithEvents
 
     public function map($result): array
     {
+        $address = $result->address->address_one;
+        if(!empty($result->address->address_two)) {
+            $address .= ', ' . implode(', ', [$result->address->address_two, $result->address->postcode, $result->address->city, $result->address->state]);
+        } else {
+            $address .= ', ' . implode(', ', [$result->address->postcode, $result->address->city, $result->address->state]);
+        }
+
         return [
             $result->updated_at,
+            $result->expiry_date,
             $result->insurance_code,
             $result->created_at,
             $result->inception_date,
@@ -71,6 +79,8 @@ class PaymentSummary implements FromCollection, WithColumnFormatting, WithEvents
             $result->holder->gender === 'F' ? 'Female' : 'Male',
             $result->holder->email_address,
             $result->holder->phone_code . $result->holder->phone_number,
+            $address,
+            $result->referrer
         ];
     }
 
@@ -122,6 +132,7 @@ class PaymentSummary implements FromCollection, WithColumnFormatting, WithEvents
                 '',
                 '',
                 '',
+                '',
                 'Vehicle Details',
                 '',
                 '',
@@ -135,10 +146,13 @@ class PaymentSummary implements FromCollection, WithColumnFormatting, WithEvents
                 '',
                 '',
                 '',
+                '',
+                '',
                 ''
             ],
             [
                 'Access Date & Time',
+                'Policy Expiry Date',
                 'Insurance Code',
                 'Transaction Date',
                 'Policy Start Date',
@@ -154,6 +168,8 @@ class PaymentSummary implements FromCollection, WithColumnFormatting, WithEvents
                 'Gender',
                 'Email Address',
                 'Phone Number',
+                'Residential Address',
+                'Referrer'
             ]
         ];
 
