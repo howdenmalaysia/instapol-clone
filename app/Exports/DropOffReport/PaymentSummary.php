@@ -88,12 +88,11 @@ class PaymentSummary implements FromCollection, WithColumnFormatting, WithEvents
     {
         return [
             'A' => NumberFormat::FORMAT_DATE_DATETIME,
-            'C' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'B' => NumberFormat::FORMAT_DATE_DDMMYYYY,
             'D' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'E' => '"RM"#,##0.00_-',
-            'H' => NumberFormat::FORMAT_NUMBER,
-            'J' => NumberFormat::FORMAT_NUMBER,
-            'K' => '"RM"#,##0.00_-',
+            'E' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'F' => '"RM"#,##0.00_-',
+            'L' => '"RM"#,##0.00_-',
         ];
     }
 
