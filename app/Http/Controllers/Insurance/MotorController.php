@@ -107,7 +107,7 @@ class MotorController extends Controller
         $product_ids = [];
         foreach($products as $product) {
             //  ['Allianz', 'AIG', 'Liberty']
-            if(in_array($product->id, [2, 3, 6, 10, 14])) {
+            if(in_array($product->id, [3, 6, 10, 14])) {
                 array_push($product_ids, $product->id);
             }
         }
@@ -272,6 +272,10 @@ class MotorController extends Controller
 
         if(!empty($request->additional_driver)) {
             $session->additional_driver = json_decode($request->additional_driver);
+        }
+
+        if(!empty(json_decode($request->motor)->promo)) {
+            $session->promo = json_decode($request->motor)->promo;
         }
 
         if(!empty($request->roadtax)) {

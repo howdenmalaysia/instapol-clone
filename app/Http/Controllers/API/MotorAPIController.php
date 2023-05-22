@@ -563,7 +563,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
                 InsurancePromo::create([
                     'insurance_id' => $insurance->id,
                     'promo_id' => $input->promo->id,
-                    'discount_amount' => $motor->premium->discount_amount,
+                    'discount_amount' => $motor->premium->discounted_amount,
                 ]);
             }
 

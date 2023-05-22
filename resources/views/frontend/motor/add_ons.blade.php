@@ -983,7 +983,7 @@
                     motor.premium.discounted_amount = res.data.premium.discounted_amount;
                     motor.premium.total_payable = res.data.premium.total_payable;
                     $('#total-payable').text(formatMoney(motor.premium.total_payable));
-                    $('#motor').val(JSON.stringify(motor));
+                    //$('#motor').val(JSON.stringify(motor));
                 }
             }).catch((err) => {
                 console.log(err);
