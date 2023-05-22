@@ -270,6 +270,10 @@ class MotorController extends Controller
             $session->additional_driver = json_decode($request->additional_driver);
         }
 
+        if(!empty(json_decode($request->motor)->promo)) {
+            $session->promo = json_decode($request->motor)->promo;
+        }
+
         if(!empty($request->roadtax)) {
             $session->roadtax = json_decode($request->roadtax);
             $session->premium->roadtax = $session->roadtax->total;
