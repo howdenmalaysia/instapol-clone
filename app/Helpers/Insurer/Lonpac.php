@@ -281,7 +281,8 @@ class Lonpac implements InsurerLibraryInterface
                 'email' => $input->email,
                 'vehicle' => $vehicle,
                 'vehicle_number' => $input->vehicle_number,
-                'ownership_type' => $ownership_type
+                'ownership_type' => $ownership_type,
+                'phone_number' => $input->phone_number
             ];
 
             $motor_premium = $this->getPremium($data);
@@ -428,6 +429,7 @@ class Lonpac implements InsurerLibraryInterface
             'vehicle_number' => $input->vehicle_number,
             'vehicle_body_type' => $input->vehicle_body_type ?? '',
             'ownership_type' => $ownership_type,
+            'phone_number' => $input->phone_number
         ];
         $motor_premium = $this->getPremium($data);
 
@@ -694,7 +696,7 @@ class Lonpac implements InsurerLibraryInterface
         $data = [
             'vehicle_number' => $input->vehicle_number,
             'agent_code' => $this->agent_code,
-            'id_number' => $input->id_number,
+            'id_number' => preg_replace("/^(\d{6})(\d{2})(\d{4})$/", "$1-$2-$3", $input->id_number),
             'company_registration_number' => $input->company_registration_number ?? '',
             'state_code' => $this->getPostcode($input->postcode),
             'post_code' => $input->postcode,
@@ -870,8 +872,9 @@ class Lonpac implements InsurerLibraryInterface
 
             'name' => $input->name ?? config('app.name'),
             'email' => $input->email ?? $input->insurance->holder->email_address,
-            'id_number' => $input->id_number,
+            'id_number' => preg_replace("/^(\d{6})(\d{2})(\d{4})$/", "$1-$2-$3", $input->id_number),
             'date_of_birth' =>  Carbon::parse($input->dob)->format('d/m/Y') ?? '',
+            'age' => getAgeFromIC($input->id_number),
             'gender' => $input->gender,
             'marital_status' => $input->marital_status,
             'occupation' => self::OCCUPATION,
@@ -881,7 +884,7 @@ class Lonpac implements InsurerLibraryInterface
             'address_3' => isset($input->address_two) ? (empty($input->address_two) ? '' : $input->city . ', ' . $input->state) : '',
             'region' => strtoupper(substr($input->region, 0, 1)),
             'postcode' => $input->postcode,
-            'phone_number' => isset($input->phone_number) ? '60' . $input->phone_number : '60123456789',
+            'phone_number' => isset($input->phone_number) ? substr_replace('0' . $input->phone_number, '-', 3, 0) : substr_replace("0123456789", '-', 3, 0),
             'vehicle_number' => $input->vehicle_number,
             'chassis_number' => $input->vehicle->extra_attribute->chassis_number,
             'engine_number' => $input->vehicle->extra_attribute->engine_number,

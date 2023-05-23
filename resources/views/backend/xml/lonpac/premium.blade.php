@@ -32,7 +32,7 @@
          <ws:IcNoOld></ws:IcNoOld>
          <ws:BizRegNo></ws:BizRegNo>
          <ws:DateOfBirth>{{ $date_of_birth }}</ws:DateOfBirth>
-         <ws:Age></ws:Age>
+         <ws:Age>{{ $age }}</ws:Age>
          <ws:Gender>{{ $gender }}</ws:Gender>
          <ws:MaritalStatus>{{ $marital_status }}</ws:MaritalStatus>
          <ws:Occupation>{{ $occupation }}</ws:Occupation>
