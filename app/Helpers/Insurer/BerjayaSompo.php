@@ -233,7 +233,7 @@ class BerjayaSompo implements InsurerLibraryInterface
                 'region' => $input->region,
                 'vehicle' => $vehicle,
                 'email' => $input->email,
-                'phone_number' => $input->phone_number,
+                'phone_number' => isset($input->phone_number) ? '0' . $input->phone_number : '0123456789',
                 'nvic' => $vehicle->nvic,
                 'postcode' => $input->postcode,
                 'occupation' => $input->occupation,
@@ -429,7 +429,7 @@ class BerjayaSompo implements InsurerLibraryInterface
             'vehicle' => $vehicle,
             'extra_cover' => $input->extra_cover,
             'email' => $input->email,
-            'phone_number' => $input->phone_number,
+            'phone_number' => isset($input->phone_number) ? '0' . $input->phone_number : '0123456789',
             'unit_no' => $input->unit_no ?? null,
             'building_name' => $input->building_name ?? null,
             'address_one' => $input->address_one ?? null,
@@ -520,6 +520,334 @@ class BerjayaSompo implements InsurerLibraryInterface
         return (object) ['status' => true, 'response' => $response];
     }
 
+        //For MQT
+    public function premiumUpdate(object $input, $full_quote = false) : object
+    {
+        $vehicle = $input->vehicle ?? null;
+        $ncd_amount = $basic_premium = $total_benefit_amount = $gross_premium = $sst_percent = $sst_amount = $stamp_duty = $excess_amount = $total_payable = 0;
+        $pa = null;
+        if ($full_quote) {
+            //Dd change structure
+            $vehicle = new Vehicle([
+                'make' => $input->vehicle->make,
+                'model' => $input->vehicle->model,
+                'nvic' => $input->nvic,
+                'variant' => $input->vehicle->variant,
+                'engine_capacity' => $input->vehicle->engine_capacity,
+                'manufacture_year' => $input->vehicle->manufacture_year,
+                'ncd_percentage' => $input->vehicle->ncd_percentage,
+                'coverage' => $input->vehicle->coverage,
+                'inception_date' => $input->vehicle->inception_date,
+                'expiry_date' => $input->vehicle->expiry_date,
+                'sum_insured_type' => 'Agreed Value',
+                'sum_insured' => $input->vehicle->sum_insured,
+                'min_sum_insured' => $input->vehicle->min_sum_insured,
+                'max_sum_insured' => $input->vehicle->max_sum_insured,
+                'extra_attribute' => (object) [
+                    'chassis_number' => $input->vehicle->extra_attribute->chassis_number,
+                    'cover_type' => $input->vehicle->extra_attribute->cover_type,
+                    'engine_number' => $input->vehicle->extra_attribute->engine_number,
+                    'seating_capacity' => $input->vehicle->extra_attribute->seating_capacity,
+                ],
+            ]);
+
+            // get premium
+            $data = (object) [
+                'vehicle_number' => $input->vehicle_number,
+                'id_type' => $input->id_type,
+                'id_number' => $input->id_number,
+                'gender' => $input->gender,
+                'marital_status' => $input->marital_status,
+                'postcode' => $input->postcode,
+                'state' => $input->state,
+                'region' => $input->region,
+                'vehicle' => $vehicle,
+                'email' => $input->email,
+                'phone_number' => isset($input->phone_number) ? '0' . $input->phone_number : '0123456789',
+                'nvic' => $vehicle->nvic,
+                'postcode' => $input->postcode,
+                'occupation' => $input->occupation,
+            ];
+            $motor_premium = $this->getQuotation($data, 'MQT');
+
+            if (!$motor_premium->status) {
+                return $this->abort($motor_premium->response);
+            }
+
+            $basic_premium = formatNumber($motor_premium->response->BASIC_PREMIUM);
+            $excess_amount = 0;
+            $ncd_percentage = $vehicle->ncd_percentage;
+            $ncd_amount = formatNumber($motor_premium->response->NCD_AMOUNT);
+            $total_benefit_amount = formatNumber($motor_premium->response->EXTRACOVERAGE_AMOUNT);
+            $gross_premium = formatNumber($motor_premium->response->GROSS_PREMIUM);
+            $sst_percent = formatNumber($motor_premium->response->SST_PERCENTAGE);
+            $sst_amount = formatNumber($motor_premium->response->SST_PREMIUM);
+            $stamp_duty = formatNumber($motor_premium->response->STAMP_DUTY);
+            $total_payable = formatNumber($motor_premium->response->AMT_PAY_CLIENT);
+            $net_premium = formatNumber($motor_premium->response->AMT_PAY_CLIENT - $motor_premium->response->COMMISSION);
+
+            // Remove Extra Cover which is not entitled
+            $available_benefits = self::EXTRA_COVERAGE_LIST;
+
+            /// 1. Private Hire Car Endorsement (E-Hailing)
+            if($input->id_type == config('setting.id_type.company_registration_no')) { //// Company Registered Vehicles
+                unset($available_benefits[array_search('EHRP', $available_benefits)]);
+            }
+
+            /// 2. NCD Relief
+            if($vehicle->ncd_percentage == 0) {
+                unset($available_benefits[array_search('111', $available_benefits)]);
+            }
+
+            /// 3. Waiver Of Betterment
+            /// 4. Unlimited Towing Costs
+            $vehicle_age = Carbon::now()->year - $vehicle->manufacture_year;
+            if($vehicle_age < 5 || $vehicle_age > 14) {
+                unset($available_benefits[array_search('BTWP', $available_benefits)]);
+
+                if($vehicle_age > 15) {
+                    unset($available_benefits[array_search('TOWP', $available_benefits)]);
+                }
+            }
+
+            // Generate Extra Cover List
+            foreach($available_benefits as $extra_cover_code) {
+                $_sum_insured_amount = $_cart_amount = $_cart_day = 0;
+
+                $item = new ExtraCover([
+                    'selected' => false,
+                    'readonly' => false,
+                    'extra_cover_code' => $extra_cover_code,
+                    'extra_cover_description' => '',
+                    'sum_insured' => 0,
+                    'premium' => 0,
+                ]);
+
+                switch($extra_cover_code) {
+                    case '89A': { // Windscreen Damage
+                        // Generate Options From 500 To 10,000
+                        $option_list = new OptionList([
+                            'name' => 'sum_insured',
+                            'description' => 'Sum Insured Amount',
+                            'values' => generateExtraCoverSumInsured(500, 10000, 1000),
+                            'any_value' => true,
+                            'increment' => 100
+                        ]);
+
+                        $item->option_list = $option_list;
+
+                        // Default to RM 1,000
+                        $_sum_insured_amount = $option_list->values[1];
+
+                        break;
+                    }
+                    case '97': { // Vehicle Accessories
+                        // Generate Options From 1,000 To 10,000
+                        $option_list = new OptionList([
+                            'name' => 'sum_insured',
+                            'description' => 'Sum Insured Amount',
+                            'values' => generateExtraCoverSumInsured(1000, 10000, 1000),
+                            'any_value' => true,
+                            'increment' => 100
+                        ]);
+
+                        $item->option_list = $option_list;
+
+                        // Default to RM 1,000
+                        $_sum_insured_amount = $option_list->values[0];
+
+                        break;
+                    }
+                    case '112': { // Compensation For Assessed Repair Time (CART)
+                        // Get CART Days & Its Amount
+                        $cart_list = [];
+
+                        foreach (self::CART_DAY_LIST as $_cart_day) {
+                            $cart_amount_list = [];
+
+                            foreach (self::CART_AMOUNT_LIST as $_cart_amount) {
+                                array_push($cart_amount_list, $_cart_amount);
+                            }
+
+                            array_push($cart_list, new CartList([
+                                'cart_day' => $_cart_day,
+                                'cart_amount_list' => $cart_amount_list
+                            ]));
+                        }
+
+                        $item->cart_list = $cart_list;
+
+                        // Get The Lowest CART Day & Amount / Day To Get Premium
+                        $_cart_day = $cart_list[0]->cart_day;
+                        $_cart_amount = $cart_list[0]->cart_amount_list[0];
+
+                        break;
+                    }
+                    case '97A': { // Gas Conversion Kit And Tank
+                        // Generate Options From 1,000 To 10,000
+                        $option_list = new OptionList([
+                            'name' => 'sum_insured',
+                            'description' => 'Sum Insured Amount',
+                            'values' => generateExtraCoverSumInsured(1000, 10000, 1000),
+                            'any_value' => true,
+                            'increment' => 100
+                        ]);
+
+                        $item->option_list = $option_list;
+
+                        // Default to RM 1,000
+                        $_sum_insured_amount = $option_list->values[0];
+
+                        break;
+                    }
+                    case 'LOUP': { // Compesation For Loss Of Use Of Vehicle - E-Ride/Hailing
+                        // Generate Options From 1,000 To 10,000
+                        $option_list = new OptionList([
+                            'name' => 'sum_insured',
+                            'description' => 'Sum Insured Amount',
+                            'values' => array_diff(generateExtraCoverSumInsured(500, 2000, 500), array(1500)),
+                            'any_value' => true,
+                            'increment' => 500
+                        ]);
+
+                        $item->option_list = $option_list;
+
+                        // Default to RM 500
+                        $_sum_insured_amount = $option_list->values[0];
+
+                        break;
+                    }
+                    case 'PA*P': { // Personal Accident Add-On
+                        // Generate Options From 1,000 To 10,000
+                        $option_list = new OptionList([
+                            'name' => 'sum_insured',
+                            'description' => 'Sum Insured Amount',
+                            'values' => array_diff(generateExtraCoverSumInsured(25000, 100000, 25000), array(75000)),
+                            'any_value' => true,
+                            'increment' => 25000
+                        ]);
+
+                        $item->option_list = $option_list;
+
+                        // Default to RM 1,000
+                        $_sum_insured_amount = $option_list->values[0];
+
+                        break;
+                    }
+                }
+
+                if (!empty($_sum_insured_amount)) {
+                    $item->sum_insured = $_sum_insured_amount;
+                } elseif (!empty($_cart_day) && !empty($_cart_amount)) {
+                    $item->cart_day = $_cart_day;
+                    $item->cart_amount = $_cart_amount;
+                }
+
+                // Include into $input->extra_cover to get the premium
+                array_push($input->extra_cover, $item);
+            }
+        }
+
+        $data = (object) [
+            'vehicle_number' => $input->vehicle_number,
+            'id_type' => $input->id_type,
+            'id_number' => $input->id_number,
+            'gender' => $input->gender,
+            'marital_status' => $input->marital_status,
+            'region' => $input->region,
+            'vehicle' => $vehicle,
+            'extra_cover' => $input->extra_cover,
+            'email' => $input->email,
+            'phone_number' => isset($input->phone_number) ? '0' . $input->phone_number : '0123456789',
+            'unit_no' => $input->unit_no ?? null,
+            'building_name' => $input->building_name ?? null,
+            'address_one' => $input->address_one ?? null,
+            'address_two' => $input->address_two ?? null,
+            'city' => $input->city ?? '',
+            'postcode' => $input->postcode,
+            'state' => $input->state ?? '',
+            'sum_insured' => $input->vehicle->sum_insured ?? $vehicle->sum_insured,
+            'occupation' => $input->occupation,
+        ];
+        $motor_premium = $this->getQuotation($data, 'MQT');
+
+        if (!$motor_premium->status) {
+            return $this->abort($motor_premium->response);
+        }
+
+        // To check if the vehicle is entitled to purchase windscreen add ons
+        if($motor_premium->response->WINDSCREEN_EXTCVG_ALLOW === 'N') {
+            unset($input->extra_cover[array_search('89', array_column($input->extra_cover, 'extra_cover_code'))]);
+        }
+
+        if(!empty($motor_premium->response->ADD_ONS)) {
+            array_map(function($extra_cover, $extra_benefit) use($motor_premium, &$pa) {
+                if($extra_cover->extra_cover_code == $extra_benefit->CODE && $extra_benefit->CODE != 'PA*P') {
+                    $extra_cover->premium = formatNumber($extra_benefit->PREMIUM);
+                    $extra_cover->extra_cover_description = str_replace(['cart', 'Ncd', 'Add', 'On', 'E-ride'], ['CART', 'NCD',  '', '', 'E-Ride'], ucwords(Str::lower($extra_benefit->DESCRIPTION)));
+                    $extra_cover->selected = $extra_benefit->PREMIUM == 0;
+                } else if ($extra_benefit->CODE == 'PA*P' && $extra_cover->extra_cover_code == 'PA*P') {
+                    $pa = (object) [
+                        'name' => str_replace(['Add', 'On'], [''], ucwords(Str::lower($extra_benefit->DESCRIPTION))),
+                        'plan' => $this->getPAPlanCode($extra_benefit->SUM_INSURED),
+                        'gross_premium' => formatNumber($extra_benefit->PREMIUM),
+                        'sst_percent' => formatNumber($motor_premium->response->SST_PERCENTAGE),
+                        'sst_amount' => formatNumber(($motor_premium->response->SST_PERCENTAGE / 100) * $extra_benefit->PREMIUM),
+                        'stamp_duty' => formatNumber(0),
+                        'net_premium' => formatNumber(0),
+                        'total_payable' => formatNumber($extra_benefit->PREMIUM + ($motor_premium->response->SST_PERCENTAGE / 100) * $extra_benefit->PREMIUM),
+                    ];
+
+                    $extra_cover->premium = formatNumber($extra_benefit->PREMIUM);
+                    $extra_cover->extra_cover_description = ucwords(Str::lower($extra_benefit->DESCRIPTION));
+                }
+            }, $input->extra_cover, $motor_premium->response->ADD_ONS);
+        }
+
+        // if full quote, use back the premium without extra cover
+        // also return extra cover list and vehicle data
+        $response = new PremiumResponse([
+            'basic_premium' => formatNumber($motor_premium->response->BASIC_PREMIUM),
+            'ncd_percentage' => $motor_premium->response->NCD_PERCENT,
+            'ncd_amount' => formatNumber($motor_premium->response->NCD_AMOUNT),
+            'total_benefit_amount' => formatNumber($motor_premium->response->EXTRACOVERAGE_AMOUNT),
+            'gross_premium' => formatNumber($motor_premium->response->GROSS_PREMIUM),
+            'sst_percent' => formatNumber($motor_premium->response->SST_PERCENTAGE),
+            'sst_amount' => formatNumber($motor_premium->response->SST_PREMIUM),
+            'stamp_duty' => formatNumber($motor_premium->response->STAMP_DUTY),
+            'excess_amount' => formatNumber(0),
+            'total_payable' => formatNumber($motor_premium->response->AMT_PAY_CLIENT),
+            'net_premium' => formatNumber($motor_premium->response->AMT_PAY_CLIENT - $motor_premium->response->COMMISSION),
+            'extra_cover' => $input->extra_cover,
+            'personal_accident' => $pa,
+            'quotation_number' => $motor_premium->response->QUOTATION_NO,
+            'sum_insured' => formatNumber($motor_premium->response->SUM_INSURED),
+            'sum_insured_type' => 'Agreed Value',
+            'min_sum_insured' => formatNumber($vehicle->min_sum_insured),
+            'max_sum_insured' => formatNumber($vehicle->max_sum_insured),
+            'named_drivers_needed' => false
+        ]);
+
+        if ($full_quote) {
+            // Revert to premium without extra covers
+            $response->basic_premium = $basic_premium;
+            $response->ncd_percentage = $ncd_percentage;
+            $response->ncd_amount = $ncd_amount;
+            $response->total_benefit_amount = $total_benefit_amount;
+            $response->gross_premium = $gross_premium;
+            $response->sst_percent = $sst_percent;
+            $response->sst_amount = $sst_amount;
+            $response->stamp_duty = $stamp_duty;
+            $response->excess_amount = $excess_amount;
+            $response->total_payable = $total_payable;
+            $response->net_premium = $net_premium;
+
+            $response->vehicle = $vehicle;
+        }
+        return (object) ['status' => true, 'response' => $response];
+    }
+    //End MQT
+
     public function quotation(object $input) : object
     {
         $data = (object) [
@@ -531,8 +859,9 @@ class BerjayaSompo implements InsurerLibraryInterface
             'region' => $input->region,
             'vehicle' => $input->vehicle,
             'extra_cover' => $input->extra_cover,
+            'name'  => $input->name,
             'email' => $input->email,
-            'phone_number' => $input->phone_number,
+            'phone_number' => isset($input->phone_number) ? '0' . $input->phone_number : '0123456789',
             'nvic' => $input->vehicle->nvic,
             'unit_no' => $input->unit_no ?? '',
             'building_name' => $input->building_name ?? '',
@@ -544,7 +873,7 @@ class BerjayaSompo implements InsurerLibraryInterface
             'occupation' => $input->occupation,
         ];
 
-        $result = $this->premiumDetails($data);
+        $result = $this->premiumUpdate($data);
 
         if (!$result->status) {
             return $this->abort($result->response);
@@ -586,7 +915,7 @@ class BerjayaSompo implements InsurerLibraryInterface
             'id_number' => $input->insurance->holder->id_number,
             'gender' => $input->insurance->holder->gender,
             'marital_status' => $input->insurance_motor->marital_status,
-            'email' => $input->insurance->holder->email,
+            'email' => $input->insurance->holder->email_address,
             'phone_number' => '0' . $input->insurance->holder->phone_number,
             'unit_no' => $input->insurance->address->unit_no,
             'building_name' => $input->insurance->address->building_name,
@@ -601,7 +930,7 @@ class BerjayaSompo implements InsurerLibraryInterface
                 'inception_date' => $input->insurance->inception_date,
                 'expiry_date' => $input->insurance->expiry_date,
                 'extra_attribute' => $extra_attribute,
-                'sum_insured' => $input->insurance_motor->sum_insured
+                'sum_insured' => $input->insurance_motor->sum_insured ?? $input->insurance_motor->market_value
             ],
             'extra_cover' => $extra_benefits,
             'occupation' => $input->insurance->holder->occupation,
@@ -738,7 +1067,7 @@ class BerjayaSompo implements InsurerLibraryInterface
                 'INS_TYPE_OF_BUSINESS' => $type_of_business,
                 'INSURED_CONTACT_TYPE' => $contact_type,
                 'MARITAL_STATUS' => $marital_status,
-                'MOBILE_NO' => $input->phone_number,
+                'MOBILE_NO' => '0' . $input->phone_number,
                 'NATIONALITY' => 'MYS',
                 'NEW_IC' => $nric_number ?? '',
                 'OCCP_CODE' => $occupation_code,
