@@ -256,13 +256,14 @@ class TrendReport extends Command
             $full_range = $range_start . ' - ' . $range_end;
 
             $cc_list = [
+                config('setting.howden.affinity_team_email'),
                 config('setting.howden.contact_list.jeffery_chan'),
                 config('setting.howden.contact_list.phoebie_wong'),
                 config('setting.howden.contact_list.cheng_lai_fah')
             ];
 
             // Send Report
-            Mail::to(config('setting.howden.affinity_team_email'))
+            Mail::to(config('setting.howden.insta_admin'))
                 ->cc($cc_list)
                 ->bcc(config('setting.howden.it_dev_mail'))
                 ->send(new TrendReportMail($full_range, $this->trend, $this->referral_links, $this->pages, $date_ranges));

@@ -240,7 +240,7 @@ class InsurerSettlement extends Command
                 'status' => CronJobs::STATUS_FAILED
             ]);
 
-            Log::error("[Cron - Insurer Settlement] An Error Encountered. {$ex->getMessage()}");
+            Log::error("[Cron - Insurer Settlement] An Error Encountered. [{$ex->getMessage()}] \n" . $ex);
         }
 
     }

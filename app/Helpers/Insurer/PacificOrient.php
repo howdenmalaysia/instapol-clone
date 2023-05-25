@@ -89,8 +89,8 @@ class PacificOrient implements InsurerLibraryInterface
         $sum_insured = formatNumber($vix->response->sum_insured, 0);
         if($sum_insured < self::MIN_SUM_INSURED || $sum_insured > self::MAX_SUM_INSURED) {
             return $this->abort(__('api.sum_insured_referred_between', [
-                'min_sum_insured' => self::MIN_SUM_INSURED,
-                'max_sum_insured' => self::MAX_SUM_INSURED
+                'min_sum_insured' => number_format(self::MIN_SUM_INSURED),
+                'max_sum_insured' => number_format(self::MAX_SUM_INSURED)
             ]), config('setting.response_codes.sum_insured_referred'));
         }
 

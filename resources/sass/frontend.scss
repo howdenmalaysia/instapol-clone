@@ -78,7 +78,7 @@ body {
 
         @include media-breakpoint-down(lg) {
             .btn-close {
-                right: 100px;
+                right: 20px;
                 top: 15px;
             }
 
@@ -105,11 +105,6 @@ body {
         margin-bottom: 50px;
         padding: 20px 0px;
 
-        .tenang {
-            height: 190px;
-            width: 101%;
-        }
-
         #product-card {
             z-index: 99;
         }
@@ -119,6 +114,12 @@ body {
         .container-fluid {
             background-color: #f6f5f5;
         }
+
+        @include media-breakpoint-down(md) {
+            img {
+                width: 75%;
+            }
+        }
     }
 
     #made-easy {
@@ -127,12 +128,27 @@ body {
             width: 2rem;
             font-size: 1.3rem;
         }
+
+        @include media-breakpoint-down(md) {
+            .numbering {
+                height: 1.5rem;
+                width: 1.5rem;
+                font-size: 1rem;
+                padding-left: .5rem;
+            }
+        }
     }
 
     #info {
         background-image: url(../images/bg-info.png);
         background-position: center;
         background-size: cover;
+
+        @include media-breakpoint-up(lg) {
+            .description {
+                width: 50%;
+            }
+        }
     }
 
     // Motor Pages
@@ -157,14 +173,15 @@ body {
         #motor-details {
             .icon-motor {
                 z-index: 3;
-                margin-top: -28px;
+                margin-top: 24px;
+                width: 135px;
             }
 
             .vehicle-details {
                 z-index: 2;
                 background-position: center;
                 margin-top: -12px;
-                padding-bottom: 68px;
+                padding-bottom: 30px;
 
                 #vehicle-no {
                     border-radius: 2rem;
@@ -172,14 +189,21 @@ body {
                 }
             }
 
-            @include media-breakpoint-down(xs) {
+            @include media-breakpoint-up(lg) {
                 .icon-motor {
                     margin-top: -15px;
                     width: 210px;
                 }
 
                 .vehicle-details {
-                    padding-bottom: 30px;
+                    padding-bottom: 68px;
+                }
+            }
+
+            @include media-breakpoint-down(sm) {
+                .icon-motor {
+                    margin-top: 30px;
+                    width: 120px;
                 }
             }
         }
@@ -201,14 +225,14 @@ body {
         }
 
         #partners {
-            .container-fluid {
+            .container {
                 padding: 20px 200px;
                 background-image: url(../images/bg-partner.png);
             }
 
-            @include media-breakpoint-down(sm) {
-                .container-fluid {
-                    padding: 20px;
+            @include media-breakpoint-down(md) {
+                .container {
+                    padding: 10px 30px;
                 }
             }
         }
@@ -358,17 +382,20 @@ body {
     // Steps
     .bs-stepper {
         .bs-stepper-circle {
-            width: 75px;
-            height: 75px;
+            width: 35px;
+            height: 35px;
+            font-size: 15px;
             border-radius: 3rem;
-            font-size: 25px;
         }
 
         .stepper-label {
-            bottom: 35px;
+            width: 25%;
+            bottom: 15px;
+            font-size: 12px;
+            white-space: pre-wrap;
         }
 
-        @include media-breakpoint-down(md) {
+        @include media-breakpoint-up(md) {
             .bs-stepper-circle {
                 width: 55px;
                 height: 55px;
@@ -379,6 +406,18 @@ body {
                 bottom: 30px;
                 font-size: 13px;
                 white-space: pre-wrap;
+            }
+        }
+
+        @include media-breakpoint-up(lg) {
+            .bs-stepper-circle {
+                width: 75px;
+                height: 75px;
+                font-size: 25px;
+            }
+
+            .stepper-label {
+                bottom: 35px;
             }
         }
     }

@@ -328,7 +328,7 @@ class HowdenSettlement extends Command
                 'error_message' => $ex->getMessage()
             ]);
 
-            Log::error("[Cron - Howden Internal Settlement] An Error Encountered. {$ex->getMessage()}");
+            Log::error("[Cron - Howden Internal Settlement] An Error Encountered. [{$ex->getMessage()}] \n" . $ex);
         }
     }
 }

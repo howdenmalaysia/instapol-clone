@@ -2,10 +2,16 @@
 
 namespace App\Console\Commands;
 
+use App\Exports\DropOffReport\DropOffReportExport;
+use App\Mail\DropOffReportMail;
+use App\Models\Motor\Insurance;
 use App\Models\Motor\Quotation;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Maatwebsite\Excel\Facades\Excel;
 
 class DropOffReport extends Command
 {
@@ -14,7 +20,7 @@ class DropOffReport extends Command
      *
      * @var string
      */
-    protected $signature = 'drop-off {start_hour?} {end_hour?}';
+    protected $signature = 'drop-off {start_hour?} {end_hour?} {date?}';
 
     /**
      * The console command description.
@@ -67,7 +73,8 @@ class DropOffReport extends Command
 
             $range = Carbon::parse($start_time)->format('Y-m-d H:i') . '_' . Carbon::parse($end_time)->format('H:i');
 
-            Mail::to(config('setting.howden.affinity_team_email'))
+            Mail::to(config('setting.howden.insta_admin'))
+                ->cc(config('setting.howden.affinity_team_email'))
                 ->bcc(config('setting.howden.it_dev_mail'))
                 ->send(new DropOffReportMail($file, $range));
 

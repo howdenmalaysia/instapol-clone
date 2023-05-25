@@ -37,6 +37,7 @@ return [
         'invalid_vehicle_number' => 465,
         'data_not_found' => 466,
         'unable_to_get_ncd' => 467,
+        'blacklisted_vehicle' => 468,
 
         // Logic Related
         'unsupported_id_types' => 480,
@@ -49,7 +50,13 @@ return [
         'short_code' => env('HOWDEN_SHORT_CODE'),
         'affinity_team_email' => empty(env('AFFINITY_TEAM_EMAIL')) ? [] : explode(',', env('AFFINITY_TEAM_EMAIL')),
         'email_cc_list' => empty(env('EMAIL_CC_LIST')) ? [] : explode(',', env('EMAIL_CC_LIST')),
-        'it_dev_mail' => empty(env('HOWDEN_IT_DEV_MAIL')) ? [] : explode(',', env('HOWDEN_IT_DEV_MAIL'))
+        'it_dev_mail' => empty(env('HOWDEN_IT_DEV_MAIL')) ? [] : explode(',', env('HOWDEN_IT_DEV_MAIL')),
+        'insta_admin' => empty(env('INSTAADMIN_EMAIL')) ? [] : explode(',', env('INSTAADMIN_EMAIL')),
+        'contact_list' => [
+            'jeffery_chan' => 'jeffreycw.chan@my.howdengroup.com',
+            'phoebie_wong' => 'phoebie.wong@my.howdengroup.com',
+            'cheng_lai_fah' => 'laifah.cheng@my.howdengroup.com'
+        ]
     ],
     'payment' => [
         'gateway' => [

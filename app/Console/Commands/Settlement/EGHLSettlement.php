@@ -199,7 +199,7 @@ class EGHLSettlement extends Command
             Log::info("[Cron - eGHL Settlement] {$rows} records processed. [{$start_date} to {$end_date}]");
             $this->info("{$rows} records processed.");
         } catch (Exception $ex) {
-            Log::error("[Cron - eGHL Settlement] An Error Encountered. {$ex->getMessage()}");
+            Log::error("[Cron - eGHL Settlement] An Error Encountered. [{$ex->getMessage()}] \n" . $ex);
             CronJobs::create([
                 'description' => 'Send Settlement Report to eGHL',
                 'param' => json_encode([

@@ -80,7 +80,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-lg-6">
+                    <div class="col-12 col-lg-6 mt-4 mt-md-0">
                         <div class="row mb-3">
                             <div class="col-12">
                                 <h5 class="text-primary fw-bold">{{ __('frontend.motor.vehicle_details.insurance_information') }}</h5>
@@ -244,7 +244,8 @@
                         case 464: // Invalid ID Number / Mismatch
                         case 465: // Invalid Vehicle Number
                         // case 461: // Sum Insured Referred
-                        case 462: { // Gap In Cover
+                        case 462: // Gap In Cover
+                        case 468: { // Blacklisted Vehicle
                             shouldStop = true
 
                             break;

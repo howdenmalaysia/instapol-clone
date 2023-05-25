@@ -583,6 +583,7 @@ return [
             'verify_variant' => 'Please verify your car variant again as below',
             'affect_premium' => 'The total premium will be affected by your choice of variant and sum insured',
             'avcode_error' => 'Please select a variant to continue.',
+            'recon_declaration' => 'I declare that my vehicle is NOT reconditioned and acknowledge claims settlement can be disputed due to false declaration.',
             'compare_details' => [
                 'valuation' => 'Agreed / Market Value',
                 'basic_information' => 'Basic Information',
@@ -1407,6 +1408,18 @@ return [
             'insurance_company' => 'Insurance Company / Takaful Operator',
             'transaction_number' => 'Transaction Reference Number',
             'total_premium' => 'Total Annual Premium / Total Annual Contribution',
+            'you_might_interested' => 'You might also be interested in',
+        ],
+        'payment_failure_page' => [
+            'payment_failed' => 'Payment Failed',
+            'messages' => [
+                'line_1' => 'Oops! Your transaction is <span class="text-danger fw-bold">unsuccessful<span>.',
+                'line_2' => 'For any inquiries, please email us at <a href="mailto:instaPol@my.howdengroup.com">instaPol@my.howdengroup.com</a>.',
+            ],
+            'purchase_summary' => 'Purchase Summary',
+            'insurance_company' => 'Insurance Company',
+            'transaction_number' => 'Transaction Reference Number',
+            'total_premium' => 'Total Annual Premium',
             'you_might_interested' => 'You might also be interested in',
         ],
         'payment_failure_page' => [

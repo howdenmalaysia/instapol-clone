@@ -71,12 +71,11 @@
                                                         >
                                                         <span id="vehicle-number-errors"></span>
                                                     </div>
-                                                    <div class="col-3 col-md-1">
+                                                    <div class="col-3 col-md-1 ps-0 ps-md-3">
                                                         <button type="button" id="vehicle-no-continue" class="btn btn-primary text-white rounded-circle px-3 py-2">
                                                             <i class="fa-solid fa-play align-middle"></i>
                                                         </button>
                                                     </div>
-                                                    <div class="col-1"></div>
                                                 </div>
                                             </div>
                                             @if ($errors->any())
@@ -210,7 +209,7 @@
                         <x-make-easy-section />
                     </div>
                     <section id="partners">
-                        <div class="container-fluid text-center">
+                        <div class="container text-center">
                             <div class="row">
                                 <div class="col-12 p-0">
                                     <h3 class="text-uppercase text-white fw-bold py-3">{{ __('frontend.motor.partner') }}</h3>
