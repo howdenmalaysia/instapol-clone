@@ -67,7 +67,8 @@ class HowdenSettlement extends Command
                     'product',
                     'holder',
                     'promo',
-                    'premium'
+                    'premium',
+                    'address'
                 ])
                 ->where(function($query) use($start_date, $end_date) {
                     $query->whereBetween('created_at', [$start_date, $end_date])
@@ -138,6 +139,14 @@ class HowdenSettlement extends Command
                         $total_sst += $insurance_motor->roadtax->service_tax;
 
                         $physical = $insurance_motor->roadtax->myeg_fee - formatNumber(2.75 * 1.06) > 0;
+
+                        $delivery_address = formatAddress([
+                            $insurance_motor->roadtax->recipient_address_one,
+                            $insurance_motor->roadtax->recipient_address_two,
+                            $insurance_motor->roadtax->recipient_city,
+                            $insurance_motor->roadtax->recipient_postcode,
+                            $insurance_motor->roadtax->recipient_state,
+                        ]);
                     }
 
                     if(!empty($discount_amount) && $insurance->promo->promotion->discount_target === Promotion::DT_ROADTAX) {
@@ -161,12 +170,20 @@ class HowdenSettlement extends Command
                     $total_payment_gateway_charges += $gateway_charges;
                     $total_commission += $commission;
 
+                    $address = formatAddress([
+                        $insurance->address->address_one,
+                        $insurance->address->address_two,
+                        $insurance->address->city,
+                        $insurance->address->postcode,
+                        $insurance->address->state,
+                    ]);
+
                     if(array_key_exists($product->id, $row_data)) {
                         array_push($row_data[$product->id], [
                             $start_date,
                             $insurance->insurance_code,
                             $product->name,
-                            $insurance->created_at->format(self::DATETIME_FORMAT),
+                            $insurance->updated_at->format(self::DATETIME_FORMAT),
                             $insurance->inception_date,
                             $insurance->policy_number ?? $insurance->cover_note_number ?? $insurance->contract_number,
                             $insurance_motor->vehicle_number,
@@ -174,6 +191,7 @@ class HowdenSettlement extends Command
                             $insurance->holder->id_number,
                             $insurance->holder->phone_code . $insurance->holder->phone_number,
                             $insurance->holder->email_address,
+                            $address,
                             $insurance->premium->gross_premium,
                             $insurance->premium->service_tax_amount,
                             $insurance->premium->stamp_duty,
@@ -184,13 +202,14 @@ class HowdenSettlement extends Command
                             !empty($insurance->promo) && $insurance->promo->promotion->discount_target === Promotion::DT_GROSS_PREMIUM ? $discount_amount : '',
                             !empty($insurance->promo) && $insurance->promo->promotion->discount_target === Promotion::DT_ROADTAX ? $discount_amount : '',
                             empty($insurance_motor->roadtax->roadtax_renewal_fee) ? '-' : ($physical ? 'Physical' : 'Digital'),
+                            $delivery_address ?? '-',
                             $insurance_motor->roadtax->roadtax_renewal_fee ?? '',
                             $insurance_motor->roadtax->myeg_fee ?? '',
                             $insurance_motor->roadtax->e_service_fee ?? '',
                             $insurance_motor->roadtax->service_tax ?? '',
                             $roadtax_premium,
                             number_format($insurance->amount, 2),
-                            $eghl_log->service_id === 'CBI' ? $gateway_charges : '',
+                            $eghl_log->payment_method === 'DD' ? $gateway_charges : '',
                             $eghl_log->payment_method === 'CC' ? $gateway_charges : '',
                             $eghl_log->payment_method === 'WA' ? $gateway_charges : '',
                             'N/A',
@@ -205,7 +224,7 @@ class HowdenSettlement extends Command
                             $start_date,
                             $insurance->insurance_code,
                             $product->name,
-                            $insurance->created_at->format(self::DATETIME_FORMAT),
+                            $insurance->updated_at->format(self::DATETIME_FORMAT),
                             $insurance->inception_date,
                             $insurance->policy_number ?? $insurance->cover_note_number ?? $insurance->contract_number,
                             $insurance_motor->vehicle_number,
@@ -213,6 +232,7 @@ class HowdenSettlement extends Command
                             $insurance->holder->id_number,
                             $insurance->holder->phone_code . $insurance->holder->phone_number,
                             $insurance->holder->email_address,
+                            $address,
                             $insurance->premium->gross_premium,
                             $insurance->premium->service_tax_amount,
                             $insurance->premium->stamp_duty,
@@ -223,13 +243,14 @@ class HowdenSettlement extends Command
                             !empty($insurance->promo) && $insurance->promo->promotion->discount_target === Promotion::DT_GROSS_PREMIUM ? $discount_amount : '',
                             !empty($insurance->promo) && $insurance->promo->promotion->discount_target === Promotion::DT_ROADTAX ? $discount_amount : '',
                             empty($insurance_motor->roadtax->roadtax_renewal_fee) ? '-' : ($physical ? 'Physical' : 'Digital'),
+                            $delivery_address ?? '-',
                             $insurance_motor->roadtax->roadtax_renewal_fee ?? '',
                             $insurance_motor->roadtax->myeg_fee ?? '',
                             $insurance_motor->roadtax->e_service_fee ?? '',
                             $insurance_motor->roadtax->service_tax ?? '',
                             $roadtax_premium,
                             number_format($insurance->amount, 2),
-                            $eghl_log->service_id === 'CBI' ? $gateway_charges : '',
+                            $eghl_log->payment_method === 'DD' ? $gateway_charges : '',
                             $eghl_log->payment_method === 'CC' ? $gateway_charges : '',
                             $eghl_log->payment_method === 'WA' ? $gateway_charges : '',
                             'N/A',

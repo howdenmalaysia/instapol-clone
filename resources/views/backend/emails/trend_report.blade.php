@@ -16,7 +16,7 @@
 
                                         <div style="line-height: 140%; text-align: left; word-wrap: break-word;">
                                             <p style="font-size: 14px; line-height: 140%;">
-                                                Below is the table for InstaPol Weekly Report Trend View between {{ $full_range }}
+                                                Below is the table for instaPol Motor Page Weekly Report Trend View between {{ $full_range }}
                                             </p>
                                         </div>
                                     </td>
@@ -58,7 +58,7 @@
                                             </thead>
                                             <tbody>
                                                 <tr>
-                                                    <td>Total Visitor</td>
+                                                    <td>Total Motor Visitor</td>
                                                     @foreach ($data as $item)
                                                         <td>{{ $item->visitors }}</td>
                                                     @endforeach
@@ -157,7 +157,7 @@
                                 <tr>
                                     <td style="overflow-wrap:break-word;word-break:break-word;padding:10px 0px 0px 50px;font-family:arial,helvetica,sans-serif;" align="left">
                                         <div style="line-height: 140%; text-align: left; word-wrap: break-word;">
-                                            <p style="font-size: 14px; line-height: 140%;">Total Visitors</p>
+                                            <p style="font-size: 14px; line-height: 140%;">Total Motor Visitors</p>
                                         </div>
                                     </td>
                                 </tr>
@@ -180,7 +180,7 @@
                                 <tr>
                                     <td style="overflow-wrap:break-word;word-break:break-word;padding:10px 25px 10px 10px;font-family:arial,helvetica,sans-serif;" align="left">
                                         <div style="color: #000000; line-height: 140%; text-align: left; word-wrap: break-word;">
-                                            <p style="font-size: 14px; line-height: 140%;">Total visitor of instaPol (Google Analytics)</p>
+                                            <p style="font-size: 14px; line-height: 140%;">Total Motor Visitor of instaPol (Google Analytics)</p>
                                         </div>
                                     </td>
                                 </tr>
@@ -470,15 +470,26 @@
                                             <thead>
                                                 <tr>
                                                     <th>Referral Path</th>
-                                                    @foreach ($ranges as $range)
-                                                        <th>{{ $item->range }}</th>
+                                                    @foreach ($ranges as $item)
+                                                        <th>{{ $item }}</th>
                                                     @endforeach
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach ($referrals as $path => $item)
+                                                @foreach ($pages as $path => $page)
                                                     <tr>
                                                         <th>{{ $path }}</th>
+                                                        @foreach ($ranges as $week => $range)
+                                                            <td>{{ $page->$week ?? 0 }}</td>
+                                                        @endforeach
+                                                    </tr>
+                                                @endforeach
+                                                <tr>
+                                                    <th colspan="{{ count($ranges) + 1 }}">Referral Paths</th>
+                                                </tr>
+                                                @foreach ($referrals as $ref => $item)
+                                                    <tr>
+                                                        <th>{{ $ref }}</th>
                                                         @foreach ($ranges as $week => $range)
                                                             <td>{{ $item->$week ?? 0 }}</td>
                                                         @endforeach

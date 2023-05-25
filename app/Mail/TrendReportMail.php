@@ -15,6 +15,7 @@ class TrendReportMail extends Mailable
     public string $full_range;
     public Collection $trend;
     public Collection $referral_links;
+    public Collection $pages;
     public array $ranges;
 
     /**
@@ -22,11 +23,12 @@ class TrendReportMail extends Mailable
      *
      * @return void
      */
-    public function __construct(string $date_range, Collection $data, Collection $referral_links, array $date_ranges)
+    public function __construct(string $date_range, Collection $data, Collection $referral_links, Collection $pages, array $date_ranges)
     {
         $this->full_range = $date_range;
         $this->trend = $data;
         $this->referral_links = $referral_links;
+        $this->pages = $pages;
         $this->ranges = $date_ranges;
     }
 
@@ -42,6 +44,7 @@ class TrendReportMail extends Mailable
             ->with([
                 'data' => $this->trend,
                 'referrals' => $this->referral_links,
+                'pages' => $this->pages,
                 'full_range' => $this->full_range,
                 'ranges' => $this->ranges
             ]);

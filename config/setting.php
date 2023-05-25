@@ -51,6 +51,7 @@ return [
         'affinity_team_email' => empty(env('AFFINITY_TEAM_EMAIL')) ? [] : explode(',', env('AFFINITY_TEAM_EMAIL')),
         'email_cc_list' => empty(env('EMAIL_CC_LIST')) ? [] : explode(',', env('EMAIL_CC_LIST')),
         'it_dev_mail' => empty(env('HOWDEN_IT_DEV_MAIL')) ? [] : explode(',', env('HOWDEN_IT_DEV_MAIL')),
+        'insta_admin' => empty(env('INSTAADMIN_EMAIL')) ? [] : explode(',', env('INSTAADMIN_EMAIL')),
         'contact_list' => [
             'jeffery_chan' => 'jeffreycw.chan@my.howdengroup.com',
             'phoebie_wong' => 'phoebie.wong@my.howdengroup.com',

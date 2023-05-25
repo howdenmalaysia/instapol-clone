@@ -11,6 +11,7 @@ use App\Models\Motor\Insurance;
 use App\Models\Motor\Quotation;
 use Carbon\Carbon;
 use Exception;
+use Google\Analytics\Data\V1beta\Filter\StringFilter\MatchType;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
@@ -22,6 +23,7 @@ class TrendReport extends Command
 {
     public Collection $trend;
     public Collection $referral_links;
+    public Collection $pages;
     public string $date_format = 'd M';
     public string $date_time_format = 'Y-m-d H:i:s';
 
@@ -50,6 +52,7 @@ class TrendReport extends Command
 
         $this->trend = collect([]);
         $this->referral_links = collect([]);
+        $this->pages = collect([]);
     }
 
     /**
@@ -105,13 +108,21 @@ class TrendReport extends Command
 
         try {
             // Get Visitors
-            $analytics = new LaravelGoogleAnalytics();
-            $visitors = $analytics->getTotalUsersByDate(Period::create(SupportCarbon::today()->subMonths(2), SupportCarbon::today()->subWeek()->endOfWeek()));
+            $visitors = GA::dateRanges(Period::create(SupportCarbon::today()->subMonths(2), SupportCarbon::today()->subWeek()->endOfWeek()))
+                ->dimensions('landingPagePlusQueryString', 'date')
+                ->metric('totalUsers')
+                ->whereDimension('landingPagePlusQueryString', MatchType::BEGINS_WITH, '/motor')
+                ->orderByDimension('date')
+                ->keepEmptyRows(true)
+                ->get()
+                ->table;
 
             // Get Referral Link Visitors
             $landing_pages = GA::dateRanges(Period::create(SupportCarbon::today()->subMonths(2), SupportCarbon::today()->subWeek()->endOfWeek()))
                 ->dimensions('landingPagePlusQueryString', 'date')
-                ->metrics('screenPageViews')
+                ->metrics('totalUsers')
+                ->orderByDimension('date')
+                ->keepEmptyRows(true)
                 ->get();
 
             $date_ranges = $this->getWeekRange();
@@ -179,51 +190,65 @@ class TrendReport extends Command
                 route('frontend.privacy', [], false),
                 route('frontend.refund', [], false),
                 route('frontend.term-of-use', [], false),
-                route('motor.vehicle-details', [], false),
-                route('motor.compare', [], false),
-                route('motor.add-ons', [], false),
-                route('motor.policy-holder', [], false),
-                route('motor.payment-summary', [], false),
-                route('motor.payment-success', [], false),
-                route('motor.payment-failed', [], false),
             ];
 
             foreach($landing_pages->table as $landing) {
+                $referrals = false;
                 if(in_array($landing['landingPagePlusQueryString'], $exclusion)) {
                     continue;
                 }
 
-                if($landing['landingPagePlusQueryString'] === '/') {
-                    $page_name = 'DIRECT (instapol.my)';
-                } else if(strpos($landing['landingPagePlusQueryString'], '/motor') !== false) {
-                    $page_name = 'Motor Page (instapol.my/motor)';
-                } else if($landing['landingPagePlusQueryString'] === 'miea-insure.instapol.my') {
-                    $page_name = 'MIEA Insure Page (miea-insure.instapol.my)';
-                } else if($landing['landingPagePlusQueryString'] === '/bar-council') {
-                    $page_name = 'Bar Council';
-                } else if($landing['landingPagePlusQueryString'] === '/covid-19') {
-                    $page_name = 'COVID-19';
-                } else if($landing['landingPagePlusQueryString'] === '/miea') {
-                    $page_name = 'MIEA (PI)';
-                } else if(strpos($landing['landingPagePlusQueryString'], '/?r=') !== false) {
-                    $page_name = str_replace('/?r=', '', $landing['landingPagePlusQueryString']);
-                } else if(strpos($landing['landingPagePlusQueryString'], '/?fbclid=') !== false) {
-                    $page_name = 'Facebook Clicks';
+                if(strpos($landing['landingPagePlusQueryString'], '/?') !== false) {
+                    $referrals = true;
+
+                    if(strpos($landing['landingPagePlusQueryString'], '/?fbclid=') !== false) {
+                        $page_name = 'Facebook Clicks';
+                    } else {
+                        $page_name = str_replace(['/?', 'r', '='], '', $landing['landingPagePlusQueryString']);
+                    }
                 } else {
-                    $page_name = $landing['landingPagePlusQueryString'];
+                    if($landing['landingPagePlusQueryString'] === '/') {
+                        $page_name = 'HOMEPAGE (instapol.my)';
+                    } else if(strpos($landing['landingPagePlusQueryString'], '/motor') !== false) {
+                        $page_name = 'Motor Page (instapol.my/motor)';
+                    } else if($landing['landingPagePlusQueryString'] === 'miea-insure.instapol.my') {
+                        $page_name = 'MIEA Insure Page (miea-insure.instapol.my)';
+                    } else if($landing['landingPagePlusQueryString'] === '/bar-council') {
+                        $page_name = 'Bar Council';
+                    } else if($landing['landingPagePlusQueryString'] === '/covid-19') {
+                        $page_name = 'COVID-19';
+                    } else if($landing['landingPagePlusQueryString'] === '/miea') {
+                        $page_name = 'MIEA (PI)';
+                    } else {
+                        $page_name = $landing['landingPagePlusQueryString'];
+                    }
                 }
 
                 $access_date = Carbon::parse($landing['date']);
 
-                if(!empty($this->referral_links[$page_name]->{$access_date->weekOfYear})) {
-                    $this->referral_links[$page_name]->{$access_date->weekOfYear} += $landing['screenPageViews'];
-                } else {
-                    if(!empty($this->referral_links[$page_name])) {
-                        $this->referral_links[$page_name]->{$access_date->weekOfYear} = $landing['screenPageViews'];
+                if($referrals) {
+                    if(!empty($this->referral_links[$page_name]->{$access_date->weekOfYear})) {
+                        $this->referral_links[$page_name]->{$access_date->weekOfYear} += $landing['totalUsers'];
                     } else {
-                        $this->referral_links[$page_name] = (object) [
-                            $access_date->weekOfYear => $landing['screenPageViews']
-                        ];
+                        if(!empty($this->referral_links[$page_name])) {
+                            $this->referral_links[$page_name]->{$access_date->weekOfYear} = $landing['totalUsers'];
+                        } else {
+                            $this->referral_links[$page_name] = (object) [
+                                $access_date->weekOfYear => $landing['totalUsers']
+                            ];
+                        }
+                    }
+                } else {
+                    if(!empty($this->pages[$page_name]->{$access_date->weekOfYear})) {
+                        $this->pages[$page_name]->{$access_date->weekOfYear} += $landing['totalUsers'];
+                    } else {
+                        if(!empty($this->pages[$page_name])) {
+                            $this->pages[$page_name]->{$access_date->weekOfYear} = $landing['totalUsers'];
+                        } else {
+                            $this->pages[$page_name] = (object) [
+                                $access_date->weekOfYear => $landing['totalUsers']
+                            ];
+                        }
                     }
                 }
             }
@@ -231,16 +256,17 @@ class TrendReport extends Command
             $full_range = $range_start . ' - ' . $range_end;
 
             $cc_list = [
-                config('setting.howden.it_dev_mail'),
+                config('setting.howden.affinity_team_email'),
                 config('setting.howden.contact_list.jeffery_chan'),
                 config('setting.howden.contact_list.phoebie_wong'),
                 config('setting.howden.contact_list.cheng_lai_fah')
             ];
 
             // Send Report
-            Mail::to('davidchoy98@gmail.com')
-                // ->cc($cc_list)
-                ->send(new TrendReportMail($full_range, $this->trend, $this->referral_links, $date_ranges));
+            Mail::to(config('setting.howden.insta_admin'))
+                ->cc($cc_list)
+                ->bcc(config('setting.howden.it_dev_mail'))
+                ->send(new TrendReportMail($full_range, $this->trend, $this->referral_links, $this->pages, $date_ranges));
 
             // Create Logs in DB
             CronJobs::create([

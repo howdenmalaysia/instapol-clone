@@ -29,7 +29,6 @@ class HowdenReportExport implements FromView, WithColumnFormatting, ShouldAutoSi
     {
         return [
             'B' => NumberFormat::FORMAT_NUMBER,
-            'L' => '#,##0.00_-',
             'M' => '#,##0.00_-',
             'N' => '#,##0.00_-',
             'O' => '#,##0.00_-',
@@ -38,7 +37,7 @@ class HowdenReportExport implements FromView, WithColumnFormatting, ShouldAutoSi
             'R' => '#,##0.00_-',
             'S' => '#,##0.00_-',
             'T' => '#,##0.00_-',
-            'V' => '#,##0.00_-',
+            'U' => '#,##0.00_-',
             'W' => '#,##0.00_-',
             'X' => '#,##0.00_-',
             'Y' => '#,##0.00_-',
@@ -50,6 +49,7 @@ class HowdenReportExport implements FromView, WithColumnFormatting, ShouldAutoSi
             'AE' => '#,##0.00_-',
             'AF' => '#,##0.00_-',
             'AG' => '#,##0.00_-',
+            'AH' => '#,##0.00_-',
         ];
     }
 }
