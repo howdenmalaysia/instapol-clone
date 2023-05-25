@@ -50,7 +50,6 @@ class DropOffReport extends Command
 
         try {
             $date = Carbon::now()->format('Y-m-d');
-            $date = '2023-05-09';
             $start_time = $end_time = implode(' ', [$date, Carbon::now()->startOfHour()->format('H:i')]);
             if(!empty($this->argument('start_hour')) && !empty($this->argument('end_hour'))) {
                 $start_time = $date . ' ' . $this->argument('start_hour') . ':00:00';
