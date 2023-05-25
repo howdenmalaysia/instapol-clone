@@ -82,7 +82,7 @@ class VehicleDetails implements FromCollection, WithColumnFormatting, WithEvents
         return [
             $result->updated_at,
             $result->vehicle_number,
-            $make_model,
+            $make_model ?? '-',
             $vehicle->policy_expiry_date,
             $param->id_no,
             $param->postcode,
