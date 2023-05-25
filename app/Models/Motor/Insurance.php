@@ -63,7 +63,7 @@ class Insurance extends Model
     {
         return $this->hasOne(InsuranceMotor::class, 'insurance_id', 'id');
     }
-    
+
     public function address()
     {
         return $this->hasOne(InsuranceAddress::class);
@@ -82,6 +82,12 @@ class Insurance extends Model
     public function premium()
     {
         return $this->hasOne(InsurancePremium::class);
+    }
+
+    public function scopeWithoutTimestamps()
+    {
+        $this->timestamps = false;
+        return $this;
     }
 
     public static function findByInsuranceCode(string $insurance_code) : self

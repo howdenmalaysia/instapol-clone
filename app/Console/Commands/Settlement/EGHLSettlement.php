@@ -190,10 +190,10 @@ class EGHLSettlement extends Command
                 'status' => CronJobs::STATUS_COMPLETED
             ]);
 
-            Insurance::whereIn('id', $records->pluck('id'))
+            Insurance::withoutTimestamps()
+                ->whereIn('id', $records->pluck('id'))
                 ->update([
-                    'settlement_on' => Carbon::now()->format(self::DATETIME_FORMAT),
-                    'timestamps' => false
+                    'settlement_on' => Carbon::now()->format(self::DATETIME_FORMAT)
                 ]);
 
             Log::info("[Cron - eGHL Settlement] {$rows} records processed. [{$start_date} to {$end_date}]");
