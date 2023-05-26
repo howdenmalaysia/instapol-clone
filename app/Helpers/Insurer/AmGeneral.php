@@ -1097,11 +1097,10 @@ class AmGeneral implements InsurerLibraryInterface
 		$B57C_ext_cvr;
 		$B57C_exist = false;
 		if($cParams->fullquote && $this->scopeOfCover == 'COMP PREM'){
-			$get_B57C = [];
-			array_push($get_B57C, [
+			$get_B57C = [array(
 				"extraCoverageCode" => "B57C",
 				"inclusionOfPartialCoverSIPercent" => "20",
-			]);
+			)];
 			
 			$B57C_text = array(
 				"vehicleClass"=>$cParams->vehicleClass,
