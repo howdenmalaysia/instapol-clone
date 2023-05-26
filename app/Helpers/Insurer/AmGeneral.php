@@ -1094,7 +1094,7 @@ class AmGeneral implements InsurerLibraryInterface
 		$inceptionDate = $cParams->input->vehicle->inception_date;
 		$expiryDate = $cParams->input->vehicle->expiry_date;
 		//coverage
-		$B57C_ext_cvr;
+		$B57C_ext_cvr = [];
 		$B57C_exist = false;
 		if($cParams->fullquote && $this->scopeOfCover == 'COMP PREM'){
 			$get_B57C = [array(
@@ -1137,7 +1137,7 @@ class AmGeneral implements InsurerLibraryInterface
 
 					return $this->abort($message);
 				}
-				$B57C_ext_cvr = $B57C_decrypted->extraCoverageList[0];
+				$B57C_ext_cvr = $B57C_decrypted->extraCoverageList;
 				$B57C_exist = true;
 			}
 			else{
@@ -1280,11 +1280,11 @@ class AmGeneral implements InsurerLibraryInterface
 
                 return $this->abort($message);
             }
-			if($B57C_exist){
+			if($B57C_exist == true){
 				array_push($decrypted->extraCoverageList, (object)[
-					"extraCoverageCode" => $B57C_ext_cvr['extraCoverageCode'],
-					"extraCoverageDesc" => $B57C_ext_cvr['extraCoverageDesc'],
-					"premium" => $B57C_ext_cvr['premium'],
+					"extraCoverageCode" => $B57C_ext_cvr[0]->extraCoverageCode,
+					"extraCoverageDesc" => $B57C_ext_cvr[0]->extraCoverageDesc,
+					"premium" => $B57C_ext_cvr[0]->premium,
 				]);
 			}
 			$data = (object)[
