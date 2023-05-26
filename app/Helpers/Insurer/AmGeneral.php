@@ -2179,6 +2179,11 @@ class AmGeneral implements InsurerLibraryInterface
 
                 return $this->abort($message);
             }
+			else if(isset($json->errorCode) && $json->errorCode == "E180"){
+				$message = "No renewal more than 2 months.";
+				
+                return $this->abort($message);
+			}
             $result->response = $json;
         } else {
 			// Update the API log
