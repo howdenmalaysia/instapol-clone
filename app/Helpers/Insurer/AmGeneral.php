@@ -1289,12 +1289,11 @@ class AmGeneral implements InsurerLibraryInterface
 					]);
 				}
 				else{
-					array_push($decrypted, (object)[
-						"extraCoverageList" => [(object)[
-							"extraCoverageCode" => $B57C_ext_cvr[0]->extraCoverageCode,
-							"extraCoverageDesc" => $B57C_ext_cvr[0]->extraCoverageDesc,
-							"premium" => $B57C_ext_cvr[0]->premium,
-					]]]);
+					$decrypted->extraCoverageList = [(object)[
+						"extraCoverageCode" => $B57C_ext_cvr[0]->extraCoverageCode,
+						"extraCoverageDesc" => $B57C_ext_cvr[0]->extraCoverageDesc,
+						"premium" => $B57C_ext_cvr[0]->premium,
+					]];
 				}
 			}
 			$data = (object)[
