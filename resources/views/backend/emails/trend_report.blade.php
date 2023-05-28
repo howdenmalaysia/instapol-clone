@@ -178,7 +178,7 @@
                         <table style="font-family:arial,helvetica,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
                             <tbody>
                                 <tr>
-                                    <td style="overflow-wrap:break-word;word-break:break-word;padding:10px 25px 10px 10px;font-family:arial,helvetica,sans-serif;" align="left">
+                                    <td style="overflow-wrap:break-word;word-break:break-word;padding:0px 25px 10px 10px;font-family:arial,helvetica,sans-serif;" align="left">
                                         <div style="color: #000000; line-height: 140%; text-align: left; word-wrap: break-word;">
                                             <p style="font-size: 14px; line-height: 140%;">Total Motor Visitor of instaPol (Google Analytics)</p>
                                         </div>
@@ -206,7 +206,7 @@
                         <table style="font-family:arial,helvetica,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
                             <tbody>
                                 <tr>
-                                    <td style="overflow-wrap:break-word;word-break:break-word;padding:10px 0px 0px 50px;font-family:arial,helvetica,sans-serif;" align="left">
+                                    <td style="overflow-wrap:break-word;word-break:break-word;padding:20px 0px 0px 50px;font-family:arial,helvetica,sans-serif;" align="left">
                                         <div style="line-height: 140%; text-align: left; word-wrap: break-word;">
                                             <p style="font-size: 14px; line-height: 140%;">Total Leads</p>
                                         </div>
@@ -229,7 +229,7 @@
                         <table style="font-family:arial,helvetica,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
                             <tbody>
                                 <tr>
-                                    <td style="overflow-wrap:break-word;word-break:break-word;padding:10px 25px 10px 10px;font-family:arial,helvetica,sans-serif;" align="left">
+                                    <td style="overflow-wrap:break-word;word-break:break-word;padding:0px 25px 10px 10px;font-family:arial,helvetica,sans-serif;" align="left">
                                         <div style="color: #000000; line-height: 140%; text-align: left; word-wrap: break-word;">
                                             <p style="font-size: 14px; line-height: 140%;">Total users that entered vehicle details page (differentiate by vehicle number)</p>
                                         </div>
@@ -257,7 +257,7 @@
                         <table style="font-family:arial,helvetica,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
                             <tbody>
                                 <tr>
-                                    <td style="overflow-wrap:break-word;word-break:break-word;padding:10px 0px 0px 50px;font-family:arial,helvetica,sans-serif;" align="left">
+                                    <td style="overflow-wrap:break-word;word-break:break-word;padding:20px 0px 0px 50px;font-family:arial,helvetica,sans-serif;" align="left">
                                         <div style="line-height: 140%; text-align: left; word-wrap: break-word;">
                                             <p style="font-size: 14px; line-height: 140%;">Total Eligible Leads</p>
                                         </div>
@@ -280,7 +280,7 @@
                         <table style="font-family:arial,helvetica,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
                             <tbody>
                                 <tr>
-                                    <td style="overflow-wrap:break-word;word-break:break-word;padding:10px 25px 10px 10px;font-family:arial,helvetica,sans-serif;" align="left">
+                                    <td style="overflow-wrap:break-word;word-break:break-word;padding:0px 25px 10px 10px;font-family:arial,helvetica,sans-serif;" align="left">
                                         <div style="color: #000000; line-height: 140%; text-align: left; word-wrap: break-word;">
                                             <p style="font-size: 14px; line-height: 140%;">Total users that entered vehicle details number and it is eligible for renewal (2 month before expiry)</p>
                                         </div>
@@ -308,7 +308,7 @@
                         <table style="font-family:arial,helvetica,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
                             <tbody>
                                 <tr>
-                                    <td style="overflow-wrap:break-word;word-break:break-word;padding:10px 0px 0px 50px;font-family:arial,helvetica,sans-serif;" align="left">
+                                    <td style="overflow-wrap:break-word;word-break:break-word;padding:20px 0px 0px 50px;font-family:arial,helvetica,sans-serif;" align="left">
                                         <div style="line-height: 140%; text-align: left; word-wrap: break-word;">
                                             <p style="font-size: 14px; line-height: 140%;">Total Sales</p>
                                         </div>
@@ -331,7 +331,7 @@
                         <table style="font-family:arial,helvetica,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
                             <tbody>
                                 <tr>
-                                    <td style="overflow-wrap:break-word;word-break:break-word;padding:10px 25px 10px 10px;font-family:arial,helvetica,sans-serif;" align="left">
+                                    <td style="overflow-wrap:break-word;word-break:break-word;padding:0px 25px 10px 10px;font-family:arial,helvetica,sans-serif;" align="left">
                                         <div style="color: #000000; line-height: 140%; text-align: left; word-wrap: break-word;">
                                             <p style="font-size: 14px; line-height: 140%;">Total users that completed the insurance purchase</p>
                                         </div>
@@ -359,7 +359,7 @@
                         <table style="font-family:arial,helvetica,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
                             <tbody>
                                 <tr>
-                                    <td style="overflow-wrap:break-word;word-break:break-word;padding:10px 0px 0px 50px;font-family:arial,helvetica,sans-serif;" align="left">
+                                    <td style="overflow-wrap:break-word;word-break:break-word;padding:20px 0px 0px 50px;font-family:arial,helvetica,sans-serif;" align="left">
                                         <div style="line-height: 140%; text-align: left; word-wrap: break-word;">
                                             <p style="font-size: 14px; line-height: 140%;">Lead Generation Rate</p>
                                         </div>
@@ -382,7 +382,7 @@
                         <table style="font-family:arial,helvetica,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
                             <tbody>
                                 <tr>
-                                    <td style="overflow-wrap:break-word;word-break:break-word;padding:10px 25px 10px 10px;font-family:arial,helvetica,sans-serif;" align="left">
+                                    <td style="overflow-wrap:break-word;word-break:break-word;padding:0px 25px 10px 10px;font-family:arial,helvetica,sans-serif;" align="left">
                                         <div style="color: #000000; line-height: 140%; text-align: left; word-wrap: break-word;">
                                             <p style="font-size: 14px; line-height: 140%;">Total Lead / Total Visitor</p>
                                         </div>
@@ -410,7 +410,7 @@
                         <table style="font-family:arial,helvetica,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
                             <tbody>
                                 <tr>
-                                    <td style="overflow-wrap:break-word;word-break:break-word;padding:10px 0px 30px 50px;font-family:arial,helvetica,sans-serif;" align="left">
+                                    <td style="overflow-wrap:break-word;word-break:break-word;padding:20px 0px 30px 50px;font-family:arial,helvetica,sans-serif;" align="left">
                                         <div style="line-height: 140%; text-align: left; word-wrap: break-word;">
                                             <p style="font-size: 14px; line-height: 140%;">Conversion Rate</p>
                                         </div>
@@ -433,7 +433,7 @@
                         <table style="font-family:arial,helvetica,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
                             <tbody>
                                 <tr>
-                                    <td style="overflow-wrap:break-word;word-break:break-word;padding:10px 25px 10px 10px;font-family:arial,helvetica,sans-serif;" align="left">
+                                    <td style="overflow-wrap:break-word;word-break:break-word;padding:0px 25px 10px 10px;font-family:arial,helvetica,sans-serif;" align="left">
                                         <div style="color: #000000; line-height: 140%; text-align: left; word-wrap: break-word;">
                                             <p style="font-size: 14px; line-height: 140%;">Total Sales / Total Eligible Lead</p>
                                         </div>
