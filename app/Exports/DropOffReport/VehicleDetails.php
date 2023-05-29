@@ -22,13 +22,13 @@ class VehicleDetails implements FromCollection, WithColumnFormatting, WithEvents
 {
     use RegistersEventListeners;
 
-    protected $start_time;
-    protected $end_time;
+    protected $start;
+    protected $end;
 
-    public function __construct(string $start_time, string $end_time)
+    public function __construct(string $start, string $end)
     {
-        $this->start_time = $start_time;
-        $this->end_time = $end_time;
+        $this->start = $start;
+        $this->end = $end;
     }
 
     /**
@@ -36,8 +36,8 @@ class VehicleDetails implements FromCollection, WithColumnFormatting, WithEvents
     */
     public function collection()
     {
-        $quotations = Quotation::where('updated_at', '>=', $this->start_time)
-            ->where('updated_at', '<=', $this->end_time)
+        $quotations = Quotation::where('updated_at', '>=', $this->start)
+            ->where('updated_at', '<=', $this->end)
             ->where('compare_page', 0)
             ->orderBy('id', 'DESC')
             ->get()

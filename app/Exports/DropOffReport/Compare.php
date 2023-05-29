@@ -21,13 +21,13 @@ class Compare implements FromCollection, WithColumnFormatting, WithEvents, WithH
 {
     use RegistersEventListeners;
 
-    protected $start_time;
-    protected $end_time;
+    protected $start;
+    protected $end;
 
-    public function __construct(string $start_time, string $end_time)
+    public function __construct(string $start, string $end)
     {
-        $this->start_time = $start_time;
-        $this->end_time = $end_time;
+        $this->start = $start;
+        $this->end = $end;
     }
 
     /**
@@ -39,8 +39,8 @@ class Compare implements FromCollection, WithColumnFormatting, WithEvents, WithH
         $compare = Quotation::with('insurance_motor')
             ->doesntHave('insurance_motor')
             ->where('compare_page', 1)
-            ->where('updated_at', '>=', $this->start_time)
-            ->where('updated_at', '<=', $this->end_time)
+            ->where('updated_at', '>=', $this->start)
+            ->where('updated_at', '<=', $this->end)
             ->orderBy('id', 'DESC')
             ->get()
             ->unique('vehicle_number')
