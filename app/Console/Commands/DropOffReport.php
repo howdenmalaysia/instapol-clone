@@ -53,10 +53,12 @@ class DropOffReport extends Command
             $end_date = Carbon::now()->subDay()->endOfDay()->format('Y-m-d H:i:s');
             if(!empty($this->argument('start_date'))) {
                 $start_date = Carbon::parse($this->argument('start_date'))->startOfDay()->format('Y-m-d H:i:s');
+                $end_date = Carbon::now()->endOfDay()->format('Y-m-d H:i:s');
             }
 
             if(!empty($this->argument('end_date'))) {
-                $start_date = Carbon::parse($this->argument('end_date'))->startOfDay()->format('Y-m-d H:i:s');
+                $start_date = Carbon::parse($this->argument('end_date'))->subDay()->startOfDay()->format('Y-m-d H:i:s');
+                $end_date = Carbon::parse($this->argument('end_date'))->endOfDay()->format('Y-m-d H:i:s');
             }
 
             Log::info("[Cron - Drop-Off Report] Handing Over to Exports.");
