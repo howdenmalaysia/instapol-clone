@@ -93,18 +93,24 @@ class MotorRenewalNotice extends Command
                     $rows++;
                 });
 
+                $_log = json_decode($log->param);
+                $_log->message = "{$rows} insurance records processed.";
+
                 CronJobs::where('id', $log->id)
                         ->update([
                             'status' => CronJobs::STATUS_COMPLETED,
-                            'param' => json_encode(array_merge(json_decode($log->param), ['message' => "{$rows} insurance records processed."]))
+                            'param' => json_encode($_log)
                         ]);
             } else {
                 Log::info("[Motor Renewal Notice] None of the insurance records expires in [{$first}, {$second}, {$third}]");
 
+                $_log = json_decode($log->param);
+                $_log->message = "None of the insurance records expires in [{$first}, {$second}, {$third}]";
+
                 CronJobs::where('id', $log->id)
                     ->update([
                         'status' => CronJobs::STATUS_COMPLETED,
-                        'param' => json_encode(array_merge(json_decode($log->param), ['message' => "None of the insurance records expires in [{$first}, {$second}, {$third}]"]))
+                        'param' => json_encode($_log)
                     ]);
             }
         } catch (Exception $ex) {
