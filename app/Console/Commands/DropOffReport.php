@@ -20,14 +20,14 @@ class DropOffReport extends Command
      *
      * @var string
      */
-    protected $signature = 'drop-off {start_hour?} {end_hour?} {date?}';
+    protected $signature = 'drop-off {start_date?} {end_date?}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'To generate hourly drop-off report to instaPol Team.';
+    protected $description = 'To generate daily drop-off report to instaPol Team.';
 
     /**
      * Create a new command instance.
@@ -49,28 +49,27 @@ class DropOffReport extends Command
         Log::info("[Cron - Drop-Off Report] Start Generating Report.");
 
         try {
-            $date = Carbon::now()->format('Y-m-d');
-            $start_time = $end_time = implode(' ', [$date, Carbon::now()->startOfHour()->format('H:i')]);
-            if(!empty($this->argument('start_hour')) && !empty($this->argument('end_hour'))) {
-                $start_time = $date . ' ' . $this->argument('start_hour') . ':00:00';
-                $end_time = $date . ' ' . $this->argument('end_hour') . ':59:59';
+            $start_date = Carbon::now()->subDay()->startOfDay()->format('Y-m-d H:i:s');
+            $end_date = Carbon::now()->subDay()->endOfDay()->format('Y-m-d H:i:s');
+            if(!empty($this->argument('start_date'))) {
+                $start_date = Carbon::parse($this->argument('start_date'))->startOfDay()->format('Y-m-d H:i:s');
             }
 
-            if(!empty($this->argument('date'))) {
-                $date = Carbon::parse($this->argument('date'))->format('Y-m-d');
+            if(!empty($this->argument('end_date'))) {
+                $start_date = Carbon::parse($this->argument('end_date'))->startOfDay()->format('Y-m-d H:i:s');
             }
 
             Log::info("[Cron - Drop-Off Report] Handing Over to Exports.");
-            $batch_name = Carbon::parse($start_time)->format('Y-m-d_H_i') . '_' . Carbon::parse($end_time)->format('H_i');
+            $batch_name = Carbon::parse($start_date)->format('Y-m-d_H_i') . '_' . Carbon::parse($end_date)->format('H_i');
             $file = "{$batch_name}_drop_off_report.xlsx";
-            $export = new DropOffReportExport($start_time, $end_time);
+            $export = new DropOffReportExport($start_date, $end_date);
             $result = $export->store($file);
 
             if(!$result) {
                 throw new Exception('Failed to Genearte Excel File.');
             }
 
-            $range = Carbon::parse($start_time)->format('Y-m-d H:i') . '_' . Carbon::parse($end_time)->format('H:i');
+            $range = Carbon::parse($start_date)->format('Y-m-d H:i') . '_' . Carbon::parse($end_date)->format('H:i');
 
             Mail::to(config('setting.howden.insta_admin'))
                 ->cc(config('setting.howden.affinity_team_email'))
