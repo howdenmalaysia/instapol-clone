@@ -174,6 +174,12 @@ class AmGeneral implements InsurerLibraryInterface
 		foreach ($vix_variant->response->productList as $product) {
 			if($product->scopeOfCover == $this->scopeOfCover) {
 				$get_product = $product;
+				$get_product_ext = '';
+				if(isset($product->extraCoverageList) && !empty($product->extraCoverageList)){
+					foreach($product->extraCoverageList as $avai_ext){
+						array_push($get_product_ext,$avai_ext->extraCoverageCode);
+					}
+				}
 				$scope = true;
 			}
 		}
@@ -235,7 +241,7 @@ class AmGeneral implements InsurerLibraryInterface
 			'header' => $vix_variant->header,
 			'vehicleClass' => $get_product->vehicleClass ?? $vix_variant->response->productList[0]->vehicleClass,
 			'isRoadTaxAvail' => $vix_variant->response->isRoadTaxAvail,
-			'extraCoverageList' => $get_product->extraCoverageList ?? $vix_variant->response->productList[0]->extraCoverageList,
+			'extraCoverageList' => $get_product_ext,
 			'defaultDriver' => $defaultDriver,
             'response' => new VIXNCDResponse([
                 'chassis_number' => $vix->response->chassisNo,
@@ -468,7 +474,12 @@ class AmGeneral implements InsurerLibraryInterface
             $net_premium = formatNumber($motor_premium->response->netPremium);
 
             // Remove Extra Cover which is not entitled
-            $available_benefits = self::EXTRA_COVERAGE_LIST;
+			if(!empty($vehicle_vix->extraCoverageList)){
+				$available_benefits = $vehicle_vix->extraCoverageList;
+			}
+			else{
+				$available_benefits = self::EXTRA_COVERAGE_LIST;
+			}
 			if($this->scopeOfCover == 'COMP PLUS'){
 				$available_benefits = array_filter($available_benefits, function ($benefits) {
 					return $benefits != 'B57C';
