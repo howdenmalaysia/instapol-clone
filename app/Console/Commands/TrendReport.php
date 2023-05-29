@@ -194,7 +194,7 @@ class TrendReport extends Command
 
             foreach($landing_pages->table as $landing) {
                 $referrals = false;
-                if(in_array($landing['landingPagePlusQueryString'], $exclusion)) {
+                if(in_array($landing['landingPagePlusQueryString'], $exclusion) || $landing['landingPagePlusQueryString'] === '(not set)' || empty($landing['landingPagePlusQueryString'])) {
                     continue;
                 }
 
