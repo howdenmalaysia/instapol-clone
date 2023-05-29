@@ -44,9 +44,9 @@ class MotorRenewalNotice extends Command
      */
     public function handle()
     {
-        $first = Carbon::now()->subMonth()->format('Y-m-d');
-        $second = Carbon::now()->subWeeks(2)->format('Y-m-d');
-        $third = Carbon::now()->subWeek()->format('Y-m-d');
+        $first = Carbon::now()->addMonth()->format('Y-m-d');
+        $second = Carbon::now()->addWeeks(2)->format('Y-m-d');
+        $third = Carbon::now()->addWeek()->format('Y-m-d');
         $rows = 0;
 
         $log = CronJobs::create([
@@ -65,7 +65,6 @@ class MotorRenewalNotice extends Command
                     $query->orWhere('expiry_date', $second);
                     $query->orWhere('expiry_date', $third);
                 })
-                ->whereIn('insurance_status', [Insurance::STATUS_PAYMENT_ACCEPTED, Insurance::STATUS_POLICY_ISSUED])
                 ->get();
 
             if(count($insurance) > 0) {
@@ -91,17 +90,21 @@ class MotorRenewalNotice extends Command
                         ->bcc(config('setting.howden.it_dev_mail'))
                         ->send(new RenewalNoticeMail($data));
 
-                    CronJobs::where('id', $log->id)
-                        ->update([
-                            'status' => CronJobs::STATUS_COMPLETED
-                        ]);
+                    $rows++;
                 });
+
+                CronJobs::where('id', $log->id)
+                        ->update([
+                            'status' => CronJobs::STATUS_COMPLETED,
+                            'message' => "{$rows} insurance records processed."
+                        ]);
             } else {
                 Log::info("[Motor Renewal Notice] None of the insurance records expires in [{$first}, {$second}, {$third}]");
 
                 CronJobs::where('id', $log->id)
                     ->update([
-                        'status' => CronJobs::STATUS_COMPLETED
+                        'status' => CronJobs::STATUS_COMPLETED,
+                        'message' => "None of the insurance records expires in [{$first}, {$second}, {$third}]"
                     ]);
             }
         } catch (Exception $ex) {
