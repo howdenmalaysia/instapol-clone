@@ -58,7 +58,7 @@ class Kernel extends ConsoleKernel
         $schedule->command(TrendReport::class)->weeklyOn(1, '08:30');
 
         // 4. Drop Off Report
-        $schedule->command(DropOffReport::class)->hourly();
+        $schedule->command(DropOffReport::class)->dailyAt('08:00');
     }
 
     /**
