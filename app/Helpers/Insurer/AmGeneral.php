@@ -174,7 +174,7 @@ class AmGeneral implements InsurerLibraryInterface
 		foreach ($vix_variant->response->productList as $product) {
 			if($product->scopeOfCover == $this->scopeOfCover) {
 				$get_product = $product;
-				$get_product_ext = '';
+				$get_product_ext = [];
 				if(isset($product->extraCoverageList) && !empty($product->extraCoverageList)){
 					foreach($product->extraCoverageList as $avai_ext){
 						array_push($get_product_ext,$avai_ext->extraCoverageCode);
