@@ -79,10 +79,10 @@ class MotorRenewalNotice extends Command
 
                     $query_param = '?p=' . base64_encode(openssl_encrypt($details, 'aes-256-gcm', 'Fr0mR3n3w@lN0TiC3', 0, $iv, $tag)) . '&t=' . base64_encode($iv . '::' . $tag);
 
-                    $data = (object) [
+                    $data = [
                         'vehicle_number' => $_ins->motor->car_plate_number,
                         'email_address' => $_ins->holder->email,
-                        'url' => $query_param
+                        'url' => route('motor.index') . $query_param
                     ];
 
                     Mail::to($_ins->holder->email)
