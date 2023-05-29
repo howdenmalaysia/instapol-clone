@@ -85,7 +85,7 @@ class MotorRenewalNotice extends Command
                         'url' => route('motor.index') . $query_param
                     ];
 
-                    Mail::to($_ins->holder->email)
+                    Mail::to($_ins->holder->email_address)
                         ->cc([config('setting.howden.affinity_team_email'), config('setting.howden.email_cc_list')])
                         ->bcc(config('setting.howden.it_dev_mail'))
                         ->send(new RenewalNoticeMail($data));
