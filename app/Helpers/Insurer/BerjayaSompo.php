@@ -496,8 +496,8 @@ class BerjayaSompo implements InsurerLibraryInterface
             //'quotation_number' => $motor_premium->response->QUOTATION_NO,
             'sum_insured' => formatNumber($motor_premium->response->SUM_INSURED),
             'sum_insured_type' => 'Agreed Value',
-            'min_sum_insured' => formatNumber($vehicle->min_sum_insured),
-            'max_sum_insured' => formatNumber($vehicle->max_sum_insured),
+            'max_sum_insured' => formatNumber(roundSumInsured($motor_premium->response->SUM_INSURED, self::ADJUSTMENT_RATE_UP, true, self::MAX_SUM_INSURED)),
+            'min_sum_insured' => formatNumber(roundSumInsured($motor_premium->response->SUM_INSURED, self::ADJUSTMENT_RATE_DOWN, false, self::MIN_SUM_INSURED)),
             'named_drivers_needed' => false
         ]);
 
