@@ -1,1 +1,1 @@
-<p>Please find the attached Hourly Drop Off Report from {{ $batch }}</p>
+<p>Please find the attached Daily Drop Off Report from {{ $batch }}</p>
