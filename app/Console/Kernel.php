@@ -47,6 +47,7 @@ class Kernel extends ConsoleKernel
 
         /// d. Monthly Howden Internal Settlement [First Business Day of Each Month]
         $schedule->command(MonthlySettlement::class)
+            ->at('10:10')
             ->when(function () {
                 return Carbon::now()->isSameDay($this->firstBusinessDay());
             });
