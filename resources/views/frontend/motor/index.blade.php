@@ -209,7 +209,7 @@
                         <x-make-easy-section />
                     </div>
                     <section id="partners">
-                        <div class="container text-center">
+                        <div class="insurers-container text-center">
                             <div class="row">
                                 <div class="col-12 p-0">
                                     <h3 class="text-uppercase text-white fw-bold py-3">{{ __('frontend.motor.partner') }}</h3>
