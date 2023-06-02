@@ -68,9 +68,9 @@ class MotorRenewalNotice extends Command
                 ->get();
 
             if(count($insurance) > 0) {
-                $insurance->map(function($_ins) use($log, $rows) {
+                $insurance->map(function($_ins) use($rows) {
                     // Generate query strings
-                    $details = 'vehicle_no=' . $_ins->motor->car_plate_number . '&postcode=' . $_ins->address->postcode .
+                    $details = 'vehicle_no=' . $_ins->motor->vehicle_number . '&postcode=' . $_ins->address->postcode .
                     '&email=' . $_ins->holder->email_address . '&phone_no=0' . $_ins->holder->phone_number . '&id_number=' . $_ins->holder->id_number .
                     '&id_type=' . $_ins->holder->id_type_id;
 
@@ -79,32 +79,38 @@ class MotorRenewalNotice extends Command
 
                     $query_param = '?p=' . base64_encode(openssl_encrypt($details, 'aes-256-gcm', 'Fr0mR3n3w@lN0TiC3', 0, $iv, $tag)) . '&t=' . base64_encode($iv . '::' . $tag);
 
-                    $data = (object) [
-                        'vehicle_number' => $_ins->motor->car_plate_number,
-                        'email_address' => $_ins->holder->email,
-                        'url' => $query_param
+                    $data = [
+                        'vehicle_number' => $_ins->motor->vehicle_number,
+                        'email_address' => $_ins->holder->email_address,
+                        'url' => route('motor.index') . $query_param
                     ];
 
-                    Mail::to($_ins->holder->email)
-                        ->cc([config('setting.howden.affinity_team_email'), config('setting.howden.email_cc_list')])
+                    Mail::to($_ins->holder->email_address)
+                        ->cc(array_merge(config('setting.howden.affinity_team_email'), config('setting.howden.email_cc_list')))
                         ->bcc(config('setting.howden.it_dev_mail'))
                         ->send(new RenewalNoticeMail($data));
 
                     $rows++;
                 });
 
+                $_log = json_decode($log->param);
+                $_log->message = "{$rows} insurance records processed.";
+
                 CronJobs::where('id', $log->id)
                         ->update([
                             'status' => CronJobs::STATUS_COMPLETED,
-                            'message' => "{$rows} insurance records processed."
+                            'param' => json_encode($_log)
                         ]);
             } else {
                 Log::info("[Motor Renewal Notice] None of the insurance records expires in [{$first}, {$second}, {$third}]");
 
+                $_log = json_decode($log->param);
+                $_log->message = "None of the insurance records expires in [{$first}, {$second}, {$third}]";
+
                 CronJobs::where('id', $log->id)
                     ->update([
                         'status' => CronJobs::STATUS_COMPLETED,
-                        'message' => "None of the insurance records expires in [{$first}, {$second}, {$third}]"
+                        'param' => json_encode($_log)
                     ]);
             }
         } catch (Exception $ex) {
@@ -113,7 +119,7 @@ class MotorRenewalNotice extends Command
             CronJobs::where('id', $log->id)
                 ->update([
                     'status' => CronJobs::STATUS_FAILED,
-                    'message' => $ex->getMessage()
+                    'error_message' => $ex->getMessage()
                 ]);
         }
     }
