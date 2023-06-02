@@ -70,7 +70,7 @@ class MotorRenewalNotice extends Command
             if(count($insurance) > 0) {
                 $insurance->map(function($_ins) use($rows) {
                     // Generate query strings
-                    $details = 'vehicle_no=' . $_ins->motor->car_plate_number . '&postcode=' . $_ins->address->postcode .
+                    $details = 'vehicle_no=' . $_ins->motor->vehicle_number . '&postcode=' . $_ins->address->postcode .
                     '&email=' . $_ins->holder->email_address . '&phone_no=0' . $_ins->holder->phone_number . '&id_number=' . $_ins->holder->id_number .
                     '&id_type=' . $_ins->holder->id_type_id;
 
@@ -80,8 +80,8 @@ class MotorRenewalNotice extends Command
                     $query_param = '?p=' . base64_encode(openssl_encrypt($details, 'aes-256-gcm', 'Fr0mR3n3w@lN0TiC3', 0, $iv, $tag)) . '&t=' . base64_encode($iv . '::' . $tag);
 
                     $data = [
-                        'vehicle_number' => $_ins->motor->car_plate_number,
-                        'email_address' => $_ins->holder->email,
+                        'vehicle_number' => $_ins->motor->vehicle_number,
+                        'email_address' => $_ins->holder->email_address,
                         'url' => route('motor.index') . $query_param
                     ];
 
