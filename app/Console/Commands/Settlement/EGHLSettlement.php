@@ -54,7 +54,8 @@ class EGHLSettlement extends Command
     {
         Log::info("[Cron - eGHL Settlement] Start Generating Report.");
 
-        $start_date = $end_date = Carbon::now()->subDay()->format(self::DATETIME_FORMAT);
+        $start_date = Carbon::now()->subDay()->startOfDay()->format(self::DATETIME_FORMAT);
+        $end_date = Carbon::now()->subDay()->endOfDay()->format(self::DATETIME_FORMAT);
         if(!empty($this->argument('start_date')) && !empty($this->argument('end_date'))) {
             $start_date = Carbon::parse($this->argument('start_date'))->startOfDay()->format(self::DATETIME_FORMAT);
             $end_date = Carbon::parse($this->argument('end_date'))->endOfDay()->format(self::DATETIME_FORMAT);
