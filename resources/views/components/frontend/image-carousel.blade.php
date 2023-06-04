@@ -3,7 +3,9 @@
         @foreach ($images as $index => $item)
             <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
                 <img class="carousel-image img-fluid d-none d-md-block" src="{{ asset('images' . str_replace([public_path('images'), '\\'], ['', '/'], $item)) }}" />
-                <img class="carousel-image img-fluid d-block d-md-none" src="{{ asset('images/banner/mobile' . str_replace([public_path('images/banner'), '\\'], ['', '/'], $item)) }}" />
+                @if (file_exists($item))
+                    <img class="carousel-image img-fluid d-block d-md-none" src="{{ asset('images/banner/mobile' . str_replace([public_path('images/banner'), '\\'], ['', '/'], $item)) }}" />
+                @endif
             </div>
         @endforeach
     </div>
