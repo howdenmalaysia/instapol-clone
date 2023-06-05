@@ -56,7 +56,7 @@ class MonthlySettlement extends Command
     {
         Log::info("[Cron - Monthly Settlement] Start Generating Reports.");
 
-        $start_date = $end_date = Carbon::now()->format(self::DATE_FORMAT);
+        $start_date = $end_date = '';
         if(!empty($this->argument('start_date')) && !empty($this->argument('end_date'))) {
             $start_date = Carbon::parse($this->argument('start_date'))->format(self::DATE_FORMAT);
             $end_date = Carbon::parse($this->argument('end_date'))->format(self::DATE_FORMAT);
