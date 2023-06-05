@@ -162,7 +162,9 @@
                                 <tr>
                                     <td style="overflow-wrap:break-word;word-break:break-word;padding:10px 25px 10px 10px;font-family:arial,helvetica,sans-serif;" align="left">
                                         <div style="line-height: 140%; text-align: left; word-wrap: break-word;">
-                                            <p style="font-size: 14px; line-height: 140%;">{{ $email_address }}</p>
+                                            <p style="font-size: 14px; line-height: 140%;">
+                                                <strong>{{ $email_address }}</strong>
+                                            </p>
                                         </div>
                                     </td>
                                 </tr>
