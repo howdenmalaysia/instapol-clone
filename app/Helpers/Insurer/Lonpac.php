@@ -876,13 +876,13 @@ class Lonpac implements InsurerLibraryInterface
             'date_of_birth' =>  Carbon::parse($input->dob)->format('d/m/Y') ?? '',
             'age' => getAgeFromIC($input->id_number),
             'gender' => $input->gender,
-            'marital_status' => $input->marital_status,
+            'marital_status' => $this->maritalcode($input->marital_status),
             'occupation' => self::OCCUPATION,
             'occupation_code' => self::OCCUPATION_CODE,
             'address_1' => ($input->address_one ?? '1 Jalan 1'),
-            'address_2' => isset($input->address_two) ? (empty($input->address_two) ? $input->city . ', ' . $input->state : $input->address_two) : '',
-            'address_3' => isset($input->address_two) ? (empty($input->address_two) ? '' : $input->city . ', ' . $input->state) : '',
-            'region' => strtoupper(substr($input->region, 0, 1)),
+            'address_2' => $input->address_two ?? '',
+            'address_3' => '',
+            'region' => $input->city ?? '',
             'postcode' => $input->postcode,
             'phone_number' => isset($input->phone_number) ? substr_replace('0' . $input->phone_number, '-', 3, 0) : substr_replace("0123456789", '-', 3, 0),
             'vehicle_number' => $input->vehicle_number,
@@ -1386,6 +1386,19 @@ class Lonpac implements InsurerLibraryInterface
         $digest = hash("sha256", $inString, true);
         $hascode = base64_encode($digest);
         return $hascode;
+    }
+
+    private function maritalcode($code){
+        if($code == "S"){
+            $code = "0";
+        }else if($code == "M"){
+            $code = "1";
+        }else if($code == "D"){
+            $code = "2";
+        }else if($code == "O"){
+            $code = "3";
+        }
+        return $code;
     }
 
     private function getModelDetails(string $nvic)
