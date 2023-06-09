@@ -889,8 +889,8 @@ class Lonpac implements InsurerLibraryInterface
             'chassis_number' => $input->vehicle->extra_attribute->chassis_number,
             'engine_number' => $input->vehicle->extra_attribute->engine_number,
 
-            'make' => $input->vehicle->extra_attribute->make_code,
-            'model' => $input->vehicle->extra_attribute->model_code,
+            'make' => str_pad($input->vehicle->extra_attribute->make_code, 2, '0', STR_PAD_LEFT),
+            'model' => str_pad($input->vehicle->extra_attribute->model_code, 2, '0', STR_PAD_LEFT),
             'makemodeldesc' => $input->vehicle->make,
 
             'manufacture_year' => $input->vehicle->manufacture_year,
