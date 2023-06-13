@@ -80,6 +80,7 @@ class MotorRenewalNotice extends Command
                     $query_param = '?p=' . base64_encode(openssl_encrypt($details, 'aes-256-gcm', 'Fr0mR3n3w@lN0TiC3', 0, $iv, $tag)) . '&t=' . base64_encode($iv . '::' . $tag);
 
                     $data = [
+                        'name'  => $_ins->holder->name ?? 'Sir / Madam',
                         'vehicle_number' => $_ins->motor->vehicle_number,
                         'email_address' => $_ins->holder->email_address,
                         'url' => route('motor.index') . $query_param
