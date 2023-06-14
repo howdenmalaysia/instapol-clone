@@ -18,6 +18,7 @@ use App\Helpers\Insurer\Allianz;
 use App\Helpers\Insurer\AIG;
 use App\Helpers\Insurer\Zurich;
 use App\Helpers\Insurer\ZurichTakaful;
+use App\Helpers\Insurer\Lonpac;
 use App\Http\Controllers\Controller;
 use App\Interfaces\MotorAPIInterface;
 use App\Models\InsuranceAddress;
@@ -807,6 +808,11 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             }
             case 12:{
                 return new ZurichTakaful($insurer->id, $insurer->name);
+
+                break;
+            }
+            case 13: {
+                return new Lonpac($insurer->id, $insurer->name);
 
                 break;
             }

@@ -22,6 +22,12 @@ return [
             'host' => env('LIBERTY_MOTOR_API_DOMAIN'),
             'secret_key' => env('LIBERTY_MOTOR_API_PASSWORD')
         ],
+        'lonpac' => [
+            'agent_code' => env('LONPAC_MOTOR_API_AGENT_CODE'),
+            'host' => env('LONPAC_MOTOR_API_DOMAIN'),
+            'secret_key' => env('LONPAC_MOTOR_API_PASSWORD'),
+            'company_code' => env('LONPAC_MOTOR_API_COMPANY_CODE'),
+        ],
         'am_config' => [
             'host' => env('AMGEN_MOTOR_API_HOST'),
             'port' => env('AMGEN_MOTOR_API_PORT'),
