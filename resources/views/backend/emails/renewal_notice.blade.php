@@ -174,7 +174,7 @@
 
                                         <div style="line-height: 140%; text-align: left; word-wrap: break-word;">
                                             <p style="font-size: 14px; line-height: 140%;">
-                                                Have any questions? Reach out to our dedicated team ato <a href="mailto:instaPol@my.howdengroup.com">instaPol@my.howdengroup.com</a> and we'll be happy to assist you.
+                                                Have any questions? Reach out to our dedicated team at <a href="mailto:instaPol@my.howdengroup.com">instaPol@my.howdengroup.com</a> and we'll be happy to assist you.
                                             </p>
                                         </div>
                                     </td>
