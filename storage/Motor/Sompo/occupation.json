@@ -1,720 +1,48 @@
 {
   "individual": [
     {
-      "code": "OA01",
-      "occupation": "ACCOUNTANT/AUDITOR"
-    },
-    {
-      "code": "OA05",
-      "occupation": "ACTOR"
-    },
-    {
-      "code": "OA26",
-      "occupation": "ADJUSTER"
-    },
-    {
-      "code": "TA07",
-      "occupation": "ADJUSTER"
-    },
-    {
-      "code": "OA03",
-      "occupation": "ADMINISTRATOR"
-    },
-    {
-      "code": "TA01",
-      "occupation": "ADVERTISING/DESIGNING SERVICES"
-    },
-    {
-      "code": "OA11",
-      "occupation": "ADVISOR"
-    },
-    {
-      "code": "OA12",
-      "occupation": "ADVOCATOR"
-    },
-    {
-      "code": "OA06",
-      "occupation": "AGENT"
-    },
-    {
-      "code": "OA18",
-      "occupation": "AGRICULTURIST"
-    },
-    {
-      "code": "FLIG",
-      "occupation": "AIRCRAFT CREW"
-    },
-    {
-      "code": "FLIG",
-      "occupation": "AIRCRAFT CREW"
-    },
-    {
-      "code": "TA02",
-      "occupation": "AIRLINES"
-    },
-    {
-      "code": "OA10",
-      "occupation": "AMBASSADOR"
-    },
-    {
-      "code": "OA15",
-      "occupation": "ANALYST"
-    },
-    {
       "code": "ANIM",
       "occupation": "ANIMATOR"
-    },
-    {
-      "code": "OA17",
-      "occupation": "APPLICATION SPECIALIST"
-    },
-    {
-      "code": "OA14",
-      "occupation": "APPRENTICE"
-    },
-    {
-      "code": "OA13",
-      "occupation": "ARCHAEOLOGIST"
-    },
-    {
-      "code": "OA04",
-      "occupation": "ARCHITECT"
-    },
-    {
-      "code": "TA03",
-      "occupation": "ARCHITECT"
-    },
-    {
-      "code": "OA27",
-      "occupation": "ARCHIVIST"
-    },
-    {
-      "code": "SVCM",
-      "occupation": "ARMY"
-    },
-    {
-      "code": "SVCM",
-      "occupation": "ARMY"
-    },
-    {
-      "code": "OA25",
-      "occupation": "AROMATHERAPIST"
-    },
-    {
-      "code": "TA04",
-      "occupation": "ART/HANDICRAFT/ANTIQUE DEALER"
-    },
-    {
-      "code": "OA08",
-      "occupation": "ARTIST"
-    },
-    {
-      "code": "TA05",
-      "occupation": "ASSEMBLE OF VARIABLE RESISTORS"
-    },
-    {
-      "code": "OA20",
-      "occupation": "ASSISTANT"
-    },
-    {
-      "code": "OA21",
-      "occupation": "ASSOCIATE"
-    },
-    {
-      "code": "OA07",
-      "occupation": "ATHLETE"
-    },
-    {
-      "code": "OA24",
-      "occupation": "ATTENDANT"
-    },
-    {
-      "code": "OA22",
-      "occupation": "AUCTIONEER"
-    },
-    {
-      "code": "OA02",
-      "occupation": "AUDITOR"
-    },
-    {
-      "code": "OA19",
-      "occupation": "AUTHORIZER"
-    },
-    {
-      "code": "ADAS",
-      "occupation": "ADMIN ASSISTANT"
-    },
-    {
-      "code": "AMEX",
-      "occupation": "ADMIN EXECUTIVE"
-    },
-    {
-      "code": "ADCL",
-      "occupation": "ADMITTING CLERK"
-    },
-    {
-      "code": "AGET",
-      "occupation": "AGENT (INSURANCE)"
-    },
-    {
-      "code": "AFST",
-      "occupation": "AIRCON SERVICING TECHNICIAN"
-    },
-    {
-      "code": "ACOR",
-      "occupation": "AIRFREIGHT CO-ORDINATOR"
-    },
-    {
-      "code": "ANAE",
-      "occupation": "ANAETHESIAN"
-    },
-    {
-      "code": "ACON",
-      "occupation": "APPLICATIONS CONSULTANT"
-    },
-    {
-      "code": "ARTD",
-      "occupation": "ART DIRECTOR"
-    },
-    {
-      "code": "ARTS",
-      "occupation": "ARTISAN"
-    },
-    {
-      "code": "ASFT",
-      "occupation": "ASSEMBLY FITTERS"
-    },
-    {
-      "code": "OB10",
-      "occupation": "BABY SITTER"
     },
     {
       "code": "BAKE",
       "occupation": "BAKER"
     },
     {
-      "code": "OB01",
-      "occupation": "BANKER"
-    },
-    {
-      "code": "TB01",
-      "occupation": "BANKING & FINANCE - OTHERS"
-    },
-    {
       "code": "BARB",
       "occupation": "BARBERS"
-    },
-    {
-      "code": "BARR",
-      "occupation": "BARRISTER"
-    },
-    {
-      "code": "OB06",
-      "occupation": "BARTENDER"
-    },
-    {
-      "code": "OB11",
-      "occupation": "BEAUTICIAN"
-    },
-    {
-      "code": "TB02",
-      "occupation": "BEAUTY INDUSTRIES"
-    },
-    {
-      "code": "BELL",
-      "occupation": "BELL BOY"
-    },
-    {
-      "code": "OB09",
-      "occupation": "BELLBOY"
-    },
-    {
-      "code": "TB03",
-      "occupation": "BEVERAGE INDUSTRIES"
-    },
-    {
-      "code": "OB08",
-      "occupation": "BIOLOGIST"
-    },
-    {
-      "code": "TB04",
-      "occupation": "BROADCASTING BUREAU"
-    },
-    {
-      "code": "OB12",
-      "occupation": "BROKER"
-    },
-    {
-      "code": "TB06",
-      "occupation": "BROKER FIRM"
     },
     {
       "code": "BULD",
       "occupation": "BUILDER/CONSTRUCTOR"
     },
     {
-      "code": "TB05",
-      "occupation": "BUILDING CONSTRUCTION"
-    },
-    {
-      "code": "OB03",
-      "occupation": "BUS DRIVER"
-    },
-    {
-      "code": "OB02",
-      "occupation": "BUSINESSMAN"
-    },
-    {
-      "code": "OB05",
-      "occupation": "BUTCHER"
-    },
-    {
-      "code": "OB07",
-      "occupation": "BUTLER"
-    },
-    {
-      "code": "BAPR",
-      "occupation": "BAGGAGE PORTER"
-    },
-    {
-      "code": "BARM",
-      "occupation": "BARMAN"
-    },
-    {
-      "code": "BEVE",
-      "occupation": "BEVERAGE DISPENSER"
-    },
-    {
-      "code": "BILL",
-      "occupation": "BILL COLLECTORS"
-    },
-    {
-      "code": "BIAS",
-      "occupation": "BILLING ASSISTANT"
-    },
-    {
-      "code": "BDOF",
-      "occupation": "BOARDING OFFICER"
-    },
-    {
-      "code": "BOOK",
-      "occupation": "BOOK KEEPER"
-    },
-    {
-      "code": "BROK",
-      "occupation": "BROKERS"
-    },
-    {
-      "code": "BLMO",
-      "occupation": "BUILDING MAINTENANCE OFFICER"
-    },
-    {
-      "code": "BLGS",
-      "occupation": "BUILDING SURVEYOR"
-    },
-    {
-      "code": "BUSD",
-      "occupation": "BUS CONDUCTOR OR DRIVER"
-    },
-    {
-      "code": "BUYS",
-      "occupation": "BUYERS"
-    },
-    {
-      "code": "OC13",
-      "occupation": "CADDIE"
-    },
-    {
-      "code": "TC01",
-      "occupation": "CAR DEALER/AGENT"
-    },
-    {
-      "code": "TC11",
-      "occupation": "CAR MANUFACTURER/DISTRIBUTOR"
-    },
-    {
-      "code": "OC21",
-      "occupation": "CARDIOLOGIST"
-    },
-    {
-      "code": "OC23",
-      "occupation": "CARETAKER"
-    },
-    {
-      "code": "OC28",
-      "occupation": "CARGO ATTENDANT"
-    },
-    {
-      "code": "OC01",
-      "occupation": "CARPENTER"
-    },
-    {
-      "code": "OC11",
-      "occupation": "CASHIER"
-    },
-    {
-      "code": "OC12",
-      "occupation": "CATERER"
-    },
-    {
-      "code": "TC10",
-      "occupation": "CERAMIC MANUFACTURER"
-    },
-    {
-      "code": "OC19",
-      "occupation": "CHAIR PERSON"
-    },
-    {
-      "code": "CBMD",
-      "occupation": "CHAMBERMAID"
-    },
-    {
-      "code": "CHCP",
-      "occupation": "CHARGEHAND/CARPENTER"
-    },
-    {
-      "code": "OC27",
-      "occupation": "CHARGEMAN"
-    },
-    {
-      "code": "TC06",
-      "occupation": "CHARITY ORGANISATION"
-    },
-    {
-      "code": "OC32",
-      "occupation": "CHECKER"
-    },
-    {
-      "code": "OC10",
-      "occupation": "CHEF"
-    },
-    {
-      "code": "OC35",
-      "occupation": "CHEF DE PARTIE"
-    },
-    {
-      "code": "TC02",
-      "occupation": "CHEMICAL & PAINT MANUFACTURER"
-    },
-    {
-      "code": "OC08",
-      "occupation": "CHEMIST"
-    },
-    {
-      "code": "OC22",
-      "occupation": "CHIEF EXECUTIVE OFFICER"
-    },
-    {
-      "code": "OC34",
-      "occupation": "CHIEF OPERATING OFFICER"
+      "code": "CBJT",
+      "occupation": "MANUAL WORKER"
     },
     {
       "code": "CHD",
       "occupation": "CHILD"
     },
     {
-      "code": "CSER",
-      "occupation": "CIVIL SERVANT"
-    },
-    {
-      "code": "CSER",
-      "occupation": "CIVIL SERVANT"
-    },
-    {
-      "code": "OC06",
-      "occupation": "CLEANER"
-    },
-    {
-      "code": "OC02",
-      "occupation": "CLERICAL"
-    },
-    {
-      "code": "OC02",
-      "occupation": "CLERICAL"
-    },
-    {
-      "code": "TC03",
-      "occupation": "CLUB/ASSOCIATES"
-    },
-    {
-      "code": "OC16",
-      "occupation": "CO-ORDINATOR"
-    },
-    {
-      "code": "OC26",
-      "occupation": "CODER"
-    },
-    {
-      "code": "TC04",
-      "occupation": "COMMERCIAL - OTHERS"
-    },
-    {
-      "code": "OC31",
-      "occupation": "COMMIS"
-    },
-    {
-      "code": "OC17",
-      "occupation": "COMMISSIONER"
-    },
-    {
-      "code": "OC15",
-      "occupation": "COMPOSER"
-    },
-    {
-      "code": "OC09",
-      "occupation": "CONSTRUCTION WORKER"
-    },
-    {
-      "code": "OC07",
-      "occupation": "CONSULTANT"
-    },
-    {
-      "code": "OC07",
-      "occupation": "CONSULTANT"
-    },
-    {
-      "code": "TC08",
-      "occupation": "CONSULTING FIRM"
-    },
-    {
-      "code": "TC05",
-      "occupation": "CONSUMER MARKETING & SERVICES"
-    },
-    {
-      "code": "OC03",
-      "occupation": "CONTRACTOR"
-    },
-    {
-      "code": "TC07",
-      "occupation": "CONTRACTORS"
-    },
-    {
-      "code": "OC20",
-      "occupation": "CONTROLLER"
-    },
-    {
-      "code": "OC30",
-      "occupation": "CONVEYOR"
-    },
-    {
-      "code": "OC04",
-      "occupation": "COOK"
-    },
-    {
-      "code": "OC33",
-      "occupation": "COPYWRITER"
-    },
-    {
-      "code": "OC14",
-      "occupation": "COUNSELLOR"
-    },
-    {
       "code": "CREW",
       "occupation": "COUNTER CREW"
-    },
-    {
-      "code": "OC05",
-      "occupation": "CRAFTSMAN"
     },
     {
       "code": "CROP",
       "occupation": "CRANE OPERATOR"
     },
     {
-      "code": "OC25",
-      "occupation": "CREW MEMBER"
-    },
-    {
-      "code": "OC29",
-      "occupation": "CROUPIER"
-    },
-    {
-      "code": "CAMP",
-      "occupation": "CAMPUS ATTENDANT"
-    },
-    {
-      "code": "CPAT",
-      "occupation": "CAR PARK ATTENDANT"
-    },
-    {
-      "code": "CWGR",
-      "occupation": "CAR WASHER/GREASER"
-    },
-    {
-      "code": "CGSV",
-      "occupation": "CARGO SURVEYOR"
-    },
-    {
-      "code": "CAHD",
-      "occupation": "CARGOHAND"
-    },
-    {
-      "code": "CASU",
-      "occupation": "CASUAL WORKERS"
-    },
-    {
-      "code": "CAAS",
-      "occupation": "CATERING ASSISTANT"
-    },
-    {
-      "code": "CFDL",
-      "occupation": "CHIEF DEALER"
-    },
-    {
-      "code": "CISC",
-      "occupation": "CISCO"
-    },
-    {
-      "code": "CSTE",
-      "occupation": "CIVIL STRUCTURAL ENGINEER"
-    },
-    {
-      "code": "CLMA",
-      "occupation": "CLAIMS ASSISTANT"
-    },
-    {
-      "code": "CSGW",
-      "occupation": "CLEANING SERVICES-GENERAL WORK"
-    },
-    {
-      "code": "CLCW",
-      "occupation": "CLEARENCE CREW"
-    },
-    {
-      "code": "CLOF",
-      "occupation": "CLERICAL OFFICER"
-    },
-    {
-      "code": "CLAS",
-      "occupation": "CLINIC ASSISTANT"
-    },
-    {
-      "code": "COCL",
-      "occupation": "COMPUTER CLERK"
-    },
-    {
-      "code": "CMGA",
-      "occupation": "COMPUTER GRAPHIC ASSISTANT"
-    },
-    {
-      "code": "COPR",
-      "occupation": "COMPUTER PROGRAMMER"
-    },
-    {
-      "code": "CTPF",
-      "occupation": "CONTROL PANEL FITTER"
-    },
-    {
-      "code": "CNTR",
-      "occupation": "CONTROL ROOM OPERATOR"
-    },
-    {
-      "code": "CVSC",
-      "occupation": "CONVEYANCING SEARCH CLERK"
-    },
-    {
-      "code": "CODL",
-      "occupation": "CORPORATE DEALER"
-    },
-    {
-      "code": "CSAS",
-      "occupation": "COST ASSISTANT"
-    },
-    {
-      "code": "COUR",
-      "occupation": "COURSE WORKERS"
-    },
-    {
-      "code": "CRAN",
-      "occupation": "CREDIT ANALYST"
-    },
-    {
-      "code": "CULL",
-      "occupation": "CULLOTINE OPERATOR"
-    },
-    {
-      "code": "CINS",
-      "occupation": "CURTAIN INSTALLER"
-    },
-    {
-      "code": "CUST",
-      "occupation": "CUSTOM & EXCISE OFFICER"
-    },
-    {
-      "code": "OD01",
-      "occupation": "DEALER"
-    },
-    {
-      "code": "OD09",
-      "occupation": "DEAN"
-    },
-    {
-      "code": "OD10",
-      "occupation": "DECORATOR"
+      "code": "CSER",
+      "occupation": "CIVIL SERVANT"
     },
     {
       "code": "DENT",
       "occupation": "DENTIST"
     },
     {
-      "code": "TD01",
-      "occupation": "DEPARTMENTAL STORE/SUPERMARKET"
-    },
-    {
-      "code": "OD05",
-      "occupation": "DERMATOLOGIST"
-    },
-    {
-      "code": "OD06",
-      "occupation": "DESIGNER"
-    },
-    {
-      "code": "OD11",
-      "occupation": "DESPATCHER"
-    },
-    {
-      "code": "OD14",
-      "occupation": "DEVELOPER"
-    },
-    {
-      "code": "OD17",
-      "occupation": "DIGITISER"
-    },
-    {
-      "code": "OD04",
-      "occupation": "DIRECTOR"
-    },
-    {
-      "code": "TD02",
-      "occupation": "DISCOUNT HOUSE"
-    },
-    {
-      "code": "OD13",
-      "occupation": "DISTRIBUTOR"
-    },
-    {
-      "code": "TD03",
-      "occupation": "DISTRIBUTOR OF SEMI-CONDUCTORS"
-    },
-    {
-      "code": "OD02",
-      "occupation": "DIVER"
-    },
-    {
-      "code": "OD15",
-      "occupation": "DOCKER"
-    },
-    {
-      "code": "OD08",
-      "occupation": "DOCTOR"
-    },
-    {
-      "code": "OD08",
-      "occupation": "DOCTOR"
-    },
-    {
-      "code": "DMFW",
-      "occupation": "DOMESTIC MAID"
+      "code": "DIR",
+      "occupation": "Director"
     },
     {
       "code": "DMFW",
@@ -725,912 +53,32 @@
       "occupation": "DOOR USHER"
     },
     {
-      "code": "OD12",
-      "occupation": "DRAFTSMAN"
-    },
-    {
-      "code": "OD03",
-      "occupation": "DRAUGHTMAN"
-    },
-    {
-      "code": "OD16",
-      "occupation": "DRESSER"
-    },
-    {
-      "code": "OD07",
-      "occupation": "DRIVER"
-    },
-    {
-      "code": "DNCR",
-      "occupation": "DANCER"
-    },
-    {
-      "code": "DECL",
-      "occupation": "DATA ENTRY CLERK"
-    },
-    {
-      "code": "DELI",
-      "occupation": "DELIVERYMAN"
-    },
-    {
-      "code": "DESP",
-      "occupation": "DESPATCH RIDERS"
-    },
-    {
-      "code": "DGSP",
-      "occupation": "DIAGNOSTIC SPECIALIST"
-    },
-    {
-      "code": "DIEC",
-      "occupation": "DIE-CUTTING MACHINE OPERATOR"
-    },
-    {
-      "code": "DIR",
-      "occupation": "DIRECTOR"
-    },
-    {
-      "code": "DHWR",
-      "occupation": "DISHWASHER"
-    },
-    {
-      "code": "DPNR",
-      "occupation": "DISPENSER"
-    },
-    {
-      "code": "DSAS",
-      "occupation": "DISTRIBUTOR ASSISTANT"
-    },
-    {
-      "code": "DOMS",
-      "occupation": "DOMESTIC SERVANT"
-    },
-    {
-      "code": "DOOR",
-      "occupation": "DOORMAN"
-    },
-    {
-      "code": "DRAF",
-      "occupation": "DRAFTPERSON"
-    },
-    {
-      "code": "DRAU",
-      "occupation": "DRAUGHTMEN"
-    },
-    {
-      "code": "DRES",
-      "occupation": "DRESSMAKERS"
-    },
-    {
-      "code": "DWSF",
-      "occupation": "DRINKS WAITSTAFF"
-    },
-    {
-      "code": "DRYC",
-      "occupation": "DRY CLEANERS"
-    },
-    {
-      "code": "OE08",
-      "occupation": "ECOLOGIST"
-    },
-    {
-      "code": "OE07",
-      "occupation": "ECONOMIST"
-    },
-    {
-      "code": "TE01",
-      "occupation": "EDIBLE OIL MANUFACTURE"
-    },
-    {
-      "code": "OE04",
-      "occupation": "EDITOR"
-    },
-    {
-      "code": "EDPO",
-      "occupation": "EDP OPERATOR"
-    },
-    {
-      "code": "OE01",
-      "occupation": "EDP PERSONNEL"
-    },
-    {
-      "code": "OE14",
-      "occupation": "EDUCATIONIST"
-    },
-    {
-      "code": "OE15",
-      "occupation": "EDUCATOR"
-    },
-    {
-      "code": "ELEC",
-      "occupation": "ELECTRIC MOTOR REWINDER"
-    },
-    {
-      "code": "OE06",
-      "occupation": "ELECTRICIAN"
-    },
-    {
-      "code": "TE02",
-      "occupation": "ELECTRONIC GOOD MANUFACTURE"
-    },
-    {
-      "code": "TE03",
-      "occupation": "EMPLOYMENT AGENCY"
-    },
-    {
-      "code": "OE03",
-      "occupation": "ENGINEER"
-    },
-    {
-      "code": "TE04",
-      "occupation": "ENGINEERING & CONSTRUCTION"
-    },
-    {
-      "code": "OE05",
-      "occupation": "ENTERTAINER"
-    },
-    {
-      "code": "TE05",
-      "occupation": "ENTERTAINMENT BUSINESS"
-    },
-    {
-      "code": "OE10",
-      "occupation": "ENTOMOLOGIST"
-    },
-    {
-      "code": "OE13",
-      "occupation": "ESTIMATOR"
-    },
-    {
-      "code": "OE11",
-      "occupation": "ETHNOLOGIST"
-    },
-    {
-      "code": "OE02",
-      "occupation": "EXECUTIVE"
-    },
-    {
-      "code": "OE12",
-      "occupation": "EXPEDITOR"
-    },
-    {
-      "code": "EDIT",
-      "occupation": "EDITORS"
-    },
-    {
-      "code": "ELET",
-      "occupation": "ELECTRICIANS"
-    },
-    {
-      "code": "ELEV",
-      "occupation": "ELEVATOR ATTENDANT"
-    },
-    {
-      "code": "EMPL",
-      "occupation": "EMPLOYED"
-    },
-    {
-      "code": "EMTO",
-      "occupation": "ESTATE MAINTENANCE OFFICER"
-    },
-    {
-      "code": "EXPR",
-      "occupation": "EXHIBITION PROMOTER"
-    },
-    {
-      "code": "FBCH",
-      "occupation": "F & B CASHIER"
-    },
-    {
-      "code": "FBSC",
-      "occupation": "F & B SERVICE CREW"
-    },
-    {
-      "code": "FAGA",
-      "occupation": "F A GRAPHIC ARTIST"
-    },
-    {
-      "code": "OF10",
-      "occupation": "FABRICATOR"
-    },
-    {
-      "code": "TF01",
-      "occupation": "FACTORING COMPANY"
-    },
-    {
-      "code": "OF08",
-      "occupation": "FACTORY WORKER"
-    },
-    {
-      "code": "OF02",
-      "occupation": "FARMER"
-    },
-    {
-      "code": "OF02",
-      "occupation": "FARMER"
+      "code": "FLIG",
+      "occupation": "AIRCRAFT CREW"
     },
     {
       "code": "FNCT",
       "occupation": "FINANCIAL CONTROLLER"
     },
     {
-      "code": "TF03",
-      "occupation": "FIRE PROTECTION INSTALLATION"
-    },
-    {
-      "code": "OF04",
-      "occupation": "FIREMAN"
-    },
-    {
-      "code": "OF05",
-      "occupation": "FISHERMAN"
-    },
-    {
-      "code": "TF02",
-      "occupation": "FISHING COMPANY"
-    },
-    {
-      "code": "OF01",
-      "occupation": "FISHMONGER"
-    },
-    {
-      "code": "OF09",
-      "occupation": "FITTER"
-    },
-    {
-      "code": "OF03",
-      "occupation": "FLIGHT ATTENDANCE"
-    },
-    {
-      "code": "OF06",
-      "occupation": "FLORIST"
-    },
-    {
-      "code": "TF05",
-      "occupation": "FOOD INDUSTRIES"
-    },
-    {
-      "code": "FECD",
-      "occupation": "FOREIGN EX-CHANGE DEALER"
-    },
-    {
-      "code": "OF07",
-      "occupation": "FOREMAN"
-    },
-    {
-      "code": "TF06",
-      "occupation": "FORWARDING/TRANSPORTATION CO"
-    },
-    {
-      "code": "TF09",
-      "occupation": "FRAMEWORK/STRUCTURE INDUSTRIES"
-    },
-    {
-      "code": "TF10",
-      "occupation": "FRANCHISE"
-    },
-    {
-      "code": "TF07",
-      "occupation": "FRUITS/VEGETABLE SUPPLIER"
-    },
-    {
-      "code": "TF08",
-      "occupation": "FURNITURE MANUFACTURER"
-    },
-    {
-      "code": "FCSP",
-      "occupation": "FACILITIES SPECIALIST"
-    },
-    {
-      "code": "FACT",
-      "occupation": "FACTORY WORKERS"
-    },
-    {
-      "code": "FCON",
-      "occupation": "FASHION CONSULTANT"
-    },
-    {
-      "code": "FMKJ",
-      "occupation": "FEMALE/MALE K J"
-    },
-    {
-      "code": "FILE",
-      "occupation": "FILING CLERK"
-    },
-    {
-      "code": "FLAS",
-      "occupation": "FILM LAYOUT ASSISTANT"
-    },
-    {
-      "code": "FLHK",
-      "occupation": "FLOOR HOUSEKEEPER"
-    },
-    {
-      "code": "FLOR",
-      "occupation": "FLORISTS"
-    },
-    {
-      "code": "FOOT",
-      "occupation": "FOOTBALLER"
-    },
-    {
-      "code": "FORC",
-      "occupation": "FOREIGN CURRENCY AGENT"
-    },
-    {
-      "code": "FORX",
-      "occupation": "FOREX REMISIER"
-    },
-    {
-      "code": "FKOP",
-      "occupation": "FORKLIFT OPERATOR"
-    },
-    {
-      "code": "FOUD",
-      "occupation": "FOUNDARY WORKER"
-    },
-    {
-      "code": "FURD",
-      "occupation": "FUNITURE DEALERS"
-    },
-    {
-      "code": "FURN",
-      "occupation": "FURNACEMEN"
-    },
-    {
-      "code": "TG05",
-      "occupation": "GAMING"
-    },
-    {
-      "code": "OG03",
-      "occupation": "GARBAGE MAN"
-    },
-    {
-      "code": "OG02",
-      "occupation": "GARDENER"
-    },
-    {
-      "code": "OG01",
-      "occupation": "GENERAL WORKER"
-    },
-    {
-      "code": "OG01",
-      "occupation": "GENERAL WORKER"
-    },
-    {
-      "code": "GWFW",
-      "occupation": "GENERAL WORKERS"
-    },
-    {
-      "code": "TG01",
-      "occupation": "GEOLOGIST"
-    },
-    {
-      "code": "TG02",
-      "occupation": "GLASS MANUFACTURER"
-    },
-    {
-      "code": "TG03",
-      "occupation": "GOLD/JEWEL SMITH"
-    },
-    {
-      "code": "OG04",
-      "occupation": "GOLD/JEWEL/BLACK SMITH"
-    },
-    {
-      "code": "TG04",
-      "occupation": "GOVERNMENT/STATUTORY BOARD"
-    },
-    {
-      "code": "OG06",
-      "occupation": "GUARD"
-    },
-    {
-      "code": "OG05",
-      "occupation": "GUIDE"
-    },
-    {
-      "code": "GARW",
-      "occupation": "GARAGE WORKER"
-    },
-    {
-      "code": "GASA",
-      "occupation": "GAS ATTENDANT"
-    },
-    {
-      "code": "GASD",
-      "occupation": "GAS DISTRIBUTOR"
-    },
-    {
-      "code": "GOLD",
-      "occupation": "GOLDSMITHS"
-    },
-    {
-      "code": "GOLF",
-      "occupation": "GOLF COURSE MAINTENANCE WORKER"
-    },
-    {
-      "code": "GOND",
-      "occupation": "GONDOLA SUPERVISOR"
-    },
-    {
-      "code": "GREE",
-      "occupation": "GREENGROCERS"
-    },
-    {
-      "code": "GROP",
-      "occupation": "GUEST RELATIONS OFFICER"
-    },
-    {
-      "code": "OH01",
-      "occupation": "HAIRDRESSER"
-    },
-    {
-      "code": "HBGW",
-      "occupation": "HAIRDRESSING/BARBER-GENERAL WO"
-    },
-    {
-      "code": "TH01",
-      "occupation": "HARDWARE COMPANY"
-    },
-    {
-      "code": "OH02",
-      "occupation": "HAWKER"
-    },
-    {
-      "code": "OH02",
-      "occupation": "HAWKER"
-    },
-    {
-      "code": "HAWK",
-      "occupation": "HAWKERS"
-    },
-    {
-      "code": "OH08",
-      "occupation": "HEAD"
-    },
-    {
-      "code": "OH09",
-      "occupation": "HELPER"
-    },
-    {
-      "code": "TH02",
-      "occupation": "HOME APPLIANCES MANUFACTURER"
-    },
-    {
-      "code": "OH07",
-      "occupation": "HORTICULTURIST"
-    },
-    {
-      "code": "OH06",
-      "occupation": "HOSPITAL STAFF"
-    },
-    {
-      "code": "TH03",
-      "occupation": "HOSPITAL/CLINIC"
-    },
-    {
-      "code": "OH04",
-      "occupation": "HOSTESS"
-    },
-    {
       "code": "HRGW",
       "occupation": "HOTEL & RESTAURANT STAFF"
-    },
-    {
-      "code": "HRGW",
-      "occupation": "HOTEL & RESTAURANT STAFF"
-    },
-    {
-      "code": "TH04",
-      "occupation": "HOTELIER"
-    },
-    {
-      "code": "OH11",
-      "occupation": "HOUSE KEEPER"
-    },
-    {
-      "code": "OH03",
-      "occupation": "HOUSEWIFE"
-    },
-    {
-      "code": "OH05",
-      "occupation": "HUMAN RESOURCE/PERSONNEL"
-    },
-    {
-      "code": "HEAL",
-      "occupation": "HEALTH INSPECTORS"
-    },
-    {
-      "code": "HEAT",
-      "occupation": "HEAT TREATMENT TECHNICIAN"
-    },
-    {
-      "code": "HOAT",
-      "occupation": "HOSPITAL ATTENDANT"
-    },
-    {
-      "code": "HOSP",
-      "occupation": "HOSPITAL CARE-TAKER"
-    },
-    {
-      "code": "HOTL",
-      "occupation": "HOTEL & RESTAURANT CAPTAINS"
-    },
-    {
-      "code": "HOLC",
-      "occupation": "HOTEL & RESTAURANT CHEFS"
-    },
-    {
-      "code": "HOTW",
-      "occupation": "HOTEL & RESTAURANT WAITERS"
-    },
-    {
-      "code": "HSEO",
-      "occupation": "HOUSE OFFICER"
-    },
-    {
-      "code": "HSCL",
-      "occupation": "HOUSEKEEPING CLERK"
-    },
-    {
-      "code": "HSEM",
-      "occupation": "HOUSEMAN"
-    },
-    {
-      "code": "HROF",
-      "occupation": "HUMAN RESOURCE OFFICER"
-    },
-    {
-      "code": "INHD",
-      "occupation": "IN-HOUSE DETECTIVE"
-    },
-    {
-      "code": "TI03",
-      "occupation": "INDUSTRIALIST"
-    },
-    {
-      "code": "OI01",
-      "occupation": "INFORMATION TECHNOLOGIST"
-    },
-    {
-      "code": "TI02",
-      "occupation": "INFORMATION TECHNOLOGY"
-    },
-    {
-      "code": "OI04",
-      "occupation": "INQUISITOR"
-    },
-    {
-      "code": "OI02",
-      "occupation": "INSPECTOR"
-    },
-    {
-      "code": "OI06",
-      "occupation": "INSTALLER"
-    },
-    {
-      "code": "TI05",
-      "occupation": "INSTITUTION"
-    },
-    {
-      "code": "OI03",
-      "occupation": "INSTRUCTOR"
-    },
-    {
-      "code": "TI01",
-      "occupation": "INSURANCE COMPANY"
-    },
-    {
-      "code": "OI05",
-      "occupation": "INVENTORY PERSONNEL"
-    },
-    {
-      "code": "PTEI",
-      "occupation": "INVESTIGATOR"
-    },
-    {
-      "code": "TI04",
-      "occupation": "INVESTMENT"
-    },
-    {
-      "code": "OP14",
-      "occupation": "IT PROGRAMMER / SYSTEM ANALYST"
-    },
-    {
-      "code": "IMMI",
-      "occupation": "IMMIGRATION OFFICER"
-    },
-    {
-      "code": "IMEX",
-      "occupation": "IMPORTER & EXPORTER"
-    },
-    {
-      "code": "INOA",
-      "occupation": "INCENTIVE OPERATION ASSISTANT"
-    },
-    {
-      "code": "INCO",
-      "occupation": "INCOME ACCOUNTANT"
-    },
-    {
-      "code": "INDE",
-      "occupation": "INTERIOR DECORATORS"
-    },
-    {
-      "code": "INOT",
-      "occupation": "INWARD/OUTWARD EXECUTIVE"
-    },
-    {
-      "code": "ISAB",
-      "occupation": "ISABELA OCCUPATION"
-    },
-    {
-      "code": "IRGW",
-      "occupation": "ISLAND RESORT-GENERAL WORKERS"
-    },
-    {
-      "code": "OJ04",
-      "occupation": "JANITOR"
     },
     {
       "code": "JOCK",
       "occupation": "JOCKEY"
     },
     {
-      "code": "OJ01",
-      "occupation": "JOURNALIST"
-    },
-    {
-      "code": "OJ02",
-      "occupation": "JUDGE"
-    },
-    {
-      "code": "JACK",
-      "occupation": "JACKPOT ATTENDANT"
-    },
-    {
-      "code": "JUVE",
-      "occupation": "JUVENILE INSURED"
-    },
-    {
-      "code": "KENN",
-      "occupation": "KENNEL ASSISTANT"
-    },
-    {
-      "code": "OL06",
-      "occupation": "LABORATORIST"
-    },
-    {
-      "code": "TL05",
-      "occupation": "LABOUR UNION"
-    },
-    {
-      "code": "OL07",
-      "occupation": "LANDLORD/LANDLADY"
-    },
-    {
-      "code": "TL01",
-      "occupation": "LAUNDRY WORKER"
-    },
-    {
-      "code": "OL09",
-      "occupation": "LEADER"
-    },
-    {
-      "code": "TL03",
-      "occupation": "LEASING COMPANY"
-    },
-    {
-      "code": "TL04",
-      "occupation": "LEATHER GOODS MANUFACTURER"
-    },
-    {
-      "code": "OL02",
-      "occupation": "LECTURER"
-    },
-    {
-      "code": "OL01",
-      "occupation": "LEGAL PROFESSION"
-    },
-    {
-      "code": "TL02",
-      "occupation": "LEGAL SERVICE/FIRM"
-    },
-    {
-      "code": "OL03",
-      "occupation": "LIBRARIAN"
+      "code": "KTVR",
+      "occupation": "RECEPTIONIST"
     },
     {
       "code": "LFGD",
       "occupation": "LIFEGUARD"
     },
     {
-      "code": "OL04",
-      "occupation": "LINE LEADER"
-    },
-    {
-      "code": "OL05",
-      "occupation": "LUMBERJACK"
-    },
-    {
-      "code": "LPPO",
-      "occupation": "LABEL PRESS PRINTING OPERATOR"
-    },
-    {
-      "code": "LABR",
-      "occupation": "LABOURER"
-    },
-    {
-      "code": "LDSV",
-      "occupation": "LAND SURVEYOR"
-    },
-    {
-      "code": "LSGW",
-      "occupation": "LAUNDRY-GENERAL WORKERS"
-    },
-    {
-      "code": "LAUN",
-      "occupation": "LAUNDRYMEN"
-    },
-    {
-      "code": "LAYO",
-      "occupation": "LAYOUT ARTIST"
-    },
-    {
-      "code": "LEAS",
-      "occupation": "LEGAL ASSISTANT"
-    },
-    {
-      "code": "LFAT",
-      "occupation": "LIFT ATTENDANT"
-    },
-    {
-      "code": "LRAT",
-      "occupation": "LINEN ROOM ATTENDANT"
-    },
-    {
-      "code": "LNEX",
-      "occupation": "LINER EXECUTIVE"
-    },
-    {
-      "code": "LOCK",
-      "occupation": "LOCKER ROOM ATTENDANT"
-    },
-    {
-      "code": "TM11",
-      "occupation": "MACHINERIES"
-    },
-    {
-      "code": "OM08",
-      "occupation": "MACHINIST"
-    },
-    {
-      "code": "OM19",
-      "occupation": "MAGISTRATE"
-    },
-    {
-      "code": "OM05",
-      "occupation": "MAID"
-    },
-    {
-      "code": "OH12",
-      "occupation": "MAID/HOUSEKEEPER"
-    },
-    {
-      "code": "TM01",
-      "occupation": "MAINT HIGH FRQ EQUIP'M/MACHINE"
-    },
-    {
-      "code": "OM06",
-      "occupation": "MAINTENANCE WORKER"
-    },
-    {
-      "code": "TM02",
-      "occupation": "MANAGEMENT CONSULTANT SERVICES"
-    },
-    {
-      "code": "MGR",
-      "occupation": "MANAGER"
-    },
-    {
-      "code": "OM01",
-      "occupation": "MANAGERIAL"
-    },
-    {
-      "code": "CBJT",
-      "occupation": "MANUAL WORKER"
-    },
-    {
-      "code": "TM03",
-      "occupation": "MANUFACTURING - OTHERS"
-    },
-    {
-      "code": "TM04",
-      "occupation": "MARINE ENGINEERING & SERVICES"
-    },
-    {
-      "code": "OM04",
-      "occupation": "MARINE/NAVY"
-    },
-    {
-      "code": "TM05",
-      "occupation": "MARKET RESEARCH"
-    },
-    {
-      "code": "OM02",
-      "occupation": "MARKETEER"
-    },
-    {
-      "code": "OM20",
-      "occupation": "MARSHALL"
-    },
-    {
-      "code": "OM13",
-      "occupation": "MASONRY"
-    },
-    {
       "code": "MASS",
       "occupation": "MASSEUSE"
-    },
-    {
-      "code": "MAHD",
-      "occupation": "MATERIAL HANDLERS"
-    },
-    {
-      "code": "OM03",
-      "occupation": "MECHANIC"
-    },
-    {
-      "code": "MEEN",
-      "occupation": "MECHANICAL ENGINEER"
-    },
-    {
-      "code": "OM22",
-      "occupation": "MEDIC"
-    },
-    {
-      "code": "TM06",
-      "occupation": "MEDICAL & PHARMACEUTICAL SHOP"
-    },
-    {
-      "code": "OM09",
-      "occupation": "MEDICAL ASSISTANT"
-    },
-    {
-      "code": "TM13",
-      "occupation": "MEDICAL PRACTICE"
-    },
-    {
-      "code": "OM15",
-      "occupation": "MEDICAL PRACTITIONER"
-    },
-    {
-      "code": "OM17",
-      "occupation": "MERCHANDISER"
-    },
-    {
-      "code": "MCAS",
-      "occupation": "MERCHANDISING ASSISTANT"
-    },
-    {
-      "code": "TM07",
-      "occupation": "METAL CONTAINER MANUFACTURER"
-    },
-    {
-      "code": "OM23",
-      "occupation": "MIDWIFE"
-    },
-    {
-      "code": "OM16",
-      "occupation": "MILL WORKER"
-    },
-    {
-      "code": "OM14",
-      "occupation": "MISSIONARY"
-    },
-    {
-      "code": "TM12",
-      "occupation": "MONETARY/STATUTORY FIRM"
     },
     {
       "code": "MOCG",
@@ -1641,864 +89,556 @@
       "occupation": "MONEY LENDER"
     },
     {
-      "code": "TM08",
-      "occupation": "MOTOR WORKSHOP"
+      "code": "OA01",
+      "occupation": "ACCOUNTANT/AUDITOR"
     },
     {
-      "code": "OM12",
-      "occupation": "MOULDER"
+      "code": "OA03",
+      "occupation": "ADMINISTRATOR"
     },
     {
-      "code": "TM10",
-      "occupation": "MULTI MEDIA"
+      "code": "OA06",
+      "occupation": "AGENT"
     },
     {
-      "code": "OM07",
-      "occupation": "MUSICIAN"
+      "code": "OA07",
+      "occupation": "ATHLETE"
     },
     {
-      "code": "MOPR",
-      "occupation": "MACHINE OPERATORS"
+      "code": "OA10",
+      "occupation": "AMBASSADOR"
     },
     {
-      "code": "MACH",
+      "code": "OA11",
+      "occupation": "ADVISOR"
+    },
+    {
+      "code": "OA13",
+      "occupation": "ARCHAEOLOGIST"
+    },
+    {
+      "code": "OA15",
+      "occupation": "ANALYST"
+    },
+    {
+      "code": "OA18",
+      "occupation": "AGRICULTURIST"
+    },
+    {
+      "code": "OA20",
+      "occupation": "ASSISTANT"
+    },
+    {
+      "code": "OA24",
+      "occupation": "ATTENDANT"
+    },
+    {
+      "code": "OA26",
+      "occupation": "ADJUSTER"
+    },
+    {
+      "code": "OB01",
+      "occupation": "BANKER"
+    },
+    {
+      "code": "OB02",
+      "occupation": "BUSINESSMAN"
+    },
+    {
+      "code": "OB05",
+      "occupation": "BUTCHER"
+    },
+    {
+      "code": "OB06",
+      "occupation": "BARTENDER"
+    },
+    {
+      "code": "OB08",
+      "occupation": "BIOLOGIST"
+    },
+    {
+      "code": "OB09",
+      "occupation": "BELLBOY"
+    },
+    {
+      "code": "OB10",
+      "occupation": "BABY SITTER"
+    },
+    {
+      "code": "OB11",
+      "occupation": "BEAUTICIAN"
+    },
+    {
+      "code": "OB12",
+      "occupation": "BROKER"
+    },
+    {
+      "code": "OC01",
+      "occupation": "CARPENTER"
+    },
+    {
+      "code": "OC02",
+      "occupation": "CLERICAL"
+    },
+    {
+      "code": "OC03",
+      "occupation": "CONTRACTOR"
+    },
+    {
+      "code": "OC05",
+      "occupation": "CRAFTSMAN"
+    },
+    {
+      "code": "OC06",
+      "occupation": "CLEANER"
+    },
+    {
+      "code": "OC07",
+      "occupation": "CONSULTANT"
+    },
+    {
+      "code": "OC08",
+      "occupation": "CHEMIST"
+    },
+    {
+      "code": "OC10",
+      "occupation": "CHEF"
+    },
+    {
+      "code": "OC11",
+      "occupation": "CASHIER"
+    },
+    {
+      "code": "OC12",
+      "occupation": "CATERER"
+    },
+    {
+      "code": "OC13",
+      "occupation": "CADDIE"
+    },
+    {
+      "code": "OC14",
+      "occupation": "COUNSELLOR"
+    },
+    {
+      "code": "OC16",
+      "occupation": "CO-ORDINATOR"
+    },
+    {
+      "code": "OC17",
+      "occupation": "COMMISSIONER"
+    },
+    {
+      "code": "OC20",
+      "occupation": "CONTROLLER"
+    },
+    {
+      "code": "OC22",
+      "occupation": "CHIEF EXECUTIVE OFFICER"
+    },
+    {
+      "code": "OC23",
+      "occupation": "CARETAKER"
+    },
+    {
+      "code": "OC28",
+      "occupation": "CARGO ATTENDANT"
+    },
+    {
+      "code": "OC29",
+      "occupation": "CROUPIER"
+    },
+    {
+      "code": "OC30",
+      "occupation": "CONVEYOR"
+    },
+    {
+      "code": "OC34",
+      "occupation": "CHIEF OPERATING OFFICER"
+    },
+    {
+      "code": "OD01",
+      "occupation": "DEALER"
+    },
+    {
+      "code": "OD02",
+      "occupation": "DIVER"
+    },
+    {
+      "code": "OD05",
+      "occupation": "DERMATOLOGIST"
+    },
+    {
+      "code": "OD06",
+      "occupation": "DESIGNER"
+    },
+    {
+      "code": "OD07",
+      "occupation": "DRIVER"
+    },
+    {
+      "code": "OD08",
+      "occupation": "DOCTOR"
+    },
+    {
+      "code": "OD10",
+      "occupation": "DECORATOR"
+    },
+    {
+      "code": "OD11",
+      "occupation": "DESPATCHER"
+    },
+    {
+      "code": "OD12",
+      "occupation": "DRAFTSMAN"
+    },
+    {
+      "code": "OD13",
+      "occupation": "DISTRIBUTOR"
+    },
+    {
+      "code": "OE02",
+      "occupation": "EXECUTIVE"
+    },
+    {
+      "code": "OE03",
+      "occupation": "ENGINEER"
+    },
+    {
+      "code": "OE04",
+      "occupation": "EDITOR"
+    },
+    {
+      "code": "OE05",
+      "occupation": "ENTERTAINER"
+    },
+    {
+      "code": "OE06",
+      "occupation": "ELECTRICIAN"
+    },
+    {
+      "code": "OE07",
+      "occupation": "ECONOMIST"
+    },
+    {
+      "code": "OF01",
+      "occupation": "FISHMONGER"
+    },
+    {
+      "code": "OF02",
+      "occupation": "FARMER"
+    },
+    {
+      "code": "OF04",
+      "occupation": "FIREMAN"
+    },
+    {
+      "code": "OF05",
+      "occupation": "FISHERMAN"
+    },
+    {
+      "code": "OF06",
+      "occupation": "FLORIST"
+    },
+    {
+      "code": "OF07",
+      "occupation": "FOREMAN"
+    },
+    {
+      "code": "OF08",
+      "occupation": "FACTORY WORKER"
+    },
+    {
+      "code": "OF09",
+      "occupation": "FITTER"
+    },
+    {
+      "code": "OG01",
+      "occupation": "GENERAL WORKER"
+    },
+    {
+      "code": "OG02",
+      "occupation": "GARDENER"
+    },
+    {
+      "code": "OG04",
+      "occupation": "GOLD/JEWEL/BLACK SMITH"
+    },
+    {
+      "code": "OG05",
+      "occupation": "GUIDE"
+    },
+    {
+      "code": "OG06",
+      "occupation": "GUARD"
+    },
+    {
+      "code": "OH02",
+      "occupation": "HAWKER"
+    },
+    {
+      "code": "OH03",
+      "occupation": "HOUSEWIFE"
+    },
+    {
+      "code": "OH04",
+      "occupation": "HOSTESS"
+    },
+    {
+      "code": "OH06",
+      "occupation": "HOSPITAL STAFF"
+    },
+    {
+      "code": "OH12",
+      "occupation": "MAID/HOUSEKEEPER"
+    },
+    {
+      "code": "OI03",
+      "occupation": "INSTRUCTOR"
+    },
+    {
+      "code": "OJ01",
+      "occupation": "JOURNALIST"
+    },
+    {
+      "code": "OJ02",
+      "occupation": "JUDGE"
+    },
+    {
+      "code": "OL01",
+      "occupation": "LEGAL PROFESSION"
+    },
+    {
+      "code": "OL02",
+      "occupation": "LECTURER"
+    },
+    {
+      "code": "OL03",
+      "occupation": "LIBRARIAN"
+    },
+    {
+      "code": "OL05",
+      "occupation": "LUMBERJACK"
+    },
+    {
+      "code": "OL06",
+      "occupation": "LABORATORIST"
+    },
+    {
+      "code": "OL07",
+      "occupation": "LANDLORD/LANDLADY"
+    },
+    {
+      "code": "OM01",
+      "occupation": "MANAGERIAL"
+    },
+    {
+      "code": "OM02",
+      "occupation": "MARKETEER"
+    },
+    {
+      "code": "OM03",
+      "occupation": "MECHANIC"
+    },
+    {
+      "code": "OM04",
+      "occupation": "MARINE/NAVY"
+    },
+    {
+      "code": "OM06",
+      "occupation": "MAINTENANCE WORKER"
+    },
+    {
+      "code": "OM08",
       "occupation": "MACHINIST"
     },
     {
-      "code": "MAIN",
-      "occupation": "MAINTENANCE"
+      "code": "OM15",
+      "occupation": "MEDICAL PRACTITIONER"
     },
     {
-      "code": "MKAN",
-      "occupation": "MARKET ANALYST"
+      "code": "OM19",
+      "occupation": "MAGISTRATE"
     },
     {
-      "code": "MKTG",
-      "occupation": "MARKETING EXECUTIVE"
+      "code": "OM20",
+      "occupation": "MARSHALL"
     },
     {
-      "code": "MTEX",
-      "occupation": "MATERIAL EXPEDITOR"
-    },
-    {
-      "code": "MTFB",
-      "occupation": "METAL FABRICATOR"
-    },
-    {
-      "code": "MINI",
-      "occupation": "MINI LABORATORY OPERATOR"
-    },
-    {
-      "code": "MOAD",
-      "occupation": "MODULE ADMINISTRATOR"
-    },
-    {
-      "code": "MOMK",
-      "occupation": "MOULD MAKER"
-    },
-    {
-      "code": "ON04",
-      "occupation": "NARRATOR"
-    },
-    {
-      "code": "ON03",
-      "occupation": "NAVIGATOR"
-    },
-    {
-      "code": "ON02",
-      "occupation": "NEGOTIATOR"
-    },
-    {
-      "code": "ON09",
-      "occupation": "NETWORK SUPPORT"
-    },
-    {
-      "code": "ON05",
-      "occupation": "NON-COMMISSIONED OFFICER"
-    },
-    {
-      "code": "ON06",
-      "occupation": "NUMISMATIST"
+      "code": "OM23",
+      "occupation": "MIDWIFE"
     },
     {
       "code": "ON01",
       "occupation": "NURSE"
     },
     {
-      "code": "ON07",
-      "occupation": "NURSEMAID"
-    },
-    {
-      "code": "ON08",
-      "occupation": "NURTURIST"
-    },
-    {
       "code": "ON10",
       "occupation": "NUTRITIONIST"
-    },
-    {
-      "code": "NSVC",
-      "occupation": "NATIONAL SERVICES MAN"
-    },
-    {
-      "code": "N.A.",
-      "occupation": "NOT AVAILABLE"
-    },
-    {
-      "code": "OO08",
-      "occupation": "OBSERVER"
-    },
-    {
-      "code": "TO04",
-      "occupation": "OCEANOGRAPHERS"
-    },
-    {
-      "code": "OO06",
-      "occupation": "OCEANOGRAPHIST"
-    },
-    {
-      "code": "TO02",
-      "occupation": "OFFICE APPLIANCES/STATIONERY"
-    },
-    {
-      "code": "OO10",
-      "occupation": "OFFICE BOY"
-    },
-    {
-      "code": "TO01",
-      "occupation": "OFFICE PRODUCTS MANUFACTURER"
-    },
-    {
-      "code": "OO03",
-      "occupation": "OFFICER"
-    },
-    {
-      "code": "TO03",
-      "occupation": "OIL REFINERIES"
     },
     {
       "code": "OO01",
       "occupation": "OPERATOR"
     },
     {
-      "code": "OO07",
-      "occupation": "OPHTHALMOLOGIST"
+      "code": "OO03",
+      "occupation": "OFFICER"
     },
     {
       "code": "OO04",
       "occupation": "OPTICIAN"
     },
     {
-      "code": "OO02",
-      "occupation": "ORATOR"
-    },
-    {
-      "code": "OTHR",
-      "occupation": "OTHER OCCUPATION"
-    },
-    {
-      "code": "OTHE",
-      "occupation": "OCCUPATION THERAPIST"
-    },
-    {
-      "code": "OFFM",
-      "occupation": "OFFSET MACHINE OPERATOR"
-    },
-    {
-      "code": "OILW",
-      "occupation": "OIL REFINERY WORKER"
-    },
-    {
-      "code": "ORDR",
-      "occupation": "ORDER MANAGEMENT"
-    },
-    {
-      "code": "OGFW",
-      "occupation": "OTHER GENERAL WORKERS"
-    },
-    {
-      "code": "OSGW",
-      "occupation": "OTHERS SERVICES - GENERAL WORK"
-    },
-    {
-      "code": "OUTB",
-      "occupation": "OUTBOUND OFFICER"
-    },
-    {
-      "code": "OUTS",
-      "occupation": "OUTSTATION CASHIER"
-    },
-    {
-      "code": "OP17",
-      "occupation": "PACKER"
-    },
-    {
       "code": "OP01",
       "occupation": "PAINTER"
-    },
-    {
-      "code": "TP01",
-      "occupation": "PAPER & ITS RELATED PRODUCTS"
-    },
-    {
-      "code": "OP26",
-      "occupation": "PARA LEGAL"
-    },
-    {
-      "code": "OP13",
-      "occupation": "PASTOR"
-    },
-    {
-      "code": "OP10",
-      "occupation": "PATHOLOGIST"
-    },
-    {
-      "code": "OP12",
-      "occupation": "PAYMASTER"
     },
     {
       "code": "OP02",
       "occupation": "PENSIONER/RETIREE"
     },
     {
-      "code": "OP27",
-      "occupation": "PERSONAL ASSISTANT"
-    },
-    {
-      "code": "OP05",
-      "occupation": "PHARMACIST"
-    },
-    {
-      "code": "TP02",
-      "occupation": "PHOTO STUDIO"
-    },
-    {
-      "code": "PGRA",
-      "occupation": "PHOTOGRAPHER"
-    },
-    {
-      "code": "OP22",
-      "occupation": "PHYSICIAN"
-    },
-    {
-      "code": "OP21",
-      "occupation": "PHYSIOTHERAPIST"
-    },
-    {
-      "code": "OP07",
-      "occupation": "PILOT"
-    },
-    {
-      "code": "OP07",
-      "occupation": "PILOT"
-    },
-    {
-      "code": "OP16",
-      "occupation": "PLANNER"
-    },
-    {
-      "code": "TP03",
-      "occupation": "PLASTIC INDUSTRIES"
-    },
-    {
-      "code": "OP23",
-      "occupation": "PLUMBER"
-    },
-    {
-      "code": "POLM",
-      "occupation": "POLICE"
-    },
-    {
-      "code": "POLM",
-      "occupation": "POLICEMAN"
-    },
-    {
-      "code": "PLTN",
-      "occupation": "POLITICIAN"
-    },
-    {
-      "code": "OP06",
-      "occupation": "POSTMAN"
-    },
-    {
-      "code": "TP04",
-      "occupation": "PRECISION REPAIR ENGINEERING"
-    },
-    {
-      "code": "OP25",
-      "occupation": "PRESIDENT"
-    },
-    {
-      "code": "OP20",
-      "occupation": "PRINCIPAL"
-    },
-    {
-      "code": "PNTR",
-      "occupation": "PRINTER"
-    },
-    {
-      "code": "OP18",
-      "occupation": "PRODUCTION WORKER"
-    },
-    {
-      "code": "OP19",
-      "occupation": "PROFESSIONALIST"
-    },
-    {
-      "code": "PROF",
-      "occupation": "PROFESSOR"
-    },
-    {
       "code": "OP03",
       "occupation": "PROMOTER"
-    },
-    {
-      "code": "TP05",
-      "occupation": "PROPERTY DEVELOPER"
-    },
-    {
-      "code": "PSAW",
-      "occupation": "PSA WHAFT"
     },
     {
       "code": "OP04",
       "occupation": "PSYCHIATRIST"
     },
     {
-      "code": "OP28",
-      "occupation": "PUBLIC SPEAKER"
+      "code": "OP05",
+      "occupation": "PHARMACIST"
     },
     {
-      "code": "TP06",
-      "occupation": "PUBLISHER/PRINTER"
+      "code": "OP06",
+      "occupation": "POSTMAN"
+    },
+    {
+      "code": "OP07",
+      "occupation": "PILOT"
     },
     {
       "code": "OP09",
       "occupation": "PURCHASER"
     },
     {
-      "code": "PACK",
-      "occupation": "PACKAGE DELIVERY"
+      "code": "OP10",
+      "occupation": "PATHOLOGIST"
     },
     {
-      "code": "PCKR",
-      "occupation": "PACKERS"
+      "code": "OP13",
+      "occupation": "PASTOR"
     },
     {
-      "code": "PGBY",
-      "occupation": "PAGE BOYS"
+      "code": "OP14",
+      "occupation": "IT PROGRAMMER / SYSTEM ANALYST"
     },
     {
-      "code": "PGSA",
-      "occupation": "PASSENGER SERVICE ASSISTANT"
+      "code": "OP16",
+      "occupation": "PLANNER"
     },
     {
-      "code": "PAST",
-      "occupation": "PASTRY CHEF"
+      "code": "OP17",
+      "occupation": "PACKER"
     },
     {
-      "code": "PYCL",
-      "occupation": "PAYROLL CLERK"
+      "code": "OP20",
+      "occupation": "PRINCIPAL"
     },
     {
-      "code": "PSAS",
-      "occupation": "PERSONNEL ASSISTANT"
+      "code": "OP23",
+      "occupation": "PLUMBER"
     },
     {
-      "code": "PEST",
-      "occupation": "PEST CONTROL"
+      "code": "OP27",
+      "occupation": "PERSONAL ASSISTANT"
     },
     {
-      "code": "PEPA",
-      "occupation": "PETROL PUMP ATTENDANT"
-    },
-    {
-      "code": "PHAS",
-      "occupation": "PHOTO ASSISTANT"
-    },
-    {
-      "code": "POTO",
-      "occupation": "PHOTOCOPY ASSISTANT"
-    },
-    {
-      "code": "PGRA",
-      "occupation": "PHOTOGRAPHER"
-    },
-    {
-      "code": "PLTE",
-      "occupation": "PLANT TECHNICIAN"
-    },
-    {
-      "code": "PLTN",
-      "occupation": "POLITICIAN"
-    },
-    {
-      "code": "POSC",
-      "occupation": "POS CASHIER"
-    },
-    {
-      "code": "POFW",
-      "occupation": "PRODUCTION OPERATORS"
-    },
-    {
-      "code": "SPOT",
-      "occupation": "PROFESSIONAL SPORTSMAN"
-    },
-    {
-      "code": "PRCO",
-      "occupation": "PROJECT CO-ORDINATOR"
-    },
-    {
-      "code": "PFAS",
-      "occupation": "PROOFING ASSISTANT"
-    },
-    {
-      "code": "PRAG",
-      "occupation": "PROPERTY AGENT"
-    },
-    {
-      "code": "PBLS",
-      "occupation": "PUBLISHER"
-    },
-    {
-      "code": "PCOF",
-      "occupation": "PURCHANSING OFFICER"
-    },
-    {
-      "code": "QCCK",
-      "occupation": "Q C CHECKERS"
-    },
-    {
-      "code": "TR01",
-      "occupation": "REAL ESTATE"
-    },
-    {
-      "code": "KTVR",
-      "occupation": "RECEPTIONIST"
-    },
-    {
-      "code": "OR02",
-      "occupation": "RECEPTIONIST"
-    },
-    {
-      "code": "TR07",
-      "occupation": "REGISTERED ORGANISATIONS/FIRMS"
-    },
-    {
-      "code": "OR04",
-      "occupation": "REMISIER"
-    },
-    {
-      "code": "TR02",
-      "occupation": "RENTAL COMPANY"
-    },
-    {
-      "code": "OR05",
-      "occupation": "REPRESENTATIVE"
-    },
-    {
-      "code": "TR03",
-      "occupation": "REPRESENTATIVE OFFICE"
+      "code": "OP28",
+      "occupation": "PUBLIC SPEAKER"
     },
     {
       "code": "OR01",
       "occupation": "RESEARCHER"
     },
     {
-      "code": "TR06",
-      "occupation": "RESORT"
-    },
-    {
-      "code": "TR04",
-      "occupation": "RESTAURANT/CANTEEN/COFFEE SHOP"
-    },
-    {
-      "code": "TR05",
-      "occupation": "RETAIL OUTLET"
-    },
-    {
-      "code": "OR06",
-      "occupation": "RETAILER"
-    },
-    {
-      "code": "OR03",
-      "occupation": "RETIREE"
-    },
-    {
-      "code": "TR08",
-      "occupation": "RUBBER INDUSTRIES"
-    },
-    {
-      "code": "RTEC",
-      "occupation": "RADIO & TV TECHNICIAN"
-    },
-    {
-      "code": "RTHE",
-      "occupation": "RADIOTHERAPIST"
-    },
-    {
-      "code": "REOF",
-      "occupation": "RECRUITMENT OFFICER"
-    },
-    {
-      "code": "RSMR",
-      "occupation": "REGIONAL SALES MANAGER"
-    },
-    {
-      "code": "REIN",
-      "occupation": "REINSURANCE EXECUTIVE"
-    },
-    {
-      "code": "RMVR",
-      "occupation": "REMOVERS"
-    },
-    {
-      "code": "RESO",
-      "occupation": "RESORT EXECUTIVE"
-    },
-    {
-      "code": "RETL",
-      "occupation": "RETAILERS"
-    },
-    {
-      "code": "REWK",
-      "occupation": "REWORK TECHNICIAN"
-    },
-    {
-      "code": "RMSV",
-      "occupation": "ROOM SERVICE"
-    },
-    {
-      "code": "OS11",
-      "occupation": "SAILOR"
-    },
-    {
-      "code": "SALE",
-      "occupation": "SALESMEN"
-    },
-    {
-      "code": "OS21",
-      "occupation": "SCHEDULER"
-    },
-    {
-      "code": "TS01",
-      "occupation": "SCHOOL"
-    },
-    {
-      "code": "OS04",
-      "occupation": "SCIENTIST"
+      "code": "OR04",
+      "occupation": "REMISIER"
     },
     {
       "code": "OS01",
       "occupation": "SECRETARY"
     },
     {
-      "code": "OS09",
-      "occupation": "SECURITY"
-    },
-    {
-      "code": "TS02",
-      "occupation": "SECURITY/INVESTIGATION SERVICE"
-    },
-    {
-      "code": "OS18",
-      "occupation": "SELF-EMPLOYED"
-    },
-    {
-      "code": "OS26",
-      "occupation": "SENATE BEARER"
-    },
-    {
-      "code": "OS08",
-      "occupation": "SENATOR"
-    },
-    {
-      "code": "TS03",
-      "occupation": "SERVICE INDUSTRIES - OTHERS"
-    },
-    {
-      "code": "OS25",
-      "occupation": "SEWER"
-    },
-    {
-      "code": "TS05",
-      "occupation": "SHIPPING"
-    },
-    {
-      "code": "TS06",
-      "occupation": "SHIPREPAIRING/MARINE ENGINEER"
-    },
-    {
-      "code": "OS13",
-      "occupation": "SHOP ASSISTANCE"
-    },
-    {
-      "code": "SING",
-      "occupation": "SINGER"
-    },
-    {
-      "code": "OS03",
-      "occupation": "SOLEPROPRIETOR"
-    },
-    {
-      "code": "OS12",
-      "occupation": "SOLICITOR"
-    },
-    {
-      "code": "TS07",
-      "occupation": "SPORTS & RECREATION BUSINESS"
-    },
-    {
-      "code": "OS14",
-      "occupation": "STATE REVENUE"
-    },
-    {
-      "code": "OS19",
-      "occupation": "STEWARD/STEWARDESS"
-    },
-    {
-      "code": "TS08",
-      "occupation": "STOCK EXCHANGE & SECURITY FIRM"
-    },
-    {
-      "code": "OS16",
-      "occupation": "STORE ASSISTANT"
-    },
-    {
-      "code": "OS06",
-      "occupation": "STUDENT"
-    },
-    {
-      "code": "OS20",
-      "occupation": "SUPERINTENDENT"
-    },
-    {
-      "code": "OS23",
-      "occupation": "SUPERIOR"
-    },
-    {
       "code": "OS02",
       "occupation": "SUPERVISOR"
     },
     {
-      "code": "OS24",
-      "occupation": "SUPPORT"
-    },
-    {
-      "code": "OS07",
-      "occupation": "SURGEON"
+      "code": "OS04",
+      "occupation": "SCIENTIST"
     },
     {
       "code": "OS05",
       "occupation": "SURVEYOR"
     },
     {
-      "code": "TS09",
-      "occupation": "SURVEYOR/ADJUSTER/APPRAISER"
+      "code": "OS06",
+      "occupation": "STUDENT"
     },
     {
-      "code": "SAFE",
-      "occupation": "SAFETY OFFICER"
-    },
-    {
-      "code": "SOAT",
-      "occupation": "SALES ORDER ASSISTANT"
-    },
-    {
-      "code": "SANI",
-      "occupation": "SANITARY INSPECTOR"
-    },
-    {
-      "code": "SCAN",
-      "occupation": "SCANNER ASSISTANT"
-    },
-    {
-      "code": "SFOA",
-      "occupation": "SEA FREIGHT OPERATION ASST"
-    },
-    {
-      "code": "SECG",
-      "occupation": "SECURITY GUARD"
-    },
-    {
-      "code": "SSGW",
-      "occupation": "SECURITY SERVICES-GENERAL WORK"
-    },
-    {
-      "code": "SNGL",
-      "occupation": "SENIOR GLASS GLAZIER"
-    },
-    {
-      "code": "SUTE",
-      "occupation": "SET-UP TECHNICIAN"
-    },
-    {
-      "code": "SHEE",
-      "occupation": "SHEET METAL FABRICATOR"
-    },
-    {
-      "code": "SHCL",
-      "occupation": "SHIPPING CLERK"
-    },
-    {
-      "code": "SHIP",
-      "occupation": "SHIPYARD WORKER"
-    },
-    {
-      "code": "SHOP",
-      "occupation": "SHOP ASSISTANT"
-    },
-    {
-      "code": "SHKP",
-      "occupation": "SHOPKEEPER & ASSISTANT"
-    },
-    {
-      "code": "SHUT",
-      "occupation": "SHUTTLE DRIVER"
-    },
-    {
-      "code": "SIGN",
-      "occupation": "SIGNAL MAN"
-    },
-    {
-      "code": "SNWR",
-      "occupation": "SIGNWRITER"
-    },
-    {
-      "code": "SILK",
-      "occupation": "SILK SCREEN AUTO MACHINE OP"
-    },
-    {
-      "code": "STAG",
-      "occupation": "SITE AGENT"
-    },
-    {
-      "code": "STCL",
-      "occupation": "SITE CLERK"
-    },
-    {
-      "code": "STFM",
-      "occupation": "SITE FOREMAN"
-    },
-    {
-      "code": "SOPT",
-      "occupation": "SITE OPERATION TECHNOLOGIST"
-    },
-    {
-      "code": "SPFT",
-      "occupation": "SKILLED PIPE FITTER"
-    },
-    {
-      "code": "SOCI",
-      "occupation": "SOCIAL WORKER"
-    },
-    {
-      "code": "SWPR",
-      "occupation": "SOFTWARE PROFESSIONAL"
-    },
-    {
-      "code": "SPOR",
-      "occupation": "SPORT COMPLEX ASSISTANT"
-    },
-    {
-      "code": "STAL",
-      "occupation": "STALL HELPER"
-    },
-    {
-      "code": "STWD",
-      "occupation": "STEWARDING"
-    },
-    {
-      "code": "STCN",
-      "occupation": "STOCK CONTROLLER"
-    },
-    {
-      "code": "STKB",
-      "occupation": "STOCKBROKER"
-    },
-    {
-      "code": "STRM",
-      "occupation": "STOREMAN"
-    },
-    {
-      "code": "STUD",
-      "occupation": "STUDIO ASSISTANT"
-    },
-    {
-      "code": "SSAS",
-      "occupation": "SUPERMART SALES ASSISTANT"
-    },
-    {
-      "code": "SPAT",
-      "occupation": "SWIMMING POOL ATTENDANT"
-    },
-    {
-      "code": "SYRU",
-      "occupation": "SYRUP PROCESS OPERATOR"
-    },
-    {
-      "code": "SYAN",
-      "occupation": "SYSTEM ANALYST"
-    },
-    {
-      "code": "OT01",
-      "occupation": "TAILOR"
+      "code": "OS11",
+      "occupation": "SAILOR"
     },
     {
       "code": "OS15",
       "occupation": "TAILOR/ SEAMSTRESS"
     },
     {
-      "code": "OT05",
-      "occupation": "TEA LADY"
+      "code": "OS18",
+      "occupation": "SELF-EMPLOYED"
     },
     {
-      "code": "OT04",
-      "occupation": "TEACHER"
+      "code": "OS19",
+      "occupation": "STEWARD/STEWARDESS"
     },
     {
-      "code": "OT02",
-      "occupation": "TECHNICIAN"
+      "code": "OS20",
+      "occupation": "SUPERINTENDENT"
     },
     {
-      "code": "OT07",
-      "occupation": "TECHNOLOGIST"
-    },
-    {
-      "code": "TT05",
-      "occupation": "TELECOMMUNICATION"
-    },
-    {
-      "code": "OT08",
-      "occupation": "TELESALES"
-    },
-    {
-      "code": "TELL",
-      "occupation": "TELLERS"
-    },
-    {
-      "code": "TT01",
-      "occupation": "TEXTILE & GARMENT INDUSTRIES"
-    },
-    {
-      "code": "OT11",
-      "occupation": "THERAPIST"
+      "code": "OS21",
+      "occupation": "SCHEDULER"
     },
     {
       "code": "OS22",
       "occupation": "TOOL SETTER"
     },
     {
-      "code": "TT06",
-      "occupation": "TOURISM"
+      "code": "OS25",
+      "occupation": "SEWER"
+    },
+    {
+      "code": "OT02",
+      "occupation": "TECHNICIAN"
     },
     {
       "code": "OT03",
       "occupation": "TRADER"
     },
     {
-      "code": "TT02",
-      "occupation": "TRADING CO/IMPORT & EXPORT"
+      "code": "OT04",
+      "occupation": "TEACHER"
+    },
+    {
+      "code": "OT09",
+      "occupation": "TUTOR"
+    },
+    {
+      "code": "OT10",
+      "occupation": "TRANSLATOR"
+    },
+    {
+      "code": "OT11",
+      "occupation": "THERAPIST"
     },
     {
       "code": "OT13",
@@ -2509,220 +649,84 @@
       "occupation": "TRAINER"
     },
     {
-      "code": "OT12",
-      "occupation": "TRANSHIPMENT ASSISTANT"
-    },
-    {
-      "code": "OT10",
-      "occupation": "TRANSLATOR"
-    },
-    {
-      "code": "TT03",
-      "occupation": "TRANSPORTATION/COMM. - OTHERS"
-    },
-    {
-      "code": "TT04",
-      "occupation": "TRAVELLING/TICKETING AGENCY"
-    },
-    {
-      "code": "OT09",
-      "occupation": "TUTOR"
-    },
-    {
-      "code": "TXAS",
-      "occupation": "TAX ASSISTANT"
-    },
-    {
-      "code": "TAXI",
-      "occupation": "TAXI DRIVER"
-    },
-    {
-      "code": "TSSP",
-      "occupation": "TECHNICAL SUPPORT SPECIALIST"
-    },
-    {
-      "code": "TELE",
-      "occupation": "TELEMARKETEER"
-    },
-    {
-      "code": "TELX",
-      "occupation": "TELEX OPERATOR"
-    },
-    {
-      "code": "TICK",
-      "occupation": "TICKETING/TOUR EXECUTIVE"
-    },
-    {
-      "code": "TILE",
-      "occupation": "TILER"
-    },
-    {
-      "code": "TOOL",
-      "occupation": "TOOLSETTER"
-    },
-    {
-      "code": "TOUR",
-      "occupation": "TOUR DRIVER"
-    },
-    {
-      "code": "TRAD",
-      "occupation": "TRADENET CLERK"
-    },
-    {
-      "code": "TDRS",
-      "occupation": "TRADERS"
-    },
-    {
-      "code": "TRAF",
-      "occupation": "TRAFFIC & WAREHOUSE OFFICER"
-    },
-    {
-      "code": "TFPO",
-      "occupation": "TRAFFIC POLICE"
-    },
-    {
-      "code": "MRTC",
-      "occupation": "TRAIN DRIVER"
-    },
-    {
-      "code": "TECO",
-      "occupation": "TRANSHIPMENT EXPORT OFFICER"
-    },
-    {
-      "code": "TRAV",
-      "occupation": "TRAVEL AGENCY"
-    },
-    {
-      "code": "TRAS",
-      "occupation": "TREASURY ASSISTANT"
-    },
-    {
-      "code": "TRIC",
-      "occupation": "TRICHOLOGIST"
-    },
-    {
-      "code": "TYPT",
-      "occupation": "TYPIST"
-    },
-    {
-      "code": "TYRE",
-      "occupation": "TYREMAN"
-    },
-    {
-      "code": "UATT",
-      "occupation": "UAT TESTER"
-    },
-    {
-      "code": "UNEM",
-      "occupation": "UNEMPLOYED"
-    },
-    {
-      "code": "UNDA",
-      "occupation": "UNDERWRITING ASSISTANT"
-    },
-    {
-      "code": "OV05",
-      "occupation": "VEE JAY-RADIO"
-    },
-    {
-      "code": "TV01",
-      "occupation": "VEHICLES SPARE PARTS"
+      "code": "OTHR",
+      "occupation": "OTHER OCCUPATION"
     },
     {
       "code": "OV01",
       "occupation": "VETERINARIAN"
     },
     {
-      "code": "OV02",
-      "occupation": "VICE PRESIDENT"
-    },
-    {
       "code": "OV04",
       "occupation": "VISUALISER"
-    },
-    {
-      "code": "VALE",
-      "occupation": "VALET"
-    },
-    {
-      "code": "VLAS",
-      "occupation": "VAN/LORRY ATTENDANT"
-    },
-    {
-      "code": "VDED",
-      "occupation": "VIDEO EDITOR"
-    },
-    {
-      "code": "OW04",
-      "occupation": "WAITRESS/WAITER"
-    },
-    {
-      "code": "OW06",
-      "occupation": "WARDEN"
-    },
-    {
-      "code": "TW01",
-      "occupation": "WAREHOUSE"
-    },
-    {
-      "code": "TW04",
-      "occupation": "WEDDING PLANER/CONSULTANT"
     },
     {
       "code": "OW02",
       "occupation": "WELDER"
     },
     {
-      "code": "OW08",
-      "occupation": "WELFARE WORKER"
-    },
-    {
-      "code": "OW07",
-      "occupation": "WHOLESALER"
-    },
-    {
-      "code": "OW03",
-      "occupation": "WIREMAN"
-    },
-    {
-      "code": "TW03",
-      "occupation": "WOOD PRODUCTS MANUFACTURER"
-    },
-    {
-      "code": "OW01",
-      "occupation": "WORKER"
+      "code": "OW04",
+      "occupation": "WAITRESS/WAITER"
     },
     {
       "code": "OW05",
       "occupation": "WRITER"
     },
     {
-      "code": "WASH",
-      "occupation": "WASHROMM ATTENDANT"
-    },
-    {
-      "code": "WARP",
-      "occupation": "WATCH REPAIRER"
-    },
-    {
-      "code": "WELD",
-      "occupation": "WELDERS"
-    },
-    {
-      "code": "WHGW",
-      "occupation": "WELFARE HOMES-GENERAL WORKERS"
-    },
-    {
-      "code": "WORD",
-      "occupation": "WORDROBE OFFICER"
-    },
-    {
-      "code": "WORK",
-      "occupation": "WORKSHOP ASSISTANT"
+      "code": "OW06",
+      "occupation": "WARDEN"
     },
     {
       "code": "OZ01",
       "occupation": "ZOOLOGIST"
+    },
+    {
+      "code": "PGRA",
+      "occupation": "PHOTOGRAPHER"
+    },
+    {
+      "code": "PLTN",
+      "occupation": "POLITICIAN"
+    },
+    {
+      "code": "PNTR",
+      "occupation": "PRINTER"
+    },
+    {
+      "code": "POLM",
+      "occupation": "POLICE"
+    },
+    {
+      "code": "PROF",
+      "occupation": "PROFESSOR"
+    },
+    {
+      "code": "PTEI",
+      "occupation": "INVESTIGATOR"
+    },
+    {
+      "code": "SING",
+      "occupation": "SINGER"
+    },
+    {
+      "code": "SVCM",
+      "occupation": "ARMY"
+    },
+    {
+      "code": "TA03",
+      "occupation": "ARCHITECT"
+    },
+    {
+      "code": "TG01",
+      "occupation": "GEOLOGIST"
+    },
+    {
+      "code": "TL01",
+      "occupation": "LAUNDRY WORKER"
+    },
+    {
+      "code": "UNEM",
+      "occupation": "UNEMPLOYED"
     }
   ],
   "business": [
