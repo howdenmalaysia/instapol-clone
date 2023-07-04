@@ -63,7 +63,11 @@ class MonthlySettlement extends Command
         } else if(Carbon::now()->day === 1) {
             $start_date = Carbon::now()->subDay()->startOfMonth()->format(self::DATE_FORMAT); // 1st of Last Month 00:00:00
             $end_date = Carbon::now()->subDay()->endOfMonth()->format(self::DATE_FORMAT); // Yesterday 23:59:59
-        } else {
+        } else if(Carbon::now()->day === $this->firstBusinessDay()){ 
+            //First Business Day
+            $start_date = Carbon::now()->subMonth()->startOfMonth()->format(self::DATE_FORMAT); // 1st of Last Month 00:00:00
+            $end_date = Carbon::now()->subMonth()->endOfMonth()->format(self::DATE_FORMAT); // Yesterday 23:59:59
+        }else {
             // Throw Error
             $day = Carbon::now()->format(self::DATE_FORMAT);
             Log::error("[Cron - Monthly Settlement] Shouldn't run settlement today, {$day}.");
@@ -344,5 +348,16 @@ class MonthlySettlement extends Command
 
             Log::error("[Cron - Howden Internal Settlement] An Error Encountered. [{$ex->getMessage()}] \n" . $ex);
         }
+    }
+
+    private function firstBusinessDay()
+    {
+        $first = Carbon::now()->firstOfMonth();
+
+        if($first->isWeekday()) {
+            return $first->day;
+        }
+
+        return $first->nextWeekday()->day;
     }
 }
