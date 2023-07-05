@@ -27,6 +27,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 
 class MotorController extends Controller
 {
@@ -90,6 +91,7 @@ class MotorController extends Controller
             ]
         ];
 
+        Log::info("[API/Ref] Received Request: " . json_encode($session));
         $quotation = $this->quotation($session);
         $session->quotation_id = $quotation->id;
         $request->session()->put('motor', $session);
