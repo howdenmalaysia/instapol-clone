@@ -37,6 +37,10 @@ class MotorController extends Controller
             ->get();
 
         $motor = $request->session()->get('motor', []);
+
+        $referral = $request->query('r');
+        $request->session()->put('referral', $referral);
+
         return view('frontend.motor.index')->with(['insurers' => $insurers, 'motor' => $motor]);
     }
 
@@ -76,7 +80,7 @@ class MotorController extends Controller
         }
 
         $session = (object) [
-            'referrer' => $request->cookie('referrer'),
+            'referrer' => $request->session()->get('referral'),
             'vehicle_number' => $request->vehicle_number,
             'postcode' => $request->postcode,
             'policy_holder' => (object) [
