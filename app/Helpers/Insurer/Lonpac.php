@@ -281,8 +281,7 @@ class Lonpac implements InsurerLibraryInterface
                 'email' => $input->email,
                 'vehicle' => $vehicle,
                 'vehicle_number' => $input->vehicle_number,
-                'ownership_type' => $ownership_type,
-                'phone_number' => $input->phone_number
+                'ownership_type' => $ownership_type
             ];
 
             $motor_premium = $this->getPremium($data);
@@ -411,7 +410,7 @@ class Lonpac implements InsurerLibraryInterface
             // Log::info("[API/GetBenefit] Dzul Request Test: " . json_encode($imploded));
             // Log::info("[API/COver] Dzul Request Test: " . json_encode($input->extra_cover));
         }
-
+        //Log::info("[API/Input] Dzul Request Test: " . json_encode($input));
         $data = (object) [
             'dob' => $date_of_birth,
             'driving_experience' => $driving_experience,
@@ -471,7 +470,7 @@ class Lonpac implements InsurerLibraryInterface
             }
         } 
 
-        Log::info("[API/GetExtraCover4] Dzul Request Select: " . json_encode($input->extra_cover));
+        //Log::info("[API/GetExtraCover4] Dzul Request Select: " . json_encode($input->extra_cover));
 
         $response = new PremiumResponse([
             'basic_premium' => formatNumber(($motor_premium->response->gross_premium + $motor_premium->response->ncd_amount) - $total_benefit_amount),
@@ -673,7 +672,7 @@ class Lonpac implements InsurerLibraryInterface
 
         // Include the necessary fields to the input for API call
         $input->premium_details = $premium_details->response;
-        Log::info("[API/Last/Premium] Dzul Response: " . json_encode($input));
+        //Log::info("[API/Last/Premium] Dzul Response: " . json_encode($input));
  
         // Call issueCoverNote API
         $submission_result = $this->issueCoverNote($input);
@@ -707,7 +706,7 @@ class Lonpac implements InsurerLibraryInterface
             'class_code' => 'VP02',
             'cover_type' => 'CP'
         ];
-
+        //Log::info("[API/GetVehicleDetails] Dzul Test: " . json_encode($data));
         // Generate XML from view
         $xml = view('backend.xml.lonpac.vehicle_details')->with($data)->render();
 
@@ -798,7 +797,7 @@ class Lonpac implements InsurerLibraryInterface
     private function getPremium(object $input) : ResponseData
     {
         $path = '/HowdenGetQuotation';
-
+        //Log::info("[API/GePremium] Dzul Request: " . json_encode($input));
         $request_id = Str::uuid();
         $quotation_number = 'HIB' . Carbon::now()->timestamp;
 
@@ -820,7 +819,7 @@ class Lonpac implements InsurerLibraryInterface
         // Format Extra Cover Code
         $formatted_extra_cover = [];
         if(isset($input->extra_cover)) {
-            Log::info("[API/GetNew] Dzul Request: " . json_encode($input->extra_cover));
+            //Log::info("[API/GetNew] Dzul Request: " . json_encode($input->extra_cover));
             foreach($input->extra_cover as $item){
                 if($item->extra_cover_code == "M51" && !empty($item->cart_day)){
                     $item->sum_insured = $item->cart_day * $item->cart_amount;
@@ -874,7 +873,7 @@ class Lonpac implements InsurerLibraryInterface
             'email' => $input->email ?? $input->insurance->holder->email_address,
             'id_number' => preg_replace("/^(\d{6})(\d{2})(\d{4})$/", "$1-$2-$3", $input->id_number),
             'date_of_birth' =>  Carbon::parse($input->dob)->format('d/m/Y') ?? '',
-            'age' => getAgeFromIC($input->id_number),
+            'age' => empty($input->id_number) ? 0 : getAgeFromIC($input->id_number),
             'gender' => $input->gender,
             'marital_status' => $this->maritalcode($input->marital_status),
             'occupation' => self::OCCUPATION,
@@ -951,6 +950,7 @@ class Lonpac implements InsurerLibraryInterface
         ];
 
         // Generate XML from view
+        //Log::info("[API/GePremium] Dzul Request: " . json_encode($data));
         $xml = view('backend.xml.lonpac.premium')->with($data)->render();
 
         // Call API
@@ -961,7 +961,7 @@ class Lonpac implements InsurerLibraryInterface
         }
 
         // 1. Check Response Code
-        Log::info("[API/Response] Dzul Request Cover: " . json_encode($result));
+        //Log::info("[API/Response] Dzul Request Cover: " . json_encode($result));
 
         $response_code = (string) $result->code;
         if ($response_code != '200') {
@@ -1276,7 +1276,7 @@ class Lonpac implements InsurerLibraryInterface
                     break;
                 }
             case 'M17': {
-                    $description = 'Special Perlis (Flood, Earthquake, Ladslide, etc)';
+                    $description = 'Enhanced Inclusion of Special Perlis (Flood)';
                     break;
                 }
             case 'M62': {
