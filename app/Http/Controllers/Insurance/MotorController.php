@@ -27,11 +27,21 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 
 class MotorController extends Controller
 {
     public function index(Request $request)
     {
+        //Renewal Parameter
+        $renewal_query = $request->query('p');
+        $renewal_timestamp = $request->query('t');
+        if($renewal_query != "" && $renewal_timestamp != ""){
+            $insurers = InsuranceCompany::orderBy('sequence')
+            ->get();
+            $motor = $request->session()->get('motor', []);
+            return view('frontend.motor.index1')->with(['insurers' => $insurers, 'motor' => $motor, 'renewal' => $renewal_query, 'timestamp' => $renewal_timestamp]);
+        }
         $insurers = InsuranceCompany::orderBy('sequence')
             ->get();
 
@@ -41,55 +51,108 @@ class MotorController extends Controller
 
     public function index_POST(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'id_type' => ['required', 'numeric', Rule::in([config('setting.id_type.nric_no'), config('setting.id_type.company_registration_no')])],
-            'vehicle_number' => 'required|string',
-            'postcode' => 'required|numeric',
-            'id_number' => 'required|string',
-            'phone_number' => 'required|numeric',
-            'email' => 'required|email:rfc,dns'
-        ]);
-
-        if ($validator->fails()) {
-            return redirect()->route('motor.index')->withErrors($validator->errors());
-        }
-
         // Extract User Data
         $gender = $marital_status = '';
         $driving_experience = 0;
-
-        switch ($request->id_type) {
-            case config('setting.id_type.nric_no'): {
-                $gender = getGenderFromIC($request->id_number);
-                $driving_experience = getAgeFromIC($request->id_number) - 18;
-                $marital_status = 'S';
-                $dob = formatDateFromIC($request->id_number);
-
-                break;
+        
+        //Renewal Parameter
+        $renewal_query = $request->query('p');
+        $renewal_timestamp = $request->query('t');
+        if($renewal_query != "" && $renewal_timestamp != ""){
+            $timestamp_decrypt = explode("::", base64_decode($renewal_timestamp));
+            $query_decrypt = explode("&", openssl_decrypt(base64_decode($renewal_query), 'aes-256-gcm', 'Fr0mR3n3w@lN0TiC3', 0, $timestamp_decrypt[0], $timestamp_decrypt[1]));
+            foreach ($query_decrypt as $param) {
+                $parts = explode("=", $param);
+                $key = $parts[0];
+                $value = $parts[1];
+                $query[$key] = $value;
             }
-            case config('setting.id_type.company_registration_no'): {
-                $gender = $marital_status = 'O';
 
-                break;
+            if(substr($query['id_number'], -4) != $request->ic){
+                return redirect()->back()->withErrors(['err' => "The number you entered does not match the last 4 digits of the Owner's NRIC Number. Please try again"]);
             }
+
+            switch ($query['id_type']) {
+                case config('setting.id_type.nric_no'): {
+                    $gender = getGenderFromIC($query['id_number']);
+                    $driving_experience = getAgeFromIC($query['id_number']) - 18;
+                    $marital_status = 'S';
+                    $dob = formatDateFromIC($query['id_number']);
+    
+                    break;
+                }
+                case config('setting.id_type.company_registration_no'): {
+                    $gender = $marital_status = 'O';
+    
+                    break;
+                }
+            }
+    
+            $session = (object) [
+                'referrer' => $request->session()->get('referral'),
+                'vehicle_number' => $query['vehicle_no'],
+                'postcode' => $query['postcode'],
+                'policy_holder' => (object) [
+                    'id_type' => intval($query['id_type']),
+                    'id_number' => formatIC($query['id_number']),
+                    'email' => $query['email'],
+                    'phone_number' => Str::startsWith($query['phone_no'], '0') ? substr($query['phone_no'], 1) : $query['phone_no'],
+                    'date_of_birth' => $dob ?? null,
+                    'gender' => $gender,
+                    'marital_status' => $marital_status,
+                    'driving_experience' => $driving_experience,
+                ]
+            ];
+
+        }else{
+            $validator = Validator::make($request->all(), [
+                'id_type' => ['required', 'numeric', Rule::in([config('setting.id_type.nric_no'), config('setting.id_type.company_registration_no')])],
+                'vehicle_number' => 'required|string',
+                'postcode' => 'required|numeric',
+                'id_number' => 'required|string',
+                'phone_number' => 'required|numeric',
+                'email' => 'required|email:rfc,dns'
+            ]);
+    
+            if ($validator->fails()) {
+                return redirect()->route('motor.index')->withErrors($validator->errors());
+            }
+
+            switch ($request->id_type) {
+                case config('setting.id_type.nric_no'): {
+                    $gender = getGenderFromIC($request->id_number);
+                    $driving_experience = getAgeFromIC($request->id_number) - 18;
+                    $marital_status = 'S';
+                    $dob = formatDateFromIC($request->id_number);
+    
+                    break;
+                }
+                case config('setting.id_type.company_registration_no'): {
+                    $gender = $marital_status = 'O';
+    
+                    break;
+                }
+            }
+    
+            $session = (object) [
+                'referrer' => $request->session()->get('referral'),
+                'vehicle_number' => $request->vehicle_number,
+                'postcode' => $request->postcode,
+                'policy_holder' => (object) [
+                    'id_type' => intval($request->id_type),
+                    'id_number' => formatIC($request->id_number),
+                    'email' => $request->email,
+                    'phone_number' => Str::startsWith($request->phone_number, '0') ? substr($request->phone_number, 1) : $request->phone_number,
+                    'date_of_birth' => $dob ?? null,
+                    'gender' => $gender,
+                    'marital_status' => $marital_status,
+                    'driving_experience' => $driving_experience,
+                ]
+            ];
         }
 
-        $session = (object) [
-            'referrer' => $request->cookie('referrer'),
-            'vehicle_number' => $request->vehicle_number,
-            'postcode' => $request->postcode,
-            'policy_holder' => (object) [
-                'id_type' => intval($request->id_type),
-                'id_number' => formatIC($request->id_number),
-                'email' => $request->email,
-                'phone_number' => Str::startsWith($request->phone_number, '0') ? substr($request->phone_number, 1) : $request->phone_number,
-                'date_of_birth' => $dob ?? null,
-                'gender' => $gender,
-                'marital_status' => $marital_status,
-                'driving_experience' => $driving_experience,
-            ]
-        ];
 
+        Log::info("[API/Ref] Received Request: " . json_encode($session));
         $quotation = $this->quotation($session);
         $session->quotation_id = $quotation->id;
         $request->session()->put('motor', $session);
