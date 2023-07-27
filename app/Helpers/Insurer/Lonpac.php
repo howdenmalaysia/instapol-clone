@@ -1276,7 +1276,7 @@ class Lonpac implements InsurerLibraryInterface
                     break;
                 }
             case 'M17': {
-                    $description = 'Special Perlis (Flood, Earthquake, Ladslide, etc)';
+                    $description = 'Enhanced Inclusion of Special Perlis (Flood)';
                     break;
                 }
             case 'M62': {
