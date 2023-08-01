@@ -50,9 +50,12 @@ class HomeController extends Controller
     {
         return view('frontend.UnderMaintenance');
     }
-  public function UnderMaintenance2()
+    public function UnderMaintenance2()
     {
         return view('frontend.UnderMaintenance');
     }
-
+    public function faq()
+    {
+        return view('frontend.faq');
+    }
 }

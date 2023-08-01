@@ -32,6 +32,7 @@ Route::middleware(['web', 'cors'])->group(function() {
             'prefix' => 'motor',
             'middleware' => ['web']
         ], function () {
+            Route::get('/faq', [HomeController::class, 'faq'])->name('motor.faq');
             Route::get('/', [MotorController::class, 'index'])->name('motor.index');
             Route::post('/', [MotorController::class, 'index_POST']);
             Route::get('/vehicle-details', [MotorController::class, 'vehicleDetails'])->name('motor.vehicle-details');
