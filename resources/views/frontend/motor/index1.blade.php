@@ -14,7 +14,9 @@
                             <div class="row text-center justify-content-center">
                                 <div class="col-11 col-lg-7 tag-line">
                                     <h1 class="title text-uppercase text-white aos-init" data-aos="fade-right" data-aos-duration="1000">{{ __('frontend.motor.compare_and_buy') }}</h1>
-                                    <p class="text-white aos-init" data-aos="fade-right" data-aos-duration="2000">{{ __('frontend.motor.compare_desc') }}</p>
+                                    <p class="text-white aos-init" data-aos="fade-right" data-aos-duration="2000">{{ __('frontend.motor.compare_desc') }}
+                                        <br><a href="{{ route('motor.faq') }}" target="_blank" class="btn btn-primary text-white">Motor Frequently Asked Questions (FAQs)</a>
+                                    </p>
                                 </div>
                             </div>
                         </div>
