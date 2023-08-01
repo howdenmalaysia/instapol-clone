@@ -179,6 +179,35 @@
                         <div class="col-12">
                         <a href="https://www.zurich.com.my/en/customer-hub/my-claims">https://www.zurich.com.my/en/customer-hub/my-claims</a>
                         </div>
+                        <div class="col-12">
+                        1-300-88-1138 / Lonpac Road Assist App
+                        </div>
+                        <div class="col-12">
+                        <a href="https://www.lonpac.com/claims/motor/private-car/accident-claim">https://www.lonpac.com/claims/motor/private-car/accident-claim</a>
+                        </div>
+                        <div class="col-12 mt-2">
+                        <b>Berjaya Sompo Insurance</b>
+                        </div>
+                        <div class="col-12">
+                        1 800 18 8033 (24-hour hotline)
+                        </div>
+                        <div class="col-12">
+                        <a href="https://www.berjayasompo.com.my/product/rakan-auto">https://www.berjayasompo.com.my/product/rakan-auto</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <p class="text-primary fw-bold mb-1">14.	Who can I contact if I have concerns regarding my claims?</p>
+                    <div class="row ps-3">
+                        <div class="col-12">
+                        As your insurance broker, we are dedicated to safeguarding the best interests of our valued clients.  You may contact us via :
+                        </div>
+                        <div class="col-12 mt-2">
+                        Email 	:	insta.admin@my.howdegroup.com
+                        </div>
+                        <div class="col-12">
+                        Whatsapp 	:	+60122606183
+                        </div>
                     </div>
                 </div>
                 </div>
