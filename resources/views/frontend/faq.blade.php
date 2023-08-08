@@ -179,6 +179,9 @@
                         <div class="col-12">
                         <a href="https://www.zurich.com.my/en/customer-hub/my-claims">https://www.zurich.com.my/en/customer-hub/my-claims</a>
                         </div>
+                        <div class="col-12 mt-2">
+                        <b>Lonpac Insurance</b>
+                        </div>
                         <div class="col-12">
                         1-300-88-1138 / Lonpac Road Assist App
                         </div>
