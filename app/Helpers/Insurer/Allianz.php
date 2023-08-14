@@ -1064,7 +1064,7 @@ class Allianz implements InsurerLibraryInterface
               "paymentMode": "ONLCCN",
               "paymentBankRef": "'.$eghl_log->bank_reference.'",
               "paymentId": "2",
-              "paymentDate": "'.$input->payment_date.'",
+              "paymentDate": "'.$eghl_log->updated_at.'",
               "paymentAmount": '.$input->payment_amount.'
             }
           }';
