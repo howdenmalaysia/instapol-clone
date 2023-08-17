@@ -991,7 +991,7 @@ class BerjayaSompo implements InsurerLibraryInterface
         ];
 
         Log::info("[API/Submission/Result] Dzul Response: " . json_encode($data));
-/* 
+
         $result = $this->getQuotation($data, 'MCN');
 
         if (!$result->status) {
@@ -1002,7 +1002,7 @@ class BerjayaSompo implements InsurerLibraryInterface
             'policy_number' => $result->response->COVERNOTE_NO
         ];
 
-        return (object) ['status' => true, 'response' => $response]; */
+        return (object) ['status' => true, 'response' => $response]; 
     }
 
     public function abort(string $message, int $code = 490) : ResponseData
