@@ -55,12 +55,42 @@
             </div>
         </div>
     </div>
+    <!-- PA Promo -->
+    <div class="modal fade rounded" tabindex="-1" id="pa-banner" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content rounded">
+                <div class="row">
+                    <div class="col-12">
+                    <div class="modal-body p-0 d-flex flex-column align-items-end">
+                        <button type="button" class="btn-close position-absolute m-1" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <div class="w-100">
+                            <a href="http://127.0.0.1:8000/PA?promo={{ Crypt::encrypt($referrer) }}" target="_blank">
+                                <img src="{{ asset('images/banner/PAI_rm6-02.jpg') }}" style="width:100%; height: 100%" alt="Banner Image" class="img-fluid rounded">
+                            </a>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('after-scripts')
 <script>
+    @if ($referrer != "")
+    $(function() {
+        $('#pa-banner').modal('show');
+    });
+
+    $('#pa-banner').on('hidden.bs.modal', function () {
+        $('#landing-banner').modal('show');
+    })
+    @else
     $(function() {
         $('#landing-banner').modal('show');
     });
+    @endif
+
 </script>
 @endpush

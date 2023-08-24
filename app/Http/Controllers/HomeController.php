@@ -14,7 +14,7 @@ class HomeController extends Controller
         $previous_insurance = $request->get('param');
         $request->session()->put('previous_insurance', $previous_insurance);
         
-        return view('frontend.index');
+        return view('frontend.index')->with(['referrer' => $referrer]);
     }
 
     public function aboutUs()
