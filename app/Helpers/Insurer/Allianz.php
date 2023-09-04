@@ -997,13 +997,13 @@ class Allianz implements InsurerLibraryInterface
             else{
                 $driver = '"driverDetails": [{
                     "fullName":"'.$input->insurance->holder->name.'",
-                    "identityNumber":'.$input->insurance->holder->id_number.',
+                    "identityNumber":"'.$input->insurance->holder->id_number.'",
                     "driverType":"EHAIL"
                     }';
                 foreach($input->insurance_motor->driver as $value){
                     $driver .= ',{
                         "fullName":"'.$value->name.'",
-                        "identityNumber":'.$value->id_number.',
+                        "identityNumber":"'.$value->id_number.'",
                         "driverType":"EHAIL"
                         }';
                 }
@@ -1017,12 +1017,12 @@ class Allianz implements InsurerLibraryInterface
             else{
                 $driver = '"driverDetails": [{
                     "fullName":"'.$input->insurance->holder->name.'",
-                    "identityNumber":'.$input->insurance->holder->id_number.'
+                    "identityNumber":"'.$input->insurance->holder->id_number.'"
                     }';
                 foreach($input->insurance_motor->driver as $value){
                     $driver .= ',{
                         "fullName":"'.$value->name.'",
-                        "identityNumber":'.$value->id_number.'
+                        "identityNumber":"'.$value->id_number.'"
                         }';
                 }
                 $driver .= '],';
@@ -1041,7 +1041,7 @@ class Allianz implements InsurerLibraryInterface
             },
             "person": {
               "identityType": "'.$this->id_type($input->insurance->holder->id_type_id).'",
-              "identityNumber": '.$input->insurance->holder->id_number.',
+              "identityNumber": "'.$input->insurance->holder->id_number.'",
               "fullName": "'.$input->insurance->holder->name.'",
               "birthDate": "'.$dob.'",
               "gender": "'.$input->insurance->holder->gender.'",
@@ -1179,7 +1179,7 @@ class Allianz implements InsurerLibraryInterface
             "expirationDate": "'.Carbon::parse($qParams->vix->expiry_date)->format('Y-m-d').'",
             "person": {
                 "identityType": "'.$id_type.'",
-                "identityNumber": '.$qParams->input->id_number.',
+                "identityNumber": "'.$qParams->input->id_number.'",
                 "gender": "'.$qParams->input->gender.'",
                 "birthDate": "'.$dob.'",
                 "maritalStatus": '.$this->getMaritalStatusCode(! empty($qParams->input->marital_status) ? $qParams->input->marital_status : 'S').',
@@ -1256,7 +1256,7 @@ class Allianz implements InsurerLibraryInterface
             "sourceSystem": "PARTNER_ID",
             "vehicleLicenseId": "'.$input->vehicle_number.'",
             "identityType": "'.$id_type.'",
-            "identityNumber": '.$input->id_number.',
+            "identityNumber": "'.$input->id_number.'",
             "checkUbbInd": 1,
             "postalCode": '.$input->postcode.'
         }';
@@ -1368,13 +1368,13 @@ class Allianz implements InsurerLibraryInterface
                 $driver_input = '"unlimitedDriverInd": false,
                 "driverDetails": [{
                         "fullName": "Policy Holder Driver",
-                        "identityNumber":'.$input->input->id_number.'
+                        "identityNumber":"'.$input->input->id_number.'"
                     }';
                 $index = 1;
                 foreach($input->input->additional_driver as $value){
                     $driver_input .= ',{
                         "fullName": "Additional  Driver '.$index .'",
-                        "identityNumber":'.$value->id_number.'
+                        "identityNumber":"'.$value->id_number.'"
                     }';
                 }
                 $driver_input .= '],';
