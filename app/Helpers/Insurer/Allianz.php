@@ -263,14 +263,14 @@ class Allianz implements InsurerLibraryInterface
                 "PolicyEffectiveDate": "'.$input->inception_date.'",
                 "PolicyExpiryDate": "'.$input->expiry_date.'",
                 "Client": {
-                    "IdentificationNumber": '.$input->id_number.',
+                    "IdentificationNumber": "'.$input->id_number.'",
                     "IdType": "'.$input->id_type.'",
                     "Age": '.$input->age.'
                 },
                 "RiskList": [{
                     "RiskId": 1,
                     "InsuredPerson": {
-                        "IdentificationNumber": '.$input->id_number.',
+                        "IdentificationNumber": "'.$input->id_number.'",
                         "IdType": "NRIC"
                     },
                     "Vehicle": {
@@ -284,7 +284,7 @@ class Allianz implements InsurerLibraryInterface
                         "YearOfManufacture": '.$input->YearOfManufacture.',
                         "NamedDriverList": [{
                             "Age": '.$input->age.',
-                            "IdentificationNumber": '.$input->id_number.'
+                            "IdentificationNumber": "'.$input->id_number.'"
                         }],
                         "HighPerformanceInd": "'.$input->HighPerformanceInd.'",
                         "HrtvInd": "'.$input->HrtvInd.'"
