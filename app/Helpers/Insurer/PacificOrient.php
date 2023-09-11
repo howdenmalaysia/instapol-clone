@@ -1035,7 +1035,8 @@ class PacificOrient implements InsurerLibraryInterface
                 break;
             }
             case 'Pulau Pinang': {
-                $code = 'P.PINANG';
+                //$code = 'P.PINANG';
+                $code = 'PENANG';
                 break;
             }
             case 'Wilayah Persekutuan Kuala Lumpur': {
