@@ -176,7 +176,7 @@ class PromoController extends Controller
 
             $motor->promo = $code;
             $motor->premium->discounted_amount = floatval($discount_amount);
-
+            Log::info("[API/Promo] Received Request: " . json_encode($motor));
             DB::commit();
             return $motor;
         } catch (Exception $ex) {

@@ -555,7 +555,10 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             ]);
 
             // 12. Delete Insurance Promo Table
+            Log::info("[Session/Motor] Received Request: " . json_encode($motor));
+            Log::info("[Session/Input] Received Request: " . json_encode($input));
             if(!empty($input->promo)) {
+                Log::info("[API/Promo] Delete Table". json_encode($insurance));
                 InsurancePromo::where([
                     'insurance_id' => $insurance->id
                 ])->delete();
