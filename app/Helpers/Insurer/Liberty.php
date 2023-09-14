@@ -823,6 +823,11 @@ class Liberty implements InsurerLibraryInterface
             }
         }
 
+        if(isset($input->company_registration_number)){
+            $input->gender = "C";
+            $input->marital_status = "C";
+        }
+
         // Format Extra Cover Code
         $formatted_extra_cover = [];
         if(isset($input->extra_cover)) {
