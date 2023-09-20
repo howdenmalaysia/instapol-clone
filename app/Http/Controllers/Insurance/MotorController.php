@@ -478,6 +478,7 @@ class MotorController extends Controller
             $data = (object) [
                 'insurance_code' => $insurance->insurance_code,
                 'insured_name' => $insurance->holder->name,
+                'vehicle_number' => $insurance->motor->vehicle_number ?? "",
                 'product_name' => $insurance->product->name,
                 'total_premium' => number_format($insurance->amount, 2),
                 'total_payable' => number_format($insurance->amount, 2)

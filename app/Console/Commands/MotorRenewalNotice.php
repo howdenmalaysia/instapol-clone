@@ -83,6 +83,7 @@ class MotorRenewalNotice extends Command
                         'name'  => $_ins->holder->name ?? 'Sir / Madam',
                         'vehicle_number' => $_ins->motor->vehicle_number,
                         'email_address' => $_ins->holder->email_address,
+                        'expiry_date' => $_ins->expiry_date,
                         'url' => route('motor.index') . $query_param
                     ];
 
