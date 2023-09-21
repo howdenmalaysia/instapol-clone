@@ -35,19 +35,19 @@ class Kernel extends ConsoleKernel
         // 1. Settlement Reports [Wed, Fri]
         /// a. eGHL Settlement
         $schedule->command(EGHLSettlement::class)
-            ->dailyAt('08:00');
+            ->dailyAt('10:00');
 
         /// b. Insurers Settlement
         $schedule->command(InsurerSettlement::class)
-            ->dailyAt('08:05');
+            ->dailyAt('10:05');
 
         /// c. Howden Internal Settlement
         $schedule->command(HowdenSettlement::class)
-            ->dailyAt('08:10');
+            ->dailyAt('10:10');
 
         /// d. Monthly Howden Internal Settlement [First Business Day of Each Month]
         $schedule->command(MonthlySettlement::class)
-            ->at('10:10')
+            ->at('10:53')
             ->when(function () {
                 return Carbon::now()->isSameDay($this->firstBusinessDay());
             });
@@ -56,10 +56,10 @@ class Kernel extends ConsoleKernel
         $schedule->command(MotorRenewalNotice::class)->dailyAt('10:00');
 
         // 3. Trend Report
-        $schedule->command(TrendReport::class)->weeklyOn(1, '08:30');
+        $schedule->command(TrendReport::class)->weeklyOn(1, '10:30');
 
         // 4. Drop Off Report
-        $schedule->command(DropOffReport::class)->dailyAt('08:00');
+        $schedule->command(DropOffReport::class)->dailyAt('10:00');
     }
 
     /**
