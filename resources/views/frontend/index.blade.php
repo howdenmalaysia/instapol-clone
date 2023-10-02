@@ -26,7 +26,7 @@
                                         <a href="/travel" class="col d-flex align-items-center text-decoration-none justify-content-center">
                                             <x-product :image-path="asset('images/icons/travel.png')" :alt="__('frontend.products.travel')" :name="__('frontend.products.travel')" />
                                         </a>
-                                        <a href="/doc-pro" class="col d-flex align-items-center text-decoration-none justify-content-center mt-4 mt-md-0">
+                                        <a href="/sme" class="col d-flex align-items-center text-decoration-none justify-content-center mt-4 mt-md-0">
                                             <x-product :image-path="asset('images/icons/doc-pro.png')" :alt="__('frontend.products.doc_pro')" :name="__('frontend.products.doc_pro')" />
                                         </a>
                                     </div>

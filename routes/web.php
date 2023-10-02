@@ -64,6 +64,7 @@ Route::middleware(['web'])->group(function() {
     Route::redirect('/bike', config('setting.redirects.bicycle'));
     Route::redirect('/travel', config('setting.redirects.travel'));
     Route::redirect('/doc-pro', config('setting.redirects.doc_pro'));
+    Route::redirect('/sme', config('setting.redirects.sme'));
    Route::redirect('/landlord', config('setting.redirects.landlord'));
    Route::redirect('/miea', config('setting.redirects.miea'));
 

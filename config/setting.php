@@ -21,7 +21,7 @@ return [
         'doc_pro' => env('DOC_PRO_URL'),
         'landlord' => env('LANDLORD_URL'),
         'miea' => env('MIEA_URL'),
-
+        'sme' => env('SME_URL'),
     ],
     'id_type' => [
         'nric_no' => 1,

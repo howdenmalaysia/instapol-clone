@@ -951,7 +951,8 @@ return [
         'motor_extended' => 'Car Extended Warranty',
         'bicycle' => 'Bicycle Insurance',
         'travel' => 'Travel Insurance',
-        'doc_pro' => 'Doctor\'s Professional Indemnity',
+        // 'doc_pro' => 'Doctor\'s Professional Indemnity',
+        'doc_pro' => 'Group Medical Insurance for SME Business',
         'medical_cover' => 'Medical Cover',
         'houseowner' => 'Houseowner & Householder'
     ],
