@@ -8,6 +8,7 @@ use App\Console\Commands\Settlement\EGHLSettlement;
 use App\Console\Commands\Settlement\HowdenSettlement;
 use App\Console\Commands\Settlement\InsurerSettlement;
 use App\Console\Commands\Settlement\MonthlySettlement;
+use App\Console\Commands\Settlement\AllSettlement;
 use App\Console\Commands\TrendReport;
 use Carbon\Carbon;
 use Illuminate\Console\Scheduling\Schedule;
@@ -48,6 +49,12 @@ class Kernel extends ConsoleKernel
         /// d. Monthly Howden Internal Settlement [First Business Day of Each Month]
         $schedule->command(MonthlySettlement::class)
             ->at('10:53')
+            ->when(function () {
+                return Carbon::now()->isSameDay($this->firstBusinessDay());
+            });
+
+        $schedule->command(AllSettlement::class)
+            ->at('11:00')
             ->when(function () {
                 return Carbon::now()->isSameDay($this->firstBusinessDay());
             });

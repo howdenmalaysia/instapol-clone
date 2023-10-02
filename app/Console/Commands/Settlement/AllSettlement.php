@@ -56,11 +56,22 @@ class AllSettlement extends Command
     {
         Log::info("[Cron - Howden Consolidation Settlement] Start Generating Report.");
 
-        $start_date = Carbon::now()->subDay()->startOfDay()->format(self::DATETIME_FORMAT);
-        $end_date = Carbon::now()->subDay()->endOfDay()->format(self::DATETIME_FORMAT);
+        $start_date = $end_date = '';
         if(!empty($this->argument('start_date')) && !empty($this->argument('end_date'))) {
-            $start_date = Carbon::parse($this->argument('start_date'))->startOfDay()->format(self::DATETIME_FORMAT);
-            $end_date = Carbon::parse($this->argument('end_date'))->endOfDay()->format(self::DATETIME_FORMAT);
+            $start_date = Carbon::parse($this->argument('start_date'))->format(self::DATE_FORMAT);
+            $end_date = Carbon::parse($this->argument('end_date'))->format(self::DATE_FORMAT);
+        } else if(Carbon::now()->day === 1) {
+            $start_date = Carbon::now()->subDay()->startOfMonth()->format(self::DATE_FORMAT); // 1st of Last Month 00:00:00
+            $end_date = Carbon::now()->subDay()->endOfMonth()->format(self::DATE_FORMAT); // Yesterday 23:59:59
+        } else if(Carbon::now()->day === $this->firstBusinessDay()){ 
+            //First Business Day
+            $start_date = Carbon::now()->subMonth()->startOfMonth()->format(self::DATE_FORMAT); // 1st of Last Month 00:00:00
+            $end_date = Carbon::now()->subMonth()->endOfMonth()->format(self::DATE_FORMAT); // Yesterday 23:59:59
+        }else {
+            // Throw Error
+            $day = Carbon::now()->format(self::DATE_FORMAT);
+            Log::error("[Cron - Monthly Settlement] Shouldn't run settlement today, {$day}.");
+            return;
         }
 
         try {
@@ -334,5 +345,16 @@ class AllSettlement extends Command
 
             Log::error("[Cron - Howden Consolidation Settlement] An Error Encountered. [{$ex->getMessage()}] \n" . $ex);
         }
+    }
+
+    private function firstBusinessDay()
+    {
+        $first = Carbon::now()->firstOfMonth();
+
+        if($first->isWeekday()) {
+            return $first->day;
+        }
+
+        return $first->nextWeekday()->day;
     }
 }
