@@ -159,6 +159,12 @@ class MotorController extends Controller
 
         $session = $request->session()->get('motor');
 
+        // Update Quotation Flag
+        Quotation::where('id', $session->quotation_id)
+        ->update(['compare_page' => 1]);
+
+        $products = Product::with(['insurance_company', 'benefits'])->get();
+
         if($session->policy_holder->id_type === config('setting.id_type.company_registration_no')) {
             if(empty($session->policy_holder->gender)) {
                 $session->policy_holder->gender = 'O';
@@ -167,13 +173,9 @@ class MotorController extends Controller
             if(empty($session->policy_holder->marital_status)) {
                 $session->policy_holder->marital_status = 'O';
             }
+
+            $products = Product::with(['insurance_company', 'benefits'])->where('comp_active', 1)->get();
         }
-
-        // Update Quotation Flag
-        Quotation::where('id', $session->quotation_id)
-            ->update(['compare_page' => 1]);
-
-        $products = Product::with(['insurance_company', 'benefits'])->get();
 
         return view('frontend.motor.compare')->with(['products' => $products]);
     }

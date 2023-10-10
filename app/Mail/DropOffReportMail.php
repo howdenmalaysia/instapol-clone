@@ -32,7 +32,7 @@ class DropOffReportMail extends Mailable
      */
     public function build()
     {
-        return $this->subject((app()->environment('local', 'development') ? '[Dev] ' : '') .  "Daily Drop-off Report for {$this->batch}")
+        return $this->subject((app()->environment('local', 'development') ? '[Dev] ' : '') .  "[instaPol-Motor] Daily Drop-off Report for {$this->batch}")
             ->view('backend.emails.drop_off_report')
             ->with(['batch' => $this->batch])
             ->attachFromStorage($this->attachment);

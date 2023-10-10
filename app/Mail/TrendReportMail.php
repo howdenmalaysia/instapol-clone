@@ -39,7 +39,7 @@ class TrendReportMail extends Mailable
      */
     public function build()
     {
-        return $this->subject((app()->environment('local', 'development') ? '[Dev] ' : '') . 'instaPol Weekly Report Trend View For ' . $this->full_range)
+        return $this->subject((app()->environment('local', 'development') ? '[Dev] ' : '') . '[instaPol-Motor] Weekly Report Trend View For ' . $this->full_range)
             ->view('backend.emails.trend_report')
             ->with([
                 'data' => $this->trend,

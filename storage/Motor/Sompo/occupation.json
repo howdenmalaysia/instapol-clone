@@ -731,7 +731,7 @@
   ],
   "business": [
     { "code": "A001", "occupation": "AGRICULTURE" },
-    { "code": "A002", "occupation": "BUSINESS&PROFESSIONAL(OFFICE)" },
+    { "code": "A002", "occupation": "BUSINESS & PROFESSIONAL (OFFICE)" },
     { "code": "A003", "occupation": "CHEMICAL & PHARMACEUTICAL" },
     { "code": "A004", "occupation": "CONSTRUCTION" },
     { "code": "A005", "occupation": "EDUCATION & TRAINING" },
@@ -745,11 +745,11 @@
     { "code": "A013", "occupation": "MINING AND QUARRYING" },
     { "code": "A014", "occupation": "MOTOR TRADE AND RELATED RISKS" },
     { "code": "A015", "occupation": "PAPER AND PRINTING" },
-    { "code": "A016", "occupation": "PETROLEUM/UTILITIES" },
-    { "code": "A017", "occupation": "RESIDENTIAL/HOTEL" },
+    { "code": "A016", "occupation": "PETROLEUM / UTILITIES" },
+    { "code": "A017", "occupation": "RESIDENTIAL / HOTEL" },
     { "code": "A018", "occupation": "RETAIL TRADING" },
     { "code": "A019", "occupation": "TELECOMMUNICATION" },
-    { "code": "A020", "occupation": "TEXTILE/APPARELS/LEATHER/FIBRE" },
+    { "code": "A020", "occupation": "TEXTILE / APPARELS / LEATHER / FIBRE" },
     { "code": "A021", "occupation": "TIMBER RELATED" },
     { "code": "A022", "occupation": "TRANSPORTATION & LOGISTICS" },
     { "code": "A023", "occupation": "TRADING" }

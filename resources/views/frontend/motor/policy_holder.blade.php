@@ -32,7 +32,7 @@
                                     <div class="col-12 col-md-9">
                                         <input type="text" id="policy-holder-name" class="form-control uppercase" name="name"
                                             required
-                                            data-parsley-pattern="[a-z A-Z&@',\/]{6,}"
+                                            data-parsley-pattern="[a-z A-Z&@',\/() ]{6,}"
                                             data-parsley-required-message="{{ __('frontend.motor.policy_holder_page.error_messages.required.name') }}"
                                             data-parsley-pattern-message="{{ __('frontend.motor.policy_holder_page.error_messages.valid.name') }}"
                                         />

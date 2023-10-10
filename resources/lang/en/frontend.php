@@ -487,7 +487,7 @@ return [
         'link' => 'Link',
         'scan_qr' => 'or Scan QR Code to WhatsApp',
         'email_us' => 'Email Us at',
-        'operating_hours' => 'Operating Hours : Monday to Sunday (24 hours)'
+        'operating_hours' => 'Operating Hours: Monday to Friday (8:-45 am to 5:45 pm)'
     ],
     'general' => [
         'and' => 'and',

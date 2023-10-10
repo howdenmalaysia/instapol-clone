@@ -30,7 +30,7 @@ class PaymentReceipt extends Mailable
      */
     public function build()
     {
-        return $this->subject((app()->environment('local', 'development') ? '[Dev] ' : '') . 'Order Confirmation #' . $this->data->insurance_code . ' - ' . $this->data->vehicle_number)
+        return $this->subject((app()->environment('local', 'development') ? '[Dev] ' : '') . '[instaPol-Motor] Order Confirmation #' . $this->data->insurance_code . ' - ' . $this->data->vehicle_number)
             ->view('backend.emails.payment_receipt')
             ->with((array) $this->data);
     }

@@ -30,7 +30,7 @@ class MotorRenewalNotice extends Mailable
      */
     public function build()
     {
-        return $this->subject((app()->environment('local', 'development') ? '[Dev] ' : '') . 'Your Motor Insurance is about to Expire!')
+        return $this->subject((app()->environment('local', 'development') ? '[Dev] ' : '') . '[instaPol-Motor] Your Motor Insurance is about to Expire!')
             ->view('backend.emails.renewal_notice')
             ->with($this->data);
     }
