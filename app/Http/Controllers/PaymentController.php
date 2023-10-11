@@ -93,7 +93,7 @@ class PaymentController extends Controller
         EGHLLog::create([
             'transaction_type' => $data['transaction_type'],
             'payment_method' => $data['payment_method'],
-            'service_id' => config('setting.payment.gateway.merchant_id'),
+            'service_id' => $merchant_id,
             'payment_id' => $payment_id,
             'order_number' => 'Inv_' . $payment_id,
             'payment_description' => $payment_description,
@@ -124,6 +124,21 @@ class PaymentController extends Controller
             ]);
 
         // verify hash value 2
+	if($request->ServiceID == "CBI"){
+        $return_hash = [
+            config('setting.payment.gateway.fpx_merchant_password'),
+            $request->TxnID,
+            config('setting.payment.gateway.fpx_merchant_id'),
+            $request->PaymentID,
+            $request->TxnStatus,
+            $request->Amount,
+            $request->CurrencyCode,
+            $request->AuthCode,
+            $request->OrderNumber,
+            $request->Param6,
+            $request->Param7,
+        ];
+	}else{
         $return_hash = [
             config('setting.payment.gateway.merchant_password'),
             $request->TxnID,
@@ -137,6 +152,7 @@ class PaymentController extends Controller
             $request->Param6,
             $request->Param7,
         ];
+	}
 
         $hash_value_2 = hash('sha256', implode('', $return_hash));
 
