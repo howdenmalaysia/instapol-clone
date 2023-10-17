@@ -2,26 +2,26 @@
 
 return [
     'messagebird' => [
-        'widget_id' => env('MB_WIDGET_ID')
+        'widget_id' => "10c57c35-cf06-4128-8eae-e9d4fb606d0f"
     ],
-    'ga_tracking_id' => env('GA_TRACKING_ID'),
+    'ga_tracking_id' => "G-00V0BZ105P",
     'whatsapp' => [
-        'url' => env('WHATSAPP_URL'),
-        'number' => env('WHATSAPP_NO'),
-        'link' => env('WHATSAPP_LINK')
+        'url' => "https://api.whatsapp.com/send?phone=",
+        'number' => "60379890381",
+        'link' => "www.instapol.cs/whatsapp"
     ],
     'customer_service' => [
-        'number' => env('CUSTOMER_SERVICE_NO'),
-        'email' => env('CUSTOMER_SERVICE_EMAIL')
+        'number' => "60379890386",
+        'email' => "instaPol@howdengroup.com"
     ],
     'redirects' => [
-        'motor_extended' => env('MOTOR_EXTENDED_URL'),
-        'bicycle' => env('BICYCLE_URL'),
-        'travel' => env('TRAVEL_URL'),
-        'doc_pro' => env('DOC_PRO_URL'),
-        'landlord' => env('LANDLORD_URL'),
-        'miea' => env('MIEA_URL'),
-
+        'motor_extended' => "https://howden-wmotor-dev.instapol.my/landing",
+        'bicycle' => "https://howden-bikev2-dev.instapol.my/landing",
+        'travel' => "https://howden-travel-dev.instapol.my/",
+        'doc_pro' => "https://howden-docpro-dev.instapol.my/docprohome",
+        'landlord' => "",
+        'miea' => "",
+        'sme' => "https://howden-sme.instapol.my/landing",
     ],
     'id_type' => [
         'nric_no' => 1,
@@ -47,37 +47,31 @@ return [
         'general_error' => 490
     ],
     'howden' => [
-        'short_code' => env('HOWDEN_SHORT_CODE'),
-        'affinity_team_email' => empty(env('AFFINITY_TEAM_EMAIL')) ? [] : explode(',', env('AFFINITY_TEAM_EMAIL')),
-        'email_cc_list' => empty(env('EMAIL_CC_LIST')) ? [] : explode(',', env('EMAIL_CC_LIST')),
-        'it_dev_mail' => empty(env('HOWDEN_IT_DEV_MAIL')) ? [] : explode(',', env('HOWDEN_IT_DEV_MAIL')),
-        'insta_admin' => empty(env('INSTAADMIN_EMAIL')) ? [] : explode(',', env('INSTAADMIN_EMAIL')),
-        'contact_list' => [
-            'jeffery_chan' => 'jeffreycw.chan@my.howdengroup.com',
-            'phoebie_wong' => 'phoebie.wong@my.howdengroup.com',
-            'cheng_lai_fah' => 'laifah.cheng@my.howdengroup.com'
-        ]
+        'short_code' => "HIB",
+        'affinity_team_email' => empty("dzul.jamal@my.howdengroup.com") ? [] : explode(',', "dzul.jamal@my.howdengroup.com"),
+        'email_cc_list' => empty("") ? [] : explode(',', ""),
+        'it_dev_mail' => empty("dzul.jamal@my.howdengroup.com") ? [] : explode(',', "dzul.jamal@my.howdengroup.com")
     ],
     'payment' => [
         'gateway' => [
-            'url' => env('EGHL_PAYMENT_URL'),
-            'fpx_merchant_id' => env('EGHL_FPX_MERCHANT_ID'),
-            'fpx_merchant_password' => env('EGHL_FPX_MERCHANT_PASSWORD'),
-            'merchant_id' => env('EGHL_MERCHANT_ID'),
-            'merchant_name' => env('EGHL_MERCHANT_NAME'),
-            'merchant_password' => env('EGHL_MERCHANT_PASSWORD'),
+            'url' => "https://pay.e-ghl.com/IPGSG/Payment.aspx",
+            'fpx_merchant_id' => "CBI",
+            'fpx_merchant_password' => "cbi12345",
+            'merchant_id' => "CBH",
+            'merchant_name' => "[Dev] Howden",
+            'merchant_password' => "cbh12345",
         ]
     ],
     'settlement' => [
         'howden' => [
             'bank_code' => 'CIMB Bank Berhad',
             'bank_account_no' => '8000283395',
-            'email_to' => empty(env('HOWDEN_INTERNAL')) ? [] : explode(',', env('HOWDEN_INTERNAL')),
-            'email_cc' => empty(env('HOWDEN_INTERNAL_CC')) ? [] : explode(',', env('HOWDEN_INTERNAL_CC')),
+            'email_to' => empty('dzul.jamal@my.howdengroup.com') ? [] : explode(',', 'dzul.jamal@my.howdengroup.com'),
+            'email_cc' => empty('dzul.jamal@my.howdengroup.com') ? [] : explode(',', 'dzul.jamal@my.howdengroup.com'),
         ],
         'eghl' => [
-            'to' => empty(env('EGHL_SETTLEMENT')) ? [] : explode(',', env('EGHL_SETTLEMENT')),
-            'cc' => empty(env('EGHL_SETTLEMENT_CC')) ? [] : explode(',', env('EGHL_SETTLEMENT_CC'))
+            'to' => empty('dzul.jamal@my.howdengroup.com') ? [] : explode(',', 'dzul.jamal@my.howdengroup.com'),
+            'cc' => empty('dzul.jamal@my.howdengroup.com') ? [] : explode(',', 'dzul.jamal@my.howdengroup.com')
         ]
     ]
 ];
