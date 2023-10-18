@@ -876,6 +876,7 @@ public function callback(Request $request)
     {
         //check request data
         if(! isset($request->ContractNumber) || empty($request->ContractNumber)){
+            Log::info("[API/Callback] ContractNumber Missing");
             $response = (object)[
                 'Status' => "NOK",
                 'Mesage' => "ContractNumber Missing"
@@ -883,6 +884,7 @@ public function callback(Request $request)
             return $response;
         }
         else if(! isset($request->DestSystems) || empty($request->DestSystems)){
+            Log::info("[API/Callback] DestSystems Missing");
             $response = (object)[
                 'Status' => "NOK",
                 'Mesage' => "DestSystems Missing"
@@ -890,6 +892,7 @@ public function callback(Request $request)
             return $response;
         }
         else if(! isset($request->PolicyNumber) || empty($request->PolicyNumber)){
+            Log::info("[API/Callback] PolicyNumber Missing");
             $response = (object)[
                 'Status' => "NOK",
                 'Mesage' => "PolicyNumber Missing"
@@ -897,6 +900,7 @@ public function callback(Request $request)
             return $response;
         }
         else if(! isset($request->Attachment) || empty($request->Attachment)){
+            Log::info("[API/Callback] Attachment Missing");
             $response = (object)[
                 'Status' => "NOK",
                 'Mesage' => "Attachment Missing"
@@ -917,6 +921,7 @@ public function callback(Request $request)
             ->where('insurance_status', Insurance::STATUS_PAYMENT_ACCEPTED)
             ->first();
         if(empty($insurance)){
+            Log::info("[API/Callback] ContractNumber Not Found");
             $response = (object)[
                 'Status' => "NOK",
                 'Mesage' => "ContractNumber Not Found"
@@ -935,6 +940,8 @@ public function callback(Request $request)
                     'insurance_status' => Insurance::STATUS_POLICY_ISSUED,
                     'cover_note_date' => Carbon::now()->format('Y-m-d')
                 ]);
+
+            Log::info("[API/Callback] Received Request: " . json_encode($request->all()));
             
             InsuranceRemark::create([
                 'insurance_id' => $insurance->id,
