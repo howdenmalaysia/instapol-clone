@@ -79,7 +79,8 @@ class MonthlySettlement extends Command
                     'product',
                     'holder',
                     'promo',
-                    'premium'
+                    'premium',
+                    'address'
                 ])
                 ->where(function($query) use($start_date, $end_date) {
                     $query->whereBetween('created_at', [$start_date, $end_date])
@@ -93,35 +94,35 @@ class MonthlySettlement extends Command
                 throw new Exception('No Eligible Records Found!');
             }
 
-            $rows = $total_commission = $total_eservice_fee = $total_roadtax_premium = $total_sst = $total_payment_gateway_charges = $total_premium = $total_outstanding = 0;
+            $rows = $total_commission = $total_eservice_fee = $total_sst = $total_roadtax_premium = $total_discount = $total_payment_gateway_charges = $total_premium = $total_outstanding = 0;
             $row_data = $details = [];
 
             $records->each(function($insurances, $product_id) use(
+                $start_date,
                 &$rows,
                 &$row_data,
-                &$details,
-                $start_date,
                 &$total_commission,
                 &$total_eservice_fee,
-                &$total_roadtax_premium,
                 &$total_sst,
+                &$total_roadtax_premium,
                 &$total_discount,
                 &$total_payment_gateway_charges,
-                &$total_premium)
+                &$total_premium,
+                &$details)
             {
                 $insurer_net_transfer = 0;
                 $product = Product::with(['insurance_company'])
                     ->findOrFail($product_id);
 
                 $insurances->map(function($insurance) use(
+                    $start_date,
                     $product,
                     &$rows,
                     &$row_data,
-                    $start_date,
                     &$total_commission,
                     &$total_eservice_fee,
-                    &$total_roadtax_premium,
                     &$total_sst,
+                    &$total_roadtax_premium,
                     &$total_discount,
                     &$total_payment_gateway_charges,
                     &$total_premium,
@@ -135,7 +136,7 @@ class MonthlySettlement extends Command
 
                     $discount_amount = 0;
                     if(!empty($insurance->promo)) {
-                        $discount_amount = $insurance->promo->discount_amoumt;
+                        $discount_amount = $insurance->promo->discount_amount;
                     }
 
                     $roadtax_premium = 0;
@@ -167,28 +168,19 @@ class MonthlySettlement extends Command
 
                     $total_roadtax_premium += $roadtax_premium;
 
-                    $eghl_log = EGHLLog::where('payment_id', 'LIKE', '%' . $insurance->code . '%')
+                    $eghl_log = EGHLLog::where('payment_id', 'LIKE', '%' . $insurance->insurance_code . '%')
                         ->where('txn_status', 0)
                         ->latest()
                         ->first();
 
-                    $gateway_charges = getGatewayCharges($insurance->amount, $eghl_log->service_id, $eghl_log->payment_method);
-                    $total_payment_gateway_charges += $gateway_charges;
-
                     $commission = $insurance->premium->gross_premium * 0.1;
                     $net_premium = $insurance->premium->gross_premium + $insurance->premium->service_tax_amount + $insurance->premium->stamp_duty - $commission;
-                    $total_commission += $commission;
-                    $total_sst += $insurance->premium->service_tax_amount;
                     $total_premium += $net_premium;
                     $insurer_net_transfer += $net_premium;
 
-                    $address = formatAddress([
-                        $insurance->address->address_one,
-                        $insurance->address->address_two,
-                        $insurance->address->city,
-                        $insurance->address->postcode,
-                        $insurance->address->state,
-                    ]);
+                    $gateway_charges = getGatewayCharges($insurance->amount, $eghl_log->service_id, $eghl_log->payment_method);
+                    $total_payment_gateway_charges += $gateway_charges;
+                    $total_commission += $commission;
 
                     $address = formatAddress([
                         $insurance->address->address_one,
@@ -203,7 +195,7 @@ class MonthlySettlement extends Command
                             $start_date,
                             $insurance->insurance_code,
                             $product->name,
-                            $insurance->created_at->format(self::DATETIME_FORMAT),
+                            $insurance->updated_at->format(self::DATETIME_FORMAT),
                             $insurance->inception_date,
                             $insurance->policy_number ?? $insurance->cover_note_number ?? $insurance->contract_number,
                             $insurance_motor->vehicle_number,
@@ -244,7 +236,7 @@ class MonthlySettlement extends Command
                             $start_date,
                             $insurance->insurance_code,
                             $product->name,
-                            $insurance->created_at->format(self::DATETIME_FORMAT),
+                            $insurance->updated_at->format(self::DATETIME_FORMAT),
                             $insurance->inception_date,
                             $insurance->policy_number ?? $insurance->cover_note_number ?? $insurance->contract_number,
                             $insurance_motor->vehicle_number,
@@ -313,8 +305,8 @@ class MonthlySettlement extends Command
                 'total_roadtax_premium' => $total_roadtax_premium,
                 'total_discount' => $total_discount,
                 'total_payment_gateway_charges' => $total_payment_gateway_charges,
-                'net_transfer_amount_insurer' => $total_premium - $total_commission,
-                'net_transfer_amount' => $total_commission,
+                'net_transfer_amount_insurer' => $total_premium,
+                'net_transfer_amount' => $total_commission + $total_roadtax_premium - $total_payment_gateway_charges,
                 'total_outstanding' => $total_outstanding,
                 'details' => $details
             ];
