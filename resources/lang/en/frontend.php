@@ -954,7 +954,7 @@ return [
         // 'doc_pro' => 'Doctor\'s Professional Indemnity',
         'doc_pro' => 'Group Medical Insurance for SME Business',
         'medical_cover' => 'Medical Cover',
-        'houseowner' => 'Houseowner & Householder'
+        'houseowner' => 'Houseowner & Householder Insurance'
     ],
     'button' => [
         'clear' => 'Clear',

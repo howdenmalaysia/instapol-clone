@@ -65,7 +65,8 @@ Route::middleware(['web'])->group(function() {
     Route::redirect('/travel', config('setting.redirects.travel'));
     Route::redirect('/doc-pro', config('setting.redirects.doc_pro'));
     Route::redirect('/sme', config('setting.redirects.sme'));
-   Route::redirect('/landlord', config('setting.redirects.landlord'));
-   Route::redirect('/miea', config('setting.redirects.miea'));
+    Route::redirect('/hho', config('setting.redirects.hho'));
+    Route::redirect('/landlord', config('setting.redirects.landlord'));
+    Route::redirect('/miea', config('setting.redirects.miea'));
 
 });
