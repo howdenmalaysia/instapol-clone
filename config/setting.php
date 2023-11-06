@@ -22,6 +22,7 @@ return [
         'landlord' => env('LANDLORD_URL'),
         'miea' => env('MIEA_URL'),
         'sme' => env('SME_URL'),
+        'hho' => env('HHO_URL'),
     ],
     'id_type' => [
         'nric_no' => 1,
