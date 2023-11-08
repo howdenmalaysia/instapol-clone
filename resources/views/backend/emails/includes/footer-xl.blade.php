@@ -58,7 +58,7 @@
                                                         style="line-height: 1.8; font-size: 12px; color: #ffffff; font-family: 'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif; mso-line-height-alt: 22px;">
                                                         <p
                                                             style="font-size: 12px; line-height: 1.8; word-break: break-word; text-align: center; mso-line-height-alt: 22px; margin: 0;">
-                                                            <span style="font-size: 12px;">Howden Takaful Brokers Sdn. Bhd. (formerly known as Malene Insurance Brokers Sdn Bhd) (198001010734)</span></p>
+                                                            <span style="font-size: 12px;">Howden Takaful Brokers Sdn. Bhd. (198001010734)</span></p>
                                                     </div>
                                                 </div>
                                                 <!--[if mso]></td></tr></table><![endif]-->
