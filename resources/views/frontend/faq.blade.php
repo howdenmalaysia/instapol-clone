@@ -206,7 +206,7 @@
                         As your insurance broker, we are dedicated to safeguarding the best interests of our valued clients.  You may contact us via :
                         </div>
                         <div class="col-12 mt-2">
-                        Email 	:	insta.admin@my.howdegroup.com
+                        Email 	:	insta.admin@howdegroup.com
                         </div>
                         <div class="col-12">
                         Whatsapp 	:	+60122606183
