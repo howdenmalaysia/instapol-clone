@@ -154,8 +154,9 @@ class PromoController extends Controller
 
         try {
             DB::beginTransaction();
-
+            Log::info("[API/PROMO] Request Promo CTLR: " . json_encode("PROMO"));
             if(!empty($motor->insurance_code)) {
+                Log::info("[API/PROMO] Request Promo CTLR: " . json_encode("PROMO ENTER"));
                 // 4a. Add Use Count
                 Promotion::where('code', $request->code)
                     ->update(['use_count' => $code->use_count++]);
@@ -164,8 +165,8 @@ class PromoController extends Controller
                 $insurance = Insurance::where('insurance_code', $motor->insurance_code)
                     ->firstOrFail();
 
-                InsurancePromo::where('insurance_id', $insurance->id)
-                    ->delete();
+                // InsurancePromo::where('insurance_id', $insurance->id)
+                //     ->delete();
 
                 InsurancePromo::create([
                     'insurance_id' => $insurance->id,
