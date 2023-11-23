@@ -24,8 +24,8 @@
         </div>
         <div class="carousel-item">
             <a href="https://instapol.my/motor" target="_blank">
-                <img class="carousel-image img-fluid d-none d-md-block" src="{{ asset('images/banner/roadtax.png') }}" />
-                <img class="carousel-image img-fluid d-block d-md-none" src="{{ asset('images/banner/mobile/roadtax.png') }}" />
+                <img class="carousel-image img-fluid d-none d-md-block" src="{{ asset('images/banner/roadtax_2.jpg') }}" />
+                <img class="carousel-image img-fluid d-block d-md-none" src="{{ asset('images/banner/mobile/roadtax_2.jpg') }}" />
             </a>
         </div>
     </div>
