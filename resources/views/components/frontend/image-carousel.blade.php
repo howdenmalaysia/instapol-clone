@@ -1,13 +1,33 @@
 <div id="{{ $id }}" class="carousel slide"  data-bs-ride="carousel" data-bs-interval="{{ $interval }}">
-    <div class="carousel-inner">
-        @foreach ($images as $index => $item)
-            <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
-                <img class="carousel-image img-fluid d-none d-md-block" src="{{ asset('images' . str_replace([public_path('images'), '\\'], ['', '/'], $item)) }}" />
-                @if (file_exists($item))
-                    <img class="carousel-image img-fluid d-block d-md-none" src="{{ asset('images/banner/mobile' . str_replace([public_path('images/banner'), '\\'], ['', '/'], $item)) }}" />
-                @endif
-            </div>
-        @endforeach
+<div class="carousel-inner">
+        <div class="carousel-item active">
+            <a href="https://howdenvirtualrun.com/" target="_blank">
+                <img class="carousel-image img-fluid d-none d-md-block" src="{{ asset('images/banner/virtual.jpg') }}" />
+                <img class="carousel-image img-fluid d-block d-md-none" src="{{ asset('images/banner/mobile/virtual.png') }}" />
+            </a>
+        </div>
+        <div class="carousel-item">
+            <a href="https://howden-bike.instapol.my/landing" target="_blank">
+                <img class="carousel-image img-fluid d-none d-md-block" src="{{ asset('images/banner/bicycle.png') }}" />
+                <img class="carousel-image img-fluid d-block d-md-none" src="{{ asset('images/banner/mobile/bicycle.png') }}" />
+            </a>
+        </div>
+        <div class="carousel-item">
+            <a href="https://instapol.my/motor" target="_blank">
+                <img class="carousel-image img-fluid d-none d-md-block" src="{{ asset('images/banner/compare.png') }}" />
+                <img class="carousel-image img-fluid d-block d-md-none" src="{{ asset('images/banner/mobile/virtual.png') }}" />
+            </a>
+        </div>
+        <div class="carousel-item">
+            <img class="carousel-image img-fluid d-none d-md-block" src="{{ asset('images/banner/main.png') }}" />
+            <img class="carousel-image img-fluid d-block d-md-none" src="{{ asset('images/banner/mobile/virtual.png') }}" />
+        </div>
+        <div class="carousel-item">
+            <a href="https://instapol.my/motor" target="_blank">
+                <img class="carousel-image img-fluid d-none d-md-block" src="{{ asset('images/banner/roadtax.png') }}" />
+                <img class="carousel-image img-fluid d-block d-md-none" src="{{ asset('images/banner/mobile/roadtax.png') }}" />
+            </a>
+        </div>
     </div>
     <button class="carousel-control-prev" type="button" data-bs-target="#{{ $id }}" data-bs-slide="prev">
         <span class="carousel-control-prev-icon" aria-hidden="true"></span>

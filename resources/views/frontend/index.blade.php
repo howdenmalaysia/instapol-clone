@@ -27,10 +27,10 @@
                                             <x-product :image-path="asset('images/icons/travel.png')" :alt="__('frontend.products.travel')" :name="__('frontend.products.travel')" />
                                         </a>
                                         <a href="/sme" class="col d-flex align-items-center text-decoration-none justify-content-center">
-                                            <x-product :image-path="asset('images/icons/sme.png')" :alt="__('frontend.products.doc_pro')" :name="__('frontend.products.doc_pro')" :height="80" />
+                                            <x-product :image-path="asset('images/icons/sme.png')" :alt="__('frontend.products.doc_pro')" :name="__('frontend.products.doc_pro')" />
                                         </a>
                                         <a href="/hho" class="col d-flex align-items-center text-decoration-none justify-content-center mt-4 mt-md-0">
-                                            <x-product :image-path="asset('images/icons/ICON_HOUSE.png')" :alt="__('frontend.products.houseowner')" :name="__('frontend.products.houseowner')" :height="80" />
+                                            <x-product :image-path="asset('images/icons/ICON_HOUSE.png')" :alt="__('frontend.products.houseowner')" :name="__('frontend.products.houseowner')" />
                                         </a>
                                     </div>
                                 </div>
@@ -54,12 +54,35 @@
             </div>
         </div>
     </div>
+    <!-- Virtual Promo -->
+    <div class="modal fade rounded" tabindex="-1" id="virtual-banner">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content rounded">
+                <div class="row">
+                    <div class="col-12">
+                    <div class="modal-body p-0 d-flex flex-column align-items-end">
+                        <button type="button" class="btn-close position-absolute m-1" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <div class="w-100">
+                            <a href="https://howdenvirtualrun.com/" target="_blank">
+                                <img src="{{ asset('images/banner/virtual.jpg') }}" style="width:100%; height: 100%" alt="Banner Image" class="img-fluid rounded">
+                            </a>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('after-scripts')
 <script>
     $(function() {
-        $('#landing-banner').modal('show');
+        $('#virtual-banner').modal('show');
     });
+
+    $('#virtual-banner').on('hidden.bs.modal', function () {
+        $('#landing-banner').modal('show');
+    })
 </script>
 @endpush

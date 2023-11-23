@@ -952,9 +952,9 @@ return [
         'bicycle' => 'Bicycle Insurance',
         'travel' => 'Travel Insurance',
         // 'doc_pro' => 'Doctor\'s Professional Indemnity',
-        'doc_pro' => 'Group Medical Insurance for SME Business',
+        'doc_pro' => 'SME Medical',
         'medical_cover' => 'Medical Cover',
-        'houseowner' => 'Houseowner & Householder Insurance'
+        'houseowner' => 'HomeProtect'
     ],
     'button' => [
         'clear' => 'Clear',
