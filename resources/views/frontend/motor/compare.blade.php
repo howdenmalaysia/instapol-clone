@@ -547,6 +547,7 @@
                     })[0];
                     let benefits = JSON.parse(product.benefits.benefits);
                     let formatted_sum_insured = formatMoney(premium.sum_insured);
+                    let prem = formatMoney(premium.total_payable);
                     let buy_now_text = "{{ __('frontend.button.buy') }}";
 
                     // Populate
@@ -562,7 +563,8 @@
                         <td class="bg-primary p-0 ${product_id}">
                             <div class="d-grid gap-1">
                                 <button type="button" class="btn btn-success text-white text-uppercase btn-buy" data-product_id="${product_id}">
-                                    ${buy_now_text}
+                                    <h5 class="mb-0"><b>RM ${prem}</b></h5>
+                                    <b>${buy_now_text}</b> 
                                 </button>
                             </div>
                         </td>
