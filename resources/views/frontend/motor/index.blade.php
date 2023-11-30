@@ -225,6 +225,8 @@
             </div>
         </div>
     </section>
+    <!-- Referral Promo -->
+    <x-banner-modal image="{{ asset('images/banner/roadtax_2.jpg') }}" />
 @endsection
 
 @push('after-scripts')
@@ -294,5 +296,11 @@
             // Initialize
             $('input[name=id_type]').trigger('change');
         });
+
+        @if ($referrer != "")
+        $(function() {
+            $('#landing-banner').modal('show');
+        });
+        @endif
     </script>
 @endpush

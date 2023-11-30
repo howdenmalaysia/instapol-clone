@@ -41,7 +41,7 @@ class MotorController extends Controller
         $referral = $request->query('r');
         $request->session()->put('referral', $referral);
 
-        return view('frontend.motor.index')->with(['insurers' => $insurers, 'motor' => $motor]);
+        return view('frontend.motor.index')->with(['insurers' => $insurers, 'motor' => $motor, 'referrer' => $referral]);
     }
 
     public function index_POST(Request $request)
