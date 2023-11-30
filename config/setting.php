@@ -23,6 +23,7 @@ return [
         'miea' => env('MIEA_URL'),
         'sme' => env('SME_URL'),
         'hho' => env('HHO_URL'),
+        'pickles' => env('PICKLES_URL'),
     ],
     'id_type' => [
         'nric_no' => 1,
