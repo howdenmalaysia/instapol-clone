@@ -1,12 +1,12 @@
 <div id="{{ $id }}" class="carousel slide"  data-bs-ride="carousel" data-bs-interval="{{ $interval }}">
 <div class="carousel-inner">
-        <div class="carousel-item active">
+        <!-- <div class="carousel-item active">
             <a href="https://howdenvirtualrun.com/" target="_blank">
                 <img class="carousel-image img-fluid d-none d-md-block" src="{{ asset('images/banner/virtual.jpg') }}" />
                 <img class="carousel-image img-fluid d-block d-md-none" src="{{ asset('images/banner/mobile/virtual.png') }}" />
             </a>
-        </div>
-        <div class="carousel-item">
+        </div> -->
+        <div class="carousel-item active">
             <a href="https://howden-bike.instapol.my/landing" target="_blank">
                 <img class="carousel-image img-fluid d-none d-md-block" src="{{ asset('images/banner/bicycle.png') }}" />
                 <img class="carousel-image img-fluid d-block d-md-none" src="{{ asset('images/banner/mobile/bicycle.png') }}" />

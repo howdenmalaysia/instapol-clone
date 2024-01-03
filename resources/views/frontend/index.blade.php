@@ -55,7 +55,7 @@
         </div>
     </div>
     <!-- Virtual Promo -->
-    <div class="modal fade rounded" tabindex="-1" id="virtual-banner">
+    <!-- <div class="modal fade rounded" tabindex="-1" id="virtual-banner">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content rounded">
                 <div class="row">
@@ -72,17 +72,18 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
 @endsection
 
 @push('after-scripts')
 <script>
     $(function() {
-        $('#virtual-banner').modal('show');
+        //$('#virtual-banner').modal('show');
+        $('#landing-banner').modal('show');
     });
 
-    $('#virtual-banner').on('hidden.bs.modal', function () {
-        $('#landing-banner').modal('show');
-    })
+    // $('#virtual-banner').on('hidden.bs.modal', function () {
+    //     $('#landing-banner').modal('show');
+    // })
 </script>
 @endpush
