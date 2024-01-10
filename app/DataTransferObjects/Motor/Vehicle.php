@@ -9,7 +9,7 @@ class Vehicle extends DataTransferObject
     /** @var string */
     public $make;
 
-    /** @var string */
+    /** @var string|null */
     public $model;
 
     /** @var string */

@@ -68,8 +68,10 @@ class MotorRenewalNotice extends Command
                 ->get();
 
             if(count($insurance) > 0) {
+                Log::info("[API/1st] Renewal Request: " . json_encode($insurance));
                 $insurance->map(function($_ins) use($rows) {
                     // Generate query strings
+                    Log::info("[API/2nd] Renewal Request: " . json_encode($_ins));
                     $details = 'vehicle_no=' . $_ins->motor->vehicle_number . '&postcode=' . $_ins->address->postcode .
                     '&email=' . $_ins->holder->email_address . '&phone_no=0' . $_ins->holder->phone_number . '&id_number=' . $_ins->holder->id_number .
                     '&id_type=' . $_ins->holder->id_type_id;
