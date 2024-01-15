@@ -329,6 +329,9 @@
                                     <td style="overflow-wrap:break-word;word-break:break-word;padding:40px 25px;font-family:arial,helvetica,sans-serif;" align="left">
                                         <div style="line-height: 150%; text-align: left; word-wrap: break-word;">
                                             <p style="line-height: 150%; font-size: 14px;">
+                                                <em>** <b>Please be advised that the renewal of road tax applications submitted after 4:00 PM will be processed on the next working day.</b><br> We appreciate your understanding and cooperation as we strive to provide efficient and timely services. <br>If you have any urgent concerns or require immediate assistance, we recommend completing your renewal application during regular office hours. Thank you for your patience and adherence to this processing timeline.</em></p>
+                                            <p style="line-height: 150%; font-size: 14px;"> </p>
+                                            <p style="line-height: 150%; font-size: 14px;">
                                                 <em>* If your car insurance and road tax have expired, please ensure that you have received your new policy and road tax from us before driving.</em></p>
                                             <p style="line-height: 150%; font-size: 14px;"> </p>
                                             <p style="line-height: 150%; font-size: 14px;">

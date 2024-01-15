@@ -75,6 +75,7 @@ class HowdenSettlement extends Command
                     $query->whereBetween('created_at', [$start_date, $end_date])
                         ->orWhereBetween('updated_at', [$start_date, $end_date]);
                 })
+                ->whereNull('settlement_on')
                 ->whereIn('insurance_status', [Insurance::STATUS_PAYMENT_ACCEPTED, Insurance::STATUS_POLICY_ISSUED])
                 ->get()
                 ->groupBy('product_id');

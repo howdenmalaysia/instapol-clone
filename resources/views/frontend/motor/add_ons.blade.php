@@ -267,6 +267,11 @@
             <x-modal maxWidth="md" id="body-type-modal" headerClass="bg-primary text-white" backdrop-static>
                 <x-slot name="title">{{ __('frontend.motor.add_ons_page.body_type_modal.header') }}</x-slot>
                 <x-slot name="body">
+                    <div class="alert alert-primary" role="alert">
+                        <b>Please be advised that the renewal of road tax applications submitted after 4:00 PM will be processed on the next working day.</b> <br>
+                        We appreciate your understanding and cooperation as we strive to provide efficient and timely services. <br>
+                        If you have any urgent concerns or require immediate assistance, we recommend completing your renewal application during regular office hours. Thank you for your patience and adherence to this processing timeline.
+                    </div>
                     <div class="form-check border-bottom py-3">
                         <div class="row">
                             <div class="col-12">
