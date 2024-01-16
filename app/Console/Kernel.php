@@ -38,19 +38,19 @@ class Kernel extends ConsoleKernel
         // $schedule->command(EGHLSettlement::class)
         //     ->dailyAt('10:00');
         //$schedule->command(EGHLSettlement::class)->dailyAt('08:15')->dailyAt('16:15');
-        $schedule->command(EGHLSettlement::class)->dailyAt('09:50')->dailyAt('16:15');
+        $schedule->command(EGHLSettlement::class)->dailyAt('09:55')->dailyAt('16:15');
 
         /// b. Insurers Settlement
         // $schedule->command(InsurerSettlement::class)
         //     ->dailyAt('10:05');
         //$schedule->command(InsurerSettlement::class)->dailyAt('08:05')->dailyAt('16:05');
-        $schedule->command(InsurerSettlement::class)->dailyAt('09:45')->dailyAt('16:05');
+        $schedule->command(InsurerSettlement::class)->dailyAt('09:51')->dailyAt('16:05');
 
         /// c. Howden Internal Settlement
         // $schedule->command(HowdenSettlement::class)
         //     ->dailyAt('10:10');
         //$schedule->command(HowdenSettlement::class)->dailyAt('08:10')->dailyAt('16:10');
-        $schedule->command(HowdenSettlement::class)->dailyAt('09:40')->dailyAt('16:10');
+        $schedule->command(HowdenSettlement::class)->dailyAt('09:53')->dailyAt('16:10');
 
 
         /// d. Monthly Howden Internal Settlement [First Business Day of Each Month]
