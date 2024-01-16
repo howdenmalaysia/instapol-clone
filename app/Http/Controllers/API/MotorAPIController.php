@@ -876,6 +876,7 @@ class MotorAPIController extends Controller implements MotorAPIInterface
 
 public function callback(Request $request) 
     {
+        Log::info("[API/Callback] Request Check: " . json_encode($request));
         //check request data
         if(! isset($request->ContractNumber) || empty($request->ContractNumber)){
             Log::info("[API/Callback] ContractNumber Missing");
@@ -901,14 +902,14 @@ public function callback(Request $request)
             ];
             return $response;
         }
-        else if(! isset($request->Attachment) || empty($request->Attachment)){
-            Log::info("[API/Callback] Attachment Missing");
-            $response = (object)[
-                'Status' => "NOK",
-                'Mesage' => "Attachment Missing"
-            ];
-            return $response;
-        }
+        // else if(! isset($request->Attachment) || empty($request->Attachment)){
+        //     Log::info("[API/Callback] Attachment Missing");
+        //     $response = (object)[
+        //         'Status' => "NOK",
+        //         'Mesage' => "Attachment Missing"
+        //     ];
+        //     return $response;
+        // }
         // Get Insurance Details
         $insurance = Insurance::with([
                 'product',
