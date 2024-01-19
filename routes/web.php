@@ -18,6 +18,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware(['web', 'cors'])->group(function() {
+    Route::any('{any}', function () {
+        return view('maintenance'); // Replace 'maintenance' with the actual view name or route
+    })->where('any', '.*');
     // General Routes
     Route::get('/', [HomeController::class, 'index'])->name('frontend.index');
     Route::get('/about-us', [HomeController::class, 'aboutUs'])->name('frontend.about-us');
