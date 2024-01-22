@@ -48,7 +48,8 @@ class BerjayaSompo implements InsurerLibraryInterface
     private const MIN_SUM_INSURED = 10000;
     private const MAX_SUM_INSURED = 500000;
     // Updated 2.16
-    private const EXTRA_COVERAGE_LIST = ['89A', '97', '112', '25', '97A', '111', '101', 'PLC', '72', 'LOUP', 'PA*P', 'SPTP', 'BTWP', 'TOWP'];
+    // private const EXTRA_COVERAGE_LIST = ['89A', '97', '112', '25', '97A', '111', '101', 'PLC', '72', 'LOUP', 'PA*P', 'SPTP', 'BTWP', 'TOWP'];
+    private const EXTRA_COVERAGE_LIST = ['89A', '97', '112', '25', '97A', '111', '101', 'PLC', '72', 'PA*P', 'BTWP'];
     //private const EXTRA_COVERAGE_LIST = ['89', '97', '112', '25', '97A', '111', '07', 'ALD', '101', 'PLC', '72', '57', '22', 'TTN', 'ONE', 'UE', 'AR', '109', 'A001', 'PLC1', 'LOUP', 'PEFP', 'PA*P', 'CHIP', 'PPGP', 'ENCP', 'D**P', 'TYR', 'MEX', 'KEY', 'A002', 'EHRP', 'SPTP', 'BTWP', 'TOWP', 'AL*P', 'FGAP', 'CSFM', '89A'];
     private const CART_AMOUNT_LIST = [50, 100, 200];
     private const CART_DAY_LIST = [7, 14, 21];
