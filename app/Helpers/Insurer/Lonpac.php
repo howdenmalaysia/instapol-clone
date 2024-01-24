@@ -301,10 +301,18 @@ class Lonpac implements InsurerLibraryInterface
             $excess_amount = $motor_premium->response->excess;
             $total_payable = $motor_premium->response->gross_due;
             $net_premium = formatNumber($motor_premium->response->net_premium + $sst_amount + $stamp_duty);
+            $vehicle_age = Carbon::now()->year - $vehicle_detail->response->manufacture_year;
 
             // Generate extra cover list and Include the generated extra cover list to input
             $extra_cover_list = [];
             foreach ($allowed_extra_cover as $_extra_cover_code) {
+                // Skip creation and addition if extra_cover_code is "M68"
+                if ($_extra_cover_code === 'M68') {
+                    if($vehicle_age < 5){
+                        continue;
+                    }
+                }
+
                 $extra_cover = new ExtraCover([
                     'selected' => false,
                     'readonly' => false,
@@ -815,18 +823,26 @@ class Lonpac implements InsurerLibraryInterface
         //         $additional_driver->driving_exp = $additional_driver->age - 18 < 0 ? 0 : $additional_driver->age - 18;
         //     }
         // }
-
+        $vehicle_age = Carbon::now()->year - $input->vehicle->manufacture_year;
         // Format Extra Cover Code
         $formatted_extra_cover = [];
         if(isset($input->extra_cover)) {
             //Log::info("[API/GetNew] Dzul Request: " . json_encode($input->extra_cover));
-            foreach($input->extra_cover as $item){
-                if($item->extra_cover_code == "M51" && !empty($item->cart_day)){
+            foreach ($input->extra_cover as $key => $item) {
+                if ($item->extra_cover_code == "M68") {
+                    // Exclude the item with "extra_cover_code" equal to "M68"
+                    if($vehicle_age < 5){
+                        unset($input->extra_cover[$key]);
+                    }
+                } else if ($item->extra_cover_code == "M51" && !empty($item->cart_day)) {
+                    // Perform your other logic here if needed
                     $item->sum_insured = $item->cart_day * $item->cart_amount;
-                }else if($item->extra_cover_code == "M51" && !empty($item->premium)){
+                } else if ($item->extra_cover_code == "M51" && !empty($item->premium)) {
+                    // Perform your other logic here if needed
                     $item->sum_insured = $item->premium / 0.1;
                 }
             }
+            
             $addcovdesc = array_column($input->extra_cover, 'extra_cover_description');
             $addcovdesc = implode('|', $addcovdesc);
             $addcovcode = array_column($input->extra_cover, 'extra_cover_code');
@@ -851,7 +867,6 @@ class Lonpac implements InsurerLibraryInterface
 
         //$body_type = $this->getBodyTypeDetails($input->vehicle_body_type ?? $input->vehicle->extra_attribute->body_type_code);
         $timestamp = Carbon::now()->format(self::TIMESTAMP_FORMAT);
-        $vehicle_age = Carbon::now()->year - $input->vehicle->manufacture_year;
         $hash = $this->secret_key.$timestamp.'000'.$quotation_number;
         $hashcode = $this->tariffSHA2($hash);
         $data = [
