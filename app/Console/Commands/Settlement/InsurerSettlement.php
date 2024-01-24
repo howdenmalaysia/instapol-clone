@@ -55,8 +55,19 @@ class InsurerSettlement extends Command
     {
         Log::info("[Cron - Insurer Settlement] Start Generating Reports.");
 
-        $start_date = Carbon::now()->subDay()->startOfDay()->format(self::DATETIME_FORMAT);
-        $end_date = Carbon::now()->subDay()->endOfDay()->format(self::DATETIME_FORMAT);
+        // Determine if it's morning
+        $isMorning = Carbon::now()->hour < 12;
+
+        if ($isMorning) {
+            $start_date = Carbon::now()->subDay()->startOfDay()->format(self::DATETIME_FORMAT);
+            $end_date = Carbon::now()->subDay()->endOfDay()->format(self::DATETIME_FORMAT);
+        } else {
+            // Adjust the logic for non-morning time if needed
+            $start_date = Carbon::now()->startOfDay()->format(self::DATETIME_FORMAT);
+            $end_date = Carbon::now()->endOfDay()->format(self::DATETIME_FORMAT);
+        }
+        // $start_date = Carbon::now()->subDay()->startOfDay()->format(self::DATETIME_FORMAT);
+        // $end_date = Carbon::now()->subDay()->endOfDay()->format(self::DATETIME_FORMAT);
         if(!empty($this->argument('start_date')) && !empty($this->argument('end_date'))) {
             $start_date = Carbon::parse($this->argument('start_date'))->startOfDay()->format(self::DATETIME_FORMAT);
             $end_date = Carbon::parse($this->argument('end_date'))->endOfDay()->format(self::DATETIME_FORMAT);
