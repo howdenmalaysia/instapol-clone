@@ -32,6 +32,9 @@
                                         <a href="/hho" class="col d-flex align-items-center text-decoration-none justify-content-center">
                                             <x-product :image-path="asset('images/icons/ICON_HOUSE.png')" :alt="__('frontend.products.houseowner')" :name="__('frontend.products.houseowner')" />
                                         </a>
+                                        <a href="/criticalsafe" class="col d-flex align-items-center text-decoration-none justify-content-center">
+                                            <x-product :image-path="asset('images/icons/critical.svg')" :alt="__('frontend.products.critical')" :name="__('frontend.products.critical')" />
+                                        </a>
                                     </div>
                                 </div>
                             </div>

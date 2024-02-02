@@ -954,7 +954,8 @@ return [
         // 'doc_pro' => 'Doctor\'s Professional Indemnity',
         'doc_pro' => 'SME Medical',
         'medical_cover' => 'Medical Cover',
-        'houseowner' => 'HomeProtect'
+        'houseowner' => 'HomeProtect',
+        'critical' => 'Critical Illness'
     ],
     'button' => [
         'clear' => 'Clear',

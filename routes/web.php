@@ -72,4 +72,5 @@ Route::middleware(['web'])->group(function() {
     Route::redirect('/landlord', config('setting.redirects.landlord'));
     Route::redirect('/miea', config('setting.redirects.miea'));
     Route::redirect('/pickles', config('setting.redirects.pickles'));
+    Route::redirect('/criticalsafe', config('setting.redirects.critical'));
 });

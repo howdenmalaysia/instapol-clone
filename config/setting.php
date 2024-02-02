@@ -24,6 +24,7 @@ return [
         'sme' => env('SME_URL'),
         'hho' => env('HHO_URL'),
         'pickles' => env('PICKLES_URL'),
+        'critical' => env('CRITICAL_URL'),
     ],
     'id_type' => [
         'nric_no' => 1,
