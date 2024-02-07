@@ -30,7 +30,7 @@
                                             <x-product :image-path="asset('images/icons/sme.png')" :alt="__('frontend.products.doc_pro')" :name="__('frontend.products.doc_pro')" />
                                         </a>
                                         <a href="/hho" class="col d-flex align-items-center text-decoration-none justify-content-center">
-                                            <x-product :image-path="asset('images/icons/ICON_HOUSE.png')" :alt="__('frontend.products.houseowner')" :name="__('frontend.products.houseowner')" />
+                                            <x-product :image-path="asset('images/icons/house.svg')" :alt="__('frontend.products.houseowner')" :name="__('frontend.products.houseowner')" />
                                         </a>
                                         <a href="/criticalsafe" class="col d-flex align-items-center text-decoration-none justify-content-center">
                                             <x-product :image-path="asset('images/icons/critical.svg')" :alt="__('frontend.products.critical')" :name="__('frontend.products.critical')" />
