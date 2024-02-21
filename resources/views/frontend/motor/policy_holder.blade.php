@@ -100,11 +100,11 @@
                                 <div class="row mt-3">
                                     <label class="col-form-label col-12 col-sm-3">{{ __('frontend.fields.address') }}</label>
                                     <div class="col-12 col-md-9">
-                                        <input type="text" id="policy-holder-address-1" class="form-control uppercase" name="address_1" placeholder="{{ __('frontend.motor.policy_holder_page.placeholders.address_one') }}"
+                                        <input type="text" id="policy-holder-address-1" class="form-control uppercase" name="address_1" maxlength="50" placeholder="{{ __('frontend.motor.policy_holder_page.placeholders.address_one') }}"
                                             required
                                             data-parsley-required-message="{{ __('frontend.motor.policy_holder_page.error_messages.required.address') }}"
                                         />
-                                        <input type="text" id="policy-holder-address-2" class="form-control mt-2 uppercase" name="address_2" placeholder="{{ __('frontend.motor.policy_holder_page.placeholders.address_two') }}" />
+                                        <input type="text" id="policy-holder-address-2" class="form-control mt-2 uppercase" name="address_2" maxlength="50" placeholder="{{ __('frontend.motor.policy_holder_page.placeholders.address_two') }}" />
                                     </div>
                                 </div>
                                 <div class="row mt-3">
@@ -167,10 +167,10 @@
                                         <div class="row mt-3">
                                             <label for="delivery-address-1" class="col-form-label col-12 col-sm-3"></label>
                                             <div class="col-12 col-sm-9">
-                                                <input type="text" id="delivery-address-1" class="form-control uppercase" name="delivery_address_1" placeholder="{{ __('frontend.motor.policy_holder_page.placeholders.address_one') }}"
+                                                <input type="text" id="delivery-address-1" class="form-control uppercase" name="delivery_address_1" maxlength="50" placeholder="{{ __('frontend.motor.policy_holder_page.placeholders.address_one') }}"
                                                     required data-parsley-required-message="{{ __('frontend.motor.policy_holder_page.error_messages.required.address') }}"
                                                 />
-                                                <input type="text" id="delivery-address-2" class="form-control mt-2 uppercase" name="delivery_address_2" placeholder="{{ __('frontend.motor.policy_holder_page.placeholders.address_two') }}" />
+                                                <input type="text" id="delivery-address-2" class="form-control mt-2 uppercase" name="delivery_address_2" maxlength="50" placeholder="{{ __('frontend.motor.policy_holder_page.placeholders.address_two') }}" />
                                             </div>
                                         </div>
                                         <div class="row mt-3">

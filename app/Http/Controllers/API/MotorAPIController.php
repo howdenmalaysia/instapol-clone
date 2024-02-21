@@ -350,8 +350,14 @@ class MotorAPIController extends Controller implements MotorAPIInterface
             $total_payable -= floatval($motor->premium->discounted_amount);
         }
 
-        if(!empty($motor->premium->roadtax)) {
-            $total_payable += floatval($motor->premium->roadtax);
+	    // Added New Logic Dd
+        //if(!empty($motor->premium->roadtax)) {
+        //    $total_payable += floatval($motor->premium->roadtax);
+        //}
+        if (!empty($motor->premium->roadtax)) {
+    		$total_payable += floatval($motor->premium->roadtax);
+        } elseif (!empty($motor->roadtax->total)) {
+            $total_payable += floatval($motor->roadtax->total);
         }
 
         // Check if the user exists in the system
