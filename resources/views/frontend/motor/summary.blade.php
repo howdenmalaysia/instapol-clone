@@ -310,6 +310,20 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="col-lg-12 mt-3">
+                                        <?php
+                                        $currentDate = new DateTime(); // Replace this with the actual current date
+                                        $targetDate = new DateTime('2024-03-01');
+                                        $shouldShowAlert = $currentDate < $targetDate;
+                                        ?>
+
+                                        <?php if ($shouldShowAlert): ?>
+                                            <div class="alert alert-danger" role="alert">
+                                                Disclaimer: As announced by the government in the Budget 2024, <b>effective from 1st March 2024</b>, the adjustment of service tax from <b>6% to 8%</b> is applicable to all insurance services. Please be informed that any modifications or augmentation in service tax attributable to this revision is the responsibility of the insurance policy holder. The additional payable service tax is also applicable to any policy that is procured before 1st March 2024 but with a period of insurance spanning across 1st March 2024. Therefore, Howden Insurance Brokers Sdn Bhd reserves the right to collect any additional service tax on behalf of the Royal Malaysian Customs Department.
+                                            </div>
+                                        <?php endif; ?>
+                                    </div>
+
                                     <div class="d-flex justify-content-between mt-3">
                                         <button type="button" id="btn-back" class="btn btn-link text-dark fw-bold">{{ __('frontend.button.back') }}</button>
                                         <button type="button" id="btn-pay" class="btn btn-primary text-white rounded">{{ __('frontend.button.pay') }}</button>
