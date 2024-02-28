@@ -955,7 +955,8 @@ return [
         'doc_pro' => 'SME Medical',
         'medical_cover' => 'Medical Cover',
         'houseowner' => 'HomeProtect',
-        'critical' => 'Critical Illness'
+        'critical' => 'Critical Illness',
+        'cyber' => 'Cyber Insurance'
     ],
     'button' => [
         'clear' => 'Clear',

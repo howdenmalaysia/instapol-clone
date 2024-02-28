@@ -46,8 +46,8 @@
                         <h3 class="fw-bold text-uppercase text-primary aos-init" data-aos="fade-up" data-aos-duration="1000">{{ __('frontend.general.coming_soon') }}</h3>
                         <div class="row justify-content-center mb-5">
                             <div class="col-6 col-sm-5 col-md-4 col-lg-3 aos-init" data-aos="flip-left" data-aos-duration="2000">
-                                <img src="{{ asset('images/icons/coming-soon/medical-cover.png') }}" alt="{{ __('frontend.products.medical_cover') }}" class="mb-3">
-                                <h5 class="title">{{ __('frontend.products.medical_cover') }}</h5>
+                                <img src="{{ asset('images/icons/coming-soon/cyber.svg') }}" style="width: 45%" alt="{{ __('frontend.products.cyber') }}" class="mb-3">
+                                <h5 class="title">{{ __('frontend.products.cyber') }}</h5>
                             </div>
                         </div>
                     </div>
