@@ -661,9 +661,9 @@ class MotorAPIController extends Controller implements MotorAPIInterface
         }
 
         $delivery = formatNumber($delivery_fee->processing_fee) + formatNumber($delivery_fee->amount);
-        $delivery += formatNumber($delivery * 0.06);
+        $delivery += formatNumber($delivery * config('setting.service_tax.sst'));
         $e_service_fee = (formatNumber($roadtax_price) + formatNumber($delivery)) * 0.02;
-        $sst = $e_service_fee * 0.06;
+        $sst = $e_service_fee * config('setting.service_tax.sst');
         $total = formatNumber($roadtax_price) + formatNumber($e_service_fee) + formatNumber($delivery) + formatNumber($sst);
 
         $response = new RoadtaxResponse([

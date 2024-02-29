@@ -182,7 +182,7 @@
                                     <td style="overflow-wrap:break-word;word-break:break-word;padding:10px 10px 10px 25px;font-family:arial,helvetica,sans-serif;" align="left">
                                         <div style="line-height: 140%; text-align: left; word-wrap: break-word;">
                                             <p style="font-size: 14px; line-height: 140%;">
-                                                Total Premium (inclusive 6% SST)
+                                                Total Premium (inclusive {{ config('setting.service_tax.word') }}% SST)
                                             </p>
                                         </div>
                                     </td>
