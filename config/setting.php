@@ -30,6 +30,10 @@ return [
         'nric_no' => 1,
         'company_registration_no' => 4
     ],
+    'service_tax' => [
+        'sst' => env('MIX_SERVICE_CHARGE_R', 0.06),
+       	'word' => env('SERVICE_TAX', 6),
+    ],
     'response_codes' => [
         // Underwriting Related
         'earlier_renewal' => 460,
