@@ -150,7 +150,7 @@ class MonthlySettlement extends Command
                         $total_eservice_fee += $insurance_motor->roadtax->e_service_fee;
                         $total_sst += $insurance_motor->roadtax->service_tax;
 
-                        $physical = $insurance_motor->roadtax->myeg_fee - formatNumber(2.75 * 1.06) > 0;
+                        $physical = $insurance_motor->roadtax->myeg_fee - formatNumber(2.75 * 1.08) > 0;
 
                         $delivery_address = formatAddress([
                             $insurance_motor->roadtax->recipient_address_one,
