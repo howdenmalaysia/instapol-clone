@@ -41,6 +41,18 @@
                     </ul>
                 </li>
                 @if(Session::has('referral'))
+                <li class="nav-item dropdown">
+                    <a id="about-dropdown" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false"><span class="me-1">Products</span></a>
+                    <ul class="dropdown-menu p-0" aria-labelledby="about-dropdown">
+                        <li>
+                            <a href="https://instapol.my/motor?r=COSWAY" class="dropdown-item py-3">Motor Insurance</a>
+                        </li>
+                        <li>
+                            <a href="https://howden-travel.instapol.my/landing?r=COSWAY" class="dropdown-item py-3">Travel Insurance</a>
+                        </li>
+                    </ul>
+                </li>
+
                 @else
                 <li class="nav-item">
                     <a href="" class="nav-link">{{ __('frontend.navbar.promotion') }}</a>
@@ -49,12 +61,6 @@
                 <li class="nav-item">
                     <a href="{{ route('frontend.claims') }}" class="nav-link">{{ __('frontend.navbar.claims') }}</a>
                 </li>
-                @if(Session::has('referral'))
-                @else
-                <li class="nav-item">
-                    <a href="{{ route('instapol_blog') }}" class="nav-link">{{ __('frontend.navbar.blog') }}</a>
-                </li>
-                @endif
                 @if(Session::has('referral'))
                 @else
                 <li class="nav-item">

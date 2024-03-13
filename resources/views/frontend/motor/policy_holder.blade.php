@@ -30,7 +30,7 @@
                                 <div class="row">
                                     <label class="col-form-label col-12 col-sm-3">{{ __('frontend.fields.name') }}</label>
                                     <div class="col-12 col-md-9">
-                                        <input type="text" id="policy-holder-name" class="form-control uppercase" name="name"
+                                        <input type="text" id="policy-holder-name" class="form-control uppercase" maxlength="50" name="name"
                                             required
                                             data-parsley-pattern="[a-z A-Z&@',\/() ]{6,}"
                                             data-parsley-required-message="{{ __('frontend.motor.policy_holder_page.error_messages.required.name') }}"
@@ -87,7 +87,7 @@
                                     <div class="col-12 col-md-9">
                                         <div class="input-group">
                                             <span class="input-group-text" id="country-code">+60</span>
-                                            <input type="text" id="policy-holder-phone-number" class="form-control" name="phone_number"
+                                            <input type="text" id="policy-holder-phone-number" class="form-control"  name="phone_number"
                                                 value="{{ Illuminate\Support\Str::startsWith(session('motor')->policy_holder->phone_number, '0') ? substr(session('motor')->policy_holder->phone_number, 1) : session('motor')->policy_holder->phone_number }}"
                                                 required min="1"
                                                 pattern="(0?1)[0-46-9][0-9]{7,8}"
