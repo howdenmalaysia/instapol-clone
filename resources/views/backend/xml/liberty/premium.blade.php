@@ -60,7 +60,7 @@
             <urn:driveexp>{{ $driving_experience }}</urn:driveexp>
             <urn:effectivedate>{{ $effective_date }}</urn:effectivedate>
             <urn:effectivetime>{{ $effective_time }}</urn:effectivetime>
-            <urn:email />
+            <urn:email>{{ $email }}</urn:email>
             <urn:engineno>{{ $engine_number }}</urn:engineno>
             <urn:expirydate>{{ $expiry_date }}</urn:expirydate>
             <urn:garage>{{ $garage_code }}</urn:garage>

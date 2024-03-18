@@ -888,6 +888,7 @@ class Liberty implements InsurerLibraryInterface
             'manufacture_year' => $input->vehicle->manufacture_year,
             'marital_status' => $input->marital_status,
             'name' => $input->name ?? config('app.name'),
+            'email' => $input->email ?? '',
             'ncd_percentage' => $input->vehicle->ncd_percentage,
             'occupation' => self::OCCUPATION,
             'ownership_type' => $input->ownership_type,
