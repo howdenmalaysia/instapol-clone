@@ -302,7 +302,7 @@
                         <label for="roadtax-collection">{{ __('frontend.motor.add_ons_page.collection_method') }}</label>
                         <select id="roadtax-collection" class="form-control" data-select required>
                             <option value="no-delivery" selected>{{ __('frontend.motor.add_ons_page.myjpj') }}</option>
-                            <option value="delivery" disabled>{{ __('frontend.motor.add_ons_page.delivery') }} Physical Road Tax is currently unavailable until further notice.</option>
+                            <option value="delivery">{{ __('frontend.motor.add_ons_page.delivery') }} Physical Road Tax will be delivered by MyEG once it is available in stock. Meanwhile, you can access your renewed Road Tax on the MyJPJ App.</option>
                         </select>
                         <small id="roadtax-collection-message">{{ __('frontend.motor.add_ons_page.roadtax_notes') }}</small>
                     </div>
